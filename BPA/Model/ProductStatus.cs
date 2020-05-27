@@ -8,7 +8,7 @@ namespace BPA.Model {
     /// <summary>
     /// Справочник продукт групп
     /// </summary>
-    class ProductStatuses : TableBase {
+    class ProductStatus : TableBase {
         public override string TableName => "Статусы_товаров";
         public override string SheetName => "Статусы товаров";
 
