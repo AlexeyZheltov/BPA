@@ -101,7 +101,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\ProductGroup.cs" />
     <Compile Include="Model\Product.cs" />
+    <Compile Include="Model\ProductStatus.cs" />
     <Compile Include="Model\Supercategory.cs" />
     <Compile Include="Model\TableBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
