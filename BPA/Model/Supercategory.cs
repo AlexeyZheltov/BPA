@@ -17,7 +17,7 @@ namespace BPA.Model
         public override IDictionary<string, string> Filds { get { return _filds; } }
         private readonly Dictionary<string, string> _filds = new Dictionary<string, string>
         {
-            { "Id", "Код" },
+            { "Id", "№" },
             { "NameEn", "Суперкатегория (ENG)" },
             { "NameRu", "Суперкатегория (RUS)" }
         };
