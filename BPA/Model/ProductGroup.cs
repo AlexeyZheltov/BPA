@@ -8,9 +8,9 @@ namespace BPA.Model {
     /// <summary>
     /// Справочник продукт групп
     /// </summary>
-    class ProductGroups : TableBase {
-        public override string TableName => "Продукт группы";
-        public override string SheetName => "Продукт_Группы";
+    class ProductGroup : TableBase {
+        public override string TableName => "Продукт_Группы";
+        public override string SheetName => "Продукт Группы";
 
         public override IDictionary<string, string> Filds {
             get {
@@ -20,7 +20,7 @@ namespace BPA.Model {
         private readonly Dictionary<string, string> _filds = new Dictionary<string, string>
         {
             { "Id", "№" },
-            { "ProductGroup", "Продукт группа" },
+            { "ProductGroupName", "Продукт группа" },
             { "ProductGroupEng", "Название продукт группы (ENG)" },
             { "ProductGroupRu", "Название продукт группы (RUS)" }
         };
@@ -34,7 +34,7 @@ namespace BPA.Model {
         /// <summary>
         /// Продукт группа
         /// </summary>
-        public string ProductGroup{
+        public string ProductGroupName{
             get; set;
         }
 
