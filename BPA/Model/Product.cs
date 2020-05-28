@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Office.Interop.Excel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,11 +13,7 @@ namespace BPA.Model {
         public override string TableName => "Товары";
         public override string SheetName => "Товары";
 
-        public override IDictionary<string, string> Filds {
-            get {
-                return _filds;
-            }
-        }
+        public override IDictionary<string, string> Filds => _filds;
         private readonly Dictionary<string, string> _filds = new Dictionary<string, string>
         {
             { "Категория для прайс-листа диллеров", "Category" },
@@ -39,12 +36,12 @@ namespace BPA.Model {
             { "Локальный сертификат", "LocalCertificate" }
         };
 
+
+
         /// <summary>
         /// Категория для прайс-листа диллеров
         /// </summary>
-        public string Category {
-            get; set;
-        }
+        public string Category { get; set; }
         /// <summary>
         /// Суперкатегория(ENG)
         /// </summary>
@@ -146,6 +143,21 @@ namespace BPA.Model {
         /// </summary>
         public string LocalCertificate {
             get; set;
+        }
+
+        public Product GetProduct(string articul)
+        {
+
+            
+            ListRow listRow = GetRow("Article", articul);
+            if (listRow != null)
+            {
+                Product product = new Product();
+                product.SetProperty(listRow);
+                return product;
+            }
+
+            return null;
         }
 
     }

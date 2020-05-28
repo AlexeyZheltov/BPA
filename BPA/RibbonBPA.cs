@@ -16,9 +16,13 @@ namespace BPA
 
         private void button1_Click(object sender, RibbonControlEventArgs e)
         {
-            Supercategory supercategory = new Supercategory();
-            supercategory.SetProperty(1);
 
+            Product product = new Product();
+            product.GetProduct("123");
+
+            string sdafasd = product?.ArticleEng;
+           // product.Model = "123";
+           // product.Supercategory.NameEn;
         }
     }
 }

@@ -120,6 +120,18 @@ namespace BPA.Model
             return Table.ListRows[index];
         }
 
+        public ListRow GetRow(string fildName, object value)
+        {
+            ListRow listRow = null;
+            Range range = Table.ListColumns[Filds[fildName]].Range.Find(value, LookAt: XlLookAt.xlWhole);
+
+            if (range != null)
+            {
+                listRow = Table.ListRows[range.Row - Table.HeaderRowRange.Row];
+            }
+            return listRow;
+        }
+
         /// <summary>
         /// Заполнение свойств класса по Id
         /// </summary>
