@@ -19,11 +19,20 @@ namespace BPA.Model {
         }
         private readonly Dictionary<string, string> _filds = new Dictionary<string, string>
         {
+            { "Id","№" },
             { "Article", "Артикул" },
             { "STKEur", "STK 2.5, Eur" },
             { "STKRub", "STK 2.5, руб." },
             { "Date", "Дата принятия" }
         };
+
+        /// <summary>
+        /// №
+        /// </summary>
+        public int Id
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Артикул
