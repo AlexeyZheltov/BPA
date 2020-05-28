@@ -19,6 +19,7 @@ namespace BPA.Model {
         }
         private readonly Dictionary<string, string> _filds = new Dictionary<string, string>
         {
+            { "Id", "№" },
             { "GardenaChannel", "GardenaChannel" },
             { "Customer", "Customer" },
             { "ChannelType", "Channel type" },
@@ -27,6 +28,15 @@ namespace BPA.Model {
             { "Mag", "Маг" },
             { "CustomerBudget", "CustomerBudget" }
         };
+
+
+        /// <summary>
+        /// №
+        /// </summary>
+        public int Id
+        {
+            get; set;
+        }
 
         /// <summary>
         /// GardenaChannel
