@@ -1,4 +1,5 @@
-﻿using Microsoft.Office.Interop.Excel;
+﻿using BPA.Model;
+using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,8 @@ namespace BPA.Modules
         readonly Microsoft.Office.Interop.Excel.Application ex = new Microsoft.Office.Interop.Excel.Application();
         Workbook WB;
         Worksheet ws;
-        private int CalendarHeaderRow;
+        int CalendarHeaderRow;
+        
         private int CalendarheaderRow;
 
         public Workbook Open
@@ -47,62 +49,152 @@ namespace BPA.Modules
                 CalendarHeaderRow = 6;
                 int LastRow = ws.Cells[ws.Rows.Count, 1].End(XlDirection.xlUp).Row;
 
-
-                int idColumn = FindColumn("");
-                int LocalIDGardenaColumn = FindColumn("");
-                int GenericNameColumn = FindColumn("");
-                int ModelColumn = FindColumn("");
-                int SubgroupColumn = FindColumn("");
-                int ProductGroupColumn = FindColumn("");
-                int IRPRRPColumn = FindColumn("");
-                int IRPNetColumn = FindColumn("");
-                int ShortDescriptionColumn = FindColumn("");
-                int TechnicalPlatformColumn = FindColumn("");
-                int VariantDescriptionColumn = FindColumn("");
-                int TobesoldinColumn = FindColumn("");
-                int KeyAccountExclusiveForColumn = FindColumn("");
-                int SalesStartDateColumn = FindColumn("");
-                int PreliminaryEliminationDateColumn = FindColumn("");
-                int EliminationDateColumn = FindColumn("");
-                int PredecessorProductReferenceColumn = FindColumn("");
-                int GTIN13Column = FindColumn("");
-                int GTIN12Column = FindColumn("");
-                int CurrentProducingFactoryColumn = FindColumn("");
-                int CountryOfOriginColumn = FindColumn("");
-                int ArticleManagerColumn = FindColumn("");
-                int UnitOfMeasureColumn = FindColumn("");
-                int QuantityInMasterPackColumn = FindColumn("");
-                int ArticleGrossWeightPreliminaryColumn = FindColumn("");
-                int ArticleGrossWeightColumn = FindColumn("");
-                int ArticleNetWeightPreliminaryColumn = FindColumn("");
-                int ArticleNetWeightColumn = FindColumn("");
-                int PackagingLengthColumn = FindColumn("");
-                int PackagingWidthColumn = FindColumn("");
-                int PackagingHeightColumn = FindColumn("");
-                int PackagingVolumeColumn = FindColumn("");
-                int ProductSizeLengthColumn = FindColumn("");
-                int ProductSizeHeightColumn = FindColumn("");
-                int ProductSizeWidthColumn = FindColumn("");
-                int UnitsPerPalletColumn = FindColumn("");
-
-
+                
+                int idColumn = FindColumn("<ID>");
+                int LocalIDGardenaColumn = FindColumn("Local ID Gardena");
+                int GenericNameColumn = FindColumn("Generic Name (long)");
+                int ModelColumn = FindColumn("Model (only integration)");
+                int SubgroupColumn = FindColumn("Subgroup ClassRef ID (only integration)");
+                int ProductGroupColumn = FindColumn("Product group Alpha (only integration)");
+                int IRPRRPColumn = FindColumn("IRP-RRP");
+                int IRPNetColumn = FindColumn("IRP-Net");
+                int ShortDescriptionColumn = FindColumn("Short Description");
+                int TechnicalPlatformColumn = FindColumn("Technical Platform");
+                int VariantDescriptionColumn = FindColumn("Variant Description");
+                int TobesoldinColumn = FindColumn("To be sold in");
+                int KeyAccountExclusiveForColumn = FindColumn("Key Account exclusive for");
+                int SalesStartDateColumn = FindColumn("Sales Start Date");
+                int PreliminaryEliminationDateColumn = FindColumn("Preliminary Elimination Date");
+                int EliminationDateColumn = FindColumn("Elimination Date");
+                int PredecessorProductReferenceColumn = FindColumn("Predecessor Product Reference");
+                int GTIN13Column = FindColumn("GTIN-13/EAN");
+                int GTIN12Column = FindColumn("GTIN-12/UPC-A");
+                int CurrentProducingFactoryColumn = FindColumn("Current Producing Factory Entity Reference");
+                int CountryOfOriginColumn = FindColumn("Country of Origin");
+                int ArticleManagerColumn = FindColumn("Article manager");
+                int UnitOfMeasureColumn = FindColumn("Unit of measure");
+                int QuantityInMasterPackColumn = FindColumn("Quantity in Master pack");
+                int ArticleGrossWeightPreliminaryColumn = FindColumn("Article gross weight, preliminary");
+                int ArticleGrossWeightColumn = FindColumn("Article gross weight");
+                int ArticleNetWeightPreliminaryColumn = FindColumn("Article net weight, preliminary");
+                int ArticleNetWeightColumn = FindColumn("Article net weight");
+                int PackagingLengthColumn = FindColumn("Packaging length");
+                int PackagingWidthColumn = FindColumn("Packaging width");
+                int PackagingHeightColumn = FindColumn("Packaging height");
+                int PackagingVolumeColumn = FindColumn("Packaging volume");
+                int ProductSizeLengthColumn = FindColumn("Product size length");
+                int ProductSizeHeightColumn = FindColumn("Product size height");
+                int ProductSizeWidthColumn = FindColumn("Product size width");
+                int UnitsPerPalletColumn = FindColumn("Units Per Pallet");
 
 
                 for (int rw = CalendarheaderRow; rw < LastRow; rw++)
                 {
                     if (ws.Cells[1, rw].value != "")
                     {
-                                                
+
+                        Product product = new Product();
+                        Product productThis = product.GetProduct(GetValueFromColumn(rw, LocalIDGardenaColumn));
+
+                        if (productThis != null) 
+                        {
+                            product = productThis;
+                        }
+
+                        product.CalendarToBeSoldIn =
+                                                    GetValueFromColumn(rw, TobesoldinColumn);
+                        product.CalendarSalesStartDate =
+                                                    GetValueFromColumn(rw, SalesStartDateColumn);
+                        product.CalendarPreliminaryEliminationDate =
+                                                    GetValueFromColumn(rw, PreliminaryEliminationDateColumn);
+                        product.CalendarEliminationDate = 
+                                                    GetValueFromColumn(rw, EliminationDateColumn);
+                        product.CalendarGTIN = 
+                                                    GetValueFromColumn(rw, GTIN13Column);
+                        product.CalendarCurrentProducingFactoryEntityReference = 
+                                                    GetValueFromColumn(rw, CurrentProducingFactoryColumn);
+                        product.CalendarCountryOfOrigin = 
+                                                    GetValueFromColumn(rw, CountryOfOriginColumn);
+                        product.CalendarUnitOfMeasure = 
+                                                    GetValueFromColumn(rw, UnitOfMeasureColumn);
+                        product.CalendarQuantityInMasterPack = 
+                                                    GetValueFromColumn(rw, QuantityInMasterPackColumn);
+                        product.CalendarArticleGrossWeightPreliminary = 
+                                                    GetValueFromColumn(rw, ArticleGrossWeightPreliminaryColumn);
+                        product.CalendarArticleGrossWeight = 
+                                                    GetValueFromColumn(rw, ArticleGrossWeightColumn);
+                        product.CalendarArticleNetWeightPreliminary = 
+                                                    GetValueFromColumn(rw, ArticleNetWeightPreliminaryColumn);
+                        product.CalendarArticleNetWeight =
+                                                    GetValueFromColumn(rw, ArticleNetWeightColumn);
+                        product.CalendarPackagingLength = 
+                                                    GetValueFromColumn(rw, PackagingLengthColumn);
+                        product.CalendarPackagingHeight = 
+                                                    GetValueFromColumn(rw, PackagingHeightColumn);
+                        product.CalendarPackagingWidth = 
+                                                    GetValueFromColumn(rw, PackagingWidthColumn);
+                        product.CalendarPackagingVolume = 
+                                                    GetValueFromColumn(rw, PackagingVolumeColumn);
+                        product.CalendarProductSizeHeight = 
+                                                    GetValueFromColumn(rw, ProductSizeHeightColumn);
+                        product.CalendarProductSizeWidth = 
+                                                    GetValueFromColumn(rw, ProductSizeWidthColumn);
+                        product.CalendarProductSizeLength =
+                                                    GetValueFromColumn(rw, ProductSizeLengthColumn);
+                        product.CalendarUnitsPerPallet =
+                                                    GetValueFromColumn(rw, UnitsPerPalletColumn);
+
+                        //
+                        product.GenericName =
+                                                    GetValueFromColumn(rw, GenericNameColumn);
+                        product.Model =
+                                                    GetValueFromColumn(rw, ModelColumn);
+                        product.SubGroup =
+                                                    GetValueFromColumn(rw, SubgroupColumn);
+                        product.ProductGroup =
+                                                    GetValueFromColumn(rw, ProductGroupColumn);
+                        product.PNS =
+                                                    GetValueFromColumn(rw, idColumn);
+
+
+                        product.Insert();
+                        product.Save();
+
+                        //rrc
+
+                        RRC rrc = new RRC();
+                        string article = GetValueFromColumn(rw, LocalIDGardenaColumn);
+                        RRC rrcThis = rrc.GetRRC(article);
+
+                        if (rrcThis != null)
+                        {
+                            rrc = rrcThis;
+                        }
+
+                        rrc.Article = GetValueFromColumn(rw, LocalIDGardenaColumn);
+                        rrc.IRP = GetValueFromColumn(rw, IRPRRPColumn);
+
+                        rrc.Insert();
+                        rrc.Save();
                     }
                 }
-                
-
             }
         }
 
         private int FindColumn(string fildName)
         {
-            FindColumn = 1
+            return ws.Rows[CalendarHeaderRow].Find(fildName, LookAt: XlLookAt.xlWhole).Column;
+            //if tne nothing?
+        }
+
+
+        private string GetValueFromColumn(int rw, int col)
+        {
+            if (col != 0)
+            {
+                return GetValueFromColumn(rw, col);
+            }
+            return "";
         }
     }
     
