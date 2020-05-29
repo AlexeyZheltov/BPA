@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Office.Interop.Excel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -39,7 +40,7 @@ namespace BPA.Model {
         /// <summary>
         /// Артикул
         /// </summary>
-        public int Article {
+        public string Article {
             get; set;
         }
         /// <summary>
@@ -68,6 +69,20 @@ namespace BPA.Model {
         /// </summary>
         public string Date {
             get; set;
+        }
+
+        public RRC GetRRC(string article)
+        {
+
+            ListRow listRow = GetRow("Article", article);
+            if (listRow != null)
+            {
+                RRC rrc = new RRC();
+                rrc.SetProperty(listRow);
+                return rrc;
+            }
+
+            return null;
         }
 
     }
