@@ -318,7 +318,7 @@ namespace BPA.Model {
                 return product;
             }
 
-            return null;
+            return new Product();
         }
 
     }
