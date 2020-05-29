@@ -307,10 +307,10 @@ namespace BPA.Model {
 
         #endregion
         
-        public Product GetProduct(string articul)
+        public Product GetProduct(string article)
         {
 
-            ListRow listRow = GetRow("Article", articul);
+            ListRow listRow = GetRow("Article", article);
             if (listRow != null)
             {
                 Product product = new Product();
