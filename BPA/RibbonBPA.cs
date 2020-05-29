@@ -17,12 +17,23 @@ namespace BPA
         private void button1_Click(object sender, RibbonControlEventArgs e)
         {
 
+            //Product product = new Product();
+            //product.GetProduct("123");
+
+           // string sdafasd = product?.ArticleEng;
+           // product.Model = "123";
+           // product.Supercategory.NameEn;
+        }
+
+        private void button2_Click(object sender, RibbonControlEventArgs e)
+        {
+
             Product product = new Product();
             product.GetProduct("123");
 
             string sdafasd = product?.ArticleEng;
-           // product.Model = "123";
-           // product.Supercategory.NameEn;
+            // product.Model = "123";
+            // product.Supercategory.NameEn;
         }
     }
 }

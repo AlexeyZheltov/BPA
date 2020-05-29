@@ -37,13 +37,17 @@
             this.tabBPA = this.Factory.CreateRibbonTab();
             this.group1 = this.Factory.CreateRibbonGroup();
             this.button1 = this.Factory.CreateRibbonButton();
+            this.group2 = this.Factory.CreateRibbonGroup();
+            this.button2 = this.Factory.CreateRibbonButton();
             this.tabBPA.SuspendLayout();
             this.group1.SuspendLayout();
+            this.group2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabBPA
             // 
             this.tabBPA.Groups.Add(this.group1);
+            this.tabBPA.Groups.Add(this.group2);
             this.tabBPA.Label = "BPA";
             this.tabBPA.Name = "tabBPA";
             this.tabBPA.Position = this.Factory.RibbonPosition.BeforeOfficeId("TabHome");
@@ -60,6 +64,19 @@
             this.button1.Name = "button1";
             this.button1.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button1_Click);
             // 
+            // group2
+            // 
+            this.group2.Items.Add(this.button2);
+            this.group2.Label = "Продуктовый календарь";
+            this.group2.Name = "group2";
+            // 
+            // button2
+            // 
+            this.button2.Label = "Загрузить";
+            this.button2.Name = "button2";
+            this.button2.ScreenTip = "Загрузить новый продуктовый календарь";
+            this.button2.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button2_Click);
+            // 
             // RibbonBPA
             // 
             this.Name = "RibbonBPA";
@@ -70,6 +87,8 @@
             this.tabBPA.PerformLayout();
             this.group1.ResumeLayout(false);
             this.group1.PerformLayout();
+            this.group2.ResumeLayout(false);
+            this.group2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -79,6 +98,8 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonTab tabBPA;
         internal Microsoft.Office.Tools.Ribbon.RibbonGroup group1;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton button1;
+        internal Microsoft.Office.Tools.Ribbon.RibbonGroup group2;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton button2;
     }
 
     partial class ThisRibbonCollection
