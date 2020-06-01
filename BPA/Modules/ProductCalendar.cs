@@ -11,126 +11,188 @@ namespace BPA.Modules
         readonly Microsoft.Office.Interop.Excel.Application ex = new Microsoft.Office.Interop.Excel.Application();
         Workbook WB;
         Worksheet ws;
+        ProcessBar progress;
+
         int CalendarHeaderRow;
+        int LastRow;
 
-        private int CalendarheaderRow;
+        //columns
+        int idColumn;
+        int LocalIDGardenaColumn;
+        int GenericNameColumn;
+        int ModelColumn;
+        int SubgroupColumn;
+        int ProductGroupColumn;
+        int IRPRRPColumn;
+        int IRPNetColumn;
+        int ShortDescriptionColumn;
+        int TechnicalPlatformColumn;
+        int VariantDescriptionColumn;
+        int ToBeSoldInColumn;
+        int KeyAccountExclusiveForColumn;
+        int SalesStartDateColumn;
+        int PreliminaryEliminationDateColumn;
+        int EliminationDateColumn;
+        int PredecessorProductReferenceColumn;
+        int GTIN13Column ;
+        int GTIN12Column;
+        int CurrentProducingFactoryColumn;
+        int CountryOfOriginColumn;
+        int ArticleManagerColumn;
+        int UnitOfMeasureColumn;
+        int QuantityInMasterPackColumn;
+        int ArticleGrossWeightPreliminaryColumn;
+        int ArticleGrossWeightColumn;
+        int ArticleNetWeightPreliminaryColumn;
+        int ArticleNetWeightColumn;
+        int PackagingLengthColumn;
+        int PackagingWidthColumn;
+        int PackagingHeightColumn;
+        int PackagingVolumeColumn;
+        int ProductSizeLengthColumn;
+        int ProductSizeHeightColumn;
+        int ProductSizeWidthColumn;
+        int UnitsPerPalletColumn;
+        //
 
-        public Workbook Open
+        public void Open()
         {
-            get
+            OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                OpenFileDialog openFileDialog = new OpenFileDialog
-                {
-                    InitialDirectory = Globals.ThisWorkbook.Application.ActiveWorkbook.Path,
-                    Filter = "Excel files (*.xls*)|*.xls*",
-                    Title = "Выберите файл календаря"
-                };
+                InitialDirectory = Globals.ThisWorkbook.Application.ActiveWorkbook.Path,
+                Filter = "Excel files (*.xls*)|*.xls*",
+                Title = "Выберите файл календаря"
+            };
 
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    string filePath = openFileDialog.FileName;
-                    return WB = ex.Workbooks.Open(filePath);
-                }
-                else
-                {
-                    return null;
-                }
+            if (openFileDialog.ShowDialog() != DialogResult.OK)
+            {
+                WB = null;                
+            }
+            else
+            {
+                string filePath = openFileDialog.FileName;
+                WB = ex.Workbooks.Open(filePath);
             }
         }
 
-        private void ReadCalendar(Workbook WB)
+        private void Sets()
+        {
+            ws = WB.Worksheets[1];
+            SetColumns();
+            CalendarHeaderRow = 6;
+            LastRow = ws.Cells[ws.Rows.Count, 1].End(XlDirection.xlUp).Row;
+            progress = new ProcessBar("Заполнение документов", LastRow - CalendarHeaderRow + 1);
+            progress.Show();
+        }
+
+        /// <summary>
+        /// получение номеров колонок в календаре
+        /// </summary>
+        private void SetColumns()
+        {
+            idColumn = FindColumn("<ID>");
+            LocalIDGardenaColumn = FindColumn("Local ID Gardena");
+            GenericNameColumn = FindColumn("Generic Name (long)");
+            ModelColumn = FindColumn("Model (only integration)");
+            SubgroupColumn = FindColumn("Subgroup ClassRef ID (only integration)");
+            ProductGroupColumn = FindColumn("Product group Alpha (only integration)");
+            IRPRRPColumn = FindColumn("IRP-RRP");
+            IRPNetColumn = FindColumn("IRP-Net");
+            ShortDescriptionColumn = FindColumn("Short Description");
+            TechnicalPlatformColumn = FindColumn("Technical Platform");
+            VariantDescriptionColumn = FindColumn("Variant Description");
+            ToBeSoldInColumn = FindColumn("To be sold in");
+            KeyAccountExclusiveForColumn = FindColumn("Key Account exclusive for");
+            SalesStartDateColumn = FindColumn("Sales Start Date");
+            PreliminaryEliminationDateColumn = FindColumn("Preliminary Elimination Date");
+            EliminationDateColumn = FindColumn("Elimination Date");
+            PredecessorProductReferenceColumn = FindColumn("Predecessor Product Reference");
+            GTIN13Column = FindColumn("GTIN-13/EAN");
+            GTIN12Column = FindColumn("GTIN-12/UPC-A");
+            CurrentProducingFactoryColumn = FindColumn("Current Producing Factory Entity Reference");
+            CountryOfOriginColumn = FindColumn("Country of Origin");
+            ArticleManagerColumn = FindColumn("Article manager");
+            UnitOfMeasureColumn = FindColumn("Unit of measure");
+            QuantityInMasterPackColumn = FindColumn("Quantity in Master pack");
+            ArticleGrossWeightPreliminaryColumn = FindColumn("Article gross weight, preliminary");
+            ArticleGrossWeightColumn = FindColumn("Article gross weight");
+            ArticleNetWeightPreliminaryColumn = FindColumn("Article net weight, preliminary");
+            ArticleNetWeightColumn = FindColumn("Article net weight");
+            PackagingLengthColumn = FindColumn("Packaging length");
+            PackagingWidthColumn = FindColumn("Packaging width");
+            PackagingHeightColumn = FindColumn("Packaging height");
+            PackagingVolumeColumn = FindColumn("Packaging volume");
+            ProductSizeLengthColumn = FindColumn("Product size length");
+            ProductSizeHeightColumn = FindColumn("Product size height");
+            ProductSizeWidthColumn = FindColumn("Product size width");
+            UnitsPerPalletColumn = FindColumn("Units Per Pallet");
+        }
+
+        public void LoadCalendar()
+        {
+            if(WB == null) return;
+
+            Sets();
+            ReadCalendarLoad();
+        }
+
+        public void UpdateCalendar()
         {
             if (WB == null) return;
 
+            Sets();
+            ReadCalendarUpdate();      
+        }
 
-            ws = WB.Worksheets[1];
-            CalendarHeaderRow = 6;
-            int LastRow = ws.Cells[ws.Rows.Count, 1].End(XlDirection.xlUp).Row;
+        private void ReadCalendarUpdate()
+        {
+            for (int rw = CalendarHeaderRow + 1; rw < LastRow; rw++)
+            {
+                if (ws.Cells[rw, 1].value == "") continue;
+                if (ws.Cells[rw, ToBeSoldInColumn].value == "") continue;
+                
+                Product product = new Product().GetProduct(GetValueFromColumn(rw, LocalIDGardenaColumn));
+                if (product != null)
+                {
+                    product = CreateProduct(rw, product);
+                    product.Save();
+                }
+                
+                UpdatePrice(rw);
+            }
+        }
 
-            
-            ProcessBar progress = new ProcessBar("Заполнение документов", LastRow - CalendarheaderRow +1);
-            progress.Show();
-
-
-            for (int rw = CalendarheaderRow + 1; rw < LastRow; rw++)
+        private void ReadCalendarLoad()
+        {
+            for (int rw = CalendarHeaderRow + 1; rw < LastRow; rw++)
             {
                 progress.TaskStart($"Обрабатывается строка {rw}");
                 if (progress.IsCancel) break;
 
                 if (ws.Cells[rw, 1].value == "") continue;
-                if (ws.Cells[rw, TobesoldinColumn].value == "") continue;
-                //if tobesoldinrussia No be sold in Russia
-                Product product = GetProduct(rw);
+                if (ws.Cells[rw, ToBeSoldInColumn].value == "") continue;
 
-                //product.Insert();
+                //Product product = new Product();
+                Product product = CreateProduct(rw, new Product());
+                
                 product.Save();
 
-                //rrc
-
-                RRC rrc = new RRC();
-                string article = GetValueFromColumn(rw, LocalIDGardenaColumn);
-                RRC rrcThis = rrc.GetRRC(article);
-
-                if (rrcThis != null)
-                {
-                    rrc = rrcThis;
-                }
-
-                rrc.Article = GetValueFromColumn(rw, LocalIDGardenaColumn);
-                rrc.IRP = GetValueFromColumn(rw, IRPRRPColumn);
-
-               //rrc.Insert();
-                rrc.Save();
-
+                UpdatePrice(rw);
             }
 
         }
 
-
-        private Product GetProduct(int rw)
+        /// <summary>
+        /// получение данных из календаря
+        /// </summary>
+        /// <param name="rw"></param>
+        /// <returns></returns>
+        private Product CreateProduct(int rw, Product product)
         {
-            int idColumn = FindColumn("<ID>");
-            int LocalIDGardenaColumn = FindColumn("Local ID Gardena");
-            int GenericNameColumn = FindColumn("Generic Name (long)");
-            int ModelColumn = FindColumn("Model (only integration)");
-            int SubgroupColumn = FindColumn("Subgroup ClassRef ID (only integration)");
-            int ProductGroupColumn = FindColumn("Product group Alpha (only integration)");
-            int IRPRRPColumn = FindColumn("IRP-RRP");
-            int IRPNetColumn = FindColumn("IRP-Net");
-            int ShortDescriptionColumn = FindColumn("Short Description");
-            int TechnicalPlatformColumn = FindColumn("Technical Platform");
-            int VariantDescriptionColumn = FindColumn("Variant Description");
-            int TobesoldinColumn = FindColumn("To be sold in");
-            int KeyAccountExclusiveForColumn = FindColumn("Key Account exclusive for");
-            int SalesStartDateColumn = FindColumn("Sales Start Date");
-            int PreliminaryEliminationDateColumn = FindColumn("Preliminary Elimination Date");
-            int EliminationDateColumn = FindColumn("Elimination Date");
-            int PredecessorProductReferenceColumn = FindColumn("Predecessor Product Reference");
-            int GTIN13Column = FindColumn("GTIN-13/EAN");
-            int GTIN12Column = FindColumn("GTIN-12/UPC-A");
-            int CurrentProducingFactoryColumn = FindColumn("Current Producing Factory Entity Reference");
-            int CountryOfOriginColumn = FindColumn("Country of Origin");
-            int ArticleManagerColumn = FindColumn("Article manager");
-            int UnitOfMeasureColumn = FindColumn("Unit of measure");
-            int QuantityInMasterPackColumn = FindColumn("Quantity in Master pack");
-            int ArticleGrossWeightPreliminaryColumn = FindColumn("Article gross weight, preliminary");
-            int ArticleGrossWeightColumn = FindColumn("Article gross weight");
-            int ArticleNetWeightPreliminaryColumn = FindColumn("Article net weight, preliminary");
-            int ArticleNetWeightColumn = FindColumn("Article net weight");
-            int PackagingLengthColumn = FindColumn("Packaging length");
-            int PackagingWidthColumn = FindColumn("Packaging width");
-            int PackagingHeightColumn = FindColumn("Packaging height");
-            int PackagingVolumeColumn = FindColumn("Packaging volume");
-            int ProductSizeLengthColumn = FindColumn("Product size length");
-            int ProductSizeHeightColumn = FindColumn("Product size height");
-            int ProductSizeWidthColumn = FindColumn("Product size width");
-            int UnitsPerPalletColumn = FindColumn("Units Per Pallet");
-
-
-            Product product = new Product().GetProduct(GetValueFromColumn(rw, LocalIDGardenaColumn));
+            //Product product = new Product().GetProduct(GetValueFromColumn(rw, LocalIDGardenaColumn));
 
             product.CalendarToBeSoldIn =
-                                        GetValueFromColumn(rw, TobesoldinColumn);
+                                        GetValueFromColumn(rw, ToBeSoldInColumn);
             product.CalendarSalesStartDate =
                                         GetValueFromColumn(rw, SalesStartDateColumn);
             product.CalendarPreliminaryEliminationDate =
@@ -187,17 +249,47 @@ namespace BPA.Modules
             return product;
         }
 
-
+        /// <summary>
+        /// получение номена строки по имени заголовка
+        /// </summary>
+        /// <param name="fildName"></param>
+        /// <returns></returns>
         private int FindColumn(string fildName)
         {
             return ws.Rows[CalendarHeaderRow].Find(fildName, LookAt: XlLookAt.xlWhole)?.Column ?? 0;
             //if tne nothing?
         }
 
-
+        /// <summary>
+        /// получение значения из строки по номеру столбца
+        /// </summary>
+        /// <param name="rw"></param>
+        /// <param name="col"></param>
+        /// <returns></returns>
         private string GetValueFromColumn(int rw, int col)
         {
             return col != 0 ? GetValueFromColumn(rw, col) : "";
+        }
+
+        private void UpdatePrice(int rw)
+        {
+            RRC rrc = new RRC();
+            string article = GetValueFromColumn(rw, LocalIDGardenaColumn);
+            //RRC rrc = new RRC().GetRRC(article);
+
+            //RRC rrcThis = rrc.GetRRC(article);
+
+            //if (rrc == null)
+            //{
+            //    rrc = rrcThis;
+            //}
+
+            rrc.Article = GetValueFromColumn(rw, LocalIDGardenaColumn);
+            rrc.IRP = GetValueFromColumn(rw, IRPRRPColumn);
+
+            //rrc.Insert();
+            rrc.Save();
+
         }
     }
 
