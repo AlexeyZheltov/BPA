@@ -77,6 +77,7 @@ namespace BPA.Modules
 
         private void Sets()
         {
+            Open();
             ws = WB.Worksheets[1];
             SetColumns();
             CalendarHeaderRow = 6;
