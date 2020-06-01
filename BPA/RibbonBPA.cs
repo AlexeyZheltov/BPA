@@ -14,29 +14,30 @@ namespace BPA
 
         }
 
-        private void button1_Click(object sender, RibbonControlEventArgs e)
-        {
-
-            //Product product = new Product();
-            //product.GetProduct("123");
-
-           // string sdafasd = product?.ArticleEng;
-           // product.Model = "123";
-           // product.Supercategory.NameEn;
-        }
-
+        /// <summary>
+        /// кнопка загрузки
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button2_Click(object sender, RibbonControlEventArgs e)
         {
 
-            //Product product = new Product();
-            //product.GetProduct("123");
-
-            //string sdafasd = product?.ArticleEng;
-            // product.Model = "123";
-            // product.Supercategory.NameEn;
+            Modules.ProductCalendar calendar = new Modules.ProductCalendar();
+            calendar.LoadCalendar();
         }
 
+        /// <summary>
+        /// кнопка обновления
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button3_Click(object sender, RibbonControlEventArgs e)
+        {
+            Modules.ProductCalendar calendar = new Modules.ProductCalendar();
+            calendar.UpdateCalendar();
+        }
+
+        private void button1_Click(object sender, RibbonControlEventArgs e)
         {
 
 
