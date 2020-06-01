@@ -271,23 +271,23 @@ namespace BPA.Modules
             return col != 0 ? GetValueFromColumn(rw, col) : "";
         }
 
+        /// <summary>
+        /// обновление лиса РРЦ
+        /// </summary>
+        /// <param name="rw"></param>
         private void UpdatePrice(int rw)
         {
-            RRC rrc = new RRC();
             string article = GetValueFromColumn(rw, LocalIDGardenaColumn);
-            //RRC rrc = new RRC().GetRRC(article);
+            string dateStart = GetValueFromColumn(rw, SalesStartDateColumn);
+            RRC rrc = new RRC().GetRRC(article, dateStart);
 
-            //RRC rrcThis = rrc.GetRRC(article);
+            if (rrc != null)
+            {
+                rrc.Article = GetValueFromColumn(rw, LocalIDGardenaColumn);
+                rrc.IRP = GetValueFromColumn(rw, IRPRRPColumn);
+                rrc.Date = GetValueFromColumn(rw, SalesStartDateColumn);
+            }
 
-            //if (rrc == null)
-            //{
-            //    rrc = rrcThis;
-            //}
-
-            rrc.Article = GetValueFromColumn(rw, LocalIDGardenaColumn);
-            rrc.IRP = GetValueFromColumn(rw, IRPRRPColumn);
-
-            //rrc.Insert();
             rrc.Save();
 
         }

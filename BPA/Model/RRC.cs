@@ -71,17 +71,28 @@ namespace BPA.Model {
             get; set;
         }
 
-        public RRC GetRRC(string article)
+        public RRC GetRRC(string article, string date)
         {
-
+            RRC rrc;
             ListRow listRow = GetRow("Article", article);
             if (listRow != null)
             {
-                RRC rrc = new RRC();
-                rrc.SetProperty(listRow);
-                return rrc;
-            }
+                Range firstCell = listRow.Range[1, Table.ListColumns[Filds["Date"]].Index];
+                Range afterCell;
+                do
+                {
+                    rrc = new RRC();
+                    rrc.SetProperty(listRow);
 
+                    if (rrc.Date == date)
+                    { 
+                        return rrc;
+                    }
+                    afterCell = listRow.Range[1, Table.ListColumns[Filds["Date"]].Index];
+                    listRow = GetRow("Article", article, afterCell); 
+                }
+                while (afterCell != firstCell);
+            }
             return null;
         }
 
