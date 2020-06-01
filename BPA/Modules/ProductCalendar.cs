@@ -47,7 +47,48 @@ namespace BPA.Modules
             CalendarHeaderRow = 6;
             int LastRow = ws.Cells[ws.Rows.Count, 1].End(XlDirection.xlUp).Row;
 
+            
+            ProcessBar progress = new ProcessBar("Заполнение документов", LastRow - CalendarheaderRow +1);
+            progress.Show();
 
+
+            for (int rw = CalendarheaderRow + 1; rw < LastRow; rw++)
+            {
+                progress.TaskStart($"Обрабатывается строка {rw}");
+                if (progress.IsCancel) break;
+
+                if (ws.Cells[rw, 1].value == "") continue;
+                if (ws.Cells[rw, TobesoldinColumn].value == "") continue;
+                //if tobesoldinrussia No be sold in Russia
+                Product product = GetProduct(rw);
+
+                //product.Insert();
+                product.Save();
+
+                //rrc
+
+                RRC rrc = new RRC();
+                string article = GetValueFromColumn(rw, LocalIDGardenaColumn);
+                RRC rrcThis = rrc.GetRRC(article);
+
+                if (rrcThis != null)
+                {
+                    rrc = rrcThis;
+                }
+
+                rrc.Article = GetValueFromColumn(rw, LocalIDGardenaColumn);
+                rrc.IRP = GetValueFromColumn(rw, IRPRRPColumn);
+
+               //rrc.Insert();
+                rrc.Save();
+
+            }
+
+        }
+
+
+        private Product GetProduct(int rw)
+        {
             int idColumn = FindColumn("<ID>");
             int LocalIDGardenaColumn = FindColumn("Local ID Gardena");
             int GenericNameColumn = FindColumn("Generic Name (long)");
@@ -85,100 +126,67 @@ namespace BPA.Modules
             int ProductSizeWidthColumn = FindColumn("Product size width");
             int UnitsPerPalletColumn = FindColumn("Units Per Pallet");
 
-            
-            ProcessBar progress = new ProcessBar("Заполнение документов", LastRow - CalendarheaderRow +1);
-            progress.Show();
 
+            Product product = new Product().GetProduct(GetValueFromColumn(rw, LocalIDGardenaColumn));
 
-            for (int rw = CalendarheaderRow + 1; rw < LastRow; rw++)
-            {
-                progress.TaskStart($"Обрабатывается строка {rw}");
-                if (progress.IsCancel) break;
+            product.CalendarToBeSoldIn =
+                                        GetValueFromColumn(rw, TobesoldinColumn);
+            product.CalendarSalesStartDate =
+                                        GetValueFromColumn(rw, SalesStartDateColumn);
+            product.CalendarPreliminaryEliminationDate =
+                                        GetValueFromColumn(rw, PreliminaryEliminationDateColumn);
+            product.CalendarEliminationDate =
+                                        GetValueFromColumn(rw, EliminationDateColumn);
+            product.CalendarGTIN =
+                                        GetValueFromColumn(rw, GTIN13Column);
+            product.CalendarCurrentProducingFactoryEntityReference =
+                                        GetValueFromColumn(rw, CurrentProducingFactoryColumn);
+            product.CalendarCountryOfOrigin =
+                                        GetValueFromColumn(rw, CountryOfOriginColumn);
+            product.CalendarUnitOfMeasure =
+                                        GetValueFromColumn(rw, UnitOfMeasureColumn);
+            product.CalendarQuantityInMasterPack =
+                                        GetValueFromColumn(rw, QuantityInMasterPackColumn);
+            product.CalendarArticleGrossWeightPreliminary =
+                                        GetValueFromColumn(rw, ArticleGrossWeightPreliminaryColumn);
+            product.CalendarArticleGrossWeight =
+                                        GetValueFromColumn(rw, ArticleGrossWeightColumn);
+            product.CalendarArticleNetWeightPreliminary =
+                                        GetValueFromColumn(rw, ArticleNetWeightPreliminaryColumn);
+            product.CalendarArticleNetWeight =
+                                        GetValueFromColumn(rw, ArticleNetWeightColumn);
+            product.CalendarPackagingLength =
+                                        GetValueFromColumn(rw, PackagingLengthColumn);
+            product.CalendarPackagingHeight =
+                                        GetValueFromColumn(rw, PackagingHeightColumn);
+            product.CalendarPackagingWidth =
+                                        GetValueFromColumn(rw, PackagingWidthColumn);
+            product.CalendarPackagingVolume =
+                                        GetValueFromColumn(rw, PackagingVolumeColumn);
+            product.CalendarProductSizeHeight =
+                                        GetValueFromColumn(rw, ProductSizeHeightColumn);
+            product.CalendarProductSizeWidth =
+                                        GetValueFromColumn(rw, ProductSizeWidthColumn);
+            product.CalendarProductSizeLength =
+                                        GetValueFromColumn(rw, ProductSizeLengthColumn);
+            product.CalendarUnitsPerPallet =
+                                        GetValueFromColumn(rw, UnitsPerPalletColumn);
 
-                if (ws.Cells[rw, 1].value == "") continue;
-                if (ws.Cells[rw, TobesoldinColumn].value == "") continue;
-                //if tobesoldinrussia No be sold in Russia
-                Product product = new Product().GetProduct(GetValueFromColumn(rw, LocalIDGardenaColumn));
+            //
+            product.GenericName =
+                                        GetValueFromColumn(rw, GenericNameColumn);
+            product.Model =
+                                        GetValueFromColumn(rw, ModelColumn);
+            product.SubGroup =
+                                        GetValueFromColumn(rw, SubgroupColumn);
+            product.ProductGroup =
+                                        GetValueFromColumn(rw, ProductGroupColumn);
+            product.PNS =
+                                        GetValueFromColumn(rw, idColumn);
 
-                product.CalendarToBeSoldIn =
-                                            GetValueFromColumn(rw, TobesoldinColumn);
-                product.CalendarSalesStartDate =
-                                            GetValueFromColumn(rw, SalesStartDateColumn);
-                product.CalendarPreliminaryEliminationDate =
-                                            GetValueFromColumn(rw, PreliminaryEliminationDateColumn);
-                product.CalendarEliminationDate =
-                                            GetValueFromColumn(rw, EliminationDateColumn);
-                product.CalendarGTIN =
-                                            GetValueFromColumn(rw, GTIN13Column);
-                product.CalendarCurrentProducingFactoryEntityReference =
-                                            GetValueFromColumn(rw, CurrentProducingFactoryColumn);
-                product.CalendarCountryOfOrigin =
-                                            GetValueFromColumn(rw, CountryOfOriginColumn);
-                product.CalendarUnitOfMeasure =
-                                            GetValueFromColumn(rw, UnitOfMeasureColumn);
-                product.CalendarQuantityInMasterPack =
-                                            GetValueFromColumn(rw, QuantityInMasterPackColumn);
-                product.CalendarArticleGrossWeightPreliminary =
-                                            GetValueFromColumn(rw, ArticleGrossWeightPreliminaryColumn);
-                product.CalendarArticleGrossWeight =
-                                            GetValueFromColumn(rw, ArticleGrossWeightColumn);
-                product.CalendarArticleNetWeightPreliminary =
-                                            GetValueFromColumn(rw, ArticleNetWeightPreliminaryColumn);
-                product.CalendarArticleNetWeight =
-                                            GetValueFromColumn(rw, ArticleNetWeightColumn);
-                product.CalendarPackagingLength =
-                                            GetValueFromColumn(rw, PackagingLengthColumn);
-                product.CalendarPackagingHeight =
-                                            GetValueFromColumn(rw, PackagingHeightColumn);
-                product.CalendarPackagingWidth =
-                                            GetValueFromColumn(rw, PackagingWidthColumn);
-                product.CalendarPackagingVolume =
-                                            GetValueFromColumn(rw, PackagingVolumeColumn);
-                product.CalendarProductSizeHeight =
-                                            GetValueFromColumn(rw, ProductSizeHeightColumn);
-                product.CalendarProductSizeWidth =
-                                            GetValueFromColumn(rw, ProductSizeWidthColumn);
-                product.CalendarProductSizeLength =
-                                            GetValueFromColumn(rw, ProductSizeLengthColumn);
-                product.CalendarUnitsPerPallet =
-                                            GetValueFromColumn(rw, UnitsPerPalletColumn);
-
-                //
-                product.GenericName =
-                                            GetValueFromColumn(rw, GenericNameColumn);
-                product.Model =
-                                            GetValueFromColumn(rw, ModelColumn);
-                product.SubGroup =
-                                            GetValueFromColumn(rw, SubgroupColumn);
-                product.ProductGroup =
-                                            GetValueFromColumn(rw, ProductGroupColumn);
-                product.PNS =
-                                            GetValueFromColumn(rw, idColumn);
-
-
-                //product.Insert();
-                product.Save();
-
-                //rrc
-
-                RRC rrc = new RRC();
-                string article = GetValueFromColumn(rw, LocalIDGardenaColumn);
-                RRC rrcThis = rrc.GetRRC(article);
-
-                if (rrcThis != null)
-                {
-                    rrc = rrcThis;
-                }
-
-                rrc.Article = GetValueFromColumn(rw, LocalIDGardenaColumn);
-                rrc.IRP = GetValueFromColumn(rw, IRPRRPColumn);
-
-               //rrc.Insert();
-                rrc.Save();
-
-            }
-
+            return product;
         }
+
 
         private int FindColumn(string fildName)
         {
