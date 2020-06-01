@@ -28,12 +28,18 @@ namespace BPA
         private void button2_Click(object sender, RibbonControlEventArgs e)
         {
 
-            Product product = new Product();
-            product.GetProduct("123");
+            //Product product = new Product();
+            //product.GetProduct("123");
 
-            string sdafasd = product?.ArticleEng;
+            //string sdafasd = product?.ArticleEng;
             // product.Model = "123";
             // product.Supercategory.NameEn;
+        }
+
+        private void button3_Click(object sender, RibbonControlEventArgs e)
+        {
+
+
         }
     }
 }
