@@ -96,7 +96,8 @@ namespace BPA.Modules
                 if (progress.IsCancel) break;
 
                 if (ws.Cells[rw, 1].value == "") continue;
-                //TODO No be sold in Russia
+                if (ws.Cells[rw, TobesoldinColumn].value == "") continue;
+                //if tobesoldinrussia No be sold in Russia
                 Product product = new Product().GetProduct(GetValueFromColumn(rw, LocalIDGardenaColumn));
 
                 product.CalendarToBeSoldIn =
