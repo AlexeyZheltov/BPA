@@ -24,7 +24,7 @@ namespace BPA.Model {
             { "ProductGroupEng","Название продукт группы(ENG)" },
             { "ProductGroupRu","Название продукт группы(RUS)" },
             { "SubGroup", "SubGroup" },
-            { "GenericName", "Generic Name(long)" },
+            { "GenericName", "Generic Name (long)" },
             { "Model", "Model" },
             { "PNS", "PNS" },
             { "Article","Артикул" },
@@ -65,7 +65,7 @@ namespace BPA.Model {
         /// <summary>
         /// №
         /// </summary>
-        public string Id { get; set; }
+        public int Id { get; set; }
         /// <summary>
         /// Категория для прайс-листа диллеров
         /// </summary>
@@ -151,7 +151,7 @@ namespace BPA.Model {
         /// <summary>
         /// Sales Start Date
         /// </summary>
-        public string CalendarSalesStartDate
+        public DateTime CalendarSalesStartDate
         {
             get; set;
         }
@@ -159,7 +159,7 @@ namespace BPA.Model {
         /// <summary>
         /// Preliminary Elimination Date
         /// </summary>
-        public string CalendarPreliminaryEliminationDate
+        public DateTime CalendarPreliminaryEliminationDate
         {
             get; set;
         }
@@ -167,7 +167,7 @@ namespace BPA.Model {
         /// <summary>
         /// CalendarEliminationDate
         /// </summary>
-        public string CalendarEliminationDate
+        public DateTime CalendarEliminationDate
         {
             get; set;
         }
@@ -318,7 +318,8 @@ namespace BPA.Model {
                 return product;
             }
 
-            return new Product();
+            return null;
+            //return new Product();
         }
 
     }

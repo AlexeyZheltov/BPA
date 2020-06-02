@@ -2,16 +2,20 @@
 using BPA.Model;
 
 using Microsoft.Office.Interop.Excel;
+using System;
 using System.Windows.Forms;
 
 namespace BPA.Modules
 {
     class ProductCalendar
     {
+        
         readonly Microsoft.Office.Interop.Excel.Application ex = new Microsoft.Office.Interop.Excel.Application();
         Workbook WB;
         Worksheet ws;
         ProcessBar progress;
+
+        private readonly string ToBeSoldInNeed = "text";
 
         int CalendarHeaderRow;
         int LastRow;
@@ -77,13 +81,11 @@ namespace BPA.Modules
 
         private void Sets()
         {
-
             ws = WB.Worksheets[1];
-            SetColumns();
             CalendarHeaderRow = 6;
+            SetColumns();
+            
             LastRow = ws.Cells[ws.Rows.Count, 1].End(XlDirection.xlUp).Row;
-            progress = new ProcessBar("Заполнение документов", LastRow - CalendarHeaderRow + 1);
-            progress.Show();
         }
 
         /// <summary>
@@ -133,9 +135,17 @@ namespace BPA.Modules
         {
             Open();
             if (WB == null) return;
-
+            
             Sets();
+
+            progress = new ProcessBar("Заполнение документов", LastRow - CalendarHeaderRow + 1);
+            progress.Show();
+
             ReadCalendarLoad();
+            //ActiveWorkbook.save(true);
+            //            ThisWorkbook.Save;
+            //WB.Close(true);
+            progress.Close();
         }
 
         public void UpdateCalendar()
@@ -144,7 +154,13 @@ namespace BPA.Modules
             if (WB == null) return;
 
             Sets();
-            ReadCalendarUpdate();      
+
+            progress = new ProcessBar("Заполнение документов", LastRow - CalendarHeaderRow + 1);
+            progress.Show();
+
+            ReadCalendarUpdate();
+
+            progress.Close();
         }
 
         private void ReadCalendarUpdate()
@@ -152,7 +168,7 @@ namespace BPA.Modules
             for (int rw = CalendarHeaderRow + 1; rw < LastRow; rw++)
             {
                 if (ws.Cells[rw, 1].value == "") continue;
-                if (ws.Cells[rw, ToBeSoldInColumn].value == "") continue;
+                if (ws.Cells[rw, ToBeSoldInColumn].value != ToBeSoldInNeed) continue;
                 
                 Product product = new Product().GetProduct(GetValueFromColumn(rw, LocalIDGardenaColumn));
                 if (product != null)
@@ -173,9 +189,8 @@ namespace BPA.Modules
                 if (progress.IsCancel) break;
 
                 if (ws.Cells[rw, 1].value == "") continue;
-                if (ws.Cells[rw, ToBeSoldInColumn].value == "") continue;
+                if (ws.Cells[rw, ToBeSoldInColumn].value != ToBeSoldInNeed) continue;
 
-                //Product product = new Product();
                 Product product = CreateProduct(rw, new Product());
                 
                 product.Save();
@@ -194,60 +209,61 @@ namespace BPA.Modules
         {
             //Product product = new Product().GetProduct(GetValueFromColumn(rw, LocalIDGardenaColumn));
 
-            product.CalendarToBeSoldIn =
-                                        GetValueFromColumn(rw, ToBeSoldInColumn);
-            product.CalendarSalesStartDate =
-                                        GetValueFromColumn(rw, SalesStartDateColumn);
-            product.CalendarPreliminaryEliminationDate =
-                                        GetValueFromColumn(rw, PreliminaryEliminationDateColumn);
-            product.CalendarEliminationDate =
-                                        GetValueFromColumn(rw, EliminationDateColumn);
-            product.CalendarGTIN =
-                                        GetValueFromColumn(rw, GTIN13Column);
-            product.CalendarCurrentProducingFactoryEntityReference =
-                                        GetValueFromColumn(rw, CurrentProducingFactoryColumn);
-            product.CalendarCountryOfOrigin =
-                                        GetValueFromColumn(rw, CountryOfOriginColumn);
-            product.CalendarUnitOfMeasure =
-                                        GetValueFromColumn(rw, UnitOfMeasureColumn);
-            product.CalendarQuantityInMasterPack =
-                                        GetValueFromColumn(rw, QuantityInMasterPackColumn);
-            product.CalendarArticleGrossWeightPreliminary =
-                                        GetValueFromColumn(rw, ArticleGrossWeightPreliminaryColumn);
-            product.CalendarArticleGrossWeight =
-                                        GetValueFromColumn(rw, ArticleGrossWeightColumn);
-            product.CalendarArticleNetWeightPreliminary =
-                                        GetValueFromColumn(rw, ArticleNetWeightPreliminaryColumn);
-            product.CalendarArticleNetWeight =
-                                        GetValueFromColumn(rw, ArticleNetWeightColumn);
-            product.CalendarPackagingLength =
-                                        GetValueFromColumn(rw, PackagingLengthColumn);
-            product.CalendarPackagingHeight =
-                                        GetValueFromColumn(rw, PackagingHeightColumn);
-            product.CalendarPackagingWidth =
-                                        GetValueFromColumn(rw, PackagingWidthColumn);
-            product.CalendarPackagingVolume =
-                                        GetValueFromColumn(rw, PackagingVolumeColumn);
-            product.CalendarProductSizeHeight =
-                                        GetValueFromColumn(rw, ProductSizeHeightColumn);
-            product.CalendarProductSizeWidth =
-                                        GetValueFromColumn(rw, ProductSizeWidthColumn);
-            product.CalendarProductSizeLength =
-                                        GetValueFromColumn(rw, ProductSizeLengthColumn);
-            product.CalendarUnitsPerPallet =
-                                        GetValueFromColumn(rw, UnitsPerPalletColumn);
+            DateTime firstDateTime = new DateTime();
+            int datecompare;
+
+            product.CalendarToBeSoldIn = GetValueFromColumn(rw, ToBeSoldInColumn);
+
+
+            DateTime tmpDateTime = Convert.ToDateTime(GetValueFromColumn(rw, SalesStartDateColumn));
+            datecompare = DateTime.Compare(tmpDateTime, firstDateTime);
+            if (datecompare > 0)
+            {
+                product.CalendarSalesStartDate = tmpDateTime;
+            }
+
+            tmpDateTime = Convert.ToDateTime(GetValueFromColumn(rw, PreliminaryEliminationDateColumn));
+            datecompare = DateTime.Compare(tmpDateTime, firstDateTime);
+            if (datecompare > 0)
+            {
+                product.CalendarPreliminaryEliminationDate = tmpDateTime;
+            }
+            
+
+            tmpDateTime = Convert.ToDateTime(GetValueFromColumn(rw, EliminationDateColumn));
+            datecompare = DateTime.Compare(tmpDateTime, firstDateTime);
+            if (datecompare > 0)
+            {
+                product.CalendarPreliminaryEliminationDate = tmpDateTime;
+            }
+
+
+            product.CalendarGTIN = GetValueFromColumn(rw, GTIN13Column);
+            product.CalendarCurrentProducingFactoryEntityReference = GetValueFromColumn(rw, CurrentProducingFactoryColumn);
+            product.CalendarCountryOfOrigin = GetValueFromColumn(rw, CountryOfOriginColumn);
+            product.CalendarUnitOfMeasure = GetValueFromColumn(rw, UnitOfMeasureColumn);
+            product.CalendarQuantityInMasterPack = GetValueFromColumn(rw, QuantityInMasterPackColumn);
+            product.CalendarArticleGrossWeightPreliminary = GetValueFromColumn(rw, ArticleGrossWeightPreliminaryColumn);
+            product.CalendarArticleGrossWeight = GetValueFromColumn( rw, ArticleGrossWeightColumn);
+            product.CalendarArticleNetWeightPreliminary = GetValueFromColumn(rw, ArticleNetWeightPreliminaryColumn);
+            product.CalendarArticleNetWeight = GetValueFromColumn(rw, ArticleNetWeightColumn);
+            product.CalendarPackagingLength = GetValueFromColumn(rw, PackagingLengthColumn);
+            product.CalendarPackagingHeight = GetValueFromColumn(rw, PackagingHeightColumn);
+            product.CalendarPackagingWidth = GetValueFromColumn(rw, PackagingWidthColumn);
+            product.CalendarPackagingVolume = GetValueFromColumn(rw, PackagingVolumeColumn);
+            product.CalendarProductSizeHeight = GetValueFromColumn(rw, ProductSizeHeightColumn);
+            product.CalendarProductSizeWidth = GetValueFromColumn(rw, ProductSizeWidthColumn);
+            product.CalendarProductSizeLength = GetValueFromColumn(rw, ProductSizeLengthColumn);
+            product.CalendarUnitsPerPallet = GetValueFromColumn(rw, UnitsPerPalletColumn);
 
             //
-            product.GenericName =
-                                        GetValueFromColumn(rw, GenericNameColumn);
-            product.Model =
-                                        GetValueFromColumn(rw, ModelColumn);
-            product.SubGroup =
-                                        GetValueFromColumn(rw, SubgroupColumn);
-            product.ProductGroup =
-                                        GetValueFromColumn(rw, ProductGroupColumn);
-            product.PNS =
-                                        GetValueFromColumn(rw, idColumn);
+            product.Article = GetValueFromColumn(rw, LocalIDGardenaColumn);
+
+            product.GenericName = GetValueFromColumn(rw, GenericNameColumn);
+            product.Model = GetValueFromColumn(rw, ModelColumn);
+            product.SubGroup = GetValueFromColumn(rw, SubgroupColumn);
+            product.ProductGroup = GetValueFromColumn(rw, ProductGroupColumn);
+            product.PNS = GetValueFromColumn(rw, idColumn);
 
             return product;
         }
@@ -271,7 +287,7 @@ namespace BPA.Modules
         /// <returns></returns>
         private string GetValueFromColumn(int rw, int col)
         {
-            return col != 0 ? GetValueFromColumn(rw, col) : "";
+            return col != 0 ? Convert.ToString(ws.Cells[rw, col].value) : "";
         }
 
         /// <summary>
@@ -284,12 +300,14 @@ namespace BPA.Modules
             string dateStart = GetValueFromColumn(rw, SalesStartDateColumn);
             RRC rrc = new RRC().GetRRC(article, dateStart);
 
-            if (rrc != null)
+            if (rrc == null)
             {
-                rrc.Article = GetValueFromColumn(rw, LocalIDGardenaColumn);
-                rrc.IRP = GetValueFromColumn(rw, IRPRRPColumn);
-                rrc.Date = GetValueFromColumn(rw, SalesStartDateColumn);
+                rrc = new RRC();
             }
+            rrc.Article = GetValueFromColumn(rw, LocalIDGardenaColumn);
+            rrc.IRP = GetValueFromColumn(rw, IRPRRPColumn);
+            rrc.Date = GetValueFromColumn(rw, SalesStartDateColumn);
+        
 
             rrc.Save();
 

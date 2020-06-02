@@ -123,7 +123,15 @@ namespace BPA.Model
         public ListRow GetRow(string fildName, object value, Range afterCell = null)
         {
             ListRow listRow = null;
-            Range range = Table.ListColumns[Filds[fildName]].Range.Find(value, After: afterCell, LookAt: XlLookAt.xlWhole);
+            Range range;
+            if (afterCell != null)
+            {
+                range = Table.ListColumns[Filds[fildName]].Range.Find(value, After: afterCell, LookAt: XlLookAt.xlWhole);
+            }
+            else
+            {
+                range = Table.ListColumns[Filds[fildName]].Range.Find(value, LookAt: XlLookAt.xlWhole);
+            }
 
             if (range != null)
             {
