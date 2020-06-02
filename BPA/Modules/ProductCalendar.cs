@@ -77,7 +77,7 @@ namespace BPA.Modules
 
         private void Sets()
         {
-            Open();
+
             ws = WB.Worksheets[1];
             SetColumns();
             CalendarHeaderRow = 6;
@@ -131,7 +131,8 @@ namespace BPA.Modules
 
         public void LoadCalendar()
         {
-            if(WB == null) return;
+            Open();
+            if (WB == null) return;
 
             Sets();
             ReadCalendarLoad();
@@ -139,6 +140,7 @@ namespace BPA.Modules
 
         public void UpdateCalendar()
         {
+            Open();
             if (WB == null) return;
 
             Sets();
