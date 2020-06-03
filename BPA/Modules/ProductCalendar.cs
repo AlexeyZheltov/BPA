@@ -9,8 +9,8 @@ namespace BPA.Modules
 {
     class ProductCalendar
     {
-        
-        readonly Microsoft.Office.Interop.Excel.Application ex = new Microsoft.Office.Interop.Excel.Application();
+
+        readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
         Workbook WB;
         Worksheet ws;
         ProcessBar progress;
@@ -93,13 +93,13 @@ namespace BPA.Modules
             else
             {
                 string filePath = openFileDialog.FileName;
-                WB = ex.Workbooks.Open(filePath);
+                WB = Application.Workbooks.Open(filePath);
             }
         }
 
         private void Sets()
         {
-            ws = WB.Worksheets[1];
+            ws = Worksheet;
             CalendarHeaderRow = 6;
             SetColumns();
             
@@ -195,7 +195,6 @@ namespace BPA.Modules
                     product.Save();
                 }
                 
-                UpdatePrice(rw);
             }
         }
 
@@ -213,8 +212,6 @@ namespace BPA.Modules
                 
                 product.Save();
                 product.Mark("Article");
-
-                UpdatePrice(rw);
 
                 if (rw == LastRow)
                 {
@@ -246,12 +243,10 @@ namespace BPA.Modules
                 product.CalendarPreliminaryEliminationDate = tmpDateTime;
             }
 
-
             if (DateTime.TryParse(GetValueFromColumn(rw, EliminationDateColumn), out tmpDateTime))
             {
                 product.CalendarEliminationDate = tmpDateTime;
             }
-
 
             product.CalendarGTIN = GetValueFromColumn(rw, GTIN13Column);
             product.CalendarCurrentProducingFactoryEntityReference = GetValueFromColumn(rw, CurrentProducingFactoryColumn);
@@ -290,6 +285,8 @@ namespace BPA.Modules
         /// <returns></returns>
         private int FindColumn(string fildName)
         {
+            
+            //Console.WriteLine(ws.Rows[CalendarHeaderRow].Find(fildName, LookAt: XlLookAt.xlWhole).Column);
             return ws.Rows[CalendarHeaderRow].Find(fildName, LookAt: XlLookAt.xlWhole)?.Column ?? 0;
             //if tne nothing?
         }
