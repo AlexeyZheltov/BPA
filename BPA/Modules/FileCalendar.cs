@@ -2,6 +2,7 @@
 
 using Microsoft.Office.Interop.Excel;
 
+using System;
 using System.IO;
 using System.Windows.Forms;
 
@@ -115,10 +116,50 @@ namespace BPA.Modules
             return GetProduct(rowNumber);
         }
 
-        public Product GetProduct(int rowNumber)
+        public Product GetProduct(int row)
         {
             Product product = new Product();
-            //TODO Добавить заполнение свойств
+
+            if (DateTime.TryParse(GetValueFromColumn(row, SalesStartDateColumn), out DateTime tmpDateTime))
+            {
+                product.CalendarSalesStartDate = tmpDateTime;
+            }
+
+            if (DateTime.TryParse(GetValueFromColumn(row, PreliminaryEliminationDateColumn), out tmpDateTime))
+            {
+                product.CalendarPreliminaryEliminationDate = tmpDateTime;
+            }
+
+            if (DateTime.TryParse(GetValueFromColumn(row, EliminationDateColumn), out tmpDateTime))
+            {
+                product.CalendarEliminationDate = tmpDateTime;
+            }
+
+            product.CalendarToBeSoldIn = GetValueFromColumn(row, ToBeSoldInColumn);
+            product.CalendarGTIN = GetValueFromColumn(row, GTIN13Column);
+            product.CalendarCurrentProducingFactoryEntityReference = GetValueFromColumn(row, CurrentProducingFactoryColumn);
+            product.CalendarCountryOfOrigin = GetValueFromColumn(row, CountryOfOriginColumn);
+            product.CalendarUnitOfMeasure = GetValueFromColumn(row, UnitOfMeasureColumn);
+            product.CalendarQuantityInMasterPack = GetValueFromColumn(row, QuantityInMasterPackColumn);
+            product.CalendarArticleGrossWeightPreliminary = GetValueFromColumn(row, ArticleGrossWeightPreliminaryColumn);
+            product.CalendarArticleGrossWeight = GetValueFromColumn(row, ArticleGrossWeightColumn);
+            product.CalendarArticleNetWeightPreliminary = GetValueFromColumn(row, ArticleNetWeightPreliminaryColumn);
+            product.CalendarArticleNetWeight = GetValueFromColumn(row, ArticleNetWeightColumn);
+            product.CalendarPackagingLength = GetValueFromColumn(row, PackagingLengthColumn);
+            product.CalendarPackagingHeight = GetValueFromColumn(row, PackagingHeightColumn);
+            product.CalendarPackagingWidth = GetValueFromColumn(row, PackagingWidthColumn);
+            product.CalendarPackagingVolume = GetValueFromColumn(row, PackagingVolumeColumn);
+            product.CalendarProductSizeHeight = GetValueFromColumn(row, ProductSizeHeightColumn);
+            product.CalendarProductSizeWidth = GetValueFromColumn(row, ProductSizeWidthColumn);
+            product.CalendarProductSizeLength = GetValueFromColumn(row, ProductSizeLengthColumn);
+            product.CalendarUnitsPerPallet = GetValueFromColumn(row, UnitsPerPalletColumn);
+            product.Article = GetValueFromColumn(row, LocalIDGardenaColumn);
+            product.GenericName = GetValueFromColumn(row, GenericNameColumn);
+            product.Model = GetValueFromColumn(row, ModelColumn);
+            product.SubGroup = GetValueFromColumn(row, SubgroupColumn);
+            product.ProductGroup = GetValueFromColumn(row, ProductGroupColumn);
+            product.PNS = GetValueFromColumn(row, IdColumn);
+
             return product;
         }
 
@@ -135,6 +176,17 @@ namespace BPA.Modules
         private int FindRow(string articul)
         {
             return Worksheet.Cells.Find(articul, LookAt: XlLookAt.xlWhole)?.Row ?? 0;
+        }
+
+        /// <summary>
+        /// получение значения из строки по номеру столбца
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        private string GetValueFromColumn(int row, int column)
+        {
+            return column != 0 ? Worksheet.Cells[row, column].value.ToString() : "";
         }
     }
 }

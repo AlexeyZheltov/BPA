@@ -1,17 +1,19 @@
 ﻿using BPA.Modules;
 
 using Microsoft.Office.Interop.Excel;
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using System.Windows.Forms;
 
-namespace BPA.Model {
+namespace BPA.Model
+{
     /// <summary>
     /// Справочник Товаров
     /// </summary>
-    class Product : TableBase {
+    internal class Product : TableBase
+    {
         public override string TableName => "Товары";
         public override string SheetName => "Товары";
 
@@ -63,7 +65,8 @@ namespace BPA.Model {
         };
 
 
-        #region main
+        #region -- Основные свойства столбцов ---
+
         /// <summary>
         /// №
         /// </summary>
@@ -139,11 +142,11 @@ namespace BPA.Model {
         /// <summary>
         /// Локальный сертификат
         /// </summary>
-        public string LocalCertificate { get; set;
-        }
+        public string LocalCertificate { get; set; }
+
         #endregion
 
-        #region From Calendar
+        #region --- Свойства из Prod Calendar ---
 
         /// <summary>
         /// to be sold in
@@ -174,8 +177,8 @@ namespace BPA.Model {
             get; set;
         }
         /// <summary>
-         /// CalendarGTIN
-         /// </summary>
+        /// CalendarGTIN
+        /// </summary>
         public string CalendarGTIN
         {
             get; set;
@@ -189,8 +192,8 @@ namespace BPA.Model {
             get; set;
         }
         /// <summary>
-         /// CalendarCountryOfOrigin
-         /// </summary>
+        /// CalendarCountryOfOrigin
+        /// </summary>
         public string CalendarCountryOfOrigin
         {
             get; set;
@@ -308,7 +311,7 @@ namespace BPA.Model {
         }
 
         #endregion
-        
+
         public Product GetProduct(string article)
         {
 
@@ -324,13 +327,55 @@ namespace BPA.Model {
             //return new Product();
         }
 
-        public Product UpdateFromCalendar()
+        /// <summary>
+        /// Устанавливает свойстка из продукт календаря
+        /// </summary>
+        public void SetFromCalendar()
         {
-            if (string.IsNullOrEmpty(Calendar)) return null;
+            if (string.IsNullOrEmpty(Calendar)) return;
             ProductCalendar productCalendar = new ProductCalendar(Calendar);
-            FileCalendar fileCalendar = new FileCalendar(productCalendar.Path);
+            FileCalendar fileCalendar;
+            try
+            {
+                fileCalendar = new FileCalendar(productCalendar.Path);
+            }
+            catch (FileNotFoundException ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            
+            Product product = fileCalendar.GetProduct(Article);
 
-            return fileCalendar.GetProduct(Article);
+            CalendarSalesStartDate = product.CalendarSalesStartDate;
+            CalendarPreliminaryEliminationDate = product.CalendarPreliminaryEliminationDate;
+            CalendarEliminationDate = product.CalendarEliminationDate;
+            CalendarToBeSoldIn = product.CalendarToBeSoldIn;
+            CalendarGTIN = product.CalendarGTIN;
+            CalendarCurrentProducingFactoryEntityReference = product.CalendarCurrentProducingFactoryEntityReference;
+            CalendarCountryOfOrigin = product.CalendarCountryOfOrigin;
+            CalendarUnitOfMeasure = product.CalendarUnitOfMeasure;
+            CalendarQuantityInMasterPack = product.CalendarQuantityInMasterPack;
+            CalendarArticleGrossWeightPreliminary = product.CalendarArticleGrossWeightPreliminary;
+            CalendarArticleGrossWeight = product.CalendarArticleGrossWeight;
+            CalendarArticleNetWeightPreliminary = product.CalendarArticleNetWeightPreliminary;
+            CalendarArticleNetWeight = product.CalendarArticleNetWeight;
+            CalendarPackagingLength = product.CalendarPackagingLength;
+            CalendarPackagingHeight = product.CalendarPackagingHeight;
+            CalendarPackagingWidth = product.CalendarPackagingWidth;
+            CalendarPackagingVolume = product.CalendarPackagingVolume;
+            CalendarProductSizeHeight = product.CalendarProductSizeHeight;
+            CalendarProductSizeWidth = product.CalendarProductSizeWidth;
+            CalendarProductSizeLength = product.CalendarProductSizeLength;
+            CalendarUnitsPerPallet = product.CalendarUnitsPerPallet;
+            GenericName = product.GenericName;
+            Model = product.Model;
+            SubGroup = product.SubGroup;
+            ProductGroup = product.ProductGroup;
+            PNS = product.PNS;
+
+            Update();
+
         }
 
 
