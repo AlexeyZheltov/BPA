@@ -199,5 +199,28 @@ namespace BPA.Model
         {
             return (int)Globals.ThisWorkbook.Application.WorksheetFunction.Max(Table.ListColumns[Filds["Id"]].Range) + 1;
         }
+
+        /// <summary>
+        /// Сортировка таблицы
+        /// </summary>
+        public void Sort(string sortFildName)
+        {
+            Table.Sort.SortFields.Clear();
+            Table.Sort.SortFields.Add(Key: Table.ListColumns[Filds[sortFildName]].Range,
+                                        XlSortOn.xlSortOnValues,
+                                        XlSortOrder.xlAscending,
+                                        XlSortDataOption.xlSortNormal);
+            Table.Sort.Header = XlYesNoGuess.xlYes;
+            Table.Sort.MatchCase = false;
+            Table.Sort.Orientation = XlSortOrientation.xlSortColumns;
+            Table.Sort.SortMethod = XlSortMethod.xlPinYin;
+            Table.Sort.Apply();
+        }
+
+        public void Mark(string fildNameToMark)
+        {
+            ListRow row = GetRow((int)GetParametrValue("Id"));
+            row.Range[1, Table.ListColumns[Filds[fildNameToMark]].Index].ColorIndex = 6;
+        }
     }
 }

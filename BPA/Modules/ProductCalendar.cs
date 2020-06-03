@@ -212,10 +212,15 @@ namespace BPA.Modules
                 Product product = CreateProduct(rw, new Product());
                 
                 product.Save();
+                product.Mark("Article");
 
                 UpdatePrice(rw);
-            }
 
+                if (rw == LastRow)
+                {
+                    product.Sort("ProductGroup");
+                }
+            }
         }
 
         /// <summary>
@@ -227,38 +232,24 @@ namespace BPA.Modules
         {
             //Product product = new Product().GetProduct(GetValueFromColumn(rw, LocalIDGardenaColumn));
 
-            DateTime firstDateTime = new DateTime();
-            int datecompare;
+            DateTime tmpDateTime;
 
             product.CalendarToBeSoldIn = GetValueFromColumn(rw, ToBeSoldInColumn);
 
-            if (DateTime.TryParse(GetValueFromColumn(rw, SalesStartDateColumn), out DateTime tmpDateTime))
+            if (DateTime.TryParse(GetValueFromColumn(rw, SalesStartDateColumn), out tmpDateTime))
             {
                 product.CalendarSalesStartDate = tmpDateTime;
             }
 
-
-
-            //DateTime tmpDateTime = Convert.ToDateTime(GetValueFromColumn(rw, SalesStartDateColumn));
-            //datecompare = DateTime.Compare(tmpDateTime, firstDateTime);
-            //if (datecompare > 0)
-            //{
-             //   product.CalendarSalesStartDate = tmpDateTime;
-            //}
-
-            tmpDateTime = Convert.ToDateTime(GetValueFromColumn(rw, PreliminaryEliminationDateColumn));
-            datecompare = DateTime.Compare(tmpDateTime, firstDateTime);
-            if (datecompare > 0)
+            if (DateTime.TryParse(GetValueFromColumn(rw, PreliminaryEliminationDateColumn), out tmpDateTime))
             {
                 product.CalendarPreliminaryEliminationDate = tmpDateTime;
             }
-            
 
-            tmpDateTime = Convert.ToDateTime(GetValueFromColumn(rw, EliminationDateColumn));
-            datecompare = DateTime.Compare(tmpDateTime, firstDateTime);
-            if (datecompare > 0)
+
+            if (DateTime.TryParse(GetValueFromColumn(rw, EliminationDateColumn), out tmpDateTime))
             {
-                product.CalendarPreliminaryEliminationDate = tmpDateTime;
+                product.CalendarEliminationDate = tmpDateTime;
             }
 
 
