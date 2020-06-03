@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Office.Interop.Excel;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -51,5 +53,35 @@ namespace BPA.Model {
             var listRow = GetRow("Name", name);
             if (listRow != null) SetProperty(listRow);
         }
+
+        public List<ProductCalendar> GetProducts()
+        {
+            List<ProductCalendar> products = new List<ProductCalendar>();
+            foreach (ListRow row in Table.ListRows)
+            {
+                ProductCalendar product = new ProductCalendar();
+                product.SetProperty(row);
+                products.Add(product);
+            }
+            return products;
+        }
+
+        public void UpdateProductFromCalendar()
+        {
+            //TODO: Цикл по календарям
+            //TODO: открываем книги WB
+
+            //TODO: Цикл по продуктам
+
+            List<Product> products = new Product().GetProducts();
+
+            foreach (Product product in products)
+            {
+                // product.SetFromCalendar(WB);
+            }
+
+            //TODO: закрываем WB
+        }
+
     }
 }

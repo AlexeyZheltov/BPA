@@ -13,8 +13,8 @@ namespace BPA.Modules
     {
         private readonly string FileName;
         private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
-        ProcessBar progress;
-        private readonly string ToBeSoldInNeed = "text";
+        private ProcessBar progress;
+        private readonly string ToBeSoldInNeed = "RUSSIA";
         private readonly int CalendarHeaderRow = 6;
 
         private Workbook Workbook
@@ -114,11 +114,14 @@ namespace BPA.Modules
             FileName = filename;
         }
 
+        public FileCalendar(Workbook workbook)
+        {
+            Workbook = workbook;
+        }
 
         public void LoadCalendar()
         {
-            if (Workbook == null)
-                return;
+            if (Workbook == null) return;
 
             progress = new ProcessBar("Заполнение документов", LastRow - CalendarHeaderRow + 1);
             progress.Show();
@@ -126,6 +129,8 @@ namespace BPA.Modules
             ReadCalendarLoad();
 
             progress.Close();
+
+            //TODO: Добавить в таблицу календарей
         }
 
         /// <summary>
@@ -133,15 +138,21 @@ namespace BPA.Modules
         /// </summary>
         private void ReadCalendarLoad()
         {
+            Product product = null;
+
             for (int rw = CalendarHeaderRow + 1; rw < LastRow; rw++)
             {
                 progress.TaskStart($"Обрабатывается строка {rw}");
                 if (progress.IsCancel) break;
 
                 if (Worksheet.Cells[rw, 1].value == "") continue;
-                if (Worksheet.Cells[rw, ToBeSoldInColumn].value != ToBeSoldInNeed) continue;
 
-                Product product = new Product().GetProduct(GetValueFromColumn(rw, LocalIDGardenaColumn));
+                string tobesold = Worksheet.Cells[rw, ToBeSoldInColumn].Text;
+                tobesold = tobesold.ToUpper();
+
+                if (!tobesold.Contains(ToBeSoldInNeed)) continue;
+
+                product = new Product().GetProduct(GetValueFromColumn(rw, LocalIDGardenaColumn));
 
                 if (product != null)
                 {
@@ -154,12 +165,8 @@ namespace BPA.Modules
                     product = CreateProduct(rw, new Product());
                     product.Save();
                 }
-
-                if (rw == LastRow)
-                {
-                    product.Sort("ProductGroup");
-                }
             }
+            product.Sort("ProductGroup");
         }
 
 
@@ -288,7 +295,7 @@ namespace BPA.Modules
 
             return product;
         }
-        
+
         /// <summary>
         /// получение значения из строки по номеру столбца
         /// </summary>
@@ -300,5 +307,10 @@ namespace BPA.Modules
             return col != 0 ? Worksheet.Cells[rw, col].value.ToString() : "";
         }
 
+
+        public void Close()
+        {
+            Workbook.Close(false);
+        }
     }
 }

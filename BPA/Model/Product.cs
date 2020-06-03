@@ -327,15 +327,28 @@ namespace BPA.Model
             //return new Product();
         }
 
+        public List<Product> GetProducts()
+        {
+            List<Product> products = new List<Product>();
+            foreach (ListRow row in Table.ListRows)
+            {
+                Product product = new Product();
+                product.SetProperty(row);
+                products.Add(product);
+            }
+            return products;
+        }
+
+
         /// <summary>
         /// Устанавливает свойстка из продукт календаря
         /// </summary>
-        public void SetFromCalendar()
+        public void SetFromCalendar(Workbook workbook)
         {
-            if (string.IsNullOrEmpty(Calendar)) return;
-            ProductCalendar productCalendar = new ProductCalendar(Calendar);
-            FileCalendar fileCalendar;
-            try
+           // if (string.IsNullOrEmpty(Calendar)) return;
+           // ProductCalendar productCalendar = new ProductCalendar(Calendar);
+            FileCalendar fileCalendar = new FileCalendar(workbook);
+           /*try
             {
                 fileCalendar = new FileCalendar(productCalendar.Path);
             }
@@ -343,7 +356,7 @@ namespace BPA.Model
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
-            }
+            }*/
             
             Product product = fileCalendar.GetProduct(Article);
 
@@ -375,7 +388,7 @@ namespace BPA.Model
             PNS = product.PNS;
 
             Update();
-
+            //fileCalendar.Close();
         }
 
 
