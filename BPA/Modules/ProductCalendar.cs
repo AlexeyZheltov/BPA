@@ -299,7 +299,7 @@ namespace BPA.Modules
         /// <returns></returns>
         private string GetValueFromColumn(int rw, int col)
         {
-            return col != 0 ? Convert.ToString(ws.Cells[rw, col].value) : "";
+            return col != 0 ? ws.Cells[rw, col].value.ToString() : "";
         }
 
         /// <summary>
@@ -319,7 +319,6 @@ namespace BPA.Modules
             rrc.Article = GetValueFromColumn(rw, LocalIDGardenaColumn);
             rrc.IRP = GetValueFromColumn(rw, IRPRRPColumn);
             rrc.Date = GetValueFromColumn(rw, SalesStartDateColumn);
-        
 
             rrc.Save();
 

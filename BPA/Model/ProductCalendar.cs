@@ -43,6 +43,13 @@ namespace BPA.Model {
             get; set;
         }
 
+        public ProductCalendar() { }
 
+        public ProductCalendar(string name) 
+        {
+            Name = name;
+            var listRow = GetRow("Name", name);
+            if (listRow != null) SetProperty(listRow);
+        }
     }
 }
