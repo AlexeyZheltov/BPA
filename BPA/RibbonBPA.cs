@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
+
 using BPA.Model;
 using BPA.Modules;
 
@@ -21,7 +23,7 @@ namespace BPA
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void button2_Click(object sender, RibbonControlEventArgs e)
+        private void AddNewCalendar_Click(object sender, RibbonControlEventArgs e)
         {
             FileCalendar fileCalendar = new FileCalendar();
 
@@ -41,16 +43,84 @@ namespace BPA
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void button3_Click(object sender, RibbonControlEventArgs e)
+        private void UpdateProducts_Click(object sender, RibbonControlEventArgs e)
         {
             Modules.ProductCalendar calendar = new Modules.ProductCalendar();
             calendar.UpdateCalendar();
         }
 
-        private void button1_Click(object sender, RibbonControlEventArgs e)
+        /// <summary>
+        /// Кнопка информация
+        /// </summary>
+        private void About_Click(object sender, RibbonControlEventArgs e)
         {
+            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
 
+        /// <summary>
+        /// Кнопка настроек
+        /// </summary>
+        private void Settings_Click(object sender, RibbonControlEventArgs e)
+        {
+            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
 
+        /// <summary>
+        /// Обновление продукта
+        /// </summary>
+        private void UpdateProduct_Click(object sender, RibbonControlEventArgs e)
+        {
+            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void UploadPrice_Click(object sender, RibbonControlEventArgs e)
+        {
+            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void SavePrice_Click(object sender, RibbonControlEventArgs e)
+        {
+            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void ClientsUpdate_Click(object sender, RibbonControlEventArgs e)
+        {
+            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void GetClientPrice_Click(object sender, RibbonControlEventArgs e)
+        {
+            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void GetAllPrices_Click(object sender, RibbonControlEventArgs e)
+        {
+            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void PlanningAdd_Click(object sender, RibbonControlEventArgs e)
+        {
+            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void GetPlanningData_Click(object sender, RibbonControlEventArgs e)
+        {
+            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void FactUpdate_Click(object sender, RibbonControlEventArgs e)
+        {
+            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void AddNewIRP_Click(object sender, RibbonControlEventArgs e)
+        {
+            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void PlanningSave_Click(object sender, RibbonControlEventArgs e)
+        {
+            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
