@@ -59,6 +59,24 @@ namespace BPA.Modules
         int UnitsPerPalletColumn;
         //
 
+        public Worksheet Worksheet 
+        { 
+            get
+            {
+                if (_Worksheet == null)
+                {
+                    _Worksheet = WB?.Worksheets[1];
+                }
+                return _Worksheet;
+            }
+            set
+            {
+                _Worksheet = value;
+            }
+
+        }
+        private Worksheet _Worksheet;
+
         public void Open()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
@@ -214,13 +232,19 @@ namespace BPA.Modules
 
             product.CalendarToBeSoldIn = GetValueFromColumn(rw, ToBeSoldInColumn);
 
-
-            DateTime tmpDateTime = Convert.ToDateTime(GetValueFromColumn(rw, SalesStartDateColumn));
-            datecompare = DateTime.Compare(tmpDateTime, firstDateTime);
-            if (datecompare > 0)
+            if (DateTime.TryParse(GetValueFromColumn(rw, SalesStartDateColumn), out DateTime tmpDateTime))
             {
                 product.CalendarSalesStartDate = tmpDateTime;
             }
+
+
+
+            //DateTime tmpDateTime = Convert.ToDateTime(GetValueFromColumn(rw, SalesStartDateColumn));
+            //datecompare = DateTime.Compare(tmpDateTime, firstDateTime);
+            //if (datecompare > 0)
+            //{
+             //   product.CalendarSalesStartDate = tmpDateTime;
+            //}
 
             tmpDateTime = Convert.ToDateTime(GetValueFromColumn(rw, PreliminaryEliminationDateColumn));
             datecompare = DateTime.Compare(tmpDateTime, firstDateTime);
