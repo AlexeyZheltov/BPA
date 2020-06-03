@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BPA.Model;
+using BPA.Modules;
+
 using Microsoft.Office.Tools.Ribbon;
 
 namespace BPA
@@ -21,6 +23,14 @@ namespace BPA
         /// <param name="e"></param>
         private void button2_Click(object sender, RibbonControlEventArgs e)
         {
+            FileCalendar fileCalendar = new FileCalendar();
+
+            for (int i = 0; i < fileCalendar.LastRow; i++)
+            {
+
+            }
+
+
 
             Modules.ProductCalendar calendar = new Modules.ProductCalendar();
             calendar.LoadCalendar();

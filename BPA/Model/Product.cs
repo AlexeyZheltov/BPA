@@ -1,4 +1,6 @@
-﻿using Microsoft.Office.Interop.Excel;
+﻿using BPA.Modules;
+
+using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -321,6 +323,16 @@ namespace BPA.Model {
             return null;
             //return new Product();
         }
+
+        public Product UpdateFromCalendar()
+        {
+            if (string.IsNullOrEmpty(Calendar)) return null;
+            ProductCalendar productCalendar = new ProductCalendar(Calendar);
+            FileCalendar fileCalendar = new FileCalendar(productCalendar.Path);
+
+            return fileCalendar.GetProduct(Article);
+        }
+
 
     }
 }
