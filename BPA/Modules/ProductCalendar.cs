@@ -16,8 +16,8 @@ namespace BPA.Modules
         ProcessBar progress;
 
         private readonly string ToBeSoldInNeed = "text";
+        private readonly int CalendarHeaderRow = 6;
 
-        int CalendarHeaderRow;
         int LastRow;
 
         //columns
@@ -38,7 +38,7 @@ namespace BPA.Modules
         int PreliminaryEliminationDateColumn;
         int EliminationDateColumn;
         int PredecessorProductReferenceColumn;
-        int GTIN13Column ;
+        int GTIN13Column;
         int GTIN12Column;
         int CurrentProducingFactoryColumn;
         int CountryOfOriginColumn;
@@ -59,8 +59,8 @@ namespace BPA.Modules
         int UnitsPerPalletColumn;
         //
 
-        public Worksheet Worksheet 
-        { 
+        public Worksheet Worksheet
+        {
             get
             {
                 if (_Worksheet == null)
@@ -88,7 +88,7 @@ namespace BPA.Modules
 
             if (openFileDialog.ShowDialog() != DialogResult.OK)
             {
-                WB = null;                
+                WB = null;
             }
             else
             {
@@ -100,9 +100,8 @@ namespace BPA.Modules
         private void Sets()
         {
             ws = Worksheet;
-            CalendarHeaderRow = 6;
             SetColumns();
-            
+
             LastRow = ws.Cells[ws.Rows.Count, 1].End(XlDirection.xlUp).Row;
         }
 
@@ -152,8 +151,9 @@ namespace BPA.Modules
         public void LoadCalendar()
         {
             Open();
-            if (WB == null) return;
-            
+            if (WB == null)
+                return;
+
             Sets();
 
             progress = new ProcessBar("Заполнение документов", LastRow - CalendarHeaderRow + 1);
@@ -169,7 +169,8 @@ namespace BPA.Modules
         public void UpdateCalendar()
         {
             Open();
-            if (WB == null) return;
+            if (WB == null)
+                return;
 
             Sets();
 
@@ -185,31 +186,39 @@ namespace BPA.Modules
         {
             for (int rw = CalendarHeaderRow + 1; rw < LastRow; rw++)
             {
-                if (ws.Cells[rw, 1].value == "") continue;
-                if (ws.Cells[rw, ToBeSoldInColumn].value != ToBeSoldInNeed) continue;
-                
+                if (ws.Cells[rw, 1].value == "")
+                    continue;
+                if (ws.Cells[rw, ToBeSoldInColumn].value != ToBeSoldInNeed)
+                    continue;
+
                 Product product = new Product().GetProduct(GetValueFromColumn(rw, LocalIDGardenaColumn));
                 if (product != null)
                 {
                     product = CreateProduct(rw, product);
                     product.Save();
                 }
-                
+
             }
         }
 
+        /// <summary>
+        /// загрузка календаря
+        /// </summary>
         private void ReadCalendarLoad()
         {
             for (int rw = CalendarHeaderRow + 1; rw < LastRow; rw++)
             {
                 progress.TaskStart($"Обрабатывается строка {rw}");
-                if (progress.IsCancel) break;
+                if (progress.IsCancel)
+                    break;
 
-                if (ws.Cells[rw, 1].value == "") continue;
-                if (ws.Cells[rw, ToBeSoldInColumn].value != ToBeSoldInNeed) continue;
+                if (ws.Cells[rw, 1].value == "")
+                    continue;
+                if (ws.Cells[rw, ToBeSoldInColumn].value != ToBeSoldInNeed)
+                    continue;
 
                 Product product = CreateProduct(rw, new Product());
-                
+
                 product.Save();
                 product.Mark("Article");
 
@@ -254,7 +263,7 @@ namespace BPA.Modules
             product.CalendarUnitOfMeasure = GetValueFromColumn(rw, UnitOfMeasureColumn);
             product.CalendarQuantityInMasterPack = GetValueFromColumn(rw, QuantityInMasterPackColumn);
             product.CalendarArticleGrossWeightPreliminary = GetValueFromColumn(rw, ArticleGrossWeightPreliminaryColumn);
-            product.CalendarArticleGrossWeight = GetValueFromColumn( rw, ArticleGrossWeightColumn);
+            product.CalendarArticleGrossWeight = GetValueFromColumn(rw, ArticleGrossWeightColumn);
             product.CalendarArticleNetWeightPreliminary = GetValueFromColumn(rw, ArticleNetWeightPreliminaryColumn);
             product.CalendarArticleNetWeight = GetValueFromColumn(rw, ArticleNetWeightColumn);
             product.CalendarPackagingLength = GetValueFromColumn(rw, PackagingLengthColumn);
@@ -285,7 +294,7 @@ namespace BPA.Modules
         /// <returns></returns>
         private int FindColumn(string fildName)
         {
-            
+
             //Console.WriteLine(ws.Rows[CalendarHeaderRow].Find(fildName, LookAt: XlLookAt.xlWhole).Column);
             return ws.Rows[CalendarHeaderRow].Find(fildName, LookAt: XlLookAt.xlWhole)?.Column ?? 0;
             //if tne nothing?
