@@ -1,4 +1,5 @@
-﻿using BPA.Model;
+﻿using BPA.Forms;
+using BPA.Model;
 
 using Microsoft.Office.Interop.Excel;
 
@@ -12,12 +13,16 @@ namespace BPA.Modules
     {
         private readonly string FileName;
         private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
+        ProcessBar progress;
+        private readonly string ToBeSoldInNeed = "text";
+        private readonly int CalendarHeaderRow = 6;
 
         private Workbook Workbook
         {
             get
             {
-                if (_Workbook == null) _Workbook = Application.Workbooks.Open(FileName);
+                if (_Workbook == null)
+                    _Workbook = Application.Workbooks.Open(FileName);
                 return _Workbook;
             }
             set
@@ -109,6 +114,55 @@ namespace BPA.Modules
             FileName = filename;
         }
 
+
+        public void LoadCalendar()
+        {
+            if (Workbook == null)
+                return;
+
+            progress = new ProcessBar("Заполнение документов", LastRow - CalendarHeaderRow + 1);
+            progress.Show();
+
+            ReadCalendarLoad();
+
+            progress.Close();
+        }
+
+        /// <summary>
+        /// загрузка календаря
+        /// </summary>
+        private void ReadCalendarLoad()
+        {
+            for (int rw = CalendarHeaderRow + 1; rw < LastRow; rw++)
+            {
+                progress.TaskStart($"Обрабатывается строка {rw}");
+                if (progress.IsCancel) break;
+
+                if (Worksheet.Cells[rw, 1].value == "") continue;
+                if (Worksheet.Cells[rw, ToBeSoldInColumn].value != ToBeSoldInNeed) continue;
+
+                Product product = new Product().GetProduct(GetValueFromColumn(rw, LocalIDGardenaColumn));
+
+                if (product != null)
+                {
+                    product = CreateProduct(rw, product);
+                    product.Mark("");
+                    product.Update();
+                }
+                else
+                {
+                    product = CreateProduct(rw, new Product());
+                    product.Save();
+                }
+
+                if (rw == LastRow)
+                {
+                    product.Sort("ProductGroup");
+                }
+            }
+        }
+
+
         public Product GetProduct(string articul)
         {
             int rowNumber = FindRow(articul);
@@ -178,15 +232,73 @@ namespace BPA.Modules
             return Worksheet.Cells.Find(articul, LookAt: XlLookAt.xlWhole)?.Row ?? 0;
         }
 
+
+        /// <summary>
+        /// получение данных из календаря
+        /// </summary>
+        /// <param name="rw"></param>
+        /// <returns></returns>
+        private Product CreateProduct(int rw, Product product)
+        {
+            DateTime tmpDateTime;
+
+            product.CalendarToBeSoldIn = GetValueFromColumn(rw, ToBeSoldInColumn);
+
+            if (DateTime.TryParse(GetValueFromColumn(rw, SalesStartDateColumn), out tmpDateTime))
+            {
+                product.CalendarSalesStartDate = tmpDateTime;
+            }
+
+            if (DateTime.TryParse(GetValueFromColumn(rw, PreliminaryEliminationDateColumn), out tmpDateTime))
+            {
+                product.CalendarPreliminaryEliminationDate = tmpDateTime;
+            }
+
+            if (DateTime.TryParse(GetValueFromColumn(rw, EliminationDateColumn), out tmpDateTime))
+            {
+                product.CalendarEliminationDate = tmpDateTime;
+            }
+
+            product.CalendarGTIN = GetValueFromColumn(rw, GTIN13Column);
+            product.CalendarCurrentProducingFactoryEntityReference = GetValueFromColumn(rw, CurrentProducingFactoryColumn);
+            product.CalendarCountryOfOrigin = GetValueFromColumn(rw, CountryOfOriginColumn);
+            product.CalendarUnitOfMeasure = GetValueFromColumn(rw, UnitOfMeasureColumn);
+            product.CalendarQuantityInMasterPack = GetValueFromColumn(rw, QuantityInMasterPackColumn);
+            product.CalendarArticleGrossWeightPreliminary = GetValueFromColumn(rw, ArticleGrossWeightPreliminaryColumn);
+            product.CalendarArticleGrossWeight = GetValueFromColumn(rw, ArticleGrossWeightColumn);
+            product.CalendarArticleNetWeightPreliminary = GetValueFromColumn(rw, ArticleNetWeightPreliminaryColumn);
+            product.CalendarArticleNetWeight = GetValueFromColumn(rw, ArticleNetWeightColumn);
+            product.CalendarPackagingLength = GetValueFromColumn(rw, PackagingLengthColumn);
+            product.CalendarPackagingHeight = GetValueFromColumn(rw, PackagingHeightColumn);
+            product.CalendarPackagingWidth = GetValueFromColumn(rw, PackagingWidthColumn);
+            product.CalendarPackagingVolume = GetValueFromColumn(rw, PackagingVolumeColumn);
+            product.CalendarProductSizeHeight = GetValueFromColumn(rw, ProductSizeHeightColumn);
+            product.CalendarProductSizeWidth = GetValueFromColumn(rw, ProductSizeWidthColumn);
+            product.CalendarProductSizeLength = GetValueFromColumn(rw, ProductSizeLengthColumn);
+            product.CalendarUnitsPerPallet = GetValueFromColumn(rw, UnitsPerPalletColumn);
+
+            //
+            product.Article = GetValueFromColumn(rw, LocalIDGardenaColumn);
+
+            product.GenericName = GetValueFromColumn(rw, GenericNameColumn);
+            product.Model = GetValueFromColumn(rw, ModelColumn);
+            product.SubGroup = GetValueFromColumn(rw, SubgroupColumn);
+            product.ProductGroup = GetValueFromColumn(rw, ProductGroupColumn);
+            product.PNS = GetValueFromColumn(rw, IdColumn);
+
+            return product;
+        }
+        
         /// <summary>
         /// получение значения из строки по номеру столбца
         /// </summary>
-        /// <param name="row"></param>
-        /// <param name="column"></param>
+        /// <param name="rw"></param>
+        /// <param name="col"></param>
         /// <returns></returns>
-        private string GetValueFromColumn(int row, int column)
+        private string GetValueFromColumn(int rw, int col)
         {
-            return column != 0 ? Worksheet.Cells[row, column].value.ToString() : "";
+            return col != 0 ? Worksheet.Cells[rw, col].value.ToString() : "";
         }
+
     }
 }

@@ -220,7 +220,7 @@ namespace BPA.Model
         public void Mark(string fildNameToMark)
         {
             ListRow row = GetRow((int)GetParametrValue("Id"));
-            row.Range[1, Table.ListColumns[Filds[fildNameToMark]].Index].ColorIndex = 6;
+            row.Range[1, Table.ListColumns[Filds[fildNameToMark]].Index].Interior.Color = 65535;
         }
     }
 }
