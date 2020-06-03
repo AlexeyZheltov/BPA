@@ -1,10 +1,12 @@
-﻿using Microsoft.Office.Interop.Excel;
-
+﻿using BPA.Forms;
+using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+//using System.Windows.Forms;
 
 namespace BPA.Model {
     /// <summary>
@@ -13,6 +15,7 @@ namespace BPA.Model {
     class ProductCalendar : TableBase {
         public override string TableName => "Продуктовые_календари";
         public override string SheetName => "Продуктовые календари";
+        private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
 
         public override IDictionary<string, string> Filds {
             get {
@@ -47,6 +50,22 @@ namespace BPA.Model {
 
         public ProductCalendar() { }
 
+        private Workbook Workbook
+        {
+            get
+            {
+                if (_Workbook == null)
+                    _Workbook = Application.Workbooks.Open(FileName);
+                return _Workbook;
+            }
+            set
+            {
+                _Workbook = value;
+            }
+        }
+        private Workbook _Workbook;
+        private string FileName;
+
         public ProductCalendar(string name) 
         {
             Name = name;
@@ -68,19 +87,34 @@ namespace BPA.Model {
 
         public void UpdateProductFromCalendar()
         {
-            //TODO: Цикл по календарям
-            //TODO: открываем книги WB
+            ProcessBar progressProduct;
+            ProcessBar progressCalendar;
 
-            //TODO: Цикл по продуктам
+            List<ProductCalendar> calendars = GetProducts();
 
-            List<Product> products = new Product().GetProducts();
-
-            foreach (Product product in products)
+            foreach (ProductCalendar productCalendar in calendars)
             {
-                // product.SetFromCalendar(WB);
-            }
+                progressCalendar = new ProcessBar("Обработка календарей", calendars.Count);
+                progressCalendar.Show();
 
-            //TODO: закрываем WB
+                FileName = productCalendar.Path;
+
+
+                List<Product> products = new Product().GetProducts();
+                foreach (Product product in products)
+                {
+
+                    progressProduct = new ProcessBar("Обработка продуктов", products.Count);
+                    progressProduct.Show();
+
+                    product.SetFromCalendar(Workbook);
+                }
+                //progressProduct.Close();
+                
+                Workbook.Close(false);
+            }
+            //progressCalendar.Close();
+
         }
 
     }
