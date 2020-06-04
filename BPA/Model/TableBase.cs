@@ -51,6 +51,7 @@ namespace BPA.Model
             else
             {
                 Update();
+                
             }
         }
 
@@ -108,7 +109,18 @@ namespace BPA.Model
             {
                 if (Filds.ContainsKey(prop.Name))
                 {
-                    prop.SetValue(this, row.Range[1, Filds[prop.Name]]);
+                    //TODO prop.Name
+
+                    //Console.Write(Filds[prop.Name]);
+                    //Console.Write("Fildedder");
+                    //Console.WriteLine(Filds[prop.Name]);
+                    //Console.WriteLine("Fildedder");
+                    //prop.SetValue(this, row.Range[1, 1].Value); //no
+                    //prop.SetValue(this, row.Range[1, 2].Value); //yes
+                    prop.SetValue(this, row.Range[1, Filds["Id"]].Value); //no
+                    prop.SetValue(this, row.Range[1, Filds["Category"]].Value); //no
+                    prop.SetValue(this, row.Range[1, Filds[prop.Name]].Text);
+                    
                 }
             }
         }

@@ -14,6 +14,9 @@ namespace BPA.Model
     /// </summary>
     internal class Product : TableBase
     {
+
+        private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
+
         public override string TableName => "Товары";
         public override string SheetName => "Товары";
 
@@ -325,6 +328,20 @@ namespace BPA.Model
 
             return null;
             //return new Product();
+        }
+
+        public Product GetProduct()
+        {
+            if (Application.ActiveCell.Row <= 2) return null;
+
+            ListRow listRow = Table.ListRows[Application.ActiveCell.Row - 2];
+            if (listRow != null)
+            {
+                Product product = new Product();
+                product.SetProperty(listRow);
+                return product;
+            }
+            return null;
         }
 
         public List<Product> GetProducts()

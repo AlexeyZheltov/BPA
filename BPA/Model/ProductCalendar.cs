@@ -86,7 +86,6 @@ namespace BPA.Model {
 
         public void UpdateProductFromCalendar()
         {
-            ProcessBar progressProduct;
             ProcessBar progressCalendar;
 
             List<ProductCalendar> calendars = GetProducts();
@@ -98,20 +97,41 @@ namespace BPA.Model {
             {
                 FileName = productCalendar.Path;
 
+                progressCalendar.TaskStart($"Обрабатывается календарь {productCalendar.Name}");
+                if (progressCalendar.IsCancel) break;
+
                 List<Product> products = new Product().GetProducts();
-
-                progressProduct = new ProcessBar("Обработка продуктов", products.Count);
-                progressProduct.Show();
-
-                foreach (Product product in products)
-                {
-                    product.SetFromCalendar(Workbook);
-                }
-                progressProduct.Close();
-                
+                UpdateProductFromCalendar(products);
+               
                 Workbook.Close(false);
             }
             progressCalendar.Close();
+        }
+
+        private void UpdateProductFromCalendar(List<Product> products)
+        {
+            ProcessBar progressProduct;
+
+            progressProduct = new ProcessBar("Обработка продуктов", products.Count);
+            progressProduct.Show();
+
+            foreach (Product product in products)
+            {
+                progressProduct.TaskStart($"Обрабатывается № {product.Id}");
+                if (progressProduct.IsCancel) break;
+
+                product.SetFromCalendar(Workbook);
+            }
+            progressProduct.Close();
+
+        }
+
+        public void UpdateProductFromCalendar(Product product)
+        {
+            Model.ProductCalendar productCalendar = new ProductCalendar(product.Calendar);
+            FileName = productCalendar.Path;
+
+            product.SetFromCalendar(Workbook);
         }
     }
 }

@@ -62,7 +62,12 @@ namespace BPA
         /// </summary>
         private void UpdateProduct_Click(object sender, RibbonControlEventArgs e)
         {
-            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Product product = new Product().GetProduct();
+            if (product != null) return;
+
+            Model.ProductCalendar calendar = new Model.ProductCalendar();
+            calendar.UpdateProductFromCalendar(product);
+        
         }
 
         private void UploadPrice_Click(object sender, RibbonControlEventArgs e)
