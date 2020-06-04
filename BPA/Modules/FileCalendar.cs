@@ -123,13 +123,18 @@ namespace BPA.Modules
         {
             if (Workbook == null) return;
 
-            progress = new ProcessBar("Заполнение документов", LastRow - CalendarHeaderRow + 1);
-            progress.Show();
+            //progress = new ProcessBar("Заполнение документов", LastRow - CalendarHeaderRow + 1);
+            //progress.Show();
 
             ReadCalendarLoad();
 
             progress.Close();
-            
+
+            Model.ProductCalendar productCalendar = new Model.ProductCalendar();
+            productCalendar.Name = Workbook.Name;
+            productCalendar.Path = Workbook.Path;
+            productCalendar.Save();
+
             //TODO: Добавить в таблицу календарей
         }
 
@@ -142,8 +147,8 @@ namespace BPA.Modules
 
             for (int rw = CalendarHeaderRow + 1; rw < LastRow; rw++)
             {
-                progress.TaskStart($"Обрабатывается строка {rw}");
-                if (progress.IsCancel) break;
+                //progress.TaskStart($"Обрабатывается строка {rw}");
+                //if (progress.IsCancel) break;
 
                 if (Worksheet.Cells[rw, 1].value == "") continue;
 
@@ -157,21 +162,17 @@ namespace BPA.Modules
                 if (product != null)
                 {
                     product = CreateProduct(rw, product);
+                    product.Update();
                     product.Mark("Article");
                     product.Mark("PNS");
                     product.Mark("Calendar");
-                    product.Update();
 
-                    Model.ProductCalendar productCalendar = new Model.ProductCalendar();
-                    productCalendar.Name = Workbook.Name;
-                    productCalendar.Path = Workbook.Path;
-                    productCalendar.Save();
                 }
                 else
                 {
                     product = CreateProduct(rw, new Product());
-                    product.Mark("Calendar");
                     product.Save();
+                    product.Mark("Calendar");
                 }
             }
             product.Sort("Id");
@@ -313,7 +314,7 @@ namespace BPA.Modules
         /// <returns></returns>
         private string GetValueFromColumn(int rw, int col)
         {
-            return col != 0 ? Worksheet.Cells[rw, col].value.ToString() : "";
+            return col != 0 ? Worksheet.Cells[rw, col].value?.ToString() : "";
         }
 
 
