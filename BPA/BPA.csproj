@@ -195,7 +195,7 @@
     <ManifestKeyFile>BPA_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>4B3302C7ECD773C5D228A2DD51D9D95181DC9E9C</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>DB1E397C42396269F30C3EACE633014A87814551</ManifestCertificateThumbprint>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\OfficeTools\Microsoft.VisualStudio.Tools.Office.targets" Condition="'$(VSToolsPath)' != ''" />
