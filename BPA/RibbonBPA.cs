@@ -27,16 +27,8 @@ namespace BPA
         {
             FileCalendar fileCalendar = new FileCalendar();
 
-            for (int i = 0; i < fileCalendar.LastRow; i++)
-            {
-
-            }
-
-
-
-            Modules.ProductCalendar calendar = new Modules.ProductCalendar();
-            calendar.LoadCalendar();
-        }
+            fileCalendar.LoadCalendar();
+      }
 
         /// <summary>
         /// кнопка обновления
@@ -45,8 +37,8 @@ namespace BPA
         /// <param name="e"></param>
         private void UpdateProducts_Click(object sender, RibbonControlEventArgs e)
         {
-            Modules.ProductCalendar calendar = new Modules.ProductCalendar();
-            calendar.UpdateCalendar();
+            Model.ProductCalendar calendar = new Model.ProductCalendar();
+            calendar.UpdateProductFromCalendar();
         }
 
         /// <summary>

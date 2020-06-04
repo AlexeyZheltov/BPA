@@ -129,7 +129,7 @@ namespace BPA.Modules
             ReadCalendarLoad();
 
             progress.Close();
-
+            
             //TODO: Добавить в таблицу календарей
         }
 
@@ -157,15 +157,24 @@ namespace BPA.Modules
                 if (product != null)
                 {
                     product = CreateProduct(rw, product);
-                    product.Mark("");
+                    product.Mark("Article");
+                    product.Mark("PNS");
+                    product.Mark("Calendar");
                     product.Update();
+
+                    Model.ProductCalendar productCalendar = new Model.ProductCalendar();
+                    productCalendar.Name = Workbook.Name;
+                    productCalendar.Path = Workbook.Path;
+                    productCalendar.Save();
                 }
                 else
                 {
                     product = CreateProduct(rw, new Product());
+                    product.Mark("Calendar");
                     product.Save();
                 }
             }
+            product.Sort("Id");
             product.Sort("ProductGroup");
         }
 

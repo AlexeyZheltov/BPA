@@ -388,10 +388,7 @@ namespace BPA.Model
             PNS = product.PNS;
 
             Update();
-            //fileCalendar.Close();
         }
-
-
     }
 }
 

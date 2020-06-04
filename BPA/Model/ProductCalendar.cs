@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-//using System.Windows.Forms;
 
 namespace BPA.Model {
     /// <summary>
@@ -92,30 +91,27 @@ namespace BPA.Model {
 
             List<ProductCalendar> calendars = GetProducts();
 
+            progressCalendar = new ProcessBar("Обработка календарей", calendars.Count);
+            progressCalendar.Show();
+
             foreach (ProductCalendar productCalendar in calendars)
             {
-                progressCalendar = new ProcessBar("Обработка календарей", calendars.Count);
-                progressCalendar.Show();
-
                 FileName = productCalendar.Path;
 
-
                 List<Product> products = new Product().GetProducts();
+
+                progressProduct = new ProcessBar("Обработка продуктов", products.Count);
+                progressProduct.Show();
+
                 foreach (Product product in products)
                 {
-
-                    progressProduct = new ProcessBar("Обработка продуктов", products.Count);
-                    progressProduct.Show();
-
                     product.SetFromCalendar(Workbook);
                 }
-                //progressProduct.Close();
+                progressProduct.Close();
                 
                 Workbook.Close(false);
             }
-            //progressCalendar.Close();
-
+            progressCalendar.Close();
         }
-
     }
 }
