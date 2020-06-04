@@ -120,7 +120,7 @@ namespace BPA.Model
                     prop.SetValue(this, row.Range[1, Filds["Id"]].Value); //no
                     prop.SetValue(this, row.Range[1, Filds["Category"]].Value); //no
                     prop.SetValue(this, row.Range[1, Filds[prop.Name]].Text);
-                    
+
                 }
             }
         }
