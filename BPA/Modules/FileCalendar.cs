@@ -128,7 +128,7 @@ namespace BPA.Modules
 
             ReadCalendarLoad();
 
-            progress.Close();
+           // progress.Close();
 
             Model.ProductCalendar productCalendar = new Model.ProductCalendar();
             productCalendar.Name = Workbook.Name;
