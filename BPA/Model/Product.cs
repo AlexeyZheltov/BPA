@@ -168,7 +168,7 @@ namespace BPA.Model
         /// <summary>
         /// Sales Start Date
         /// </summary>
-        public DateTime CalendarSalesStartDate
+        public Double CalendarSalesStartDate
         {
             get; set;
         }
@@ -176,7 +176,7 @@ namespace BPA.Model
         /// <summary>
         /// Preliminary Elimination Date
         /// </summary>
-        public DateTime CalendarPreliminaryEliminationDate
+        public Double CalendarPreliminaryEliminationDate
         {
             get; set;
         }
@@ -184,7 +184,7 @@ namespace BPA.Model
         /// <summary>
         /// CalendarEliminationDate
         /// </summary>
-        public DateTime CalendarEliminationDate
+        public Double CalendarEliminationDate
         {
             get; set;
         }
@@ -405,11 +405,12 @@ namespace BPA.Model
             //return new Product();
         }
 
+
         public Product GetProduct()
         {
-            if (Application.ActiveCell.Row <= 2) return null;
+            if (Application.ActiveCell.Row <= FirstRow || Application.ActiveCell.Row >= LastRow) return null;
 
-            ListRow listRow = Table.ListRows[Application.ActiveCell.Row - 2];
+            ListRow listRow = Table.ListRows[Application.Selection[1].Row - FirstRow-1];
             if (listRow != null)
             {
                 Product product = new Product();
@@ -473,13 +474,14 @@ namespace BPA.Model
             this.CalendarProductSizeWidth = product.CalendarProductSizeWidth;
             this.CalendarProductSizeLength = product.CalendarProductSizeLength;
             this.CalendarUnitsPerPallet = product.CalendarUnitsPerPallet;
-            this.Calendar = product.Calendar;
-
+            
             this.GenericName = product.GenericName;
             this.Model = product.Model;
             this.SubGroup = product.SubGroup;
             this.ProductGroup = product.ProductGroup;
             this.PNS = product.PNS;
+
+            this.Calendar = this.Calendar;
 
             Update();
         }

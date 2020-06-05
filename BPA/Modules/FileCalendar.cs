@@ -22,7 +22,15 @@ namespace BPA.Modules
             get
             {
                 if (_Workbook == null)
-                    _Workbook = Application.Workbooks.Open(FileName);
+                    try
+                    {
+                        _Workbook = Application.Workbooks.Open(FileName);
+                    }
+                    catch
+                    {
+                        _Workbook = null;
+                    }
+                    
                 return _Workbook;
             }
             set
@@ -192,20 +200,36 @@ namespace BPA.Modules
         public Product GetProduct(int row)
         {
             Product product = new Product();
+            product = CreateProduct(row, product);
 
+            return product;
+        }
+
+
+        /// <summary>
+        /// получение данных из календаря
+        /// </summary>
+        /// <param name="row"></param>
+        /// <returns></returns>
+        private Product CreateProduct(int row, Product product)
+        {
             if (DateTime.TryParse(GetValueFromColumn(row, SalesStartDateColumn), out DateTime tmpDateTime))
             {
-                product.CalendarSalesStartDate = tmpDateTime;
+                if (tmpDateTime.ToOADate() > 0)
+                    product.CalendarSalesStartDate = tmpDateTime.ToOADate();
             }
 
             if (DateTime.TryParse(GetValueFromColumn(row, PreliminaryEliminationDateColumn), out tmpDateTime))
             {
-                product.CalendarPreliminaryEliminationDate = tmpDateTime;
+                if (tmpDateTime.ToOADate() > 0)
+                    product.CalendarPreliminaryEliminationDate = tmpDateTime.ToOADate();
+                
             }
 
             if (DateTime.TryParse(GetValueFromColumn(row, EliminationDateColumn), out tmpDateTime))
             {
-                product.CalendarEliminationDate = tmpDateTime;
+                if (tmpDateTime.ToOADate() > 0)
+                    product.CalendarEliminationDate = tmpDateTime.ToOADate();
             }
 
             product.CalendarToBeSoldIn = GetValueFromColumn(row, ToBeSoldInColumn);
@@ -232,7 +256,12 @@ namespace BPA.Modules
             product.SubGroup = GetValueFromColumn(row, SubgroupColumn);
             product.ProductGroup = GetValueFromColumn(row, ProductGroupColumn);
             product.PNS = GetValueFromColumn(row, IdColumn);
-            product.IRP = GetValueFromColumn(row, IRPRRPColumn);  //or IRPNetColumn?
+
+
+            if (Double.TryParse(GetValueFromColumn(row, IRPRRPColumn), out Double tmpDouble))
+            {
+                product.IRP = tmpDouble;
+            }
 
             return product;
         }
@@ -252,64 +281,6 @@ namespace BPA.Modules
             return Worksheet.Cells.Find(articul, LookAt: XlLookAt.xlWhole)?.Row ?? 0;
         }
 
-
-        /// <summary>
-        /// получение данных из календаря
-        /// </summary>
-        /// <param name="rw"></param>
-        /// <returns></returns>
-        private Product CreateProduct(int rw, Product product)
-        {
-            DateTime tmpDateTime;
-
-            product.CalendarToBeSoldIn = GetValueFromColumn(rw, ToBeSoldInColumn);
-
-            if (DateTime.TryParse(GetValueFromColumn(rw, SalesStartDateColumn), out tmpDateTime))
-            {
-                product.CalendarSalesStartDate = tmpDateTime;
-            }
-
-            if (DateTime.TryParse(GetValueFromColumn(rw, PreliminaryEliminationDateColumn), out tmpDateTime))
-            {
-                product.CalendarPreliminaryEliminationDate = tmpDateTime;
-            }
-
-            if (DateTime.TryParse(GetValueFromColumn(rw, EliminationDateColumn), out tmpDateTime))
-            {
-                product.CalendarEliminationDate = tmpDateTime;
-            }
-
-            product.CalendarGTIN = GetValueFromColumn(rw, GTIN13Column);
-            product.CalendarCurrentProducingFactoryEntityReference = GetValueFromColumn(rw, CurrentProducingFactoryColumn);
-            product.CalendarCountryOfOrigin = GetValueFromColumn(rw, CountryOfOriginColumn);
-            product.CalendarUnitOfMeasure = GetValueFromColumn(rw, UnitOfMeasureColumn);
-            product.CalendarQuantityInMasterPack = GetValueFromColumn(rw, QuantityInMasterPackColumn);
-            product.CalendarArticleGrossWeightPreliminary = GetValueFromColumn(rw, ArticleGrossWeightPreliminaryColumn);
-            product.CalendarArticleGrossWeight = GetValueFromColumn(rw, ArticleGrossWeightColumn);
-            product.CalendarArticleNetWeightPreliminary = GetValueFromColumn(rw, ArticleNetWeightPreliminaryColumn);
-            product.CalendarArticleNetWeight = GetValueFromColumn(rw, ArticleNetWeightColumn);
-            product.CalendarPackagingLength = GetValueFromColumn(rw, PackagingLengthColumn);
-            product.CalendarPackagingHeight = GetValueFromColumn(rw, PackagingHeightColumn);
-            product.CalendarPackagingWidth = GetValueFromColumn(rw, PackagingWidthColumn);
-            product.CalendarPackagingVolume = GetValueFromColumn(rw, PackagingVolumeColumn);
-            product.CalendarProductSizeHeight = GetValueFromColumn(rw, ProductSizeHeightColumn);
-            product.CalendarProductSizeWidth = GetValueFromColumn(rw, ProductSizeWidthColumn);
-            product.CalendarProductSizeLength = GetValueFromColumn(rw, ProductSizeLengthColumn);
-            product.CalendarUnitsPerPallet = GetValueFromColumn(rw, UnitsPerPalletColumn);
-
-            //
-            product.Article = GetValueFromColumn(rw, LocalIDGardenaColumn);
-
-            product.GenericName = GetValueFromColumn(rw, GenericNameColumn);
-            product.Model = GetValueFromColumn(rw, ModelColumn);
-            product.SubGroup = GetValueFromColumn(rw, SubgroupColumn);
-            product.ProductGroup = GetValueFromColumn(rw, ProductGroupColumn);
-            product.PNS = GetValueFromColumn(rw, IdColumn);
-
-            product.IRP = GetValueFromColumn(rw, IRPRRPColumn);  //or IRPNetColumn?
-
-            return product;
-        }
 
         /// <summary>
         /// получение значения из строки по номеру столбца

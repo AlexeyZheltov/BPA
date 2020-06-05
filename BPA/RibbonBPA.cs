@@ -63,7 +63,7 @@ namespace BPA
         private void UpdateProduct_Click(object sender, RibbonControlEventArgs e)
         {
             Product product = new Product().GetProduct();
-            if (product != null) return;
+            if (product == null) return;
 
             Model.ProductCalendar calendar = new Model.ProductCalendar();
             calendar.UpdateProductFromCalendar(product);

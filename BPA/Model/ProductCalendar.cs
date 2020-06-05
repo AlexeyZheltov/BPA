@@ -132,10 +132,15 @@ namespace BPA.Model {
 
         public void UpdateProductFromCalendar(Product product)
         {
+            if (product.Calendar == null) return;
             Model.ProductCalendar productCalendar = new ProductCalendar(product.Calendar);
+            
             FileName = productCalendar.Path;
-
+            
+            if (!File.Exists(FileName)) return;
             product.SetFromCalendar(Workbook);
+
+            Workbook.Close(false);
         }
     }
 }

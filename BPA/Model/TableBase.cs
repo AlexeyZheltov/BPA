@@ -29,6 +29,41 @@ namespace BPA.Model
         public virtual IDictionary<string, string> Filds { get { return _filds; } }
         private readonly Dictionary<string, string> _filds = new Dictionary<string, string>();
 
+        /// <summary>
+        /// номер первой строки
+        /// </summary>
+        public int FirstRow
+        {
+            get
+            {
+                if (_FirstRow == 0)
+                    _FirstRow = Table.ListRows[1].Range.Row;
+                return _FirstRow;
+            }
+            set
+            {
+                _FirstRow = value;
+            }
+        }
+        private int _FirstRow;
+
+        /// <summary>
+        /// последняя строка
+        /// </summary>
+        public int LastRow
+        {
+            get
+            {
+                if (_LastRow == 0)
+                    _LastRow = Table.ListRows[Table.ListRows.Count].Range.Row;
+                return _LastRow;
+            }
+            set
+            {
+                _LastRow = value;
+            }
+        }
+        private int _LastRow;
 
 
         /// <summary>
