@@ -64,7 +64,16 @@ namespace BPA.Model
 
             { "Status","Статус" },
             { "Exclusive","Эксклюзив клиента или канала продажи" },
-            { "LocalCertificate","Локальный сертификат" }
+            { "LocalCertificate","Локальный сертификат" },
+
+            { "IRP","IRP, Eur" },
+            { "RRCPercent","Процент повышения РРЦ" },
+            { "RRCCalculated","РРЦ расчетная, руб." },
+            { "RRCFinal","РРЦ финальная, руб." },
+            { "RRCEuro","РРЦ, евро" },
+            { "IRPIndex","Индекс IRP" },
+            { "DIYDiscount","Скидка DIY" },
+            { "DIY","DIY price list, руб. без НДС" }
         };
 
 
@@ -313,6 +322,72 @@ namespace BPA.Model
             get; set;
         }
 
+        #endregion
+
+        #region --- Свойства для РРЦ ---
+
+        /// <summary>
+        /// IRP, Eur
+        /// </summary>
+        public Double IRP
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// Процент повышения РРЦ
+        /// </summary>
+        public Double RRCPercent
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// РРЦ расчетная, руб.
+        /// </summary>
+        public Double RRCCalculated
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// РРЦ финальная, руб.
+        /// </summary>
+        public Double RRCFinal
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// РРЦ, евро
+        /// </summary>
+        public Double RRCEuro
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// Индекс IRP
+        /// </summary>
+        public Double IRPIndex
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// Скидка DIY
+        /// </summary>
+        public Double DIYDiscount
+        {
+            get; set;
+        }
+        /// <summary>
+        /// DIY price list, руб. без НДС
+        /// </summary>
+        public Double DIY
+        {
+            get; set;
+        }
         #endregion
 
         public Product GetProduct(string article)

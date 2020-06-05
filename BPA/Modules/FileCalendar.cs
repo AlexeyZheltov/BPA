@@ -232,6 +232,7 @@ namespace BPA.Modules
             product.SubGroup = GetValueFromColumn(row, SubgroupColumn);
             product.ProductGroup = GetValueFromColumn(row, ProductGroupColumn);
             product.PNS = GetValueFromColumn(row, IdColumn);
+            product.IRP = GetValueFromColumn(row, IRPRRPColumn);  //or IRPNetColumn?
 
             return product;
         }
@@ -304,6 +305,8 @@ namespace BPA.Modules
             product.SubGroup = GetValueFromColumn(rw, SubgroupColumn);
             product.ProductGroup = GetValueFromColumn(rw, ProductGroupColumn);
             product.PNS = GetValueFromColumn(rw, IdColumn);
+
+            product.IRP = GetValueFromColumn(rw, IRPRRPColumn);  //or IRPNetColumn?
 
             return product;
         }
