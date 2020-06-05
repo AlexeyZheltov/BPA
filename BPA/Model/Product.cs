@@ -376,7 +376,7 @@ namespace BPA.Model
             }*/
             
             Product product = fileCalendar.GetProduct(Article);
-            if (product != null) return;
+            if (product == null) return;
             this.CalendarSalesStartDate = product.CalendarSalesStartDate;
             this.CalendarPreliminaryEliminationDate = product.CalendarPreliminaryEliminationDate;
             this.CalendarEliminationDate = product.CalendarEliminationDate;
@@ -398,6 +398,8 @@ namespace BPA.Model
             this.CalendarProductSizeWidth = product.CalendarProductSizeWidth;
             this.CalendarProductSizeLength = product.CalendarProductSizeLength;
             this.CalendarUnitsPerPallet = product.CalendarUnitsPerPallet;
+            this.Calendar = product.Calendar;
+
             this.GenericName = product.GenericName;
             this.Model = product.Model;
             this.SubGroup = product.SubGroup;

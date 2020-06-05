@@ -131,7 +131,8 @@ namespace BPA.Modules
             progress.Close();
 
             Model.ProductCalendar productCalendar = new Model.ProductCalendar();
-            productCalendar.Name = FileName;
+            
+            productCalendar.Name = Workbook.Name;
             productCalendar.Path = FileName;
             productCalendar.Save();
 
@@ -162,15 +163,16 @@ namespace BPA.Modules
                 if (product != null)
                 {
                     product = CreateProduct(rw, product);
+                    product.Calendar = Workbook.Name;
                     product.Update();
                     product.Mark("Article");
                     product.Mark("PNS");
                     product.Mark("Calendar");
-
                 }
                 else
                 {
                     product = CreateProduct(rw, new Product());
+                    product.Calendar = Workbook.Name;
                     product.Save();
                     product.Mark("Calendar");
                 }
