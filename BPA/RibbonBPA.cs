@@ -28,7 +28,7 @@ namespace BPA
             FileCalendar fileCalendar = new FileCalendar();
 
             fileCalendar.LoadCalendar();
-      }
+        }
 
         /// <summary>
         /// кнопка обновления

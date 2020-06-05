@@ -51,7 +51,6 @@ namespace BPA.Model
             else
             {
                 Update();
-                
             }
         }
 
@@ -117,7 +116,6 @@ namespace BPA.Model
                     {
                         //throw;
                     }
-                    
                 }
             }
         }

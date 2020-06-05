@@ -123,19 +123,19 @@ namespace BPA.Modules
         {
             if (Workbook == null) return;
 
-            //progress = new ProcessBar("Заполнение документов", LastRow - CalendarHeaderRow + 1);
-            //progress.Show();
+            progress = new ProcessBar("Заполнение документов", LastRow - CalendarHeaderRow + 1);
+            progress.Show();
 
             ReadCalendarLoad();
 
-           // progress.Close();
+            progress.Close();
 
             Model.ProductCalendar productCalendar = new Model.ProductCalendar();
-            productCalendar.Name = Workbook.Name;
-            productCalendar.Path = Workbook.Path;
+            productCalendar.Name = FileName;
+            productCalendar.Path = FileName;
             productCalendar.Save();
 
-            //TODO: Добавить в таблицу календарей
+            Workbook.Close(false);
         }
 
         /// <summary>
@@ -147,8 +147,8 @@ namespace BPA.Modules
 
             for (int rw = CalendarHeaderRow + 1; rw < LastRow; rw++)
             {
-                //progress.TaskStart($"Обрабатывается строка {rw}");
-                //if (progress.IsCancel) break;
+                progress.TaskStart($"Обрабатывается строка {rw}");
+                if (progress.IsCancel) break;
 
                 if (Worksheet.Cells[rw, 1].value == "") continue;
 

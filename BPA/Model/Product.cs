@@ -376,33 +376,33 @@ namespace BPA.Model
             }*/
             
             Product product = fileCalendar.GetProduct(Article);
-
-            CalendarSalesStartDate = product.CalendarSalesStartDate;
-            CalendarPreliminaryEliminationDate = product.CalendarPreliminaryEliminationDate;
-            CalendarEliminationDate = product.CalendarEliminationDate;
-            CalendarToBeSoldIn = product.CalendarToBeSoldIn;
-            CalendarGTIN = product.CalendarGTIN;
-            CalendarCurrentProducingFactoryEntityReference = product.CalendarCurrentProducingFactoryEntityReference;
-            CalendarCountryOfOrigin = product.CalendarCountryOfOrigin;
-            CalendarUnitOfMeasure = product.CalendarUnitOfMeasure;
-            CalendarQuantityInMasterPack = product.CalendarQuantityInMasterPack;
-            CalendarArticleGrossWeightPreliminary = product.CalendarArticleGrossWeightPreliminary;
-            CalendarArticleGrossWeight = product.CalendarArticleGrossWeight;
-            CalendarArticleNetWeightPreliminary = product.CalendarArticleNetWeightPreliminary;
-            CalendarArticleNetWeight = product.CalendarArticleNetWeight;
-            CalendarPackagingLength = product.CalendarPackagingLength;
-            CalendarPackagingHeight = product.CalendarPackagingHeight;
-            CalendarPackagingWidth = product.CalendarPackagingWidth;
-            CalendarPackagingVolume = product.CalendarPackagingVolume;
-            CalendarProductSizeHeight = product.CalendarProductSizeHeight;
-            CalendarProductSizeWidth = product.CalendarProductSizeWidth;
-            CalendarProductSizeLength = product.CalendarProductSizeLength;
-            CalendarUnitsPerPallet = product.CalendarUnitsPerPallet;
-            GenericName = product.GenericName;
-            Model = product.Model;
-            SubGroup = product.SubGroup;
-            ProductGroup = product.ProductGroup;
-            PNS = product.PNS;
+            if (product != null) return;
+            this.CalendarSalesStartDate = product.CalendarSalesStartDate;
+            this.CalendarPreliminaryEliminationDate = product.CalendarPreliminaryEliminationDate;
+            this.CalendarEliminationDate = product.CalendarEliminationDate;
+            this.CalendarToBeSoldIn = product.CalendarToBeSoldIn;
+            this.CalendarGTIN = product.CalendarGTIN;
+            this.CalendarCurrentProducingFactoryEntityReference = product.CalendarCurrentProducingFactoryEntityReference;
+            this.CalendarCountryOfOrigin = product.CalendarCountryOfOrigin;
+            this.CalendarUnitOfMeasure = product.CalendarUnitOfMeasure;
+            this.CalendarQuantityInMasterPack = product.CalendarQuantityInMasterPack;
+            this.CalendarArticleGrossWeightPreliminary = product.CalendarArticleGrossWeightPreliminary;
+            this.CalendarArticleGrossWeight = product.CalendarArticleGrossWeight;
+            this.CalendarArticleNetWeightPreliminary = product.CalendarArticleNetWeightPreliminary;
+            this.CalendarArticleNetWeight = product.CalendarArticleNetWeight;
+            this.CalendarPackagingLength = product.CalendarPackagingLength;
+            this.CalendarPackagingHeight = product.CalendarPackagingHeight;
+            this.CalendarPackagingWidth = product.CalendarPackagingWidth;
+            this.CalendarPackagingVolume = product.CalendarPackagingVolume;
+            this.CalendarProductSizeHeight = product.CalendarProductSizeHeight;
+            this.CalendarProductSizeWidth = product.CalendarProductSizeWidth;
+            this.CalendarProductSizeLength = product.CalendarProductSizeLength;
+            this.CalendarUnitsPerPallet = product.CalendarUnitsPerPallet;
+            this.GenericName = product.GenericName;
+            this.Model = product.Model;
+            this.SubGroup = product.SubGroup;
+            this.ProductGroup = product.ProductGroup;
+            this.PNS = product.PNS;
 
             Update();
         }

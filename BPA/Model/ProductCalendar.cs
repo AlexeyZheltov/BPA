@@ -2,6 +2,7 @@
 using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -96,14 +97,17 @@ namespace BPA.Model {
             foreach (ProductCalendar productCalendar in calendars)
             {
                 FileName = productCalendar.Path;
-
+                if (!File.Exists(FileName)) continue;
+                
                 progressCalendar.TaskStart($"Обрабатывается календарь {productCalendar.Name}");
                 if (progressCalendar.IsCancel) break;
 
                 List<Product> products = new Product().GetProducts();
                 UpdateProductFromCalendar(products);
-               
+
+                //Application.Workbooks(FileName).Close(false);
                 Workbook.Close(false);
+                
             }
             progressCalendar.Close();
         }
