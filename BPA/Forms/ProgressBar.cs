@@ -115,7 +115,7 @@ namespace BPA.Forms
 
                 if (_value == Count) Close();
                 if (_value == 0) return;
-                LabelComplete.Text = Count == 0 ? "0%" : (_value / Count).ToString("##0%");
+                LabelComplete.Text = Count == 0 ? "0%" : ((double)_value / (double)Count).ToString("##0%");
                 TimeSpan ts = TimeSpan.FromMilliseconds(Timer.Elapsed.TotalMilliseconds / _value * (Count - _value));
                 if (ts.Days > 0)
                 {

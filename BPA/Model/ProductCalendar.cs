@@ -106,8 +106,7 @@ namespace BPA.Model {
                 UpdateProductFromCalendar(products);
 
                 //Application.Workbooks(FileName).Close(false);
-                Workbook.Close(false);
-                
+                Workbook.Close(false);    
             }
             progressCalendar.Close();
         }

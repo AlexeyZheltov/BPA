@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
+using BPA.Forms;
 using BPA.Model;
 using BPA.Modules;
 
@@ -21,13 +19,29 @@ namespace BPA
         /// <summary>
         /// кнопка загрузки
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void AddNewCalendar_Click(object sender, RibbonControlEventArgs e)
         {
             FileCalendar fileCalendar = new FileCalendar();
+            ProcessBar processBar = new ProcessBar("Загрузка данных календаря", fileCalendar.CountActions);
+            try
+            {
+                FunctionsForExcel.SpeedOn();
+                Globals.ThisWorkbook.Activate();
+                processBar.Show();
+                fileCalendar.ActionStart += processBar.TaskStart;
+                fileCalendar.ActionDone += processBar.TaskDone;
+                processBar.CancelClick += fileCalendar.Cancel;
+                fileCalendar.LoadCalendar();
+            }
+            catch (Exception)
+            {
 
-            fileCalendar.LoadCalendar();
+            }
+            finally
+            {
+                FunctionsForExcel.SpeedOff();
+                processBar.Close();
+            }
         }
 
         /// <summary>
@@ -37,7 +51,7 @@ namespace BPA
         /// <param name="e"></param>
         private void UpdateProducts_Click(object sender, RibbonControlEventArgs e)
         {
-            Model.ProductCalendar calendar = new Model.ProductCalendar();
+            ProductCalendar calendar = new ProductCalendar();
             calendar.UpdateProductFromCalendar();
         }
 
@@ -65,9 +79,9 @@ namespace BPA
             Product product = new Product().GetProduct();
             if (product == null) return;
 
-            Model.ProductCalendar calendar = new Model.ProductCalendar();
+            ProductCalendar calendar = new ProductCalendar();
             calendar.UpdateProductFromCalendar(product);
-        
+
         }
 
         private void UploadPrice_Click(object sender, RibbonControlEventArgs e)

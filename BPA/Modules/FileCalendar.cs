@@ -13,9 +13,23 @@ namespace BPA.Modules
     {
         private readonly string FileName;
         private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
-        private ProcessBar progress;
         private readonly string ToBeSoldInNeed = "RUSSIA";
         private readonly int CalendarHeaderRow = 6;
+
+        /// <summary>
+        /// Событие начала задачи
+        /// </summary>
+        public event ActionsStart ActionStart;
+        public delegate void ActionsStart(string name);
+
+        /// <summary>
+        /// Событие завершения задачи
+        /// </summary>
+        public event ActionsDone ActionDone;
+        public delegate void ActionsDone(int count);
+
+        public int CountActions => LastRow - CalendarHeaderRow;
+        private bool IsCancel = false;
 
         private Workbook Workbook
         {
@@ -46,9 +60,11 @@ namespace BPA.Modules
         {
             get
             {
-                return Worksheet.UsedRange.Row + Worksheet.UsedRange.Rows.Count - 1;
+                if (_LastRow == 0) _LastRow = Worksheet.UsedRange.Row + Worksheet.UsedRange.Rows.Count - 1;
+                return _LastRow;
             }
         }
+        private int _LastRow = 0;
 
         #region --- Columns ---
 
@@ -93,7 +109,6 @@ namespace BPA.Modules
 
         public FileCalendar()
         {
-
             using (OpenFileDialog fileDialog = new OpenFileDialog()
             {
                 Title = "Выберите расположение продуктового календаря",
@@ -131,20 +146,16 @@ namespace BPA.Modules
         {
             if (Workbook == null) return;
 
-            progress = new ProcessBar("Заполнение документов", LastRow - CalendarHeaderRow + 1);
-            progress.Show();
-
             ReadCalendarLoad();
 
-            progress.Close();
-
-            Model.ProductCalendar productCalendar = new Model.ProductCalendar();
+            ProductCalendar productCalendar = new ProductCalendar();
             
             productCalendar.Name = Workbook.Name;
             productCalendar.Path = FileName;
             productCalendar.Save();
 
-            Workbook.Close(false);
+            Close();
+            IsCancel = true;
         }
 
         /// <summary>
@@ -156,15 +167,23 @@ namespace BPA.Modules
 
             for (int rw = CalendarHeaderRow + 1; rw < LastRow; rw++)
             {
-                progress.TaskStart($"Обрабатывается строка {rw}");
-                if (progress.IsCancel) break;
+                if (IsCancel) return;
+                ActionStart?.Invoke($"Обрабатывается строка {rw}");
 
-                if (Worksheet.Cells[rw, 1].value == "") continue;
+                if (Worksheet.Cells[rw, 1].Text == "")
+                {
+                    ActionDone?.Invoke(1);
+                    continue;
+                }
 
                 string tobesold = Worksheet.Cells[rw, ToBeSoldInColumn].Text;
                 tobesold = tobesold.ToUpper();
 
-                if (!tobesold.Contains(ToBeSoldInNeed)) continue;
+                if (!tobesold.Contains(ToBeSoldInNeed))
+                {
+                    ActionDone?.Invoke(1);
+                    continue;
+                }
 
                 product = new Product().GetProduct(GetValueFromColumn(rw, LocalIDGardenaColumn));
 
@@ -184,6 +203,8 @@ namespace BPA.Modules
                     product.Save();
                     product.Mark("Calendar");
                 }
+
+                ActionDone?.Invoke(1);
             }
             product.Sort("Id");
             product.Sort("ProductGroup");
@@ -297,6 +318,11 @@ namespace BPA.Modules
         public void Close()
         {
             Workbook.Close(false);
+        }
+
+        public void Cancel()
+        {
+            IsCancel = true;
         }
     }
 }

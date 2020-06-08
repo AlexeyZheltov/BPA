@@ -35,13 +35,14 @@
             this.btnCancelBox = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
             this.LabelTimeLost = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.progressBar = new BPA.Controls.ProgressBarControl();
             ((System.ComponentModel.ISupportInitialize)(this.btnCancelBox)).BeginInit();
             this.SuspendLayout();
             // 
             // LabelNameProcess
             // 
-            this.LabelNameProcess.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.LabelNameProcess.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.LabelNameProcess.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.LabelNameProcess.Location = new System.Drawing.Point(4, 9);
@@ -53,7 +54,7 @@
             // 
             // LabelNameTask
             // 
-            this.LabelNameTask.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.LabelNameTask.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.LabelNameTask.Location = new System.Drawing.Point(4, 32);
             this.LabelNameTask.Margin = new System.Windows.Forms.Padding(0);
@@ -81,7 +82,7 @@
             this.btnCancelBox.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnCancelBox.ErrorImage = null;
             this.btnCancelBox.Image = ((System.Drawing.Image)(resources.GetObject("btnCancelBox.Image")));
-            this.btnCancelBox.Location = new System.Drawing.Point(462, -1);
+            this.btnCancelBox.Location = new System.Drawing.Point(461, 1);
             this.btnCancelBox.Name = "btnCancelBox";
             this.btnCancelBox.Size = new System.Drawing.Size(26, 25);
             this.btnCancelBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -110,6 +111,15 @@
             this.LabelTimeLost.TabIndex = 7;
             this.LabelTimeLost.Text = "-";
             this.LabelTimeLost.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // panel1
+            // 
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(488, 78);
+            this.panel1.TabIndex = 9;
             // 
             // progressBar
             // 
@@ -141,6 +151,7 @@
             this.Controls.Add(this.LabelComplete);
             this.Controls.Add(this.LabelNameTask);
             this.Controls.Add(this.LabelNameProcess);
+            this.Controls.Add(this.panel1);
             this.Cursor = System.Windows.Forms.Cursors.Default;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MaximizeBox = false;
@@ -166,5 +177,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label LabelTimeLost;
         private Controls.ProgressBarControl progressBar;
+        private System.Windows.Forms.Panel panel1;
     }
 }
