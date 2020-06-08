@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 using BPA.Forms;
@@ -33,9 +34,9 @@ namespace BPA
                 processBar.CancelClick += fileCalendar.Cancel;
                 fileCalendar.LoadCalendar();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -51,8 +52,37 @@ namespace BPA
         /// <param name="e"></param>
         private void UpdateProducts_Click(object sender, RibbonControlEventArgs e)
         {
-            ProductCalendar calendar = new ProductCalendar();
-            calendar.UpdateProductFromCalendar();
+            List<ProductCalendar> calendars = new ProductCalendar().GetProductCalendars();
+            ProcessBar processBar = new ProcessBar("Обновление продуктовых календарей", calendars.Count);
+            try
+            {
+                FunctionsForExcel.SpeedOn();
+                
+                Product product = new Product();
+                processBar.Show();
+                Globals.ThisWorkbook.Activate();
+                foreach (ProductCalendar calendar in calendars)
+                {
+                    if (processBar.IsCancel) break;
+                    processBar.TaskStart($"Обрабатывается календарь {calendar.Name}");
+                    processBar.AddSubBar("Обновление данных", product.Table.ListRows.Count);
+                    calendar.ActionStart += processBar.SubBar.TaskStart;
+                    calendar.ActionDone += processBar.SubBar.TaskDone;
+                    processBar.SubBar.CancelClick += calendar.Cancel;
+                    calendar.UpdateProducts();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                FunctionsForExcel.SpeedOff();
+                processBar.SubBar.Close();
+                processBar.Close();
+            }
+            
         }
 
         /// <summary>
@@ -76,12 +106,23 @@ namespace BPA
         /// </summary>
         private void UpdateProduct_Click(object sender, RibbonControlEventArgs e)
         {
-            Product product = new Product().GetProduct();
-            if (product == null) return;
-
-            ProductCalendar calendar = new ProductCalendar();
-            calendar.UpdateProductFromCalendar(product);
-
+            try
+            {
+                FunctionsForExcel.SpeedOn();
+                Product product = new Product().GetPoductActive();
+                ProductCalendar calendar = new ProductCalendar(product.Calendar);
+                FileCalendar fileCalendar = new FileCalendar(calendar.Path);
+                product.SetFromCalendar(fileCalendar.Workbook);
+                fileCalendar.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                FunctionsForExcel.SpeedOff();
+            }
         }
 
         private void UploadPrice_Click(object sender, RibbonControlEventArgs e)

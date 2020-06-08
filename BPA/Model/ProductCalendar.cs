@@ -1,24 +1,24 @@
-﻿using BPA.Forms;
-using Microsoft.Office.Interop.Excel;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using BPA.Modules;
 
-namespace BPA.Model {
+using Microsoft.Office.Interop.Excel;
+
+using System.Collections.Generic;
+
+namespace BPA.Model
+{
     /// <summary>
     /// Справочник продуктовых календарей
     /// </summary>
-    class ProductCalendar : TableBase {
+    internal class ProductCalendar : TableBase
+    {
         public override string TableName => "Продуктовые_календари";
         public override string SheetName => "Продуктовые календари";
         private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
 
-        public override IDictionary<string, string> Filds {
-            get {
+        public override IDictionary<string, string> Filds
+        {
+            get
+            {
                 return _filds;
             }
         }
@@ -32,114 +32,86 @@ namespace BPA.Model {
         /// <summary>
         /// Идентификатор
         /// </summary>
-        public int Id {
+        public int Id
+        {
             get; set;
         }
         /// <summary>
         /// Название
         /// </summary>
-        public string Name {
+        public string Name
+        {
             get; set;
         }
         /// <summary>
         /// Путь к файлу
         /// </summary>
-        public string Path {
+        public string Path
+        {
             get; set;
         }
 
+        private bool IsCancel = false;
+        /// <summary>
+        /// Событие начала задачи
+        /// </summary>
+        public event ActionsStart ActionStart;
+        public delegate void ActionsStart(string name);
+
+        /// <summary>
+        /// Событие завершения задачи
+        /// </summary>
+        public event ActionsDone ActionDone;
+        public delegate void ActionsDone(int count);
+
         public ProductCalendar() { }
 
-        private Workbook Workbook
-        {
-            get
-            {
-                if (_Workbook == null)
-                    _Workbook = Application.Workbooks.Open(FileName);
-                return _Workbook;
-            }
-            set
-            {
-                _Workbook = value;
-            }
-        }
-        private Workbook _Workbook;
-        private string FileName;
-
-        public ProductCalendar(string name) 
+        public ProductCalendar(string name)
         {
             Name = name;
             var listRow = GetRow("Name", name);
             if (listRow != null) SetProperty(listRow);
         }
 
-        public List<ProductCalendar> GetProducts()
+        /// <summary>
+        /// Получение списка продуктовых календарей
+        /// </summary>
+        /// <returns></returns>
+        public List<ProductCalendar> GetProductCalendars()
         {
-            List<ProductCalendar> products = new List<ProductCalendar>();
+            List<ProductCalendar> productCalendars = new List<ProductCalendar>();
             foreach (ListRow row in Table.ListRows)
             {
-                ProductCalendar product = new ProductCalendar();
-                product.SetProperty(row);
-                products.Add(product);
+                ProductCalendar productCalendar = new ProductCalendar();
+                productCalendar.SetProperty(row);
+                productCalendars.Add(productCalendar);
             }
-            return products;
+            return productCalendars;
         }
 
-        public void UpdateProductFromCalendar()
+        public void Cancel()
         {
-            ProcessBar progressCalendar;
-
-            List<ProductCalendar> calendars = GetProducts();
-
-            progressCalendar = new ProcessBar("Обработка календарей", calendars.Count);
-            progressCalendar.Show();
-
-            foreach (ProductCalendar productCalendar in calendars)
-            {
-                FileName = productCalendar.Path;
-                if (!File.Exists(FileName)) continue;
-                
-                progressCalendar.TaskStart($"Обрабатывается календарь {productCalendar.Name}");
-                if (progressCalendar.IsCancel) break;
-
-                List<Product> products = new Product().GetProducts();
-                UpdateProductFromCalendar(products);
-
-                //Application.Workbooks(FileName).Close(false);
-                Workbook.Close(false);    
-            }
-            progressCalendar.Close();
+            IsCancel = true;
         }
 
-        private void UpdateProductFromCalendar(List<Product> products)
+        /// <summary>
+        /// Обновление продуктов из календаря
+        /// </summary>
+        public void UpdateProducts()
         {
-            ProcessBar progressProduct;
-
-            progressProduct = new ProcessBar("Обработка продуктов", products.Count);
-            progressProduct.Show();
-
+            FileCalendar fileCalendar = new FileCalendar(Path);
+            List<Product> products = new Product().GetProductsLight();
             foreach (Product product in products)
             {
-                progressProduct.TaskStart($"Обрабатывается № {product.Id}");
-                if (progressProduct.IsCancel) break;
-
-                product.SetFromCalendar(Workbook);
+                if (IsCancel) return;
+                ActionStart?.Invoke($"Обрабатывается № {product.Id}");
+                if (product.Calendar == Name)
+                {
+                    product.SetFromCalendar(fileCalendar.Workbook);
+                }
+                ActionDone?.Invoke(1);
             }
-            progressProduct.Close();
-
-        }
-
-        public void UpdateProductFromCalendar(Product product)
-        {
-            if (product.Calendar == null) return;
-            Model.ProductCalendar productCalendar = new ProductCalendar(product.Calendar);
-            
-            FileName = productCalendar.Path;
-            
-            if (!File.Exists(FileName)) return;
-            product.SetFromCalendar(Workbook);
-
-            Workbook.Close(false);
+            fileCalendar.Close();
         }
     }
 }

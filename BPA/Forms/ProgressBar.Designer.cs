@@ -51,6 +51,9 @@
             this.LabelNameProcess.Size = new System.Drawing.Size(455, 14);
             this.LabelNameProcess.TabIndex = 1;
             this.LabelNameProcess.Text = "Описание процесса";
+            this.LabelNameProcess.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MyForm_MouseDown);
+            this.LabelNameProcess.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MyForm_MouseMove);
+            this.LabelNameProcess.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MyForm_MouseUp);
             // 
             // LabelNameTask
             // 
@@ -62,6 +65,9 @@
             this.LabelNameTask.Size = new System.Drawing.Size(344, 18);
             this.LabelNameTask.TabIndex = 3;
             this.LabelNameTask.Text = "Выполняемая задача";
+            this.LabelNameTask.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MyForm_MouseDown);
+            this.LabelNameTask.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MyForm_MouseMove);
+            this.LabelNameTask.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MyForm_MouseUp);
             // 
             // LabelComplete
             // 
@@ -75,6 +81,9 @@
             this.LabelComplete.Size = new System.Drawing.Size(29, 16);
             this.LabelComplete.TabIndex = 4;
             this.LabelComplete.Text = "0%";
+            this.LabelComplete.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MyForm_MouseDown);
+            this.LabelComplete.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MyForm_MouseMove);
+            this.LabelComplete.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MyForm_MouseUp);
             // 
             // btnCancelBox
             // 
@@ -100,6 +109,9 @@
             this.label2.TabIndex = 6;
             this.label2.Text = "Осталось:";
             this.label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.label2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MyForm_MouseDown);
+            this.label2.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MyForm_MouseMove);
+            this.label2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MyForm_MouseUp);
             // 
             // LabelTimeLost
             // 
@@ -111,6 +123,9 @@
             this.LabelTimeLost.TabIndex = 7;
             this.LabelTimeLost.Text = "-";
             this.LabelTimeLost.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.LabelTimeLost.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MyForm_MouseDown);
+            this.LabelTimeLost.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MyForm_MouseMove);
+            this.LabelTimeLost.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MyForm_MouseUp);
             // 
             // panel1
             // 
@@ -120,6 +135,9 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(488, 78);
             this.panel1.TabIndex = 9;
+            this.panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MyForm_MouseDown);
+            this.panel1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MyForm_MouseMove);
+            this.panel1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MyForm_MouseUp);
             // 
             // progressBar
             // 
@@ -137,6 +155,9 @@
             this.progressBar.Value = 0;
             this.progressBar.ValueMaximum = 100;
             this.progressBar.ValueMinimum = 0;
+            this.progressBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MyForm_MouseDown);
+            this.progressBar.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MyForm_MouseMove);
+            this.progressBar.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MyForm_MouseUp);
             // 
             // ProcessBar
             // 
@@ -158,11 +179,12 @@
             this.MinimizeBox = false;
             this.Name = "ProcessBar";
             this.ShowIcon = false;
-            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Процесс";
-            this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ProcessBar_FormClosing);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MyForm_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MyForm_MouseMove);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MyForm_MouseUp);
             ((System.ComponentModel.ISupportInitialize)(this.btnCancelBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

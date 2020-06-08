@@ -1,5 +1,4 @@
-﻿using BPA.Forms;
-using BPA.Model;
+﻿using BPA.Model;
 
 using Microsoft.Office.Interop.Excel;
 
@@ -31,11 +30,12 @@ namespace BPA.Modules
         public int CountActions => LastRow - CalendarHeaderRow;
         private bool IsCancel = false;
 
-        private Workbook Workbook
+        public Workbook Workbook
         {
             get
             {
                 if (_Workbook == null)
+                {
                     try
                     {
                         _Workbook = Application.Workbooks.Open(FileName);
@@ -44,7 +44,7 @@ namespace BPA.Modules
                     {
                         _Workbook = null;
                     }
-                    
+                }
                 return _Workbook;
             }
             set
@@ -132,7 +132,7 @@ namespace BPA.Modules
         {
             if (!File.Exists(filename))
             {
-                throw new FileNotFoundException("Файл не найден");
+                throw new FileNotFoundException($"Файл {filename} не найден");
             }
             FileName = filename;
         }
@@ -149,7 +149,7 @@ namespace BPA.Modules
             ReadCalendarLoad();
 
             ProductCalendar productCalendar = new ProductCalendar();
-            
+
             productCalendar.Name = Workbook.Name;
             productCalendar.Path = FileName;
             productCalendar.Save();
@@ -244,7 +244,7 @@ namespace BPA.Modules
             {
                 if (tmpDateTime.ToOADate() > 0)
                     product.CalendarPreliminaryEliminationDate = tmpDateTime.ToOADate();
-                
+
             }
 
             if (DateTime.TryParse(GetValueFromColumn(row, EliminationDateColumn), out tmpDateTime))
@@ -302,7 +302,6 @@ namespace BPA.Modules
             return Worksheet.Cells.Find(articul, LookAt: XlLookAt.xlWhole)?.Row ?? 0;
         }
 
-
         /// <summary>
         /// получение значения из строки по номеру столбца
         /// </summary>
@@ -313,7 +312,6 @@ namespace BPA.Modules
         {
             return col != 0 ? Worksheet.Cells[rw, col].value?.ToString() : "";
         }
-
 
         public void Close()
         {

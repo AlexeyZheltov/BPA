@@ -14,11 +14,12 @@ namespace BPA.Model
     /// </summary>
     internal class Product : TableBase
     {
-
         private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
 
         public override string TableName => "Товары";
         public override string SheetName => "Товары";
+
+        #region --- Словарь ---
 
         public override IDictionary<string, string> Filds => _filds;
         private readonly Dictionary<string, string> _filds = new Dictionary<string, string>
@@ -76,6 +77,7 @@ namespace BPA.Model
             { "DIY","DIY price list, руб. без НДС" }
         };
 
+        #endregion
 
         #region -- Основные свойства столбцов ---
 
@@ -405,12 +407,15 @@ namespace BPA.Model
             //return new Product();
         }
 
-
-        public Product GetProduct()
+        /// <summary>
+        /// Получение данных продукта выбранной ячейки
+        /// </summary>
+        /// <returns></returns>
+        public Product GetPoductActive()
         {
             if (Application.ActiveCell.Row <= FirstRow || Application.ActiveCell.Row >= LastRow) return null;
 
-            ListRow listRow = Table.ListRows[Application.Selection[1].Row - FirstRow-1];
+            ListRow listRow = Table.ListRows[Application.Selection[1].Row - Table.Range.Row];
             if (listRow != null)
             {
                 Product product = new Product();
@@ -420,6 +425,9 @@ namespace BPA.Model
             return null;
         }
 
+        /// <summary>
+        /// Получение списка продуктов со всеми данными ДОЛГО!!!!
+        /// </summary>
         public List<Product> GetProducts()
         {
             List<Product> products = new List<Product>();
@@ -432,6 +440,26 @@ namespace BPA.Model
             return products;
         }
 
+        /// <summary>
+        /// Получает список продуктов с укороченными данными
+        /// </summary>
+        /// <returns></returns>
+        public List<Product> GetProductsLight()
+        {
+            List<Product> products = new List<Product>();
+            foreach (ListRow row in Table.ListRows)
+            {
+                Product product = new Product()
+                {
+                    Id = (int)row.Range[1, Table.ListColumns[Filds["Id"]].Index].Value,
+                    Category = row.Range[1, Table.ListColumns[Filds["Category"]].Index].Text,
+                    Article = row.Range[1, Table.ListColumns[Filds["Article"]].Index].Text,
+                    Calendar = row.Range[1, Table.ListColumns[Filds["Calendar"]].Index].Text
+                };
+            products.Add(product);
+            }
+            return products;
+        }
 
         /// <summary>
         /// Устанавливает свойстка из продукт календаря
