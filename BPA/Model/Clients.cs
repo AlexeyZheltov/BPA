@@ -41,7 +41,7 @@ namespace BPA.Model {
         /// <summary>
         /// GardenaChannel
         /// </summary>
-        public int GardenaChannel {
+        public string GardenaChannel {
             get; set;
         }
         /// <summary>
