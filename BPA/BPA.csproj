@@ -114,6 +114,7 @@
     <Compile Include="Model\Clients.cs" />
     <Compile Include="Model\Discount.cs" />
     <Compile Include="Model\DIY.cs" />
+    <Compile Include="Model\FinalPriceList.cs" />
     <Compile Include="Model\GardenaChanel.cs" />
     <Compile Include="Model\Plan.cs" />
     <Compile Include="Model\ProductExclusivity.cs" />
