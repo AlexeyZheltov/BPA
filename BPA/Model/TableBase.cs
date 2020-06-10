@@ -95,9 +95,18 @@ namespace BPA.Model
         /// <returns>Возвращает ID новой записи</returns>
         public int Insert()
         {
-            ListRow row = Table.ListRows.Add();
-            FillRow(row);
             int id = GetNextId();
+
+            ListRow row;
+            if (Table.ListRows.Count == 0)
+            {
+                Table.ListRows.Add();
+                Table.ListRows[2].Delete();
+                row = Table.ListRows[1];
+            }
+            else row = Table.ListRows.Add();
+            FillRow(row);
+            
             row.Range[1, Table.ListColumns[Filds["Id"]].Index].Value = id;
             return id;
         }

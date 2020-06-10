@@ -81,7 +81,7 @@ namespace BPA.Modules
                 Title = "Выберите расположение файла Descision",
                 DefaultExt = "*.xls*",
                 CheckFileExists = true,
-                InitialDirectory = Globals.ThisWorkbook.Path,
+                //InitialDirectory = Globals.ThisWorkbook.Path,
                 ValidateNames = true,
                 Multiselect = false,
                 Filter = "Excel|*.xls*"

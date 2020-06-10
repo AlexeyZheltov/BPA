@@ -140,23 +140,25 @@ namespace BPA
 
         private void ClientsUpdate_Click(object sender, RibbonControlEventArgs e)
         {
-            //FunctionsForExcel.SpeedOn();
-            //ProcessBar processBar = null;
+            FunctionsForExcel.SpeedOn();
+            ProcessBar processBar = null;
             FileDescision fileDescision = null;
             try
             {
                 fileDescision = new FileDescision();
                 if (fileDescision.IsNotOpen()) return;
 
-                //processBar = new ProcessBar("Загрузка клиентов из файла Descision", fileDescision.CountActions);
-                //processBar.TaskStart("Обнов")
-                //processBar.Show();
-                //fileDescision.ActionStart += processBar.SubBar.TaskStart;
-                //fileDescision.ActionDone += processBar.SubBar.TaskDone;
-                //processBar.SubBar.CancelClick += fileDescision.Cancel;
-                
+                processBar = new ProcessBar("Загрузка", fileDescision.CountActions);
+                processBar.CancelClick += fileDescision.Cancel;
+                fileDescision.ActionStart += processBar.TaskStart;
+                fileDescision.ActionDone += processBar.TaskDone;
+                processBar.TaskStart("Загрузка из файла Decision");
+                processBar.Show(new ExcelWindows(Globals.ThisWorkbook));
+
 
                 List<Clients> clientsFromDecision = fileDescision.LoadClients();
+
+                processBar.Close();
 
                 //Загрузить данные из листа клиентов
                 List<Clients> clients = new List<Clients>();
@@ -180,9 +182,8 @@ namespace BPA
             finally
             {
                 if(!fileDescision?.IsNotOpen() ?? false) fileDescision.Close();
-                //FunctionsForExcel.SpeedOff();
-                //processBar?.SubBar?.Close();
-                //processBar?.Close();
+                processBar?.Close();
+                FunctionsForExcel.SpeedOff();
             }
         }
 

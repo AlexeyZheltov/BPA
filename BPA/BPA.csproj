@@ -125,6 +125,7 @@
     <Compile Include="Model\STK.cs" />
     <Compile Include="Model\Supercategory.cs" />
     <Compile Include="Model\TableBase.cs" />
+    <Compile Include="Modules\ExcelWindows.cs" />
     <Compile Include="Modules\FileCalendar.cs" />
     <Compile Include="Modules\FileDescision.cs" />
     <Compile Include="Modules\FunctionsForExcel.cs" />
