@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Linq;
 
 using BPA.Forms;
 using BPA.Model;
 using BPA.Modules;
 
 using Microsoft.Office.Tools.Ribbon;
+using Excel = Microsoft.Office.Interop.Excel;
+using System.IO;
 
 namespace BPA
 {
@@ -137,7 +140,50 @@ namespace BPA
 
         private void ClientsUpdate_Click(object sender, RibbonControlEventArgs e)
         {
-            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //FunctionsForExcel.SpeedOn();
+            //ProcessBar processBar = null;
+            FileDescision fileDescision = null;
+            try
+            {
+                fileDescision = new FileDescision();
+                if (fileDescision.IsNotOpen()) return;
+
+                //processBar = new ProcessBar("Загрузка клиентов из файла Descision", fileDescision.CountActions);
+                //processBar.TaskStart("Обнов")
+                //processBar.Show();
+                //fileDescision.ActionStart += processBar.SubBar.TaskStart;
+                //fileDescision.ActionDone += processBar.SubBar.TaskDone;
+                //processBar.SubBar.CancelClick += fileDescision.Cancel;
+                
+
+                List<Clients> clientsFromDecision = fileDescision.LoadClients();
+
+                //Загрузить данные из листа клиентов
+                List<Clients> clients = new List<Clients>();
+                foreach (Excel.ListRow row in new Clients().Table.ListRows)
+                {
+                    clients.Add(new Clients(row));
+                }
+
+                //Получить разницу
+                List<Clients> newClients = clientsFromDecision.Except(clients, new Clients.ComparerCustomer()).ToList();
+
+                //Выгрузить разницу как новых клиентов
+                newClients.ForEach(x => x.Save());
+                Clients ClientForSort = newClients.First();
+                ClientForSort.Sort("Id");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                if(!fileDescision?.IsNotOpen() ?? false) fileDescision.Close();
+                //FunctionsForExcel.SpeedOff();
+                //processBar?.SubBar?.Close();
+                //processBar?.Close();
+            }
         }
 
         private void GetClientPrice_Click(object sender, RibbonControlEventArgs e)

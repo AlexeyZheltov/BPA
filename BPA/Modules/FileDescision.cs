@@ -11,7 +11,7 @@ namespace BPA.Modules
 {
     class FileDescision
     {
-        private readonly string FileName;
+        private readonly string FileName = "";
         private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
         //private readonly string ToBeSoldInNeed = "RUSSIA";
         private readonly int FileHeaderRow = 1;
@@ -108,6 +108,8 @@ namespace BPA.Modules
         {
             Workbook = workbook;
         }
+
+        public bool IsNotOpen() => FileName == "";
         
         public List<Clients> LoadClients()
         {
@@ -126,7 +128,7 @@ namespace BPA.Modules
                     range = Worksheet.Cells[rowIndex, GardenaChannelColumn];
                     string gardenaChannel = range.Text;
 
-                    buffer.Add(new Clients()
+                    if(!buffer.Exists(x => x.Customer == customer)) buffer.Add(new Clients()
                     {
                         Customer = customer,
                         GardenaChannel = gardenaChannel
@@ -136,6 +138,7 @@ namespace BPA.Modules
                 ActionDone?.Invoke(1);
             }
 
+            if (buffer.Count == 0) throw new ApplicationException("Файл не содержит значемых данных");
             return buffer;
         }
 

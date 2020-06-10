@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace BPA.Model {
     /// <summary>
     /// Справочник клиентов
     /// </summary>
     class Clients : TableBase {
+        //public static ComparerCustomer ComparerCustomer => new ComparerCustomer();
+
         public override string TableName => "Клиенты";
         public override string SheetName => "Клиенты";
 
@@ -29,7 +32,9 @@ namespace BPA.Model {
             { "CustomerBudget", "CustomerBudget" }
         };
 
+        public Clients() { }
 
+        public Clients(Excel.ListRow row) => SetProperty(row);
         /// <summary>
         /// №
         /// </summary>
@@ -85,5 +90,11 @@ namespace BPA.Model {
             get; set;
         }
 
+        public class ComparerCustomer : IEqualityComparer<Clients>
+        {
+            public bool Equals(Clients x, Clients y) => x.Customer == y.Customer;
+
+            public int GetHashCode(Clients obj) => obj?.Customer.GetHashCode() ?? 0;
+        }
     }
 }
