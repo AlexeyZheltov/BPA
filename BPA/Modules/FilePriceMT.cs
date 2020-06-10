@@ -1,31 +1,26 @@
-﻿using BPA.Model;
-
-using Microsoft.Office.Interop.Excel;
+﻿using Microsoft.Office.Interop.Excel;
 
 using System;
 using System.IO;
 using System.Windows.Forms;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace BPA.Modules
 {
-    class Test
-    {
-        void Go()
-        {
-            FilePriceMT file = new FilePriceMT();
-            file.Load("Название нужного магазина", new DateTime()); //Загрузить в внутринности класса список артикулов соответсвтующий даннаму магазину, за данную дату
+    //class Test
+    //{
+    //    void Go()
+    //    {
+    //        FilePriceMT file = new FilePriceMT();
+    //        file.Load("Название нужного магазина", new DateTime()); //Загрузить в внутринности класса список артикулов соответсвтующий даннаму магазину, за данную дату
 
-            //цикл
-            file.GetPrice("fhn");
+    //        //цикл
+    //        file.GetPrice("fhn");
 
 
-        }
-    }
+    //    }
+    //}
 
     internal class FilePriceMT
     {
@@ -87,7 +82,8 @@ namespace BPA.Modules
         private int _LastRow = 0;
 
         #region --- Columns ---
-
+        public int CustomerColumn => FindColumn("Покупатель");
+        public int SearchColumn => FindColumn("Поиск");
         public int MainColumn => FindColumn("Главный");
         public int ArticleColumn => FindColumn("Артикул");
         public int NameColumn => FindColumn("Название");
@@ -97,8 +93,8 @@ namespace BPA.Modules
         public int CustCodeColumn => FindColumn("CustCode");
         public int PriceOfListingColumn => FindColumn("Цена_листинга");
         public int PriceNewColumn => FindColumn("Цена_новая");
-        public int FromColumn => FindColumn("От");
-        public int ToColumn => FindColumn("До");
+        public int DateFromColumn => FindColumn("От");
+        public int DateToColumn => FindColumn("До");
         public int MagColumn => FindColumn("Маг");
 
 
@@ -140,7 +136,7 @@ namespace BPA.Modules
             Workbook = workbook;
         }
 
-        private List<Client> _clients = new List<Client>();
+        private List<Client> clients = new List<Client>();
         public struct Client
         {
             public string Name {
@@ -161,26 +157,55 @@ namespace BPA.Modules
             if (Workbook == null)
                 return;
 
-            _clients.Clear();
-            //Тут загрузить все цены по магазину и дате.
-            for (int rw = CalendarHeaderRow + 1; rw <= LastRow; rw++)
-            {
-                if (!double.TryParse(GetValueFromColumn(rw, PriceForClientColumn), out double price))
-                {
-                    price = 0;
-                }
-                
-                clients.Add(new Client
-                {
-                    Name = GetValueFromColumn(rw, MainColumn),
-                    Price =  price,
-                    Art = GetValueFromColumn(rw, ArticleColumn)
-                });
-            }
+            clients.Clear();
 
+            int rw = FindRow(MagColumn, mag);
+            int firstFindedRw = rw;
+
+            DateTime tmpDateTime;
+            DateTime firstDate = new DateTime();
+            DateTime lastDate = new DateTime();
+
+            if (rw != 0)
+            {
+                do
+                {
+                    if (DateTime.TryParse(GetValueFromColumn(rw, DateFromColumn), out tmpDateTime))
+                        firstDate = tmpDateTime;
+
+                    if (DateTime.TryParse(GetValueFromColumn(rw, DateFromColumn), out tmpDateTime))
+                        lastDate = tmpDateTime;
+
+                    if (lastDate.Year >= 9999)
+                        if (date >= firstDate || firstDate.Year >= 9999)
+                            AddClient(rw);
+                    else if (date <= lastDate && date >= firstDate)
+                        AddClient(rw);
+
+                    rw = FindRow(MagColumn, mag, Worksheet.Cells[rw, MagColumn]);
+                } 
+                while (firstFindedRw != rw);
+            }
+   
             Close();
             IsCancel = true;
         }
+
+        private void AddClient(int rw)
+        {
+            if (!double.TryParse(GetValueFromColumn(rw, PriceForClientColumn), out double price))
+            {
+                price = 0;
+            }
+
+            clients.Add(new Client
+            {
+                Name = GetValueFromColumn(rw, CustomerColumn),
+                Price = price,
+                Art = GetValueFromColumn(rw, ArticleColumn)
+            });
+        }
+
 
         public double GetPrice(string Art)
         {
