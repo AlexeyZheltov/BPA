@@ -5,13 +5,15 @@ using System.Windows.Forms;
 using BPA.Forms;
 using BPA.Model;
 using BPA.Modules;
-
+using Microsoft.Office.Interop.Excel;
 using Microsoft.Office.Tools.Ribbon;
 
 namespace BPA
 {
     public partial class RibbonBPA
     {
+        private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
+
         private void RibbonBPA_Load(object sender, RibbonUIEventArgs e)
         {
 
@@ -140,8 +142,54 @@ namespace BPA
             MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        /// <summary>
+        /// прайс-лист клиента
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GetClientPrice_Click(object sender, RibbonControlEventArgs e)
         {
+
+            FilePriceMT filePriceMT = new FilePriceMT();
+            List<FilePriceMT.Client> clients = filePriceMT.clients;
+            Range activeCell = Application.ActiveCell;
+
+            ProcessBar processBar = new ProcessBar("Формирование прайс-листа", clients.Count);
+            try
+            {
+                FunctionsForExcel.SpeedOn();
+                processBar.Show();
+                Globals.ThisWorkbook.Activate();
+                
+                foreach (FilePriceMT.Client client in clients)
+                {
+                    if (processBar.IsCancel)
+                        break;
+                    processBar.TaskStart($"Обрабатывается клиент {client.Name}");
+                    processBar.AddSubBar("Обновление данных", filePriceMT.LastRow);
+                    filePriceMT.ActionStart += processBar.SubBar.TaskStart;
+                    filePriceMT.ActionDone += processBar.SubBar.TaskDone;
+                    processBar.SubBar.CancelClick += filePriceMT.Cancel;
+
+                    filePriceMT.ClientCell = activeCell;
+                    
+                    double price = filePriceMT.GetPrice(client.Art);
+                    //здесь создаем новый лист
+                    //
+
+                    //calendar.UpdateProducts();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                FunctionsForExcel.SpeedOff();
+                processBar.SubBar.Close();
+                processBar.Close();
+            }
             MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 

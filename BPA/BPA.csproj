@@ -127,6 +127,7 @@
     <Compile Include="Model\TableBase.cs" />
     <Compile Include="Modules\FileCalendar.cs" />
     <Compile Include="Modules\FileDescision.cs" />
+    <Compile Include="Modules\FilePriceMT.cs" />
     <Compile Include="Modules\FunctionsForExcel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RibbonBPA.cs">

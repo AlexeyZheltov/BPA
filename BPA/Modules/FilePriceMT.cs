@@ -1,4 +1,11 @@
-﻿using System;
+﻿using BPA.Model;
+
+using Microsoft.Office.Interop.Excel;
+
+using System;
+using System.IO;
+using System.Windows.Forms;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,8 +13,9 @@ using System.Threading.Tasks;
 
 namespace BPA.Modules
 {
-    class FilePriceMT
+    internal class FilePriceMT
     {
+
         private readonly string FileName;
         private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
         private readonly int CalendarHeaderRow = 1;
@@ -109,7 +117,8 @@ namespace BPA.Modules
 
         #endregion
 
-        public FileFilePriceMT()
+
+        public FilePriceMT()
         {
             using (OpenFileDialog fileDialog = new OpenFileDialog()
             {
@@ -144,52 +153,97 @@ namespace BPA.Modules
             Workbook = workbook;
         }
 
-        public double Price(string client, string article, double date)
+        
+        public List<Client> clients
+        {
+            get
+            {
+                if (_clients == null)
+                {
+                    try
+                    {
+                        Load();
+                    }
+                    catch
+                    {
+                        _clients = null;
+                    }
+                }
+                return _clients;
+            }
+            set
+            {
+                _clients = value;
+            }
+        }
+
+        private List<Client> _clients;
+        public struct Client
+        {
+            public string Name {
+                get; set;
+            }
+            public double Price
+            {
+                get; set;
+            }
+            public string Art
+            {
+                get; set;
+            }
+        }
+
+
+        /// <summary>
+        /// здесь 
+        /// </summary>
+        public Range ClientCell 
+        { 
+            get 
+            {
+                return _ClientCell;
+            }
+            set
+            {
+                _ClientCell = value;
+                ClientName = ClientCell.Text;
+            } 
+        }
+        private Range _ClientCell;
+        public string ClientName
+        {
+            get => clientName;
+            set => clientName = value;
+        }
+
+        public void Load()
         {
             if (Workbook == null)
                 return;
-
-            double price = GetPrice(client, article, date);
-//логика 
-//где?
             
+            for (int rw = CalendarHeaderRow + 1; rw <= LastRow; rw++)
+            {
+                if (!double.TryParse(GetValueFromColumn(rw, PricelistPriceTotalColumn), out double price))
+                {
+                    price = 0;
+                }
+                
+                clients.Add(new Client
+                {
+                    Name = GetValueFromColumn(rw, CustomerColumn),
+                    Price =  price,
+                    Art = GetValueFromColumn(rw, CodeColumn)
+                });
+            }
+
             Close();
             IsCancel = true;
-
-            return price;
         }
 
-        /// <summary>
-        /// возвращает цену по поиску клиента, артикула и даты
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="article"></param>
-        /// <param name="date"></param>
-        /// <returns></returns>
-        private double GetPrce(string client, string article, double date)
+        public double GetPrice(string Art)
         {
-            //где искать клиента ? CustomerColumn??
-            int rw = FindRow(CustomerColumn, client);
-            int firstfindedrw = rw;
-            double price;
-
-            do
-                if (rw > 0)
-                {
-                    if (GetValueFromColumn(rw, CodeColumn) == article)
-                    {
-                        if (GetValueFromColumn(rw, DateColumn) < date) {
-                            price = GetValueFromColumn(rw, PricelistPriceTotalColumn);
-                        }
-                    }
-                    else
-                    {
-                        rw = FindRow(CustomerColumn, client, Worksheet.Cells[rw, CustomerColumn]);
-                    }
-                }
-            while (rw != firstfindedrw);
-
-            return price;
+            FilePriceMT.Client client = clients.Find(x => x.Art == Art);
+            return client.Price;
         }
 
 
