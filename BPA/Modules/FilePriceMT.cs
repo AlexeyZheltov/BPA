@@ -13,6 +13,20 @@ using System.Threading.Tasks;
 
 namespace BPA.Modules
 {
+    class Test
+    {
+        void Go()
+        {
+            FilePriceMT file = new FilePriceMT();
+            file.Load("Название нужного магазина", new DateTime()); //Загрузить в внутринности класса список артикулов соответсвтующий даннаму магазину, за данную дату
+
+            //цикл
+            file.GetPrice("fhn");
+
+
+        }
+    }
+
     internal class FilePriceMT
     {
 
@@ -126,31 +140,7 @@ namespace BPA.Modules
             Workbook = workbook;
         }
 
-        
-        public List<Client> clients
-        {
-            get
-            {
-                if (_clients == null)
-                {
-                    try
-                    {
-                        Load();
-                    }
-                    catch
-                    {
-                        _clients = null;
-                    }
-                }
-                return _clients;
-            }
-            set
-            {
-                _clients = value;
-            }
-        }
-
-        private List<Client> _clients;
+        private List<Client> _clients = new List<Client>();
         public struct Client
         {
             public string Name {
@@ -166,34 +156,13 @@ namespace BPA.Modules
             }
         }
 
-
-        /// <summary>
-        /// здесь 
-        /// </summary>
-        public Range ClientCell 
-        { 
-            get 
-            {
-                return _ClientCell;
-            }
-            set
-            {
-                _ClientCell = value;
-                ClientName = ClientCell.Text;
-            } 
-        }
-        private Range _ClientCell;
-        public string ClientName
-        {
-            get => clientName;
-            set => clientName = value;
-        }
-
-        public void Load()
+        public void Load(string mag, DateTime date)
         {
             if (Workbook == null)
                 return;
-            
+
+            _clients.Clear();
+            //Тут загрузить все цены по магазину и дате.
             for (int rw = CalendarHeaderRow + 1; rw <= LastRow; rw++)
             {
                 if (!double.TryParse(GetValueFromColumn(rw, PriceForClientColumn), out double price))
@@ -215,8 +184,7 @@ namespace BPA.Modules
 
         public double GetPrice(string Art)
         {
-            FilePriceMT.Client client = clients.Find(x => x.Art == Art);
-            return client.Price;
+            return clients.Find(x => x.Art == Art).Price;
         }
 
 
