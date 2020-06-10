@@ -225,6 +225,11 @@ namespace BPA
                         break;
                     processBar.TaskStart($"Обрабатывается клиент {clientPrice.Name}");
 
+
+                    //проверяем в discount
+                    //Discount discount = new Discount().GetDiscount();
+                    //discount.status
+
                     //double price = clientPrice.Price
                     double price = filePriceMT.GetPrice(clientPrice.Art);
                     Debug.WriteLine(price);
