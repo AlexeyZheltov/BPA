@@ -8,20 +8,6 @@ using System.Collections.Generic;
 
 namespace BPA.Modules
 {
-    //class Test
-    //{
-    //    void Go()
-    //    {
-    //        FilePriceMT file = new FilePriceMT();
-    //        file.Load("Название нужного магазина", new DateTime()); //Загрузить в внутринности класса список артикулов соответсвтующий даннаму магазину, за данную дату
-
-    //        //цикл
-    //        file.GetPrice("fhn");
-
-
-    //    }
-    //}
-
     internal class FilePriceMT
     {
 
@@ -136,7 +122,7 @@ namespace BPA.Modules
             Workbook = workbook;
         }
 
-        private List<Client> clients = new List<Client>();
+        public List<Client> clients = new List<Client>();
         public struct Client
         {
             public string Name {

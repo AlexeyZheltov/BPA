@@ -10,12 +10,12 @@ using Microsoft.Office.Interop.Excel;
 using Microsoft.Office.Tools.Ribbon;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.IO;
+using System.Diagnostics;
 
 namespace BPA
 {
     public partial class RibbonBPA
     {
-        private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
 
         private void RibbonBPA_Load(object sender, RibbonUIEventArgs e)
         {
@@ -195,35 +195,40 @@ namespace BPA
         /// <param name="e"></param>
         private void GetClientPrice_Click(object sender, RibbonControlEventArgs e)
         {
+            Clients client = new Clients();
+            //можно в клиенте написать метод возвращающий  
+            //клиетна по активной ячейке, или строке. что-то типа
+            //Clients client = new Clients().activeRow;
+            //string clientMag = client.Mag;
+            string clientMag = "ЛЕРУ";
+            //
+
+            //dataTime выбраная пользователем
+            DateTime date = DateTime.Today; 
+            //
 
             FilePriceMT filePriceMT = new FilePriceMT();
-            List<FilePriceMT.Client> clients = filePriceMT.clients;
-            Range activeCell = Application.ActiveCell;
+            filePriceMT.Load(clientMag, date);
+            List<FilePriceMT.Client> clientsPriceList = filePriceMT.clients;
 
-            ProcessBar processBar = new ProcessBar("Формирование прайс-листа", clients.Count);
+            ProcessBar processBar = new ProcessBar("Формирование прайс-листа", clientsPriceList.Count);
             try
             {
                 FunctionsForExcel.SpeedOn();
                 processBar.Show();
                 Globals.ThisWorkbook.Activate();
                 
-                foreach (FilePriceMT.Client client in clients)
+                foreach (FilePriceMT.Client clientPrice in clientsPriceList)
                 {
                     if (processBar.IsCancel)
                         break;
-                    processBar.TaskStart($"Обрабатывается клиент {client.Name}");
-                    processBar.AddSubBar("Обновление данных", filePriceMT.LastRow);
-                    filePriceMT.ActionStart += processBar.SubBar.TaskStart;
-                    filePriceMT.ActionDone += processBar.SubBar.TaskDone;
+                    processBar.TaskStart($"Обрабатывается клиент {clientPrice.Name}");
                     processBar.SubBar.CancelClick += filePriceMT.Cancel;
 
-                    filePriceMT.ClientCell = activeCell;
-                    
-                    double price = filePriceMT.GetPrice(client.Art);
+                    //double price = clientPrice.Price
+                    double price = filePriceMT.GetPrice(clientPrice.Art);
+                    Debug.WriteLine(price);
                     //здесь создаем новый лист
-                    //
-
-                    //calendar.UpdateProducts();
                 }
             }
             catch (Exception ex)
@@ -233,10 +238,8 @@ namespace BPA
             finally
             {
                 FunctionsForExcel.SpeedOff();
-                processBar.SubBar.Close();
                 processBar.Close();
             }
-            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void GetAllPrices_Click(object sender, RibbonControlEventArgs e)
