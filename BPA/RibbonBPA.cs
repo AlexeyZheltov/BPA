@@ -204,7 +204,8 @@ namespace BPA
             //
 
             //dataTime выбраная пользователем
-            DateTime date = DateTime.Today; 
+            DateTime date = new DateTime(2017, 08, 15);
+            
             //
 
             FilePriceMT filePriceMT = new FilePriceMT();
@@ -223,7 +224,6 @@ namespace BPA
                     if (processBar.IsCancel)
                         break;
                     processBar.TaskStart($"Обрабатывается клиент {clientPrice.Name}");
-                    processBar.SubBar.CancelClick += filePriceMT.Cancel;
 
                     //double price = clientPrice.Price
                     double price = filePriceMT.GetPrice(clientPrice.Art);

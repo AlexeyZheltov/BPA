@@ -148,7 +148,7 @@ namespace BPA.Modules
             int rw = FindRow(MagColumn, mag);
             int firstFindedRw = rw;
 
-            DateTime tmpDateTime;
+            double dateDouble;
             DateTime firstDate = new DateTime();
             DateTime lastDate = new DateTime();
 
@@ -156,18 +156,20 @@ namespace BPA.Modules
             {
                 do
                 {
-                    if (DateTime.TryParse(GetValueFromColumn(rw, DateFromColumn), out tmpDateTime))
-                        firstDate = tmpDateTime;
-
-                    if (DateTime.TryParse(GetValueFromColumn(rw, DateFromColumn), out tmpDateTime))
-                        lastDate = tmpDateTime;
+                    if (Double.TryParse(GetValueFromColumn(rw, DateFromColumn), out dateDouble))
+                        firstDate = DateTime.FromOADate(dateDouble);
+                    
+                    if (Double.TryParse(GetValueFromColumn(rw, DateToColumn), out dateDouble))
+                        lastDate = DateTime.FromOADate(dateDouble);
 
                     if (lastDate.Year >= 9999)
-                        if (date >= firstDate || firstDate.Year >= 9999)
-                            AddClient(rw);
+                    {
+                        AddClient(rw, PriceOfListingColumn);
+                    }
                     else if (date <= lastDate && date >= firstDate)
-                        AddClient(rw);
-
+                    {
+                        AddClient(rw, PriceNewColumn);
+                    }
                     rw = FindRow(MagColumn, mag, Worksheet.Cells[rw, MagColumn]);
                 } 
                 while (firstFindedRw != rw);
@@ -177,9 +179,9 @@ namespace BPA.Modules
             IsCancel = true;
         }
 
-        private void AddClient(int rw)
+        private void AddClient(int rw, int priceColumn)
         {
-            if (!double.TryParse(GetValueFromColumn(rw, PriceForClientColumn), out double price))
+            if (!double.TryParse(GetValueFromColumn(rw, priceColumn), out double price))
             {
                 price = 0;
             }
