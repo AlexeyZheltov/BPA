@@ -74,46 +74,19 @@ namespace BPA.Modules
 
         #region --- Columns ---
 
-        public int CustomerColumn => FindColumn("Customer");
-        public int CustomerDeliveryColumn => FindColumn("CustomerDelivery");
-        public int ShopNameColumn => FindColumn("ShopName");
-        public int CodeColumn => FindColumn("Code");
-        public int CityColumn => FindColumn("City");
-        public int RegionColumn => FindColumn("Region");
-        public int SalesmanColumn => FindColumn("Salesman");
-        public int ClusterColumn => FindColumn("Cluster");
-        public int DateColumn => FindColumn("Date");
-        public int YearColumn => FindColumn("Year");
-        public int GroupColumn => FindColumn("Group");
-        public int CategoryColumn => FindColumn("Category");
-        public int SuperCategoryColumn => FindColumn("SuperCategory");
-        public int Group2Column => FindColumn("Group2");
-        public int AltgroupColumn => FindColumn("Altgroup");
-        public int TypeColumn => FindColumn("Type");
-        public int ModelColumn => FindColumn("Model");
-        public int InvoiceColumn => FindColumn("Invoice");
-        public int BrandColumn => FindColumn("Brand");
-        public int ProductGroupColumn => FindColumn("ProductGroup");
-        public int DiscountColumn => FindColumn("Discount");
-        public int CompanyColumn => FindColumn("Company");
-        public int QuantityColumn => FindColumn("Quantity");
-        public int TotalOrigColumn => FindColumn("TotalOrig");
-        public int ProfitOrigColumn => FindColumn("ProfitOrig");
-        public int WeightNkgColumn => FindColumn("WeightNkg");
-        public int WeightGkgColumn => FindColumn("WeightGkg");
-        public int VolumeCBMColumn => FindColumn("VolumeCBM");
-        public int ChannelColumn => FindColumn("Channel");
-        public int OrderLinesColumn => FindColumn("OrderLines");
-        public int PricelistPriceTotalColumn => FindColumn("PricelistPriceTotal");
-        public int BonusColumn => FindColumn("Bonus");
-        public int DivisionColumn => FindColumn("Division");
-        public int DoubleColumn => FindColumn("Double");
-        public int CampaignColumn => FindColumn("Campaign");
-        public int GardenaChannelColumn => FindColumn("GardenaChannel");
-        public int ProfitPoolColumn => FindColumn("ProfitPool");
-        public int ProfitPoolTypeColumn => FindColumn("ProfitPoolType");
-        public int HusqvarnaGradeColumn => FindColumn("HusqvarnaGrade");
-        public int GardenaGradeColumn => FindColumn("GardenaGrade");
+        public int MainColumn => FindColumn("Главный");
+        public int ArticleColumn => FindColumn("Артикул");
+        public int NameColumn => FindColumn("Название");
+        public int PriceForClientColumn => FindColumn("Цена_для_клиента");
+        public int ValidFromDatColumn => FindColumn("ValidFromDat");
+        public int ValidToDatColumn => FindColumn("ValidToDat");
+        public int CustCodeColumn => FindColumn("CustCode");
+        public int PriceOfListingColumn => FindColumn("Цена_листинга");
+        public int PriceNewColumn => FindColumn("Цена_новая");
+        public int FromColumn => FindColumn("От");
+        public int ToColumn => FindColumn("До");
+        public int MagColumn => FindColumn("Маг");
+
 
         #endregion
 
@@ -223,16 +196,16 @@ namespace BPA.Modules
             
             for (int rw = CalendarHeaderRow + 1; rw <= LastRow; rw++)
             {
-                if (!double.TryParse(GetValueFromColumn(rw, PricelistPriceTotalColumn), out double price))
+                if (!double.TryParse(GetValueFromColumn(rw, PriceForClientColumn), out double price))
                 {
                     price = 0;
                 }
                 
                 clients.Add(new Client
                 {
-                    Name = GetValueFromColumn(rw, CustomerColumn),
+                    Name = GetValueFromColumn(rw, MainColumn),
                     Price =  price,
-                    Art = GetValueFromColumn(rw, CodeColumn)
+                    Art = GetValueFromColumn(rw, ArticleColumn)
                 });
             }
 
