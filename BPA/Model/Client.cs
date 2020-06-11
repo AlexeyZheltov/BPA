@@ -99,15 +99,30 @@ namespace BPA.Model {
             public int GetHashCode(Client obj) => obj?.Customer.GetHashCode() ?? 0;
         }
 
-        public Client GetCurrentClients()
-        {
-            Range activeCell = Application.ActiveCell;
-            Worksheet activeSheet = Application.ActiveSheet;
-            if (activeSheet.Name != SheetName || activeCell.Row < FirstRow || activeCell.Row > LastRow) 
-                return null;
+        //public Client GetCurrentClients()
+        //{
+        //    Range activeCell = Application.ActiveCell;
+        //    Worksheet activeSheet = Application.ActiveSheet;
+        //    if (activeSheet.Name != SheetName || activeCell.Row < FirstRow || activeCell.Row > LastRow) 
+        //        return null;
             
-            Client clients = new Client(Table.ListRows[activeCell.Row - FirstRow + 1]);
-            return clients;
+        //    Client clients = new Client(Table.ListRows[activeCell.Row - FirstRow + 1]);
+        //    return clients;
+        //}
+
+        public void FillFromRow(Excel.ListRow row) => SetProperty(row);
+
+        public static Client GetCurrentClients()
+        {
+            Client client = new Client();
+            Range activeCell = client.Application.ActiveCell;
+            Worksheet activeSheet = client.Application.ActiveSheet;
+            if (activeSheet.Name != client.SheetName || activeCell.Row < client.FirstRow || activeCell.Row > client.LastRow)
+                return null;
+
+            client.FillFromRow(client.Table.ListRows[activeCell.Row - client.FirstRow + 1]);
+            return client;
         }
+
     }
 }

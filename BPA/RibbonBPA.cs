@@ -197,7 +197,7 @@ namespace BPA
         private void GetClientPrice_Click(object sender, RibbonControlEventArgs e)
         {
             //получить активного клиента, если нет, то на нет и суда нет
-
+            Client currentClient = Client.GetCurrentClients();
             //найти клиента в списке скидок
 
             //загрузить его скидки по категориям
