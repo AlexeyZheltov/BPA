@@ -104,11 +104,11 @@
     <Compile Include="Controls\ProgressBarControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Forms\Calendar.cs">
+    <Compile Include="Forms\MSCalendar.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Calendar.Designer.cs">
-      <DependentUpon>Calendar.cs</DependentUpon>
+    <Compile Include="Forms\MSCalendar.Designer.cs">
+      <DependentUpon>MSCalendar.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ProgressBar.cs">
       <SubType>Form</SubType>
@@ -155,8 +155,8 @@
     <Compile Include="Лист1.Designer.cs">
       <DependentUpon>Лист1.Designer.xml</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Forms\Calendar.resx">
-      <DependentUpon>Calendar.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\MSCalendar.resx">
+      <DependentUpon>MSCalendar.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ProgressBar.resx">
       <DependentUpon>ProgressBar.cs</DependentUpon>

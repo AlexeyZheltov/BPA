@@ -205,6 +205,16 @@ namespace BPA
             //распарсить формулы
 
             //Запросить дату
+            MSCalendar calendar = new MSCalendar();
+            if (calendar.ShowDialog(new ExcelWindows(Globals.ThisWorkbook)) == DialogResult.OK)
+            {
+                MessageBox.Show($"{calendar.SelectedDate}");
+            }
+            else
+            {
+                MessageBox.Show("Cansel button was pressed");
+            }
+            return;
 
             //подгрузить PriceMT если неужно, подключится к РРЦ
 
