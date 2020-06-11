@@ -196,18 +196,15 @@ namespace BPA
         /// <param name="e"></param>
         private void GetClientPrice_Click(object sender, RibbonControlEventArgs e)
         {
-            Clients client = new Clients();
-            //можно в клиенте написать метод возвращающий  
-            //клиетна по активной ячейке, или строке. что-то типа
-            //Clients client = new Clients().activeRow;
-            //string clientMag = client.Mag;
-            string clientMag = "ЛЕРУ";
-            //
+            Clients client = new Clients().GetCurrentClients();
+            if (client == null)
+                return;
+
+            string clientMag = client.Mag;
+            //string clientMag = "ЛЕРУ";
 
             //dataTime выбраная пользователем
             DateTime date = new DateTime(2017, 08, 15);
-            
-            //
 
             FilePriceMT filePriceMT = new FilePriceMT();
             filePriceMT.Load(clientMag, date);

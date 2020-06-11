@@ -51,7 +51,7 @@ namespace BPA.Model
         /// <summary>
         /// КАТЕГОРИЯ
         /// </summary>
-        public int Category
+        public string Category
         {
             get; set;
         }
@@ -59,7 +59,7 @@ namespace BPA.Model
         /// <summary>
         /// Фото продукта
         /// </summary>
-        public int Photo
+        public string Photo
         {
             get; set;
         }
@@ -67,7 +67,7 @@ namespace BPA.Model
         /// <summary>
         /// Продукт группа - название
         /// </summary>
-        public int ProductGroup
+        public string ProductGroup
         {
             get; set;
         }
@@ -75,7 +75,7 @@ namespace BPA.Model
         /// <summary>
         /// Артикул GARDENA
         /// </summary>
-        public int ArticleGardena
+        public string ArticleGardena
         {
             get; set;
         }
@@ -83,7 +83,7 @@ namespace BPA.Model
         /// <summary>
         /// Артикул предшествующего продукта (если есть)
         /// </summary>
-        public int ArticleOld
+        public string ArticleOld
         {
             get; set;
         }
@@ -91,7 +91,7 @@ namespace BPA.Model
         /// <summary>
         /// Название
         /// </summary>
-        public int Name
+        public string Name
         {
             get; set;
         }
@@ -99,7 +99,7 @@ namespace BPA.Model
         /// <summary>
         /// Описание
         /// </summary>
-        public int Description
+        public string Description
         {
             get; set;
         }
@@ -107,7 +107,7 @@ namespace BPA.Model
         /// <summary>
         /// РРЦ 2020, руб. с НДС
         /// </summary>
-        public int RRC
+        public double RRC
         {
             get; set;
         }
@@ -115,7 +115,7 @@ namespace BPA.Model
         /// <summary>
         /// EAN штуки
         /// </summary>
-        public int EAN
+        public string EAN
         {
             get; set;
         }
@@ -123,7 +123,7 @@ namespace BPA.Model
         /// <summary>
         /// страна производства
         /// </summary>
-        public int CountryOfOrigin
+        public string CountryOfOrigin
         {
             get; set;
         }
@@ -131,7 +131,7 @@ namespace BPA.Model
         /// <summary>
         /// единица измерения
         /// </summary>
-        public int UnitOfMeasure
+        public string UnitOfMeasure
         {
             get; set;
         }
@@ -139,7 +139,7 @@ namespace BPA.Model
         /// <summary>
         /// кол-во в мастер-паке
         /// </summary>
-        public int QuantityInMasterPack
+        public string QuantityInMasterPack
         {
             get; set;
         }
@@ -147,7 +147,7 @@ namespace BPA.Model
         /// <summary>
         /// Вес гросс штуки, финальный
         /// </summary>
-        public int ArticleGrossWeight
+        public string ArticleGrossWeight
         {
             get; set;
         }
@@ -155,7 +155,7 @@ namespace BPA.Model
         /// <summary>
         /// Вес нетто штуки, финальный
         /// </summary>
-        public int ArticleNetWeight
+        public string ArticleNetWeight
         {
             get; set;
         }
@@ -163,7 +163,7 @@ namespace BPA.Model
         /// <summary>
         /// Длина упаковки
         /// </summary>
-        public int PackagingLength
+        public string PackagingLength
         {
             get; set;
         }
@@ -171,7 +171,7 @@ namespace BPA.Model
         /// <summary>
         /// Ширина упаковки
         /// </summary>
-        public int PackagingWidth
+        public string PackagingWidth
         {
             get; set;
         }
@@ -179,7 +179,7 @@ namespace BPA.Model
         /// <summary>
         /// Высота упаковки
         /// </summary>
-        public int PackagingHeight
+        public string PackagingHeight
         {
             get; set;
         }
@@ -187,7 +187,7 @@ namespace BPA.Model
         /// <summary>
         /// Объем упаковки
         /// </summary>
-        public int PackagingVolume
+        public string PackagingVolume
         {
             get; set;
         }
@@ -195,7 +195,7 @@ namespace BPA.Model
         /// <summary>
         /// Кол-во штук на паллете
         /// </summary>
-        public int UnitsPerPallet
+        public string UnitsPerPallet
         {
             get; set;
         }
@@ -203,7 +203,7 @@ namespace BPA.Model
         /// <summary>
         /// Сертификация
         /// </summary>
-        public int Certificate
+        public string Certificate
         {
             get; set;
         }
@@ -211,11 +211,38 @@ namespace BPA.Model
         /// <summary>
         /// Гарантия
         /// </summary>
-        public int Warranty
+        public string Warranty
         {
             get; set;
         }
-        
+
         #endregion
+
+        FinalPriceList() { }
+
+        FinalPriceList(Product product)
+        {
+            this.Category = product.GenericName; //значение из справочника
+            //this.Photo // 
+            this.ProductGroup = product.ProductGroupRu;
+            this.ArticleGardena = product.Article;
+            this.ArticleOld = product.ArticleOld;
+            this.Name = product.ArticleRu;
+            //this.Description= product. //откуда описание
+            this.RRC = product.RRCFinal; //цена из
+            this.EAN = product.CalendarGTIN; //?
+            this.CountryOfOrigin = product.CalendarCountryOfOrigin;
+            this.UnitOfMeasure = product.CalendarUnitOfMeasure;
+            this.QuantityInMasterPack = product.CalendarQuantityInMasterPack;
+            this.ArticleGrossWeight = product.CalendarArticleGrossWeight;
+            this.ArticleNetWeight = product.CalendarArticleNetWeight;
+            this.PackagingLength = product.CalendarPackagingLength;
+            this.PackagingWidth = product.CalendarPackagingWidth;
+            this.PackagingHeight = product.CalendarPackagingHeight;
+            this.PackagingVolume = product.CalendarPackagingVolume;
+            this.UnitsPerPallet = product.CalendarUnitsPerPallet;
+            this.Certificate = product.LocalCertificate;
+            //this.Warranty= product.CalendarPackagingWidth //?
+        }
     }
 }
