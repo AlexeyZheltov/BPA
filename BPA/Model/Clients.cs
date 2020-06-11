@@ -102,10 +102,11 @@ namespace BPA.Model {
         public Clients GetCurrentClients()
         {
             Range activeCell = Application.ActiveCell;
-            if (activeCell.Parent.Name != SheetName || activeCell.Row < FirstRow) 
+            Worksheet activeSheet = Application.ActiveSheet;
+            if (activeSheet.Name != SheetName || activeCell.Row < FirstRow || activeCell.Row > LastRow) 
                 return null;
             
-            Clients clients = new Clients(Table.ListRows[activeCell.Row - FirstRow]);
+            Clients clients = new Clients(Table.ListRows[activeCell.Row - FirstRow + 1]);
             return clients;
         }
     }
