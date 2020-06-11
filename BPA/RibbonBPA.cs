@@ -158,23 +158,23 @@ namespace BPA
                 processBar.Show(new ExcelWindows(Globals.ThisWorkbook));
 
 
-                List<Clients> clientsFromDecision = fileDescision.LoadClients();
+                List<Client> clientsFromDecision = fileDescision.LoadClients();
 
                 processBar.Close();
 
                 //Загрузить данные из листа клиентов
-                List<Clients> clients = new List<Clients>();
-                foreach (Excel.ListRow row in new Clients().Table.ListRows)
+                List<Client> clients = new List<Client>();
+                foreach (Excel.ListRow row in new Client().Table.ListRows)
                 {
-                    clients.Add(new Clients(row));
+                    clients.Add(new Client(row));
                 }
 
                 //Получить разницу
-                List<Clients> newClients = clientsFromDecision.Except(clients, new Clients.ComparerCustomer()).ToList();
+                List<Client> newClients = clientsFromDecision.Except(clients, new Client.ComparerCustomer()).ToList();
 
                 //Выгрузить разницу как новых клиентов
                 newClients.ForEach(x => x.Save());
-                Clients ClientForSort = newClients.First();
+                Client ClientForSort = newClients.First();
                 ClientForSort.Sort("Id");
             }
             catch (Exception ex)
@@ -226,7 +226,7 @@ namespace BPA
 
             //Вывести
 
-            Clients client = new Clients();
+            Client client = new Client();
             //можно в клиенте написать метод возвращающий  
             //клиетна по активной ячейке, или строке. что-то типа
             //Clients client = new Clients().activeRow;

@@ -149,6 +149,8 @@ namespace BPA.Modules
             if (rw == 0)
                 return;
 
+            IsCancel = false;
+            ActionStart?.Invoke("Загрузка файла PriceListMT");
             int firstFindedRw = rw;
             double dateDouble;
             DateTime firstDate = new DateTime();
@@ -156,6 +158,7 @@ namespace BPA.Modules
 
             do
             {
+                if (IsCancel) return;
                 if (Double.TryParse(GetValueFromColumn(rw, DateFromColumn), out dateDouble))
                     firstDate = DateTime.FromOADate(dateDouble);
                     
@@ -171,10 +174,9 @@ namespace BPA.Modules
                     AddClient(rw, PriceNewColumn);
                 }
                 rw = FindRow(MagColumn, mag, Worksheet.Cells[rw, MagColumn]);
+                ActionDone?.Invoke(1);
             } 
             while (firstFindedRw != rw);
-            
-            IsCancel = true; //!
         }
 
         private void AddClient(int rw, int priceColumn)
