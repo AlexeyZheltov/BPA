@@ -146,37 +146,35 @@ namespace BPA.Modules
             clients.Clear();
 
             int rw = FindRow(MagColumn, mag);
-            int firstFindedRw = rw;
+            if (rw == 0)
+                return;
 
+            int firstFindedRw = rw;
             double dateDouble;
             DateTime firstDate = new DateTime();
             DateTime lastDate = new DateTime();
 
-            if (rw != 0)
+            do
             {
-                do
-                {
-                    if (Double.TryParse(GetValueFromColumn(rw, DateFromColumn), out dateDouble))
-                        firstDate = DateTime.FromOADate(dateDouble);
+                if (Double.TryParse(GetValueFromColumn(rw, DateFromColumn), out dateDouble))
+                    firstDate = DateTime.FromOADate(dateDouble);
                     
-                    if (Double.TryParse(GetValueFromColumn(rw, DateToColumn), out dateDouble))
-                        lastDate = DateTime.FromOADate(dateDouble);
+                if (Double.TryParse(GetValueFromColumn(rw, DateToColumn), out dateDouble))
+                    lastDate = DateTime.FromOADate(dateDouble);
 
-                    if (lastDate.Year >= 9999)
-                    {
-                        AddClient(rw, PriceOfListingColumn);
-                    }
-                    else if (date <= lastDate && date >= firstDate)
-                    {
-                        AddClient(rw, PriceNewColumn);
-                    }
-                    rw = FindRow(MagColumn, mag, Worksheet.Cells[rw, MagColumn]);
-                } 
-                while (firstFindedRw != rw);
-            }
-   
-            Close();
-            IsCancel = true;
+                if (lastDate.Year >= 9999)
+                {
+                    AddClient(rw, PriceOfListingColumn);
+                }
+                else if (date <= lastDate && date >= firstDate)
+                {
+                    AddClient(rw, PriceNewColumn);
+                }
+                rw = FindRow(MagColumn, mag, Worksheet.Cells[rw, MagColumn]);
+            } 
+            while (firstFindedRw != rw);
+            
+            IsCancel = true; //!
         }
 
         private void AddClient(int rw, int priceColumn)
