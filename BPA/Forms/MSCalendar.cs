@@ -15,14 +15,14 @@ namespace BPA.Forms
         public MSCalendar()
         {
             InitializeComponent();
-            SelectedDate = Calendar_Control.SelectionStart;
+            SelectedDate = Calendar_Control.SelectionStart.Date;
         }
 
         public DateTime SelectedDate { get; private set; }
 
         private void Calendar_Control_DateSelected(object sender, DateRangeEventArgs e)
         {
-            SelectedDate = e.Start;
+            SelectedDate = e.Start.Date;
         }
     }
 }

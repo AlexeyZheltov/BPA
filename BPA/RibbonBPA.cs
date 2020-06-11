@@ -11,6 +11,8 @@ using Microsoft.Office.Tools.Ribbon;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.IO;
 using System.Diagnostics;
+using System.Text;
+using Microsoft.Office.Core;
 
 namespace BPA
 {
@@ -197,85 +199,167 @@ namespace BPA
         private void GetClientPrice_Click(object sender, RibbonControlEventArgs e)
         {
             //получить активного клиента, если нет, то на нет и суда нет
-            Client currentClient = Client.GetCurrentClients();
-            //найти клиента в списке скидок
-
-            //загрузить его скидки по категориям
-
-            //распарсить формулы
+            Client currentClient = Client.GetCurrentClient();
+            if (currentClient == null) return;
 
             //Запросить дату
             MSCalendar calendar = new MSCalendar();
-            if (calendar.ShowDialog(new ExcelWindows(Globals.ThisWorkbook)) == DialogResult.OK)
+            DateTime currentDate;
+            if (calendar.ShowDialog(new ExcelWindows(Globals.ThisWorkbook)) == DialogResult.OK) currentDate = calendar.SelectedDate;
+            else return;
+            calendar.Close();
+
+            //найти клиента в списке скидок
+            List<Discount> discounts = Discount.GetAllDiscounts();
+            discounts = discounts.FindAll(x => x.ChannelType == currentClient.ChannelType 
+                                                && x.CustomerStatus == currentClient.CustomerStatus
+                                                && x.GetPeriodAsDateTime() != null
+                                                && x.GetPeriodAsDateTime() <= currentDate);
+
+            discounts.Sort((x, y) =>
             {
-                MessageBox.Show($"{calendar.SelectedDate}");
-            }
-            else
+                if (x.GetPeriodAsDateTime() > y.GetPeriodAsDateTime()) return 1;
+                else if (x.GetPeriodAsDateTime() < y.GetPeriodAsDateTime()) return -1;
+                else return 0;
+            });
+
+            Discount currentDiscount = discounts[0];
+            discounts = null;
+
+            //проверить формулы
+            //Убрать пробелы и лишние знаки
+            string FormulaNormalize(string value, bool RemoveMarks = false)
             {
-                MessageBox.Show("Cansel button was pressed");
+                //оставить только [метка], а вне ее только [1-9], +, - , *, /, (), %, =
+                StringBuilder builder = new StringBuilder();
+                bool isMark = false;
+
+                value = value.ToLower();
+                foreach (char ch in value.ToCharArray())
+                {
+                    if (ch == '[' & !RemoveMarks) isMark = true;
+                    else if (ch == ']' & isMark) isMark = false;
+
+                    if (!isMark)
+                    {
+                        if (Char.IsDigit(ch)) builder.Append(ch);
+                        else
+                        {
+                            switch (ch)
+                            {
+                                case '+':
+                                case '-':
+                                case '*':
+                                case '/':
+                                case '(':
+                                case ')':
+                                case '%':
+                                case '=':
+                                    builder.Append(ch);
+                                    break;
+                                case ',':
+                                case '.':
+                                    builder.Append('.');
+                                    break;
+                            }
+                        }
+
+                    }
+                    else builder.Append(ch);
+                }
+                return builder.ToString();
             }
-            return;
+
+            currentDiscount.IrrigationEquipments = FormulaNormalize(currentDiscount.IrrigationEquipments);
+            currentDiscount.Electricians = FormulaNormalize(currentDiscount.Electricians);
+            currentDiscount.Lawnmowers = FormulaNormalize(currentDiscount.Lawnmowers);
+            currentDiscount.Pumps = FormulaNormalize(currentDiscount.Pumps);
+            currentDiscount.CuttingTools = FormulaNormalize(currentDiscount.CuttingTools);
+            currentDiscount.WinterTools = FormulaNormalize(currentDiscount.WinterTools);
 
             //подгрузить PriceMT если неужно, подключится к РРЦ
+            FilePriceMT filePriceMT = null;
+            if(
+                currentDiscount.IrrigationEquipments.Contains("[pricelist mt]") ||
+                currentDiscount.Electricians.Contains("[pricelist mt]") ||
+                currentDiscount.Lawnmowers.Contains("[pricelist mt]") ||
+                currentDiscount.Pumps.Contains("[pricelist mt]") ||
+                currentDiscount.CuttingTools.Contains("[pricelist mt]") ||
+                currentDiscount.WinterTools.Contains("[pricelist mt]")
+                )
+            {
+                //Загурзить файл price list MT
+                filePriceMT = new FilePriceMT();
+                filePriceMT.Load(currentClient.Mag, currentDate);
+            }
 
             //Загрузка списка артикулов, какие из них актуальные?
+            List<Product> products = Product.GetProductsForDiscounts();
+            products = products.FindAll(x => x.Status.ToLower() == "активный");
 
-            //Добавить к ним инфу по ценам с учетом формул
+            //подключится к ценам
+            List<RRC> rrcs = RRC.GetAllRRC();
+
+            //в цикле менять метки на значения из цен, с заменой на .
+
+            //Еще раз прогнать по очистке формул
+
+            //расчитать значения по функции руслана
 
             //подключится к листу вывода цен со скидками
 
             //Вывести
 
-            Client client = new Client();
-            //можно в клиенте написать метод возвращающий  
-            //клиетна по активной ячейке, или строке. что-то типа
-            //Clients client = new Clients().activeRow;
-            //string clientMag = client.Mag;
-            string clientMag = "ЛЕРУ";
-            //
+            //Client client = new Client();
+            ////можно в клиенте написать метод возвращающий  
+            ////клиетна по активной ячейке, или строке. что-то типа
+            ////Clients client = new Clients().activeRow;
+            ////string clientMag = client.Mag;
+            //string clientMag = "ЛЕРУ";
+            ////
 
-            //dataTime выбраная пользователем
-            DateTime date = new DateTime(2017, 08, 15);
+            ////dataTime выбраная пользователем
+            //DateTime date = new DateTime(2017, 08, 15);
             
-            //
+            ////
 
-            FilePriceMT filePriceMT = new FilePriceMT();
-            filePriceMT.Load(clientMag, date);
-            List<FilePriceMT.Client> clientsPriceList = filePriceMT.clients;
+            //FilePriceMT filePriceMT = new FilePriceMT();
+            //filePriceMT.Load(clientMag, date);
+            //List<FilePriceMT.Client> clientsPriceList = filePriceMT.clients;
 
-            ProcessBar processBar = new ProcessBar("Формирование прайс-листа", clientsPriceList.Count);
-            try
-            {
-                FunctionsForExcel.SpeedOn();
-                processBar.Show();
-                Globals.ThisWorkbook.Activate();
+            //ProcessBar processBar = new ProcessBar("Формирование прайс-листа", clientsPriceList.Count);
+            //try
+            //{
+            //    FunctionsForExcel.SpeedOn();
+            //    processBar.Show();
+            //    Globals.ThisWorkbook.Activate();
                 
-                foreach (FilePriceMT.Client clientPrice in clientsPriceList)
-                {
-                    if (processBar.IsCancel)
-                        break;
-                    processBar.TaskStart($"Обрабатывается клиент {clientPrice.Name}");
+            //    foreach (FilePriceMT.Client clientPrice in clientsPriceList)
+            //    {
+            //        if (processBar.IsCancel)
+            //            break;
+            //        processBar.TaskStart($"Обрабатывается клиент {clientPrice.Name}");
 
 
-                    //проверяем в discount
-                    //Discount discount = new Discount().GetDiscount();
-                    //discount.status
+            //        //проверяем в discount
+            //        //Discount discount = new Discount().GetDiscount();
+            //        //discount.status
 
-                    //double price = clientPrice.Price
-                    double price = filePriceMT.GetPrice(clientPrice.Art);
-                    Debug.WriteLine(price);
-                    //здесь создаем новый лист
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                FunctionsForExcel.SpeedOff();
-                processBar.Close();
-            }
+            //        //double price = clientPrice.Price
+            //        double price = filePriceMT.GetPrice(clientPrice.Art);
+            //        Debug.WriteLine(price);
+            //        //здесь создаем новый лист
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //}
+            //finally
+            //{
+            //    FunctionsForExcel.SpeedOff();
+            //    processBar.Close();
+            //}
         }
 
         private void GetAllPrices_Click(object sender, RibbonControlEventArgs e)

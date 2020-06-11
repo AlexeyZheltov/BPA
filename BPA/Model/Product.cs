@@ -456,7 +456,40 @@ namespace BPA.Model
                     Article = row.Range[1, Table.ListColumns[Filds["Article"]].Index].Text,
                     Calendar = row.Range[1, Table.ListColumns[Filds["Calendar"]].Index].Text
                 };
-            products.Add(product);
+                products.Add(product);
+            }
+            return products;
+        }
+
+        public static List<Product> GetProductsForDiscounts()
+        {
+            List<Product> products = new List<Product>();
+            Product product = new Product();
+            foreach (ListRow row in product.Table.ListRows)
+            {
+                product = new Product()
+                {
+                    Id = (int)row.Range[1, product.Table.ListColumns[product.Filds["Id"]].Index].Value,
+                    Category = row.Range[1, product.Table.ListColumns[product.Filds["Category"]].Index].Text,
+                    ProductGroupRu = row.Range[1, product.Table.ListColumns[product.Filds["Название продукт группы(RUS)"]].Index].Text,
+                    Article = row.Range[1, product.Table.ListColumns[product.Filds["Артикул"]].Index].Text,
+                    ArticleOld = row.Range[1, product.Table.ListColumns[product.Filds["Артикул предшественника(если есть)"]].Index].Text,
+                    ArticleRu = row.Range[1, product.Table.ListColumns[product.Filds["Название артикула(RUS)"]].Index].Text,
+                    CalendarGTIN = row.Range[1, product.Table.ListColumns[product.Filds["GTIN-13/EAN"]].Index].Text,
+                    CalendarCountryOfOrigin = row.Range[1, product.Table.ListColumns[product.Filds["Country of Origin"]].Index].Text,
+                    CalendarUnitOfMeasure = row.Range[1, product.Table.ListColumns[product.Filds["Unit of measure"]].Index].Text,
+                    CalendarQuantityInMasterPack = row.Range[1, product.Table.ListColumns[product.Filds["Quantity in Master pack"]].Index].Text,
+                    CalendarArticleGrossWeight = row.Range[1, product.Table.ListColumns[product.Filds["Article gross weight"]].Index].Text,
+                    CalendarArticleNetWeight = row.Range[1, product.Table.ListColumns[product.Filds["Article net weight"]].Index].Text,
+                    CalendarPackagingLength = row.Range[1, product.Table.ListColumns[product.Filds["Packaging length"]].Index].Text,
+                    CalendarPackagingWidth = row.Range[1, product.Table.ListColumns[product.Filds["Packaging width"]].Index].Text,
+                    CalendarPackagingHeight = row.Range[1, product.Table.ListColumns[product.Filds["Packaging height"]].Index].Text,
+                    CalendarPackagingVolume = row.Range[1, product.Table.ListColumns[product.Filds["Packaging volume"]].Index].Text,
+                    CalendarUnitsPerPallet = row.Range[1, product.Table.ListColumns[product.Filds["Units Per Pallet"]].Index].Text,
+                    LocalCertificate = row.Range[1, product.Table.ListColumns[product.Filds["Локальный сертификат"]].Index].Text,
+                    Status = row.Range[1, product.Table.ListColumns[product.Filds["Статус"]].Index].Text
+                };
+                products.Add(product);
             }
             return products;
         }

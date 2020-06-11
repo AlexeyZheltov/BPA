@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace BPA.Model {
     /// <summary>
@@ -32,6 +33,9 @@ namespace BPA.Model {
             { "MaximumBonus", "Максимальный годовой бонус" }
         };
 
+        public Discount() { }
+
+        public Discount(Excel.ListRow row) => SetProperty(row);
 
         /// <summary>
         /// №
@@ -51,7 +55,7 @@ namespace BPA.Model {
         /// <summary>
         /// CustomerStatus
         /// </summary>
-        public int CustomerStatus {
+        public string CustomerStatus {
             get; set;
         }
 
@@ -111,5 +115,37 @@ namespace BPA.Model {
             get; set;
         }
 
+        Opti<DateTime?> PeriodAsDateTime;
+        public DateTime? GetPeriodAsDateTime()
+        {
+            if (!PeriodAsDateTime.isCalculated)
+            {
+                if (DateTime.TryParse(Period, out DateTime dateTime))
+                    PeriodAsDateTime.Value = dateTime;
+                else
+                    PeriodAsDateTime.Value = null;
+
+                PeriodAsDateTime.isCalculated = true;
+            }
+
+            return PeriodAsDateTime.Value;
+        }
+
+        public static List<Discount> GetAllDiscounts()
+        {
+            List<Discount> discounts = new List<Discount>();
+
+            foreach(Excel.ListRow row in new Discount().Table.ListRows)
+            {
+                discounts.Add(new Discount(row));
+            }
+            return discounts;
+        }
+
+        struct Opti<T>
+        {
+            public T Value { get; set; }
+            public bool isCalculated { get; set; }
+        }
     }
 }

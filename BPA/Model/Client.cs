@@ -112,7 +112,7 @@ namespace BPA.Model {
 
         public void FillFromRow(Excel.ListRow row) => SetProperty(row);
 
-        public static Client GetCurrentClients()
+        public static Client GetCurrentClient()
         {
             Client client = new Client();
             Range activeCell = client.Application.ActiveCell;

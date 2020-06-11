@@ -220,17 +220,16 @@ namespace BPA.Model
 
         FinalPriceList() { }
 
-        FinalPriceList(Product product)
+        public FinalPriceList(Product product)
         {
-            this.Category = product.GenericName; //значение из справочника
-            //this.Photo // 
+            this.Category = product.Category;
             this.ProductGroup = product.ProductGroupRu;
             this.ArticleGardena = product.Article;
             this.ArticleOld = product.ArticleOld;
             this.Name = product.ArticleRu;
             //this.Description= product. //откуда описание
-            this.RRC = product.RRCFinal; //цена из
-            this.EAN = product.CalendarGTIN; //?
+            //this.RRC = product.RRCFinal; //цена из
+            this.EAN = product.CalendarGTIN;
             this.CountryOfOrigin = product.CalendarCountryOfOrigin;
             this.UnitOfMeasure = product.CalendarUnitOfMeasure;
             this.QuantityInMasterPack = product.CalendarQuantityInMasterPack;
@@ -242,6 +241,7 @@ namespace BPA.Model
             this.PackagingVolume = product.CalendarPackagingVolume;
             this.UnitsPerPallet = product.CalendarUnitsPerPallet;
             this.Certificate = product.LocalCertificate;
+
             //this.Warranty= product.CalendarPackagingWidth //?
         }
     }

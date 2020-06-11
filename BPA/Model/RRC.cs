@@ -1,9 +1,11 @@
-﻿using Microsoft.Office.Interop.Excel;
+﻿using BPA.Modules;
+using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace BPA.Model {
     /// <summary>
@@ -71,6 +73,9 @@ namespace BPA.Model {
             get; set;
         }
 
+        public RRC(Excel.ListRow row) => SetProperty(row);
+        public RRC() { }
+
         public RRC GetRRC(string article, string date)
         {
             RRC rrc;
@@ -94,6 +99,16 @@ namespace BPA.Model {
                 while (afterCell != firstCell);
             }
             return null;
+        }
+
+        public static List<RRC> GetAllRRC()
+        {
+            List<RRC> rrcs = new List<RRC>();
+            foreach(Excel.ListRow row in new RRC().Table.ListRows)
+            {
+                rrcs.Add(new RRC(row));
+            }
+            return rrcs;
         }
 
     }
