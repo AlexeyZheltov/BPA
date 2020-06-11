@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Office.Interop.Excel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ namespace BPA.Model {
     /// </summary>
     class Clients : TableBase {
         //public static ComparerCustomer ComparerCustomer => new ComparerCustomer();
+        private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
 
         public override string TableName => "Клиенты";
         public override string SheetName => "Клиенты";
@@ -95,6 +97,17 @@ namespace BPA.Model {
             public bool Equals(Clients x, Clients y) => x.Customer == y.Customer;
 
             public int GetHashCode(Clients obj) => obj?.Customer.GetHashCode() ?? 0;
+        }
+
+        public Clients GetCurrentClients()
+        {
+            Range activeCell = Application.ActiveCell;
+            Worksheet activeSheet = Application.ActiveSheet;
+            if (activeSheet.Name != SheetName || activeCell.Row < FirstRow || activeCell.Row > LastRow) 
+                return null;
+            
+            Clients clients = new Clients(Table.ListRows[activeCell.Row - FirstRow + 1]);
+            return clients;
         }
     }
 }

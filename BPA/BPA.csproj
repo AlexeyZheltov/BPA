@@ -120,6 +120,7 @@
     <Compile Include="Model\Clients.cs" />
     <Compile Include="Model\Discount.cs" />
     <Compile Include="Model\DIY.cs" />
+    <Compile Include="Model\FinalPriceList.cs" />
     <Compile Include="Model\GardenaChanel.cs" />
     <Compile Include="Model\Plan.cs" />
     <Compile Include="Model\ProductExclusivity.cs" />
@@ -204,11 +205,10 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>
-    </ManifestKeyFile>
+    <ManifestKeyFile>BPA_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>6D619523655754037C1CCD67A496884B9B77C51D</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>4B3302C7ECD773C5D228A2DD51D9D95181DC9E9C</ManifestCertificateThumbprint>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\OfficeTools\Microsoft.VisualStudio.Tools.Office.targets" Condition="'$(VSToolsPath)' != ''" />
