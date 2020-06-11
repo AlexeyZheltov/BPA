@@ -197,10 +197,12 @@ namespace BPA
         private void GetClientPrice_Click(object sender, RibbonControlEventArgs e)
         {
             Clients client = new Clients().GetCurrentClients();
-            if (client == null)
+            if (client == null )
                 return;
 
             string clientMag = client.Mag;
+            if (clientMag == "")
+                return;
             //string clientMag = "ЛЕРУ";
 
             //dataTime выбраная пользователем
@@ -233,6 +235,8 @@ namespace BPA
                     Debug.WriteLine(price);
                     //здесь создаем новый лист
                 }
+
+                filePriceMT.Close();
             }
             catch (Exception ex)
             {
