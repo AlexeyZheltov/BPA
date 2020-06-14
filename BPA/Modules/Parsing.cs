@@ -11,10 +11,13 @@ namespace BPA.Modules
         public string CalculateStringFormula(string formula)
         {
             string tmpFormula = formula;
+            if (tmpFormula.Substring(0, 1) == "=")
+                tmpFormula = tmpFormula.Substring(1, tmpFormula.Length - 1);
+
             tmpFormula = ChangePercent(tmpFormula);
 
-            int bracketOpenPos = formula.IndexOf("(");
-            int bracketClosePos = formula.LastIndexOf(")");
+            int bracketOpenPos = tmpFormula.IndexOf("(");
+            int bracketClosePos = tmpFormula.LastIndexOf(")");
             if (bracketOpenPos >= 0)
             {
                 string bracketFormula = tmpFormula.Substring(bracketOpenPos + 1, bracketClosePos - bracketOpenPos-1);
@@ -25,8 +28,8 @@ namespace BPA.Modules
                 return tmpFormula;
             }
 
-            DoMultiplication(tmpFormula);
-            DoPlus(tmpFormula);
+            tmpFormula = DoMultiplication(tmpFormula);
+            tmpFormula = DoPlus(tmpFormula);
 
             return tmpFormula;
         }
