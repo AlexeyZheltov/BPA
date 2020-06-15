@@ -10,20 +10,14 @@ namespace BPA.Modules
     {
         public static double Calculation(string formula)
         {
-            double res=0;
+            double res;
 
-            try
+            if (double.TryParse(CalculateStringFormula(formula), out res))
             {
-                res = double.Parse(CalculateStringFormula(formula));
-            }
-            catch (Exception)
+                return res;
+            } else
             {
-                //res = 0;
-                throw new ApplicationException();
-            }
-            finally
-            {
-                //return res;
+                throw new Exception("Ошибка в формуле");
             }
         }
 
