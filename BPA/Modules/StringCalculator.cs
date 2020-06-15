@@ -20,6 +20,7 @@ namespace BPA.Modules
         //    LinkedList<string> tokenList = ToLinkedList(expression);
 
         //    Stack<object> stack = new Stack<object>();
+
         //}
 
         private string ClearExpression(string expression)

@@ -267,6 +267,8 @@ namespace BPA
                     }
                     else builder.Append(ch);
                 }
+
+                string temp = System.Text.RegularExpressions.Regex.Replace(builder.ToString(), @"\s+", " ");
                 return builder.ToString();
             }
 
@@ -300,7 +302,11 @@ namespace BPA
             //подключится к ценам
             List<RRC> rrcs = RRC.GetAllRRC();
 
-            //в цикле менять метки на значения из цен, с заменой на .
+            //в цикле менять метки на значения из цен, с заменой;
+            foreach(Product product in products)
+            {
+                
+            }
 
             //Еще раз прогнать по очистке формул
 

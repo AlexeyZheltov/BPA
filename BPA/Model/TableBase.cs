@@ -220,7 +220,7 @@ namespace BPA.Model
         /// </summary>
         /// <param name="name">Имя свойства</param>
         /// <returns></returns>
-        private object GetParametrValue(string name)
+        protected object GetParametrValue(string name)
         {
             foreach (var prop in GetType().GetProperties())
             {

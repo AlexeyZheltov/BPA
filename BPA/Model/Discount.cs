@@ -37,6 +37,8 @@ namespace BPA.Model {
 
         public Discount(Excel.ListRow row) => SetProperty(row);
 
+        public string GetFormulaByName(string name) => (string)GetParametrValue(name);
+
         /// <summary>
         /// №
         /// </summary>
