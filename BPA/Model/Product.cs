@@ -4,7 +4,7 @@ using Microsoft.Office.Interop.Excel;
 
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace BPA.Model
@@ -68,6 +68,8 @@ namespace BPA.Model
             { "LocalCertificate","Локальный сертификат" },
 
             { "IRP","IRP, Eur" },
+            { "RRCCurrent","РРЦ текущий" },
+            { "DIYCurrent","DIY текущий" },
             { "RRCPercent","Процент повышения РРЦ" },
             { "RRCCalculated","РРЦ расчетная, руб." },
             { "RRCFinal","РРЦ финальная, руб." },
@@ -84,79 +86,136 @@ namespace BPA.Model
         /// <summary>
         /// №
         /// </summary>
-        public int Id { get; set; }
+        public int Id
+        {
+            get; set;
+        }
         /// <summary>
         /// Категория для прайс-листа диллеров
         /// </summary>
-        public string Category { get; set; }
+        public string Category
+        {
+            get; set;
+        }
         /// <summary>
         /// Суперкатегория(ENG)
         /// </summary>
-        public string SupercategoryEng { get; set; }
+        public string SupercategoryEng
+        {
+            get; set;
+        }
         /// <summary>
         /// Суперкатегория(RUS)
         /// </summary>
-        public string SupercategoryRu { get; set; }
+        public string SupercategoryRu
+        {
+            get; set;
+        }
         /// <summary>
         /// Продукт группа
         /// </summary>
-        public string ProductGroup { get; set; }
+        public string ProductGroup
+        {
+            get; set;
+        }
         /// <summary>
         /// Название продукт группы(ENG)
         /// </summary>
-        public string ProductGroupEng { get; set; }
+        public string ProductGroupEng
+        {
+            get; set;
+        }
         /// <summary>
         /// Название продукт группы(RUS)
         /// </summary>
-        public string ProductGroupRu { get; set; }
+        public string ProductGroupRu
+        {
+            get; set;
+        }
         /// <summary>
         /// SubGroup
         /// </summary>
-        public string SubGroup { get; set; }
+        public string SubGroup
+        {
+            get; set;
+        }
         /// <summary>
         /// Generic Name(long)
         /// </summary>
-        public string GenericName { get; set; }
+        public string GenericName
+        {
+            get; set;
+        }
         /// <summary>
         /// Model
         /// </summary>
-        public string Model { get; set; }
+        public string Model
+        {
+            get; set;
+        }
         /// <summary>
         /// PNS
         /// </summary>
-        public string PNS { get; set; }
+        public string PNS
+        {
+            get; set;
+        }
         /// <summary>
         /// Артикул
         /// </summary>
-        public string Article { get; set; }
+        public string Article
+        {
+            get; set;
+        }
         /// <summary>
         /// Артикул предшественника(если есть)
         /// </summary>
-        public string ArticleOld { get; set; }
+        public string ArticleOld
+        {
+            get; set;
+        }
         /// <summary>
         /// Название артикула(ENG)
         /// </summary>
-        public string ArticleEng { get; set; }
+        public string ArticleEng
+        {
+            get; set;
+        }
         /// <summary>
         /// Название артикула(RUS)
         /// </summary>
-        public string ArticleRu { get; set; }
+        public string ArticleRu
+        {
+            get; set;
+        }
         /// <summary>
         /// Используемый календарь
         /// </summary>
-        public string Calendar { get; set; }
+        public string Calendar
+        {
+            get; set;
+        }
         /// <summary>
         /// Статус
         /// </summary>
-        public string Status { get; set; }
+        public string Status
+        {
+            get; set;
+        }
         /// <summary>
         /// Эксклюзив клиента или канала продажи
         /// </summary>
-        public string Exclusive { get; set; }
+        public string Exclusive
+        {
+            get; set;
+        }
         /// <summary>
         /// Локальный сертификат
         /// </summary>
-        public string LocalCertificate { get; set; }
+        public string LocalCertificate
+        {
+            get; set;
+        }
 
         #endregion
 
@@ -165,7 +224,10 @@ namespace BPA.Model
         /// <summary>
         /// to be sold in
         /// </summary>
-        public string CalendarToBeSoldIn { get; set; }
+        public string CalendarToBeSoldIn
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Sales Start Date
@@ -337,6 +399,22 @@ namespace BPA.Model
         }
 
         /// <summary>
+        /// РРЦ текущий
+        /// </summary>
+        public Double RRCCurrent
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// DIY текущий
+        /// </summary>
+        public Double DIYCurrent
+        {
+            get; set;
+        }
+
+        /// <summary>
         /// Процент повышения РРЦ
         /// </summary>
         public Double RRCPercent
@@ -392,6 +470,35 @@ namespace BPA.Model
         }
         #endregion
 
+        /// <summary>
+        /// Дата повышения
+        /// </summary>
+        /// <returns></returns>
+
+        public DateTime DateOfPromotion
+        {
+            get
+            {
+                string dateOfPromotionLabel = "Дата повышения";
+
+                try
+                {
+                    Range dateCell = Table.DataBodyRange.Cells[1, 1].Parent.UsedRange.Find(dateOfPromotionLabel, LookAt: XlLookAt.xlWhole);
+                    return DateTime.Parse(dateCell.Offset[0, 1].Text);
+                }
+                catch
+                {
+                    return new DateTime();
+                }
+            }
+
+            set
+            {
+                _DateOfPromotion = value;
+            }
+        }
+        private DateTime _DateOfPromotion;
+
         public Product GetProduct(string article)
         {
 
@@ -404,7 +511,6 @@ namespace BPA.Model
             }
 
             return null;
-            //return new Product();
         }
 
         /// <summary>
@@ -413,7 +519,8 @@ namespace BPA.Model
         /// <returns></returns>
         public Product GetPoductActive()
         {
-            if (Application.ActiveCell.Row <= FirstRow || Application.ActiveCell.Row >= LastRow) return null;
+            if (Application.ActiveCell.Row <= FirstRow || Application.ActiveCell.Row >= LastRow)
+                return null;
 
             ListRow listRow = Table.ListRows[Application.Selection[1].Row - Table.Range.Row];
             if (listRow != null)
@@ -456,7 +563,7 @@ namespace BPA.Model
                     Article = row.Range[1, Table.ListColumns[Filds["Article"]].Index].Text,
                     Calendar = row.Range[1, Table.ListColumns[Filds["Calendar"]].Index].Text
                 };
-            products.Add(product);
+                products.Add(product);
             }
             return products;
         }
@@ -466,21 +573,11 @@ namespace BPA.Model
         /// </summary>
         public void SetFromCalendar(Workbook workbook)
         {
-           // if (string.IsNullOrEmpty(Calendar)) return;
-           // ProductCalendar productCalendar = new ProductCalendar(Calendar);
             FileCalendar fileCalendar = new FileCalendar(workbook);
-           /*try
-            {
-                fileCalendar = new FileCalendar(productCalendar.Path);
-            }
-            catch (FileNotFoundException ex)
-            {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }*/
-            
+
             Product product = fileCalendar.GetProduct(Article);
-            if (product == null) return;
+            if (product == null)
+                return;
             this.CalendarSalesStartDate = product.CalendarSalesStartDate;
             this.CalendarPreliminaryEliminationDate = product.CalendarPreliminaryEliminationDate;
             this.CalendarEliminationDate = product.CalendarEliminationDate;
@@ -502,7 +599,7 @@ namespace BPA.Model
             this.CalendarProductSizeWidth = product.CalendarProductSizeWidth;
             this.CalendarProductSizeLength = product.CalendarProductSizeLength;
             this.CalendarUnitsPerPallet = product.CalendarUnitsPerPallet;
-            
+
             this.GenericName = product.GenericName;
             this.Model = product.Model;
             this.SubGroup = product.SubGroup;
@@ -513,6 +610,23 @@ namespace BPA.Model
 
             Update();
         }
+
+        public void UpdatePriceFromRRC(RRC rrc)
+        {
+            if (rrc != null)
+            {
+                this.RRCCurrent = rrc.RRCNDS;
+                this.DIYCurrent = rrc.DIY;
+            }
+            else
+            {
+                this.RRCCurrent = 0;
+                this.DIYCurrent = 0;
+            }
+
+            Update();
+        }
+
     }
 }
 

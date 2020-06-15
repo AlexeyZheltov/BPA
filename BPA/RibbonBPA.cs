@@ -132,6 +132,45 @@ namespace BPA
 
         private void UploadPrice_Click(object sender, RibbonControlEventArgs e)
         {
+            List<Product> products = new Product().GetProducts();
+            ProcessBar processBar = new ProcessBar("Обновление цен из справочника", products.Count);
+            try
+            {
+                FunctionsForExcel.SpeedOn();
+
+                //Product product = new Product();
+                processBar.Show();
+                Globals.ThisWorkbook.Activate();
+
+                DateTime date = products[0].DateOfPromotion;
+                foreach (Product product in products)
+                {
+                    if (processBar.IsCancel)
+                        break;
+                    processBar.TaskStart($"Обрабатывается артикул {product.Article}");
+                    //calendar.ActionStart += processBar.SubBar.TaskStart;
+                    //calendar.ActionDone += processBar.SubBar.TaskDone;
+                    //processBar.SubBar.CancelClick += product.Cancel;
+
+                    if (date.Year > 1)
+                    {
+                        RRC rrc = new RRC().GetRRC(product.Article, date);
+                        product.UpdatePriceFromRRC(rrc);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                FunctionsForExcel.SpeedOff();
+                //processBar.SubBar.Close();
+                processBar.Close();
+            }
+
+
             MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 

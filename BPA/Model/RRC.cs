@@ -53,48 +53,61 @@ namespace BPA.Model {
         /// <summary>
         /// РРЦ, руб. с НДС
         /// </summary>
-        public string RRCNDS {
+        public double RRCNDS {
             get; set;
         }
 
         /// <summary>
         /// DIY price list, руб. без НДС
         /// </summary>
-        public string DIY {
+        public double DIY {
             get; set;
         }
 
         /// <summary>
         /// Дата принятия
         /// </summary>
-        public string Date {
+        public DateTime Date {
             get; set;
         }
 
-        public RRC GetRRC(string article, string date)
+        /// <summary>
+        /// поиск в справочнике цен артикула article с датой date не познее указанной
+        /// </summary>
+        /// <param name="article"></param>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public RRC GetRRC(string article, DateTime date)
         {
-            RRC rrc;
             ListRow listRow = GetRow("Article", article);
+            RRC currentRRC = new RRC();
+
             if (listRow != null)
             {
-                Range firstCell = listRow.Range[1, Table.ListColumns[Filds["Date"]].Index];
-                Range afterCell;
+                Range firstCell = listRow.Range[1, Table.ListColumns[Filds["Article"]].Index];
+                int firstCellRow = firstCell.Row;
+                int afterCellRow;
+
                 do
                 {
-                    rrc = new RRC();
-                    rrc.SetProperty(listRow);
+                    RRC tmpRRC = new RRC();
+                    tmpRRC.SetProperty(listRow);
 
-                    if (rrc.Date == date)
-                    { 
-                        return rrc;
+                    if (tmpRRC.Date <= date)
+                    {
+                        currentRRC = tmpRRC.Date > currentRRC.Date ? tmpRRC : currentRRC;
                     }
-                    afterCell = listRow.Range[1, Table.ListColumns[Filds["Date"]].Index];
-                    listRow = GetRow("Article", article, afterCell); 
-                }
-                while (afterCell != firstCell);
-            }
-            return null;
-        }
 
+                    listRow = GetRow("Article", article, firstCell); 
+                    Range afterCell = listRow.Range[1, Table.ListColumns[Filds["Article"]].Index];
+                    firstCell = afterCell;
+                    afterCellRow = afterCell.Row;
+                }
+                while (afterCellRow != firstCellRow);
+
+                return currentRRC;
+            }
+            return currentRRC;
+        }
     }
 }
