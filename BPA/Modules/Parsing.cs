@@ -50,6 +50,7 @@ namespace BPA.Modules
         {
             string tmpFormula = ExcelFormula;
 
+            tmpFormula = tmpFormula.Replace(" ", "");
             if (tmpFormula.Substring(0, 1) == "=")
                 tmpFormula = tmpFormula.Substring(1, tmpFormula.Length - 1);
 
@@ -131,10 +132,13 @@ namespace BPA.Modules
                 if (signDivPos < 0 && signMultPos < 0)
                     break;
 
-                if (signMultPos < signDivPos || signDivPos < 0)
+                if ((signMultPos < signDivPos || signDivPos < 0) && signMultPos >= 0)
+                //if (signMultPos < signDivPos || signDivPos < 0)
                 {
                     tmpFormula = GetMult(tmpFormula, signMultPos);
-                } else if (signDivPos < signMultPos || signMultPos < 0)
+                } 
+                //else if (signDivPos < signMultPos || signMultPos < 0)
+                else if ((signDivPos < signMultPos || signMultPos < 0) && signDivPos >= 0)
                 {
                     tmpFormula = GetDiv(tmpFormula, signDivPos);
                 }
@@ -189,7 +193,7 @@ namespace BPA.Modules
             string numLeft = GetNumLeft(tmpFormula, singPos);
             string numRight = GetNumRight(tmpFormula, singPos);
 
-            double result = double.Parse(numRight) / double.Parse(numLeft);
+            double result = double.Parse(numLeft) / double.Parse(numRight);
 
             return tmpFormula.Substring(0, singPos - numLeft.Length) +
                                 result.ToString() +
@@ -201,11 +205,6 @@ namespace BPA.Modules
         {
             string numLeft = GetNumLeft(tmpFormula, singPos);
             string numRight = GetNumRight(tmpFormula, singPos);
-
-            if (tmpFormula.Substring(singPos - numLeft.Length - 1, 1) == "-")
-            {
-                numLeft = "-" + numLeft;
-            }
 
             double result = double.Parse(numRight) + double.Parse(numLeft);
 
@@ -219,10 +218,6 @@ namespace BPA.Modules
         {
             string numLeft = GetNumLeft(tmpFormula, singPos);
             string numRight = GetNumRight(tmpFormula, singPos);
-
-            if (tmpFormula.Substring(singPos - numLeft.Length, 1) == "-" || singPos == 0) {
-                numLeft = "-" + numLeft;
-            }
 
             double result = double.Parse(numLeft) - double.Parse(numRight);
 
@@ -247,6 +242,15 @@ namespace BPA.Modules
 
                 numString = sign + numString;
             }
+
+            if (signPos - numString.Length - 1 > 0)
+            {
+                if (numString.Substring(signPos - numString.Length - 1, 1) == "-")
+                {
+                    numString = "-" + numString;
+                }
+            }
+
             return numString;
         }
 
