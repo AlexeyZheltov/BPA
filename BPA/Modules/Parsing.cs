@@ -8,33 +8,93 @@ namespace BPA.Modules
 {
     public class Parsing
     {
-        public string CalculateStringFormula(string formula)
+        private string ExcelFormula;
+        public double Result;
+        public Parsing() { }
+
+        public Parsing(string formula)
         {
-            string tmpFormula = formula;
+            ExcelFormula = formula;
+            Result = Double.Parse(CalculateStringFormula());
+        }
+        public struct Bracket
+        {
+            public int OpenPos
+            {
+                get; set;
+            }
+            public int ClosePos
+            {
+                get; set;
+            }
+            public string Formula
+            {
+                get; set;
+            }
+            public string Result
+            {
+                get {
+                    string result = ChangePercent(this.Formula);
+
+                    if (Double.TryParse(this.Formula, out _))
+                        return Result = result;
+
+                    result = DoMultiplication(result);
+                    result = DoPlus(result);
+                    return Result = result;
+                }
+                set { }
+            }
+        }
+        public string CalculateStringFormula()
+        {
+            string tmpFormula = ExcelFormula;
+
             if (tmpFormula.Substring(0, 1) == "=")
                 tmpFormula = tmpFormula.Substring(1, tmpFormula.Length - 1);
 
-            tmpFormula = ChangePercent(tmpFormula);
-
-            int bracketOpenPos = tmpFormula.IndexOf("(");
-            int bracketClosePos = tmpFormula.LastIndexOf(")");
-            if (bracketOpenPos >= 0)
+            int bracketOpenPos;
+            do
             {
-                string bracketFormula = tmpFormula.Substring(bracketOpenPos + 1, bracketClosePos - bracketOpenPos-1);
-                tmpFormula = CalculateStringFormula(bracketFormula);
-            }
-            else if (Double.TryParse(tmpFormula, out _))
-            {
-                return tmpFormula;
-            }
+                Bracket bracket = new Bracket();
+                bracketOpenPos = tmpFormula.IndexOf("(");
+                if (bracketOpenPos < 0) break;
 
-            tmpFormula = DoMultiplication(tmpFormula);
-            tmpFormula = DoPlus(tmpFormula);
+                bracket = GetResultInBrackets(tmpFormula);
+                tmpFormula = tmpFormula.Substring(0, bracket.OpenPos) +
+                                    bracket.Result +
+                                    tmpFormula.Substring(bracket.ClosePos+1);
+            }
+            while (bracketOpenPos >= 0);
 
-            return tmpFormula;
+            Bracket bracketRes = new Bracket();
+            bracketRes.Formula = tmpFormula;
+            return bracketRes.Result;
         }
 
-        private string ChangePercent(string tmpFormula)
+        private Bracket GetResultInBrackets(string formula)
+        {
+            string tmpFormula = formula;
+
+            Bracket bracket = new Bracket();
+
+            int bracketClosePos = tmpFormula.IndexOf(")");
+            if (bracketClosePos < 0)
+            {
+                bracket.Formula = tmpFormula;
+            }
+            else
+            {
+                int bracketOpenPos = tmpFormula.LastIndexOf("(", bracketClosePos);
+
+                bracket.OpenPos = bracketOpenPos;
+                bracket.ClosePos = bracketClosePos;
+                bracket.Formula = tmpFormula.Substring(bracketOpenPos + 1, bracketClosePos - bracketOpenPos - 1);
+            }
+            return bracket;
+        }
+
+        private static string ChangePercent(string tmpFormula)
         {
             int percentPos;
             do
@@ -57,7 +117,7 @@ namespace BPA.Modules
             return tmpFormula;
         }
 
-        private string DoMultiplication(string formula)
+        private static string DoMultiplication(string formula)
         {
             int signMultPos;
             int signDivPos;
@@ -84,7 +144,7 @@ namespace BPA.Modules
             return tmpFormula;
         }
 
-        private string DoPlus(string formula)
+        private static string DoPlus(string formula)
         {
             int signPlusPos;
             int signMinusPos;
@@ -112,7 +172,7 @@ namespace BPA.Modules
             return tmpFormula;
         }
 
-        private string GetMult(string tmpFormula, int singPos)
+        private static string GetMult(string tmpFormula, int singPos)
         {
             string numLeft = GetNumLeft(tmpFormula, singPos);
             string numRight = GetNumRight(tmpFormula, singPos);
@@ -124,8 +184,7 @@ namespace BPA.Modules
                                 tmpFormula.Substring(singPos + numRight.Length+1);
         }
 
-
-        private string GetDiv(string tmpFormula, int singPos)
+        private static string GetDiv(string tmpFormula, int singPos)
         {
             string numLeft = GetNumLeft(tmpFormula, singPos);
             string numRight = GetNumRight(tmpFormula, singPos);
@@ -138,7 +197,7 @@ namespace BPA.Modules
 
         }
 
-        private string GetPlus(string tmpFormula, int singPos)
+        private static string GetPlus(string tmpFormula, int singPos)
         {
             string numLeft = GetNumLeft(tmpFormula, singPos);
             string numRight = GetNumRight(tmpFormula, singPos);
@@ -156,7 +215,7 @@ namespace BPA.Modules
 
         }
 
-        private string GetMinus(string tmpFormula, int singPos)
+        private static string GetMinus(string tmpFormula, int singPos)
         {
             string numLeft = GetNumLeft(tmpFormula, singPos);
             string numRight = GetNumRight(tmpFormula, singPos);
@@ -173,7 +232,7 @@ namespace BPA.Modules
 
         }
 
-        private string GetNumLeft(string formula, int signPos)
+        private static string GetNumLeft(string formula, int signPos)
         {
             string numString = "";
             if (signPos <= 0)
@@ -191,7 +250,7 @@ namespace BPA.Modules
             return numString;
         }
 
-        private string GetNumRight(string formula, int signPos)
+        private static string GetNumRight(string formula, int signPos)
         {
             string numString = "";
             if (signPos <= 0)
