@@ -10,7 +10,21 @@ namespace BPA.Modules
     {
         public static double Calculation(string formula)
         {
-            return Double.Parse(CalculateStringFormula(formula));
+            double res=0;
+
+            try
+            {
+                res = double.Parse(CalculateStringFormula(formula));
+            }
+            catch (Exception)
+            {
+                //res = 0;
+                throw new ApplicationException();
+            }
+            finally
+            {
+                //return res;
+            }
         }
 
         public struct Bracket
