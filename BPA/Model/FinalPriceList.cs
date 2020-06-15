@@ -23,6 +23,7 @@ namespace BPA.Model
         public override IDictionary<string, string> Filds => _filds;
         private readonly Dictionary<string, string> _filds = new Dictionary<string, string>
         {
+            {  "Id", "Id" },
             {  "Category","КАТЕГОРИЯ"  },
             {  "Photo","Фото продукта"  },
             {  "ProductGroup","Продукт группа - название"  },
@@ -48,6 +49,14 @@ namespace BPA.Model
         #endregion
 
         #region -- Основные свойства столбцов ---
+
+        /// <summary>
+        /// Id
+        /// </summary>
+        public int Id
+        {
+            get; set;
+        }
 
         /// <summary>
         /// КАТЕГОРИЯ

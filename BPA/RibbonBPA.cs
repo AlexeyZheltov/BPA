@@ -198,163 +198,173 @@ namespace BPA
         /// <param name="e"></param>
         private void GetClientPrice_Click(object sender, RibbonControlEventArgs e)
         {
-            //получить активного клиента, если нет, то на нет и суда нет
-            Client currentClient = Client.GetCurrentClient();
-            if (currentClient == null) return;
-
-            //Запросить дату
-            MSCalendar calendar = new MSCalendar();
-            DateTime currentDate;
-            if (calendar.ShowDialog(new ExcelWindows(Globals.ThisWorkbook)) == DialogResult.OK) currentDate = calendar.SelectedDate;
-            else return;
-            calendar.Close();
-
-            //найти клиента в списке скидок
-            List<Discount> discounts = Discount.GetAllDiscounts();
-            discounts = discounts.FindAll(x => x.ChannelType == currentClient.ChannelType 
-                                                && x.CustomerStatus == currentClient.CustomerStatus
-                                                && x.GetPeriodAsDateTime() != null
-                                                && x.GetPeriodAsDateTime() <= currentDate);
-
-            discounts.Sort((x, y) =>
+            try
             {
-                if (x.GetPeriodAsDateTime() > y.GetPeriodAsDateTime()) return 1;
-                else if (x.GetPeriodAsDateTime() < y.GetPeriodAsDateTime()) return -1;
-                else return 0;
-            });
+                //получить активного клиента, если нет, то на нет и суда нет
+                Client currentClient = Client.GetCurrentClient();
+                if (currentClient == null) return;
 
-            Discount currentDiscount = discounts[0];
-            discounts = null;
+                //Запросить дату
+                MSCalendar calendar = new MSCalendar();
+                DateTime currentDate;
+                if (calendar.ShowDialog(new ExcelWindows(Globals.ThisWorkbook)) == DialogResult.OK) currentDate = calendar.SelectedDate;
+                else return;
+                calendar.Close();
 
-            //проверить формулы
-            //Убрать пробелы и лишние знаки
-            string FormulaNormalize(string value, bool RemoveMarks = false)
-            {
-                //оставить только [метка], а вне ее только [1-9], +, - , *, /, (), %, =
-                StringBuilder builder = new StringBuilder();
-                bool isMark = false;
+                //найти клиента в списке скидок
+                List<Discount> discounts = Discount.GetAllDiscounts();
+                discounts = discounts.FindAll(x => x.ChannelType == currentClient.ChannelType
+                                                    && x.CustomerStatus == currentClient.CustomerStatus
+                                                    && x.GetPeriodAsDateTime() != null
+                                                    && x.GetPeriodAsDateTime() <= currentDate);
 
-                value = value.ToLower();
-                foreach (char ch in value.ToCharArray())
+                discounts.Sort((x, y) =>
                 {
-                    if (ch == '[' & !RemoveMarks) isMark = true;
-                    else if (ch == ']' & isMark) isMark = false;
-
-                    if (!isMark)
-                    {
-                        if (Char.IsDigit(ch)) builder.Append(ch);
-                        else
-                        {
-                            switch (ch)
-                            {
-                                case '+':
-                                case '-':
-                                case '*':
-                                case '/':
-                                case '(':
-                                case ')':
-                                case '%':
-                                case '=':
-                                    builder.Append(ch);
-                                    break;
-                                case ',':
-                                case '.':
-                                    builder.Append('.');
-                                    break;
-                            }
-                        }
-
-                    }
-                    else builder.Append(ch);
-                }
-
-                string temp = System.Text.RegularExpressions.Regex.Replace(builder.ToString(), @"\s+", " ");
-                return builder.ToString();
-            }
-
-            currentDiscount.IrrigationEquipments = FormulaNormalize(currentDiscount.IrrigationEquipments);
-            currentDiscount.Electricians = FormulaNormalize(currentDiscount.Electricians);
-            currentDiscount.Lawnmowers = FormulaNormalize(currentDiscount.Lawnmowers);
-            currentDiscount.Pumps = FormulaNormalize(currentDiscount.Pumps);
-            currentDiscount.CuttingTools = FormulaNormalize(currentDiscount.CuttingTools);
-            currentDiscount.WinterTools = FormulaNormalize(currentDiscount.WinterTools);
-
-            //подгрузить PriceMT если неужно, подключится к РРЦ
-            FilePriceMT filePriceMT = null;
-            if(
-                currentDiscount.IrrigationEquipments.Contains("[pricelist mt]") ||
-                currentDiscount.Electricians.Contains("[pricelist mt]") ||
-                currentDiscount.Lawnmowers.Contains("[pricelist mt]") ||
-                currentDiscount.Pumps.Contains("[pricelist mt]") ||
-                currentDiscount.CuttingTools.Contains("[pricelist mt]") ||
-                currentDiscount.WinterTools.Contains("[pricelist mt]")
-                )
-            {
-                //Загурзить файл price list MT
-                filePriceMT = new FilePriceMT();
-                filePriceMT.Load(currentClient.Mag, currentDate);
-            }
-
-            //Загрузка списка артикулов, какие из них актуальные?
-            List<Product> products = Product.GetProductsForDiscounts();
-            products = products.FindAll(x => x.Status.ToLower() == "активный");
-
-            //подключится к ценам
-            List<RRC> rrcs = RRC.GetAllRRC();
-            List<string> arts = (from rrc in rrcs
-                            select rrc.Article).Distinct().ToList();
-
-            List<RRC> actualRRC = new List<RRC>();
-            List<RRC> buffer = new List<RRC>();
-
-            foreach(string art in arts)
-            {
-                buffer = rrcs.FindAll(x => x.Article == art)
-                                .Where(x => x.GetDateAsDateTime() <= currentDate)
-                                .ToList();
-                
-                buffer.Sort((x, y) =>
-                {
-                    if (x.GetDateAsDateTime() > y.GetDateAsDateTime()) return 1;
-                    else if (x.GetDateAsDateTime() < y.GetDateAsDateTime()) return -1;
+                    if (x.GetPeriodAsDateTime() > y.GetPeriodAsDateTime()) return 1;
+                    else if (x.GetPeriodAsDateTime() < y.GetPeriodAsDateTime()) return -1;
                     else return 0;
                 });
 
-                actualRRC.Add(buffer[0]);
+                Discount currentDiscount = discounts[0];
+                discounts = null;
+
+                //проверить формулы
+                //Убрать пробелы и лишние знаки
+                string FormulaNormalize(string value, bool RemoveMarks = false)
+                {
+                    //оставить только [метка], а вне ее только [1-9], +, - , *, /, (), %, =
+                    StringBuilder builder = new StringBuilder();
+                    bool isMark = false;
+
+                    value = value.ToLower();
+                    foreach (char ch in value.ToCharArray())
+                    {
+                        if (ch == '[' & !RemoveMarks) isMark = true;
+                        else if (ch == ']' & isMark)
+                        {
+                            builder.Append(ch);
+                            isMark = false;
+                        }
+
+                        if (!isMark)
+                        {
+                            if (Char.IsDigit(ch)) builder.Append(ch);
+                            else
+                            {
+                                switch (ch)
+                                {
+                                    case '+':
+                                    case '-':
+                                    case '*':
+                                    case '/':
+                                    case '(':
+                                    case ')':
+                                    case '%':
+                                    case '=':
+                                        builder.Append(ch);
+                                        break;
+                                    case ',':
+                                    case '.':
+                                        builder.Append('.');
+                                        break;
+                                }
+                            }
+
+                        }
+                        else builder.Append(ch);
+                    }
+
+                    string temp = System.Text.RegularExpressions.Regex.Replace(builder.ToString(), @"\s+", " ");
+                    return builder.ToString();
+                }
+
+                currentDiscount.IrrigationEquipments = FormulaNormalize(currentDiscount.IrrigationEquipments);
+                currentDiscount.Electricians = FormulaNormalize(currentDiscount.Electricians);
+                currentDiscount.Lawnmowers = FormulaNormalize(currentDiscount.Lawnmowers);
+                currentDiscount.Pumps = FormulaNormalize(currentDiscount.Pumps);
+                currentDiscount.CuttingTools = FormulaNormalize(currentDiscount.CuttingTools);
+                currentDiscount.WinterTools = FormulaNormalize(currentDiscount.WinterTools);
+
+                //подгрузить PriceMT если неужно, подключится к РРЦ
+                FilePriceMT filePriceMT = null;
+                if (
+                    currentDiscount.IrrigationEquipments.Contains("[pricelist mt]") ||
+                    currentDiscount.Electricians.Contains("[pricelist mt]") ||
+                    currentDiscount.Lawnmowers.Contains("[pricelist mt]") ||
+                    currentDiscount.Pumps.Contains("[pricelist mt]") ||
+                    currentDiscount.CuttingTools.Contains("[pricelist mt]") ||
+                    currentDiscount.WinterTools.Contains("[pricelist mt]")
+                    )
+                {
+                    //Загурзить файл price list MT
+                    filePriceMT = new FilePriceMT();
+                    filePriceMT.Load(currentClient.Mag, currentDate);
+                    filePriceMT.Close();
+                }
+
+                //Загрузка списка артикулов, какие из них актуальные?
+                List<Product> products = Product.GetProductsForDiscounts();
+                products = products.FindAll(x => x.Status.ToLower() == "активный");
+
+                //подключится к ценам
+                List<RRC> rrcs = RRC.GetAllRRC();
+                List<string> arts = (from rrc in rrcs
+                                     select rrc.Article).Distinct().ToList();
+
+                List<RRC> actualRRC = new List<RRC>();
+                List<RRC> buffer = new List<RRC>();
+
+                foreach (string art in arts)
+                {
+                    buffer = rrcs.FindAll(x => x.Article == art)
+                                    .Where(x => x.GetDateAsDateTime() <= currentDate)
+                                    .ToList();
+
+                    buffer.Sort((x, y) =>
+                    {
+                        if (x.GetDateAsDateTime() > y.GetDateAsDateTime()) return 1;
+                        else if (x.GetDateAsDateTime() < y.GetDateAsDateTime()) return -1;
+                        else return 0;
+                    });
+
+                    actualRRC.Add(buffer[0]);
+                }
+                rrcs = null;
+                arts = null;
+                buffer = null;
+
+
+                //в цикле менять метки на значения из цен, с заменой;
+                List<FinalPriceList> priceList = new List<FinalPriceList>();
+
+                foreach (Product product in products)
+                {
+                    //получить формулу
+                    string formula = currentDiscount.GetFormulaByName(product.Category);
+
+                    //Найти метку или метки. [Pricelist MT]  [DIY Pricelist] [РРЦ] и заменить
+                    while (formula.Contains("[pricelist mt]"))
+                        formula = formula.Replace("[pricelist mt]", filePriceMT.GetPrice(product.Article).ToString());
+
+                    while (formula.Contains("[diy pricelist]"))
+                        formula = formula.Replace("[diy pricelist]", actualRRC.Find(x => x.Article == product.Article).DIY);
+
+                    while (formula.Contains("[ррц]"))
+                        formula = formula.Replace("[ррц]", actualRRC.Find(x => x.Article == product.Article).RRCNDS);
+
+                    priceList.Add(new FinalPriceList(product)
+                    {
+                        RRC = Parsing.Calculation(formula)
+                    });
+                }
+
+                //Вывести
+                priceList.ForEach(x => x.Save());
             }
-            rrcs = null;
-            arts = null;
-            buffer = null;
-
-
-            //в цикле менять метки на значения из цен, с заменой;
-            List<FinalPriceList> priceList = new List<FinalPriceList>();
-
-            foreach(Product product in products)
+            catch(Exception ex)
             {
-                //получить формулу
-                string formula = currentDiscount.GetFormulaByName(product.Category);
-
-                //Найти метку или метки. [Pricelist MT]  [DIY Pricelist] [РРЦ] и заменить
-                while(formula.Contains("[Pricelist MT]"))
-                    formula = formula.Replace("[Pricelist MT]", filePriceMT.GetPrice(product.Article).ToString());
-
-                while (formula.Contains("[DIY Pricelist]"))
-                    formula = formula.Replace("[DIY Pricelist]", actualRRC.Find(x => x.Article == product.Article).DIY);
-
-                while (formula.Contains("[РРЦ]"))
-                    formula = formula.Replace("[РРЦ]", actualRRC.Find(x => x.Article == product.Article).RRCNDS);
-
-                FinalPriceList price = new FinalPriceList(product);
-                //price.RRC = 
-                
+                MessageBox.Show(ex.Message);
             }
-
-            //подключится к листу вывода цен со скидками
-
-            //Вывести
-
-            //добавить обработку исключений
         }
 
         private void GetAllPrices_Click(object sender, RibbonControlEventArgs e)

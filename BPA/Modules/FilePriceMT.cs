@@ -94,7 +94,6 @@ namespace BPA.Modules
                 Title = "Выберите расположение продуктового календаря",
                 DefaultExt = "*.xls*",
                 CheckFileExists = true,
-                InitialDirectory = Globals.ThisWorkbook.Path,
                 ValidateNames = true,
                 Multiselect = false,
                 Filter = "Excel|*.xls*"
