@@ -6,17 +6,13 @@ using System.Threading.Tasks;
 
 namespace BPA.Modules
 {
-    public class Parsing
+    public static class Parsing
     {
-        private string ExcelFormula;
-        public double Result;
-        public Parsing() { }
-
-        public Parsing(string formula)
+        public static double Calculation(string formula)
         {
-            ExcelFormula = formula;
-            Result = Double.Parse(CalculateStringFormula());
+            return Double.Parse(CalculateStringFormula(formula));
         }
+
         public struct Bracket
         {
             public int OpenPos
@@ -46,9 +42,8 @@ namespace BPA.Modules
                 set { }
             }
         }
-        public string CalculateStringFormula()
+        public static string CalculateStringFormula(string tmpFormula)
         {
-            string tmpFormula = ExcelFormula;
 
             tmpFormula = tmpFormula.Replace(" ", "");
             if (tmpFormula.Substring(0, 1) == "=")
@@ -70,10 +65,11 @@ namespace BPA.Modules
 
             Bracket bracketRes = new Bracket();
             bracketRes.Formula = tmpFormula;
+            
             return bracketRes.Result;
         }
 
-        private Bracket GetResultInBrackets(string formula)
+        private static Bracket GetResultInBrackets(string formula)
         {
             string tmpFormula = formula;
 

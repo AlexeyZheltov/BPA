@@ -95,13 +95,9 @@ namespace BPA
         /// </summary>
         private void About_Click(object sender, RibbonControlEventArgs e)
         {
-            //Parsing parsing = new Parsing("=(80%-20%)*(1-20%)");            
-            //Parsing parsing = new Parsing("=100*(1 - 20 %)");
-            Parsing parsing = new Parsing("=((10+5)+(2/5))*(100-50)");
-            Debug.WriteLine(parsing.Result);
-
             MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
         /// <summary>
         /// Кнопка настроек
         /// </summary>
