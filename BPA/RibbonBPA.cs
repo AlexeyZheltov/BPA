@@ -301,71 +301,60 @@ namespace BPA
 
             //подключится к ценам
             List<RRC> rrcs = RRC.GetAllRRC();
+            List<string> arts = (from rrc in rrcs
+                            select rrc.Article).Distinct().ToList();
+
+            List<RRC> actualRRC = new List<RRC>();
+            List<RRC> buffer = new List<RRC>();
+
+            foreach(string art in arts)
+            {
+                buffer = rrcs.FindAll(x => x.Article == art)
+                                .Where(x => x.GetDateAsDateTime() <= currentDate)
+                                .ToList();
+                
+                buffer.Sort((x, y) =>
+                {
+                    if (x.GetDateAsDateTime() > y.GetDateAsDateTime()) return 1;
+                    else if (x.GetDateAsDateTime() < y.GetDateAsDateTime()) return -1;
+                    else return 0;
+                });
+
+                actualRRC.Add(buffer[0]);
+            }
+            rrcs = null;
+            arts = null;
+            buffer = null;
+
 
             //в цикле менять метки на значения из цен, с заменой;
+            List<FinalPriceList> priceList = new List<FinalPriceList>();
+
             foreach(Product product in products)
             {
+                //получить формулу
+                string formula = currentDiscount.GetFormulaByName(product.Category);
+
+                //Найти метку или метки. [Pricelist MT]  [DIY Pricelist] [РРЦ] и заменить
+                while(formula.Contains("[Pricelist MT]"))
+                    formula = formula.Replace("[Pricelist MT]", filePriceMT.GetPrice(product.Article).ToString());
+
+                while (formula.Contains("[DIY Pricelist]"))
+                    formula = formula.Replace("[DIY Pricelist]", actualRRC.Find(x => x.Article == product.Article).DIY);
+
+                while (formula.Contains("[РРЦ]"))
+                    formula = formula.Replace("[РРЦ]", actualRRC.Find(x => x.Article == product.Article).RRCNDS);
+
+                FinalPriceList price = new FinalPriceList(product);
+                //price.RRC = 
                 
             }
-
-            //Еще раз прогнать по очистке формул
-
-            //расчитать значения по функции руслана
 
             //подключится к листу вывода цен со скидками
 
             //Вывести
 
-            //Client client = new Client();
-            ////можно в клиенте написать метод возвращающий  
-            ////клиетна по активной ячейке, или строке. что-то типа
-            ////Clients client = new Clients().activeRow;
-            ////string clientMag = client.Mag;
-            //string clientMag = "ЛЕРУ";
-            ////
-
-            ////dataTime выбраная пользователем
-            //DateTime date = new DateTime(2017, 08, 15);
-            
-            ////
-
-            //FilePriceMT filePriceMT = new FilePriceMT();
-            //filePriceMT.Load(clientMag, date);
-            //List<FilePriceMT.Client> clientsPriceList = filePriceMT.clients;
-
-            //ProcessBar processBar = new ProcessBar("Формирование прайс-листа", clientsPriceList.Count);
-            //try
-            //{
-            //    FunctionsForExcel.SpeedOn();
-            //    processBar.Show();
-            //    Globals.ThisWorkbook.Activate();
-                
-            //    foreach (FilePriceMT.Client clientPrice in clientsPriceList)
-            //    {
-            //        if (processBar.IsCancel)
-            //            break;
-            //        processBar.TaskStart($"Обрабатывается клиент {clientPrice.Name}");
-
-
-            //        //проверяем в discount
-            //        //Discount discount = new Discount().GetDiscount();
-            //        //discount.status
-
-            //        //double price = clientPrice.Price
-            //        double price = filePriceMT.GetPrice(clientPrice.Art);
-            //        Debug.WriteLine(price);
-            //        //здесь создаем новый лист
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
-            //finally
-            //{
-            //    FunctionsForExcel.SpeedOff();
-            //    processBar.Close();
-            //}
+            //добавить обработку исключений
         }
 
         private void GetAllPrices_Click(object sender, RibbonControlEventArgs e)

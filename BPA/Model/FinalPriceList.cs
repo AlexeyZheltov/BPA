@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace BPA.Model
 {
@@ -218,7 +219,7 @@ namespace BPA.Model
 
         #endregion
 
-        FinalPriceList() { }
+        public FinalPriceList() { }
 
         public FinalPriceList(Product product)
         {
@@ -243,6 +244,18 @@ namespace BPA.Model
             this.Certificate = product.LocalCertificate;
 
             //this.Warranty= product.CalendarPackagingWidth //?
+        }
+
+        public FinalPriceList(Excel.ListRow row) => SetProperty(row);
+
+        public static List<FinalPriceList> GetAllFinalPriceList()
+        {
+            List<FinalPriceList> finalPriceLists = new List<FinalPriceList>();
+            foreach (Excel.ListRow row in new FinalPriceList().Table.ListRows)
+            {
+                finalPriceLists.Add(new FinalPriceList(row));
+            }
+            return finalPriceLists;
         }
     }
 }

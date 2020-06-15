@@ -76,6 +76,12 @@ namespace BPA.Model {
         public RRC(Excel.ListRow row) => SetProperty(row);
         public RRC() { }
 
+        public DateTime? GetDateAsDateTime()
+        {
+            if (DateTime.TryParse(Date, out DateTime date)) return date.Date;
+            else return null;
+        }
+
         public RRC GetRRC(string article, string date)
         {
             RRC rrc;

@@ -146,7 +146,7 @@ namespace BPA.Model
         /// Запись свойств класса данными из строки ListRow
         /// </summary>
         /// <param name="row">Строка таблицы</param>
-        public void SetProperty(ListRow row)
+        protected void SetProperty(ListRow row)
         {
             foreach (var prop in GetType().GetProperties())
             {
