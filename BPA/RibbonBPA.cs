@@ -147,9 +147,9 @@ namespace BPA
                     if (processBar.IsCancel)
                         break;
                     processBar.TaskStart($"Обрабатывается артикул {product.Article}");
-                    product.ActionStart += processBar.SubBar.TaskStart;
-                    product.ActionDone += processBar.SubBar.TaskDone;
-                    processBar.SubBar.CancelClick += product.Cancel;
+                    //product.ActionStart += processBar.SubBar.TaskStart;
+                    //product.ActionDone += processBar.SubBar.TaskDone;
+                    //processBar.SubBar.CancelClick += product.Cancel;
 
                     if (date.Year > 1)
                     {
@@ -165,17 +165,56 @@ namespace BPA
             finally
             {
                 FunctionsForExcel.SpeedOff();
-                processBar.SubBar.Close();
+                //processBar.SubBar.Close();
                 processBar.Close();
             }
-
-
-            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void SavePrice_Click(object sender, RibbonControlEventArgs e)
         {
-            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            List<Product> products = new Product().GetProductsLightForRRC();
+            ProcessBar processBar = new ProcessBar("Обновление цен из справочника", products.Count);
+            try
+            {
+                FunctionsForExcel.SpeedOn();
+
+                processBar.Show();
+                Globals.ThisWorkbook.Activate();
+
+                DateTime date = products[0].DateOfPromotion;
+                foreach (Product product in products)
+                {
+                    if (processBar.IsCancel)
+                        break;
+                    processBar.TaskStart($"Обрабатывается артикул {product.Article}");
+                    //product.ActionStart += processBar.SubBar.TaskStart;
+                    //product.ActionDone += processBar.SubBar.TaskDone;
+                    //processBar.SubBar.CancelClick += product.Cancel;
+
+                    if (date.Year > 1)
+                    {
+                        RRC rrc = new RRC().GetRRC(product.Article, date, true);
+
+                        if (rrc == null)
+                        {
+                            rrc = new RRC();
+                            rrc.Save();
+                        }
+
+                        rrc.UpdatePriceFromProduct(product);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                FunctionsForExcel.SpeedOff();
+                //processBar.SubBar.Close();
+                processBar.Close();
+            }
         }
 
         private void ClientsUpdate_Click(object sender, RibbonControlEventArgs e)
