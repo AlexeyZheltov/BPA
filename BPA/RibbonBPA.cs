@@ -269,6 +269,7 @@ namespace BPA
                     priceClients.Add(currentClient);
                 }
 
+                //сюда вынести загрузку общих данных, кроме тех, что надо финализировать. Их инициализировать чуть повыше
 
                 foreach (Client currentClient in priceClients)
                 {
