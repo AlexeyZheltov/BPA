@@ -215,221 +215,197 @@ namespace BPA
         /// <param name="e"></param>
         private void GetClientPrice_Click(object sender, RibbonControlEventArgs e)
         {
+            CreatePrice(false);
+        }
+
+        private void GetAllPrices_Click(object sender, RibbonControlEventArgs e)
+        {
+            CreatePrice(true);
+        }
+
+        private void CreatePrice(bool All = false)
+        {
             ProcessBar processBar = null;
             bool isCancel = false;
             void Cancel() => isCancel = true;
+            List<Client> priceClients = new List<Client>();
+
+            //Запросить дату
+            MSCalendar calendar = new MSCalendar();
+            DateTime currentDate;
+            if (calendar.ShowDialog(new ExcelWindows(Globals.ThisWorkbook)) == DialogResult.OK) currentDate = calendar.SelectedDate;
+            else return;
+            calendar.Close();
+
 
             try
             {
-                //получить активного клиента, если нет, то на нет и суда нет
-                Client currentClient = Client.GetCurrentClient();
-                if (currentClient == null)
+                if (All)
                 {
-                    MessageBox.Show("Выберите клиента на листе \"Клиенты\"", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
+                    //загрузить всех подопытных
+                    Client client = new Client();
+                    processBar = new ProcessBar($"Загрузка списка клиентов", client.Table.ListRows.Count);
+                    processBar.CancelClick += Cancel;
 
-                //Запросить дату
-                MSCalendar calendar = new MSCalendar();
-                DateTime currentDate;
-                if (calendar.ShowDialog(new ExcelWindows(Globals.ThisWorkbook)) == DialogResult.OK) currentDate = calendar.SelectedDate;
-                else return;
-                calendar.Close();
-
-                //найти клиента в списке скидок
-                List<Discount> discounts = Discount.GetAllDiscounts(new PBWrapper("Создание прайс-листа", "Чтение скидок [Index]"));
-                if (discounts == null) return;
-                discounts = discounts.FindAll(x => x.ChannelType == currentClient.ChannelType
-                                                    && x.CustomerStatus == currentClient.CustomerStatus
-                                                    && x.GetPeriodAsDateTime() != null
-                                                    && x.GetPeriodAsDateTime() <= currentDate);
-
-                discounts.Sort((x, y) =>
-                {
-                    if (x.GetPeriodAsDateTime() > y.GetPeriodAsDateTime()) return 1;
-                    else if (x.GetPeriodAsDateTime() < y.GetPeriodAsDateTime()) return -1;
-                    else return 0;
-                });
-
-                if(discounts.Count == 0)
-                {
-                    MessageBox.Show("Данному клиенту нет соответствий на листе \"Скидки\"", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-                Discount currentDiscount = discounts[0];
-                discounts = null;
-
-                //проверить формулы
-                //Убрать пробелы и лишние знаки
-                string FormulaNormalize(string value, bool RemoveMarks = false)
-                {
-                    //оставить только [метка], а вне ее только [1-9], +, - , *, /, (), %, =
-                    StringBuilder builder = new StringBuilder();
-                    bool isMark = false;
-
-                    value = value.ToLower();
-                    foreach (char ch in value.ToCharArray())
+                    foreach(Excel.ListRow row in client.Table.ListRows)
                     {
-                        if (ch == '[' & !RemoveMarks) isMark = true;
-                        else if (ch == ']' & isMark)
-                        {
-                            builder.Append(ch);
-                            isMark = false;
-                        }
-
-                        if (!isMark)
-                        {
-                            if (Char.IsDigit(ch)) builder.Append(ch);
-                            else
-                            {
-                                switch (ch)
-                                {
-                                    case '+':
-                                    case '-':
-                                    case '*':
-                                    case '/':
-                                    case '(':
-                                    case ')':
-                                    case '%':
-                                    case '=':
-                                        builder.Append(ch);
-                                        break;
-                                    case ',':
-                                    case '.':
-                                        builder.Append('.');
-                                        break;
-                                }
-                            }
-
-                        }
-                        else builder.Append(ch);
+                        processBar.TaskStart($"Загружаем {row.Index}");
+                        priceClients.Add(new Client(row));
+                        processBar.TaskDone(1);
                     }
 
-                    string temp = System.Text.RegularExpressions.Regex.Replace(builder.ToString(), @"\s+", " ");
-                    return builder.ToString();
-                }
-
-                currentDiscount.IrrigationEquipments = FormulaNormalize(currentDiscount.IrrigationEquipments);
-                currentDiscount.Electricians = FormulaNormalize(currentDiscount.Electricians);
-                currentDiscount.Lawnmowers = FormulaNormalize(currentDiscount.Lawnmowers);
-                currentDiscount.Pumps = FormulaNormalize(currentDiscount.Pumps);
-                currentDiscount.CuttingTools = FormulaNormalize(currentDiscount.CuttingTools);
-                currentDiscount.WinterTools = FormulaNormalize(currentDiscount.WinterTools);
-
-                //подгрузить PriceMT если неужно, подключится к РРЦ
-                FilePriceMT filePriceMT = null;
-                if (
-                    currentDiscount.IrrigationEquipments.Contains("[pricelist mt]") ||
-                    currentDiscount.Electricians.Contains("[pricelist mt]") ||
-                    currentDiscount.Lawnmowers.Contains("[pricelist mt]") ||
-                    currentDiscount.Pumps.Contains("[pricelist mt]") ||
-                    currentDiscount.CuttingTools.Contains("[pricelist mt]") ||
-                    currentDiscount.WinterTools.Contains("[pricelist mt]")
-                    )
-                {
-                    //Загурзить файл price list MT
-                    filePriceMT = new FilePriceMT();
-                    processBar = new ProcessBar("Создание прайс-листа", 1);
-                    filePriceMT.ActionStart += processBar.TaskStart;
-                    filePriceMT.ActionDone += processBar.TaskDone;
-                    processBar.CancelClick += filePriceMT.Cancel;
-                    filePriceMT.Load(currentClient.Mag, currentDate);
-                    filePriceMT.Close();
                     processBar.Close();
                 }
-
-                //Загрузка списка артикулов, какие из них актуальные?
-                List<Product> products = Product.GetProductsForDiscounts(new PBWrapper("Создание прайс-листа", "Чтение артикула [Index]"));
-                if (products == null) return;
-                products = products.FindAll(x => x.Status.ToLower() == "активный");
-
-                //подключится к ценам
-                List<RRC> rrcs = RRC.GetAllRRC(new PBWrapper("Создание прайс-листа", "Чтение РРЦ [Index]"));
-                if (rrcs == null) return;
-                List<string> arts = (from rrc in rrcs
-                                     select rrc.Article).Distinct().ToList();
-
-                List<RRC> actualRRC = new List<RRC>();
-                List<RRC> buffer = new List<RRC>();
-
-                processBar = new ProcessBar("Создание прайс-листа", arts.Count);
-                processBar.CancelClick += Cancel;
-                foreach (string art in arts)
+                else
                 {
-                    if (isCancel) return;
-                    processBar.TaskStart($"Анализ артикулов с листа РРЦ {art}"); ;
-                    buffer = rrcs.FindAll(x => x.Article == art)
-                                    .Where(x => x.GetDateAsDateTime() <= currentDate)
-                                    .ToList();
-
-                    buffer.Sort((x, y) =>
+                    //выбрать того на кого указал перст божий
+                    //получить активного клиента, если нет, то на нет и суда нет
+                    Client currentClient = Client.GetCurrentClient();
+                    if (currentClient == null)
                     {
-                        if (x.GetDateAsDateTime() > y.GetDateAsDateTime()) return 1;
-                        else if (x.GetDateAsDateTime() < y.GetDateAsDateTime()) return -1;
+                        MessageBox.Show("Выберите клиента на листе \"Клиенты\"", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+                    priceClients.Add(currentClient);
+                }
+
+
+                foreach (Client currentClient in priceClients)
+                {
+                    //найти клиента в списке скидок
+                    List<Discount> discounts = Discount.GetAllDiscounts(new PBWrapper($"Создание прайс-листа для {currentClient.Customer}", "Чтение скидок [Index]"));
+                    if (discounts == null) return;
+                    discounts = discounts.FindAll(x => x.ChannelType == currentClient.ChannelType
+                                                        && x.CustomerStatus == currentClient.CustomerStatus
+                                                        && x.GetPeriodAsDateTime() != null
+                                                        && x.GetPeriodAsDateTime() <= currentDate);
+
+                    discounts.Sort((x, y) =>
+                    {
+                        if (x.GetPeriodAsDateTime() > y.GetPeriodAsDateTime()) return 1;
+                        else if (x.GetPeriodAsDateTime() < y.GetPeriodAsDateTime()) return -1;
                         else return 0;
                     });
 
-                    if (buffer.Count == 0) continue;
-                    actualRRC.Add(buffer[0]);
-                    processBar.TaskDone(1);
-                }
-                processBar.Close();
-                rrcs = null;
-                arts = null;
-                buffer = null;
-
-
-                //в цикле менять метки на значения из цен, с заменой;
-                List<FinalPriceList> priceList = new List<FinalPriceList>();
-
-                processBar = new ProcessBar("Создание прайс-листа", products.Count);
-                processBar.CancelClick += Cancel;
-                foreach (Product product in products)
-                {
-                    if (isCancel) return;
-                    //получить формулу
-                    processBar.TaskStart($"Расчет цены для {product.Article}");
-                    string formula = currentDiscount.GetFormulaByName(product.Category);
-
-                    //Найти метку или метки. [Pricelist MT]  [DIY Pricelist] [РРЦ] и заменить
-                    while (formula.Contains("[pricelist mt]"))
-                        formula = formula.Replace("[pricelist mt]", filePriceMT.GetPrice(product.Article).ToString());
-
-                    while (formula.Contains("[diy pricelist]"))
-                        formula = formula.Replace("[diy pricelist]", actualRRC.Find(x => x.Article == product.Article).DIY);
-
-                    while (formula.Contains("[ррц]"))
-                        formula = formula.Replace("[ррц]", actualRRC.Find(x => x.Article == product.Article).RRCNDS);
-
-                    if(Parsing.Calculation(formula) is double result)
-                        priceList.Add(new FinalPriceList(product)
-                        {
-                        
-                            RRC = result
-                        });
-                    else
+                    if (discounts.Count == 0)
                     {
-                        MessageBox.Show($"В одной из формул для {currentClient.Customer} содержится ошибка", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show($"Клиенту {currentClient.Customer} нет соответствий на листе \"Скидки\"", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
+                    }
+                    Discount currentDiscount = discounts[0];
+                    discounts = null;
+
+                    //проверить формулы
+                    //Убрать пробелы и лишние знаки
+                    currentDiscount.NormaliseAllFormulas();
+
+                    //подгрузить PriceMT если неужно, подключится к РРЦ
+                    FilePriceMT filePriceMT = null;
+                    if (currentDiscount.NeedFilePriceMT())
+                    {
+                        //Загурзить файл price list MT
+                        filePriceMT = new FilePriceMT();
+                        processBar = new ProcessBar($"Создание прайс-листа для {currentClient.Customer}", 1);
+                        filePriceMT.ActionStart += processBar.TaskStart;
+                        filePriceMT.ActionDone += processBar.TaskDone;
+                        processBar.CancelClick += filePriceMT.Cancel;
+                        filePriceMT.Load(currentClient.Mag, currentDate);
+                        filePriceMT.Close();
+                        processBar.Close();
+                    }
+
+                    //Загрузка списка артикулов, какие из них актуальные?
+                    List<Product> products = Product.GetProductsForDiscounts(new PBWrapper($"Создание прайс-листа для {currentClient.Customer}", "Чтение артикула [Index]"));
+                    if (products == null) return;
+                    products = products.FindAll(x => x.Status.ToLower() == "активный");
+
+                    //подключится к ценам
+                    List<RRC> rrcs = RRC.GetAllRRC(new PBWrapper($"Создание прайс-листа для {currentClient.Customer}", "Чтение РРЦ [Index]"));
+                    if (rrcs == null) return;
+                    List<string> arts = (from rrc in rrcs
+                                         select rrc.Article).Distinct().ToList();
+
+                    List<RRC> actualRRC = new List<RRC>();
+                    List<RRC> buffer = new List<RRC>();
+
+                    processBar = new ProcessBar($"Создание прайс-листа для {currentClient.Customer}", arts.Count);
+                    processBar.CancelClick += Cancel;
+                    foreach (string art in arts)
+                    {
+                        if (isCancel) return;
+                        processBar.TaskStart($"Анализ артикулов с листа РРЦ {art}"); ;
+                        buffer = rrcs.FindAll(x => x.Article == art)
+                                        .Where(x => x.GetDateAsDateTime() <= currentDate)
+                                        .ToList();
+
+                        buffer.Sort((x, y) =>
+                        {
+                            if (x.GetDateAsDateTime() > y.GetDateAsDateTime()) return 1;
+                            else if (x.GetDateAsDateTime() < y.GetDateAsDateTime()) return -1;
+                            else return 0;
+                        });
+
+                        if (buffer.Count == 0) continue;
+                        actualRRC.Add(buffer[0]);
+                        processBar.TaskDone(1);
+                    }
+                    processBar.Close();
+                    rrcs = null;
+                    arts = null;
+                    buffer = null;
+
+
+                    //в цикле менять метки на значения из цен, с заменой;
+                    List<FinalPriceList> priceList = new List<FinalPriceList>();
+
+                    processBar = new ProcessBar($"Создание прайс-листа для {currentClient.Customer}", products.Count);
+                    processBar.CancelClick += Cancel;
+                    foreach (Product product in products)
+                    {
+                        if (isCancel) return;
+                        //получить формулу
+                        processBar.TaskStart($"Расчет цены для {product.Article}");
+                        string formula = currentDiscount.GetFormulaByName(product.Category);
+
+                        //Найти метку или метки. [Pricelist MT]  [DIY Pricelist] [РРЦ] и заменить
+                        while (formula.Contains("[pricelist mt]"))
+                            formula = formula.Replace("[pricelist mt]", filePriceMT.GetPrice(product.Article).ToString());
+
+                        while (formula.Contains("[diy pricelist]"))
+                            formula = formula.Replace("[diy pricelist]", actualRRC.Find(x => x.Article == product.Article).DIY);
+
+                        while (formula.Contains("[ррц]"))
+                            formula = formula.Replace("[ррц]", actualRRC.Find(x => x.Article == product.Article).RRCNDS);
+
+                        if (Parsing.Calculation(formula) is double result)
+                            priceList.Add(new FinalPriceList(product)
+                            {
+
+                                RRC = result
+                            });
+                        else
+                        {
+                            MessageBox.Show($"В одной из формул для {currentClient.Customer} содержится ошибка", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                        processBar.TaskDone(1);
+                    }
+                    processBar.Close();
+
+                    //Вывести
+                    processBar = new ProcessBar($"Создание прайс-листа для {currentClient.Customer}", products.Count);
+                    processBar.CancelClick += Cancel;
+                    foreach (FinalPriceList item in priceList)
+                    {
+                        if (isCancel) return;
+                        processBar.TaskStart($"Сохранение: {item.ArticleGardena}");
+                        item.Save();
+                        processBar.TaskDone(1);
                     }
                     processBar.TaskDone(1);
                 }
-                processBar.Close();
-
-                //Вывести
-                processBar = new ProcessBar("Создание прайс-листа", products.Count);
-                processBar.CancelClick += Cancel;
-                foreach (FinalPriceList item in priceList)
-                {
-                    if (isCancel) return;
-                    processBar.TaskStart($"Сохранение: {item.ArticleGardena}");
-                    item.Save();
-                    processBar.TaskDone(1);
-                }
-                processBar.TaskDone(1);
-                priceList.ForEach(x => x.Save()); //TODO Add PB переделать на обычный foreach
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
@@ -438,11 +414,6 @@ namespace BPA
                 processBar?.Close();
                 FunctionsForExcel.SpeedOff();
             }
-        }
-
-        private void GetAllPrices_Click(object sender, RibbonControlEventArgs e)
-        {
-            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void PlanningAdd_Click(object sender, RibbonControlEventArgs e)
