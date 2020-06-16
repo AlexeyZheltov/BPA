@@ -220,7 +220,11 @@ namespace BPA
             {
                 //получить активного клиента, если нет, то на нет и суда нет
                 Client currentClient = Client.GetCurrentClient();
-                if (currentClient == null) return;
+                if (currentClient == null)
+                {
+                    MessageBox.Show("Выберите клиента на листе \"Клиенты\"", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
 
                 //Запросить дату
                 MSCalendar calendar = new MSCalendar();

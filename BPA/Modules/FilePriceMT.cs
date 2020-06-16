@@ -144,6 +144,12 @@ namespace BPA.Modules
 
             clients.Clear();
 
+            int magColumn = MagColumn;
+            if (magColumn == 0)
+            {
+                Workbook.Close();
+                throw new ApplicationException($"Файл {Path.GetFileName(FileName)} имеет ошибочный формат");
+            }
             int rw = FindRow(MagColumn, mag);
             if (rw == 0)
                 return;
