@@ -147,35 +147,52 @@ namespace BPA
             FunctionsForExcel.SpeedOn();
             ProcessBar processBar = null;
             FileDescision fileDescision = null;
+
             try
             {
                 fileDescision = new FileDescision();
                 if (fileDescision.IsNotOpen()) return;
 
-                processBar = new ProcessBar("Загрузка", fileDescision.CountActions);
+                processBar = new ProcessBar("Обновление клиентов", fileDescision.CountActions);
                 processBar.CancelClick += fileDescision.Cancel;
                 fileDescision.ActionStart += processBar.TaskStart;
                 fileDescision.ActionDone += processBar.TaskDone;
-                processBar.TaskStart("Загрузка из файла Decision");
                 processBar.Show(new ExcelWindows(Globals.ThisWorkbook));
-
 
                 List<Client> clientsFromDecision = fileDescision.LoadClients();
 
                 processBar.Close();
 
                 //Загрузить данные из листа клиентов
-                List<Client> clients = new List<Client>();
-                foreach (Excel.ListRow row in new Client().Table.ListRows)
-                {
-                    clients.Add(new Client(row));
-                }
+                List<Client> clients = Client.GetAllClients();
+                if (clients == null) return;
 
                 //Получить разницу
                 List<Client> newClients = clientsFromDecision.Except(clients, new Client.ComparerCustomer()).ToList();
+                if(newClients.Count == 0)
+                {
+                    MessageBox.Show("В файле Decision не обнаружено новых клиентов", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
 
                 //Выгрузить разницу как новых клиентов
-                newClients.ForEach(x => x.Save());
+                //newClients.ForEach(x => x.Save());
+                bool isCancel = false;
+
+                void Cancel() => isCancel = true;
+
+                processBar = new ProcessBar("Обновление клиентов", fileDescision.CountActions);
+                processBar.CancelClick += Cancel;
+                processBar.Show(new ExcelWindows(Globals.ThisWorkbook));
+
+                foreach (Client client in newClients)
+                {
+                    if (isCancel) return;
+                    processBar.TaskStart($"Сохраняется клиент {client.Customer}");
+                    client.Save();
+                    processBar.TaskDone(1);
+                }
+
                 Client ClientForSort = newClients.First();
                 ClientForSort.Sort("Id");
             }

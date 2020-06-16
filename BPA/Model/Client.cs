@@ -1,10 +1,13 @@
-﻿using Microsoft.Office.Interop.Excel;
+﻿using BPA.Forms;
+using Microsoft.Office.Interop.Excel;
+using Microsoft.VisualStudio.Tools.Applications.Deployment;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
+using BPA.Modules;
 
 namespace BPA.Model {
     /// <summary>
@@ -125,5 +128,28 @@ namespace BPA.Model {
             return client;
         }
 
+        public static List<Client> GetAllClients()
+        {
+            List<Client> clients = new List<Client>();
+            Excel.ListObject table = new Client().Table;
+            ProcessBar processBar = new ProcessBar("Обновление листа клиентов", table.ListRows.Count);
+            bool isCancel = false;
+
+            void Cancel() => isCancel = true;
+
+            processBar.CancelClick += Cancel;
+            //processBar.TaskStart("Чтение клиентов");
+            processBar.Show(new ExcelWindows(Globals.ThisWorkbook));
+
+            foreach (Excel.ListRow row in new Client().Table.ListRows)
+            {
+                if (isCancel) return null;
+                processBar.TaskStart($"Обрабатывается строка {row.Index}");
+                clients.Add(new Client(row));
+                processBar.TaskDone(1);
+            }
+
+            return clients;
+        }
     }
 }
