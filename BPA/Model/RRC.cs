@@ -107,7 +107,7 @@ namespace BPA.Model {
 
                 return currentRRC;
             }
-            return currentRRC;
+            return null;
         }
     }
 }
