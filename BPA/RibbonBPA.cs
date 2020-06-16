@@ -138,7 +138,6 @@ namespace BPA
             {
                 FunctionsForExcel.SpeedOn();
 
-                //Product product = new Product();
                 processBar.Show();
                 Globals.ThisWorkbook.Activate();
 
@@ -148,9 +147,9 @@ namespace BPA
                     if (processBar.IsCancel)
                         break;
                     processBar.TaskStart($"Обрабатывается артикул {product.Article}");
-                    //calendar.ActionStart += processBar.SubBar.TaskStart;
-                    //calendar.ActionDone += processBar.SubBar.TaskDone;
-                    //processBar.SubBar.CancelClick += product.Cancel;
+                    product.ActionStart += processBar.SubBar.TaskStart;
+                    product.ActionDone += processBar.SubBar.TaskDone;
+                    processBar.SubBar.CancelClick += product.Cancel;
 
                     if (date.Year > 1)
                     {
@@ -166,7 +165,7 @@ namespace BPA
             finally
             {
                 FunctionsForExcel.SpeedOff();
-                //processBar.SubBar.Close();
+                processBar.SubBar.Close();
                 processBar.Close();
             }
 
