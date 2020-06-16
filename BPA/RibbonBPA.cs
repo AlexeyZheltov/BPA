@@ -216,6 +216,9 @@ namespace BPA
         private void GetClientPrice_Click(object sender, RibbonControlEventArgs e)
         {
             ProcessBar processBar = null;
+            bool isCancel = false;
+            void Cancel() => isCancel = true;
+
             try
             {
                 //получить активного клиента, если нет, то на нет и суда нет
@@ -234,7 +237,8 @@ namespace BPA
                 calendar.Close();
 
                 //найти клиента в списке скидок
-                List<Discount> discounts = Discount.GetAllDiscounts();
+                List<Discount> discounts = Discount.GetAllDiscounts(new PBWrapper("Создание прайс-листа", "Чтение скидок [Index]"));
+                if (discounts == null) return;
                 discounts = discounts.FindAll(x => x.ChannelType == currentClient.ChannelType
                                                     && x.CustomerStatus == currentClient.CustomerStatus
                                                     && x.GetPeriodAsDateTime() != null
@@ -325,24 +329,35 @@ namespace BPA
                 {
                     //Загурзить файл price list MT
                     filePriceMT = new FilePriceMT();
+                    processBar = new ProcessBar("Создание прайс-листа", 1);
+                    filePriceMT.ActionStart += processBar.TaskStart;
+                    filePriceMT.ActionDone += processBar.TaskDone;
+                    processBar.CancelClick += filePriceMT.Cancel;
                     filePriceMT.Load(currentClient.Mag, currentDate);
                     filePriceMT.Close();
+                    processBar.Close();
                 }
 
                 //Загрузка списка артикулов, какие из них актуальные?
-                List<Product> products = Product.GetProductsForDiscounts();
+                List<Product> products = Product.GetProductsForDiscounts(new PBWrapper("Создание прайс-листа", "Чтение артикула [Index]"));
+                if (products == null) return;
                 products = products.FindAll(x => x.Status.ToLower() == "активный");
 
                 //подключится к ценам
-                List<RRC> rrcs = RRC.GetAllRRC();
+                List<RRC> rrcs = RRC.GetAllRRC(new PBWrapper("Создание прайс-листа", "Чтение РРЦ [Index]"));
+                if (rrcs == null) return;
                 List<string> arts = (from rrc in rrcs
                                      select rrc.Article).Distinct().ToList();
 
                 List<RRC> actualRRC = new List<RRC>();
                 List<RRC> buffer = new List<RRC>();
 
+                processBar = new ProcessBar("Создание прайс-листа", arts.Count);
+                processBar.CancelClick += Cancel;
                 foreach (string art in arts)
                 {
+                    if (isCancel) return;
+                    processBar.TaskStart($"Анализ артикулов с листа РРЦ {art}"); ;
                     buffer = rrcs.FindAll(x => x.Article == art)
                                     .Where(x => x.GetDateAsDateTime() <= currentDate)
                                     .ToList();
@@ -356,7 +371,9 @@ namespace BPA
 
                     if (buffer.Count == 0) continue;
                     actualRRC.Add(buffer[0]);
+                    processBar.TaskDone(1);
                 }
+                processBar.Close();
                 rrcs = null;
                 arts = null;
                 buffer = null;
@@ -365,9 +382,13 @@ namespace BPA
                 //в цикле менять метки на значения из цен, с заменой;
                 List<FinalPriceList> priceList = new List<FinalPriceList>();
 
+                processBar = new ProcessBar("Создание прайс-листа", products.Count);
+                processBar.CancelClick += Cancel;
                 foreach (Product product in products)
                 {
+                    if (isCancel) return;
                     //получить формулу
+                    processBar.TaskStart($"Расчет цены для {product.Article}");
                     string formula = currentDiscount.GetFormulaByName(product.Category);
 
                     //Найти метку или метки. [Pricelist MT]  [DIY Pricelist] [РРЦ] и заменить
@@ -391,10 +412,22 @@ namespace BPA
                         MessageBox.Show($"В одной из формул для {currentClient.Customer} содержится ошибка", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
+                    processBar.TaskDone(1);
                 }
+                processBar.Close();
 
                 //Вывести
-                priceList.ForEach(x => x.Save());
+                processBar = new ProcessBar("Создание прайс-листа", products.Count);
+                processBar.CancelClick += Cancel;
+                foreach (FinalPriceList item in priceList)
+                {
+                    if (isCancel) return;
+                    processBar.TaskStart($"Сохранение: {item.ArticleGardena}");
+                    item.Save();
+                    processBar.TaskDone(1);
+                }
+                processBar.TaskDone(1);
+                priceList.ForEach(x => x.Save()); //TODO Add PB переделать на обычный foreach
             }
             catch(Exception ex)
             {

@@ -461,12 +461,15 @@ namespace BPA.Model
             return products;
         }
 
-        public static List<Product> GetProductsForDiscounts()
+        public static List<Product> GetProductsForDiscounts(PBWrapper pB)
         {
             List<Product> products = new List<Product>();
             Product product = new Product();
+            pB.Start(product.Table.ListRows.Count);
             foreach (ListRow row in product.Table.ListRows)
             {
+                if (pB.IsCancel) return null;
+                pB.Action($"{row.Index}");
                 product = new Product()
                 {
                     Id = (int)row.Range[1, product.Table.ListColumns[product.Filds["Id"]].Index].Value,
@@ -490,7 +493,9 @@ namespace BPA.Model
                     Status = row.Range[1, product.Table.ListColumns[product.Filds["Status"]].Index].Text
                 };
                 products.Add(product);
+                pB.Done(1);
             }
+            pB.Dispose();
             return products;
         }
 

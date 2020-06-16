@@ -107,13 +107,20 @@ namespace BPA.Model {
             return null;
         }
 
-        public static List<RRC> GetAllRRC()
+        public static List<RRC> GetAllRRC(PBWrapper pB)
         {
             List<RRC> rrcs = new List<RRC>();
-            foreach(Excel.ListRow row in new RRC().Table.ListRows)
+            RRC rrc = new RRC();
+            pB.Start(rrc.Table.ListRows.Count);
+
+            foreach(Excel.ListRow row in rrc.Table.ListRows)
             {
+                if (pB.IsCancel) return null;
+                pB.Action($"{row.Index}");
                 rrcs.Add(new RRC(row));
+                pB.Done(1);
             }
+            pB.Dispose();
             return rrcs;
         }
 

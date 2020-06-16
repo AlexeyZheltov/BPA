@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BPA.Modules;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -139,14 +140,20 @@ namespace BPA.Model {
             return PeriodAsDateTime.Value;
         }
 
-        public static List<Discount> GetAllDiscounts()
+        public static List<Discount> GetAllDiscounts(PBWrapper pB)
         {
             List<Discount> discounts = new List<Discount>();
+            Discount discount = new Discount();
+            pB.Start(discount.Table.ListRows.Count);
 
-            foreach(Excel.ListRow row in new Discount().Table.ListRows)
+            foreach(Excel.ListRow row in discount.Table.ListRows)
             {
+                if (pB.IsCancel) return null;
+                pB.Action($"{row.Index}");
                 discounts.Add(new Discount(row));
+                pB.Done(1);
             }
+            pB.Dispose();
             return discounts;
         }
 
