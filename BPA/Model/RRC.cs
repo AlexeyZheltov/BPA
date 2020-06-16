@@ -9,12 +9,15 @@ namespace BPA.Model {
     /// <summary>
     /// Справочник РРЦ
     /// </summary>
-    class RRC : TableBase {
+    class RRC : TableBase
+    {
         public override string TableName => "РРЦ";
         public override string SheetName => "РРЦ";
 
-        public override IDictionary<string, string> Filds {
-            get {
+        public override IDictionary<string, string> Filds
+        {
+            get
+            {
                 return _filds;
             }
         }
@@ -40,35 +43,44 @@ namespace BPA.Model {
         /// <summary>
         /// Артикул
         /// </summary>
-        public string Article {
+        public string Article
+        {
             get; set;
         }
         /// <summary>
         /// IRP, Eur
         /// </summary>
-        public string IRP {
+        public string IRP
+        {
             get; set;
         }
 
         /// <summary>
         /// РРЦ, руб. с НДС
         /// </summary>
-        public double RRCNDS {
+        public double RRCNDS
+        {
             get; set;
         }
 
         /// <summary>
         /// DIY price list, руб. без НДС
         /// </summary>
-        public double DIY {
+        public double DIY
+        {
             get; set;
         }
 
         /// <summary>
         /// Дата принятия
         /// </summary>
-        public DateTime Date {
+        public DateTime Date
+        {
             get; set;
+        }
+
+        public RRC()
+        {
         }
 
         /// <summary>
@@ -80,10 +92,11 @@ namespace BPA.Model {
         public RRC GetRRC(string article, DateTime date)
         {
             ListRow listRow = GetRow("Article", article);
-            RRC currentRRC = new RRC();
 
             if (listRow != null)
             {
+                RRC currentRRC = new RRC();
+                currentRRC.SetProperty(listRow);
                 Range firstCell = listRow.Range[1, Table.ListColumns[Filds["Article"]].Index];
                 int firstCellRow = firstCell.Row;
                 int afterCellRow;
@@ -98,7 +111,7 @@ namespace BPA.Model {
                         currentRRC = tmpRRC.Date > currentRRC.Date ? tmpRRC : currentRRC;
                     }
 
-                    listRow = GetRow("Article", article, firstCell); 
+                    listRow = GetRow("Article", article, firstCell);
                     Range afterCell = listRow.Range[1, Table.ListColumns[Filds["Article"]].Index];
                     firstCell = afterCell;
                     afterCellRow = afterCell.Row;
@@ -108,6 +121,61 @@ namespace BPA.Model {
                 return currentRRC;
             }
             return null;
+        }
+
+        /// <summary>
+        /// поиск в справочнике цен артикула article с указанной датой date
+        /// </summary>
+        /// <param name="article"></param>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public RRC GetRRC(string article, DateTime date, bool accurate = true)
+        {
+            if (accurate != true)
+                return GetRRC(article, date);
+
+            ListRow listRow = GetRow("Article", article);
+
+            if (listRow == null)
+                return null;
+
+            RRC currentRRC = new RRC();
+            currentRRC.SetProperty(listRow);
+            Range firstCell = listRow.Range[1, Table.ListColumns[Filds["Article"]].Index];
+            int firstCellRow = firstCell.Row;
+            int afterCellRow;
+            
+            do
+            {
+                RRC tmpRRC = new RRC();
+                tmpRRC.SetProperty(listRow);
+
+                if (tmpRRC.Date == date)
+                {
+                    currentRRC = tmpRRC;
+                }
+
+                listRow = GetRow("Article", article, firstCell);
+                Range afterCell = listRow.Range[1, Table.ListColumns[Filds["Article"]].Index];
+                firstCell = afterCell;
+                afterCellRow = afterCell.Row;
+            }
+            while (afterCellRow != firstCellRow);
+
+            return currentRRC.Date == date ? currentRRC : null;
+        }
+
+        public void UpdatePriceFromProduct(Product product)
+        {
+            if (product != null)
+            {
+                this.Date = product.DateOfPromotion;
+                this.RRCNDS = product.RRCCalculated;
+                this.DIY = product.DIY;
+                this.Article = product.Article;
+            }
+
+            Update();
         }
     }
 }

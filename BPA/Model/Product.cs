@@ -567,6 +567,25 @@ namespace BPA.Model
             }
             return products;
         }
+        public List<Product> GetProductsLightForRRC()
+        {
+            List<Product> products = new List<Product>();
+            foreach (ListRow row in Table.ListRows)
+            {
+                Product product = new Product()
+                {
+                    Id = (int)row.Range[1, Table.ListColumns[Filds["Id"]].Index].Value,
+                    Article = row.Range[1, Table.ListColumns[Filds["Article"]].Index].Text,
+                    RRCCurrent = row.Range[1, Table.ListColumns[Filds["RRCCurrent"]].Index].Value ?? 0,
+                    DIYCurrent = row.Range[1, Table.ListColumns[Filds["DIYCurrent"]].Index].Value ?? 0,
+                    RRCCalculated = row.Range[1, Table.ListColumns[Filds["RRCCalculated"]].Index].Value ?? 0,
+                    DIY = row.Range[1, Table.ListColumns[Filds["DIY"]].Index].Value ?? 0,
+                    IRP = row.Range[1, Table.ListColumns[Filds["IRP"]].Index].Value ?? 0
+                };
+                products.Add(product);
+            }
+            return products;
+        }
 
         /// <summary>
         /// Устанавливает свойстка из продукт календаря
