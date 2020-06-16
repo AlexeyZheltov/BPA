@@ -120,7 +120,6 @@ namespace BPA.Model {
             Client client = new Client();
             Range activeCell = client.Application.ActiveCell;
             Worksheet activeSheet = client.Application.ActiveSheet;
-            if (activeSheet.Name != client.TableName) return null;
             if (activeSheet.Name != client.SheetName || activeCell.Row < client.FirstRow || activeCell.Row > client.LastRow)
                 return null;
 

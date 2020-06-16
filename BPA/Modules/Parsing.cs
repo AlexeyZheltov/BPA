@@ -8,9 +8,12 @@ namespace BPA.Modules
 {
     public static class Parsing
     {
-        public static double Calculation(string formula)
+        public static double? Calculation(string formula)
         {
-            return Double.Parse(CalculateStringFormula(formula));
+            if (double.TryParse(CalculateStringFormula(formula), out double result))
+                return result;
+            else
+                return null;
         }
 
         public struct Bracket

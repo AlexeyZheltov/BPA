@@ -215,6 +215,7 @@ namespace BPA
         /// <param name="e"></param>
         private void GetClientPrice_Click(object sender, RibbonControlEventArgs e)
         {
+            ProcessBar processBar = null;
             try
             {
                 //получить активного клиента, если нет, то на нет и суда нет
@@ -242,6 +243,11 @@ namespace BPA
                     else return 0;
                 });
 
+                if(discounts.Count == 0)
+                {
+                    MessageBox.Show("Данному клиенту нет соответствий на листе \"Скидки\"", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
                 Discount currentDiscount = discounts[0];
                 discounts = null;
 
@@ -344,6 +350,7 @@ namespace BPA
                         else return 0;
                     });
 
+                    if (buffer.Count == 0) continue;
                     actualRRC.Add(buffer[0]);
                 }
                 rrcs = null;
@@ -369,10 +376,17 @@ namespace BPA
                     while (formula.Contains("[ррц]"))
                         formula = formula.Replace("[ррц]", actualRRC.Find(x => x.Article == product.Article).RRCNDS);
 
-                    priceList.Add(new FinalPriceList(product)
+                    if(Parsing.Calculation(formula) is double result)
+                        priceList.Add(new FinalPriceList(product)
+                        {
+                        
+                            RRC = result
+                        });
+                    else
                     {
-                        RRC = Parsing.Calculation(formula)
-                    });
+                        MessageBox.Show($"В одной из формул для {currentClient.Customer} содержится ошибка", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
                 }
 
                 //Вывести
@@ -381,6 +395,11 @@ namespace BPA
             catch(Exception ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                processBar?.Close();
+                FunctionsForExcel.SpeedOff();
             }
         }
 
