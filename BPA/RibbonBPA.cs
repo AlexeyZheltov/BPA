@@ -148,9 +148,9 @@ namespace BPA
                     if (processBar.IsCancel)
                         break;
                     processBar.TaskStart($"Обрабатывается артикул {product.Article}");
-                    //calendar.ActionStart += processBar.SubBar.TaskStart;
-                    //calendar.ActionDone += processBar.SubBar.TaskDone;
-                    //processBar.SubBar.CancelClick += product.Cancel;
+                    product.ActionStart += processBar.SubBar.TaskStart;
+                    product.ActionDone += processBar.SubBar.TaskDone;
+                    processBar.SubBar.CancelClick += product.Cancel;
 
                     if (date.Year > 1)
                     {
