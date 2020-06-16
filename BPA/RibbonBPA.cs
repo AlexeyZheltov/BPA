@@ -138,7 +138,6 @@ namespace BPA
             {
                 FunctionsForExcel.SpeedOn();
 
-                //Product product = new Product();
                 processBar.Show();
                 Globals.ThisWorkbook.Activate();
 
@@ -166,7 +165,7 @@ namespace BPA
             finally
             {
                 FunctionsForExcel.SpeedOff();
-                //processBar.SubBar.Close();
+                processBar.SubBar.Close();
                 processBar.Close();
             }
 
