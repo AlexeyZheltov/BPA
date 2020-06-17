@@ -147,9 +147,9 @@ namespace BPA
                     if (processBar.IsCancel)
                         break;
                     processBar.TaskStart($"Обрабатывается артикул {product.Article}");
-                    //product.ActionStart += processBar.SubBar.TaskStart;
-                    //product.ActionDone += processBar.SubBar.TaskDone;
-                    //processBar.SubBar.CancelClick += product.Cancel;
+                    product.ActionStart += processBar.TaskStart;
+                    product.ActionDone += processBar.TaskDone;
+                    processBar.CancelClick += product.Cancel;
 
                     if (date.Year > 1)
                     {
@@ -165,7 +165,6 @@ namespace BPA
             finally
             {
                 FunctionsForExcel.SpeedOff();
-                //processBar.SubBar.Close();
                 processBar.Close();
             }
         }
@@ -187,9 +186,9 @@ namespace BPA
                     if (processBar.IsCancel)
                         break;
                     processBar.TaskStart($"Обрабатывается артикул {product.Article}");
-                    //product.ActionStart += processBar.SubBar.TaskStart;
-                    //product.ActionDone += processBar.SubBar.TaskDone;
-                    //processBar.SubBar.CancelClick += product.Cancel;
+                    product.ActionStart += processBar.TaskStart;
+                    product.ActionDone += processBar.TaskDone;
+                    processBar.CancelClick += product.Cancel;
 
                     if (date.Year > 1)
                     {
@@ -212,7 +211,6 @@ namespace BPA
             finally
             {
                 FunctionsForExcel.SpeedOff();
-                //processBar.SubBar.Close();
                 processBar.Close();
             }
         }
