@@ -120,6 +120,7 @@
     <Compile Include="Model\Client.cs" />
     <Compile Include="Model\Discount.cs" />
     <Compile Include="Model\DIY.cs" />
+    <Compile Include="Model\ExclusiveMag.cs" />
     <Compile Include="Model\FinalPriceList.cs" />
     <Compile Include="Model\GardenaChanel.cs" />
     <Compile Include="Model\Plan.cs" />
@@ -212,7 +213,7 @@
     </ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>6D619523655754037C1CCD67A496884B9B77C51D</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>51D088EC52220A3CB38DC2BC892ED903302C4FE4</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>

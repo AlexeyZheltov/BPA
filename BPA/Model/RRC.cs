@@ -115,13 +115,61 @@ namespace BPA.Model {
 
             foreach(Excel.ListRow row in rrc.Table.ListRows)
             {
-                if (pB.IsCancel) return null;
+                if (pB.IsCancel)
+                {
+                    pB.Dispose();
+                    return null;
+                }
                 pB.Action($"{row.Index}");
                 rrcs.Add(new RRC(row));
                 pB.Done(1);
             }
             pB.Dispose();
             return rrcs;
+        }
+
+        public static List<RRC> GetActualPriceList(DateTime currentDate)
+        {
+            PBWrapper pb = new PBWrapper($"Создание прайс-листа", $"Анализ артикулов с листа РРЦ [Index]");
+
+            //подключится к ценам
+            List<RRC> rrcs = RRC.GetAllRRC(new PBWrapper($"Создание прайс-листа", "Чтение РРЦ [Index]"));
+            if (rrcs == null) return null;
+            //список уникальных артикулов
+            List<string> arts = (from rrc in rrcs
+                                 select rrc.Article).Distinct().ToList();
+
+            List<RRC> actualRRC = new List<RRC>();
+            List<RRC> buffer = new List<RRC>();
+
+            pb.Start(arts.Count);
+            //взять пачку строк соответсвующих артикулу и вязть тот что с последней датой
+            foreach (string art in arts)
+            {
+                if (pb.IsCancel)
+                {
+                    pb.Dispose();
+                    return null;
+                }
+                pb.Action(art);
+                buffer = rrcs.FindAll(x => x.Article == art)
+                                .Where(x => x.GetDateAsDateTime() <= currentDate)
+                                .ToList();
+
+                buffer.Sort((x, y) =>
+                {
+                    if (x.GetDateAsDateTime() > y.GetDateAsDateTime()) return 1;
+                    else if (x.GetDateAsDateTime() < y.GetDateAsDateTime()) return -1;
+                    else return 0;
+                });
+
+                if (buffer.Count == 0) continue;
+                actualRRC.Add(buffer[0]);
+                pb.Done(1);
+            }
+            pb.Dispose();
+
+            return actualRRC;
         }
 
     }

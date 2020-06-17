@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace BPA.Model {
@@ -148,13 +149,47 @@ namespace BPA.Model {
 
             foreach(Excel.ListRow row in discount.Table.ListRows)
             {
-                if (pB.IsCancel) return null;
+                if (pB.IsCancel)
+                {
+                    pB.Dispose();
+                    return null;
+                }
                 pB.Action($"{row.Index}");
                 discounts.Add(new Discount(row));
                 pB.Done(1);
             }
             pB.Dispose();
             return discounts;
+        }
+
+        public static Discount GetCurrentDiscount(Client client, DateTime currentDate)
+        {
+            List<Discount> discounts = Discount.GetAllDiscounts(new PBWrapper($"Создание прайс-листа для {client.Customer}", "Чтение скидок [Index]"));
+            if (discounts == null) return null;
+            discounts = discounts.FindAll(x => x.ChannelType == client.ChannelType
+                                                && x.CustomerStatus == client.CustomerStatus
+                                                && x.GetPeriodAsDateTime() != null
+                                                && x.GetPeriodAsDateTime() <= currentDate);
+
+            discounts.Sort((x, y) =>
+            {
+                if (x.GetPeriodAsDateTime() > y.GetPeriodAsDateTime()) return 1;
+                else if (x.GetPeriodAsDateTime() < y.GetPeriodAsDateTime()) return -1;
+                else return 0;
+            });
+
+            if (discounts.Count == 0)
+            {
+                MessageBox.Show($"Клиенту {client.Customer} нет соответствий на листе \"Скидки\"", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return null;
+            }
+            Discount currentDiscount = discounts[0];
+
+            //проверить формулы
+            //Убрать пробелы и лишние знаки
+            currentDiscount.NormaliseAllFormulas();
+
+            return currentDiscount;
         }
 
         public void NormaliseAllFormulas()

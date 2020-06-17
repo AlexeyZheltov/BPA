@@ -226,17 +226,10 @@ namespace BPA
         private void CreatePrice(bool All = false)
         {
             ProcessBar processBar = null;
+            FilePriceMT filePriceMT = null;
             bool isCancel = false;
             void Cancel() => isCancel = true;
             List<Client> priceClients = new List<Client>();
-
-            //Запросить дату
-            MSCalendar calendar = new MSCalendar();
-            DateTime currentDate;
-            if (calendar.ShowDialog(new ExcelWindows(Globals.ThisWorkbook)) == DialogResult.OK) currentDate = calendar.SelectedDate;
-            else return;
-            calendar.Close();
-
 
             try
             {
@@ -249,6 +242,11 @@ namespace BPA
 
                     foreach(Excel.ListRow row in client.Table.ListRows)
                     {
+                        if (isCancel)
+                        {
+                            processBar.Close();
+                            return;
+                        }
                         processBar.TaskStart($"Загружаем {row.Index}");
                         priceClients.Add(new Client(row));
                         processBar.TaskDone(1);
@@ -269,39 +267,23 @@ namespace BPA
                     priceClients.Add(currentClient);
                 }
 
-                //сюда вынести загрузку общих данных, кроме тех, что надо финализировать. Их инициализировать чуть повыше
+                //Запросить дату
+                MSCalendar calendar = new MSCalendar();
+                DateTime currentDate;
+                if (calendar.ShowDialog(new ExcelWindows(Globals.ThisWorkbook)) == DialogResult.OK) currentDate = calendar.SelectedDate;
+                else return;
+                calendar.Close();
+
+                //сюда вынести загрузку общих данных
+                List<RRC> actualRRC = RRC.GetActualPriceList(currentDate);
+                if (actualRRC == null) return;
 
                 foreach (Client currentClient in priceClients)
                 {
-                    //найти клиента в списке скидок
-                    List<Discount> discounts = Discount.GetAllDiscounts(new PBWrapper($"Создание прайс-листа для {currentClient.Customer}", "Чтение скидок [Index]"));
-                    if (discounts == null) return;
-                    discounts = discounts.FindAll(x => x.ChannelType == currentClient.ChannelType
-                                                        && x.CustomerStatus == currentClient.CustomerStatus
-                                                        && x.GetPeriodAsDateTime() != null
-                                                        && x.GetPeriodAsDateTime() <= currentDate);
+                    Discount currentDiscount = Discount.GetCurrentDiscount(currentClient, currentDate);
+                    if (currentDiscount == null) return;
 
-                    discounts.Sort((x, y) =>
-                    {
-                        if (x.GetPeriodAsDateTime() > y.GetPeriodAsDateTime()) return 1;
-                        else if (x.GetPeriodAsDateTime() < y.GetPeriodAsDateTime()) return -1;
-                        else return 0;
-                    });
-
-                    if (discounts.Count == 0)
-                    {
-                        MessageBox.Show($"Клиенту {currentClient.Customer} нет соответствий на листе \"Скидки\"", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
-                    Discount currentDiscount = discounts[0];
-                    discounts = null;
-
-                    //проверить формулы
-                    //Убрать пробелы и лишние знаки
-                    currentDiscount.NormaliseAllFormulas();
-
-                    //подгрузить PriceMT если неужно, подключится к РРЦ
-                    FilePriceMT filePriceMT = null;
+                    //подгрузить PriceMT если неужно, подключится к РРЦ                   
                     if (currentDiscount.NeedFilePriceMT())
                     {
                         //Загурзить файл price list MT
@@ -311,50 +293,12 @@ namespace BPA
                         filePriceMT.ActionDone += processBar.TaskDone;
                         processBar.CancelClick += filePriceMT.Cancel;
                         filePriceMT.Load(currentClient.Mag, currentDate);
-                        filePriceMT.Close();
                         processBar.Close();
                     }
 
                     //Загрузка списка артикулов, какие из них актуальные?
-                    List<Product> products = Product.GetProductsForDiscounts(new PBWrapper($"Создание прайс-листа для {currentClient.Customer}", "Чтение артикула [Index]"));
+                    List<Product> products = Product.GetProductForClient(currentClient);
                     if (products == null) return;
-                    products = products.FindAll(x => x.Status.ToLower() == "активный");
-
-                    //подключится к ценам
-                    List<RRC> rrcs = RRC.GetAllRRC(new PBWrapper($"Создание прайс-листа для {currentClient.Customer}", "Чтение РРЦ [Index]"));
-                    if (rrcs == null) return;
-                    List<string> arts = (from rrc in rrcs
-                                         select rrc.Article).Distinct().ToList();
-
-                    List<RRC> actualRRC = new List<RRC>();
-                    List<RRC> buffer = new List<RRC>();
-
-                    processBar = new ProcessBar($"Создание прайс-листа для {currentClient.Customer}", arts.Count);
-                    processBar.CancelClick += Cancel;
-                    foreach (string art in arts)
-                    {
-                        if (isCancel) return;
-                        processBar.TaskStart($"Анализ артикулов с листа РРЦ {art}"); ;
-                        buffer = rrcs.FindAll(x => x.Article == art)
-                                        .Where(x => x.GetDateAsDateTime() <= currentDate)
-                                        .ToList();
-
-                        buffer.Sort((x, y) =>
-                        {
-                            if (x.GetDateAsDateTime() > y.GetDateAsDateTime()) return 1;
-                            else if (x.GetDateAsDateTime() < y.GetDateAsDateTime()) return -1;
-                            else return 0;
-                        });
-
-                        if (buffer.Count == 0) continue;
-                        actualRRC.Add(buffer[0]);
-                        processBar.TaskDone(1);
-                    }
-                    processBar.Close();
-                    rrcs = null;
-                    arts = null;
-                    buffer = null;
-
 
                     //в цикле менять метки на значения из цен, с заменой;
                     List<FinalPriceList> priceList = new List<FinalPriceList>();
@@ -381,7 +325,6 @@ namespace BPA
                         if (Parsing.Calculation(formula) is double result)
                             priceList.Add(new FinalPriceList(product)
                             {
-
                                 RRC = result
                             });
                         else
@@ -412,6 +355,7 @@ namespace BPA
             }
             finally
             {
+                filePriceMT?.Close();
                 processBar?.Close();
                 FunctionsForExcel.SpeedOff();
             }

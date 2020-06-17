@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace BPA.Model
 {
@@ -461,6 +462,11 @@ namespace BPA.Model
             return products;
         }
 
+        /// <summary>
+        /// Получает список с укороченными данными для работы со скидками
+        /// </summary>
+        /// <param name="pB"></param>
+        /// <returns></returns>
         public static List<Product> GetProductsForDiscounts(PBWrapper pB)
         {
             List<Product> products = new List<Product>();
@@ -468,7 +474,11 @@ namespace BPA.Model
             pB.Start(product.Table.ListRows.Count);
             foreach (ListRow row in product.Table.ListRows)
             {
-                if (pB.IsCancel) return null;
+                if (pB.IsCancel)
+                {
+                    pB.Dispose();
+                    return null;
+                }
                 pB.Action($"{row.Index}");
                 product = new Product()
                 {
@@ -497,6 +507,57 @@ namespace BPA.Model
             }
             pB.Dispose();
             return products;
+        }
+
+        /// <summary>
+        /// получает список артикулов для указанного клиента
+        /// </summary>
+        /// <param name="client"></param>
+        /// <returns></returns>
+        public static List<Product> GetProductForClient(Client client)
+        {
+            List<Product> products = Product.GetProductsForDiscounts(new PBWrapper($"Создание прайс-листа для {client.Customer}", "Чтение артикула [Index]"));
+            if (products == null) return null;
+
+            List<string> exclusives = (from em in ExclusiveMag.GetAllExclusives()
+                                             select em.Name.ToLower()).ToList();
+
+            products = products.FindAll(x => x.Status.ToLower() != "выведено из ассортимента текущего года");
+
+            List<Product> actualProducts = new List<Product>();
+            foreach(Product product in products)
+            {
+                if (exclusives.Contains(product.Exclusive.ToLower()))
+                {
+                    if (product.Exclusive.ToLower() == client.CustomerStatus.ToLower())
+                        actualProducts.Add(product);
+                }
+                else
+                {
+                    switch (product.Exclusive.ToLower())
+                    {
+                        case "diy канал":
+                            if (client.ChannelType.ToLower() == "diy")
+                                actualProducts.Add(product);
+                            break;
+                        case "online":
+                            if (client.ChannelType.ToLower() == "online")
+                                actualProducts.Add(product);
+                            break;
+                        case "dealer":
+                        case "regional": //DEALERS&REGIONAL DISTR
+                            if (client.ChannelType.ToLower() == "dealer&regional distr")
+                                actualProducts.Add(product);
+                            break;
+                        default:
+                            actualProducts.Add(product);
+                            break;
+                    }
+                }
+            }
+
+
+            return actualProducts;
         }
 
         /// <summary>

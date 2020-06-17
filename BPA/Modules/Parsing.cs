@@ -55,7 +55,7 @@ namespace BPA.Modules
             int bracketOpenPos;
             do
             {
-                Bracket bracket = new Bracket();
+                Bracket bracket;
                 bracketOpenPos = tmpFormula.IndexOf("(");
                 if (bracketOpenPos < 0) break;
 
@@ -66,9 +66,11 @@ namespace BPA.Modules
             }
             while (bracketOpenPos >= 0);
 
-            Bracket bracketRes = new Bracket();
-            bracketRes.Formula = tmpFormula;
-            
+            Bracket bracketRes = new Bracket
+            {
+                Formula = tmpFormula
+            };
+
             return bracketRes.Result;
         }
 
@@ -266,7 +268,7 @@ namespace BPA.Modules
                 if (!double.TryParse(sign, out _) && sign != "." && sign != ",")
                     break;
 
-                numString = numString+sign;
+                numString += sign;
             }
             return numString;
         }
