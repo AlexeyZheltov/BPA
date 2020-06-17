@@ -132,7 +132,7 @@ namespace BPA
 
         private void UploadPrice_Click(object sender, RibbonControlEventArgs e)
         {
-            List<Product> products = new Product().GetProducts();
+            List<ProductForRRC> products = new ProductForRRC().GetProducts();
             ProcessBar processBar = new ProcessBar("Обновление цен из справочника", products.Count);
             bool isCancel = false;
             void CancelLocal() => isCancel = true;
@@ -146,7 +146,7 @@ namespace BPA
                 Globals.ThisWorkbook.Activate();
 
                 DateTime date = products[0].DateOfPromotion;
-                foreach (Product product in products)
+                foreach (ProductForRRC product in products)
                 {
                     if (isCancel)
                         break;
@@ -173,7 +173,7 @@ namespace BPA
 
         private void SavePrice_Click(object sender, RibbonControlEventArgs e)
         {
-            List<Product> products = new Product().GetProductsLightForRRC();
+            List<ProductForRRC> products = new ProductForRRC().GetProducts();
             ProcessBar processBar = new ProcessBar("Обновление цен из справочника", products.Count);
             bool isCancel = false;
             void CancelLocal() => isCancel = true;
@@ -187,7 +187,7 @@ namespace BPA
                 Globals.ThisWorkbook.Activate();
 
                 DateTime date = products[0].DateOfPromotion;
-                foreach (Product product in products)
+                foreach (ProductForRRC product in products)
                 {
                     if (isCancel)
                         break;

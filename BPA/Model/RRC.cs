@@ -14,6 +14,8 @@ namespace BPA.Model {
         public override string TableName => "РРЦ";
         public override string SheetName => "РРЦ";
 
+        #region --- Словарь ---
+
         public override IDictionary<string, string> Filds
         {
             get
@@ -30,6 +32,10 @@ namespace BPA.Model {
             { "DIY", "DIY price list, руб. без НДС" },
             { "Date", "Дата принятия" }
         };
+
+        #endregion
+
+        #region --- Свойства ---
 
         /// <summary>
         /// №
@@ -50,7 +56,7 @@ namespace BPA.Model {
         /// <summary>
         /// IRP, Eur
         /// </summary>
-        public string IRP
+        public double IRP
         {
             get; set;
         }
@@ -79,9 +85,9 @@ namespace BPA.Model {
             get; set;
         }
 
-        public RRC()
-        {
-        }
+        #endregion
+
+        public RRC() { }
 
         /// <summary>
         /// поиск в справочнике цен артикула article с датой date не познее указанной
@@ -165,7 +171,11 @@ namespace BPA.Model {
             return currentRRC.Date == date ? currentRRC : null;
         }
 
-        public void UpdatePriceFromProduct(Product product)
+       /// <summary>
+       /// Обновление Справочника из ProductForRRC
+       /// </summary>
+       /// <param name="product"></param>
+        public void UpdatePriceFromProduct(ProductForRRC product)
         {
             if (product != null)
             {

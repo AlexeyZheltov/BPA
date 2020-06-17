@@ -129,7 +129,9 @@ namespace BPA.Model
             foreach (ListColumn column in Table.ListColumns)
             {
                 Range range = row.Range[1, column.Index];
-                if (!range.HasFormula) range.Value = GetParametrValue(GetKey(column.Name));
+                if (!range.HasFormula)
+                    if (GetParametrValue(GetKey(column.Name)) is object obj)
+                        range.Value = obj;
             }
         }
 
