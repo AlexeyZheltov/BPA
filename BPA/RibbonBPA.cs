@@ -134,28 +134,30 @@ namespace BPA
         {
             List<Product> products = new Product().GetProducts();
             ProcessBar processBar = new ProcessBar("Обновление цен из справочника", products.Count);
+            bool isCancel = false;
+            void CancelLocal() => isCancel = true;
+
             try
             {
                 FunctionsForExcel.SpeedOn();
 
+                processBar.CancelClick += CancelLocal;
                 processBar.Show();
                 Globals.ThisWorkbook.Activate();
 
                 DateTime date = products[0].DateOfPromotion;
                 foreach (Product product in products)
                 {
-                    if (processBar.IsCancel)
+                    if (isCancel)
                         break;
-                    processBar.TaskStart($"Обрабатывается артикул {product.Article}");
-                    product.ActionStart += processBar.TaskStart;
-                    product.ActionDone += processBar.TaskDone;
-                    processBar.CancelClick += product.Cancel;
 
+                    processBar.TaskStart($"Обрабатывается артикул {product.Article}");
                     if (date.Year > 1)
                     {
                         RRC rrc = new RRC().GetRRC(product.Article, date);
                         product.UpdatePriceFromRRC(rrc);
                     }
+                    processBar.TaskDone(1);
                 }
             }
             catch (Exception ex)
@@ -173,22 +175,24 @@ namespace BPA
         {
             List<Product> products = new Product().GetProductsLightForRRC();
             ProcessBar processBar = new ProcessBar("Обновление цен из справочника", products.Count);
+            bool isCancel = false;
+            void CancelLocal() => isCancel = true;
+
             try
             {
                 FunctionsForExcel.SpeedOn();
 
+                processBar.CancelClick += CancelLocal;
                 processBar.Show();
                 Globals.ThisWorkbook.Activate();
 
                 DateTime date = products[0].DateOfPromotion;
                 foreach (Product product in products)
                 {
-                    if (processBar.IsCancel)
+                    if (isCancel)
                         break;
+
                     processBar.TaskStart($"Обрабатывается артикул {product.Article}");
-                    product.ActionStart += processBar.TaskStart;
-                    product.ActionDone += processBar.TaskDone;
-                    processBar.CancelClick += product.Cancel;
 
                     if (date.Year > 1)
                     {
@@ -202,6 +206,7 @@ namespace BPA
 
                         rrc.UpdatePriceFromProduct(product);
                     }
+                    processBar.TaskDone(1);
                 }
             }
             catch (Exception ex)
