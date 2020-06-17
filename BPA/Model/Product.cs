@@ -1,4 +1,5 @@
-﻿using BPA.Modules;
+﻿using BPA.Forms;
+using BPA.Modules;
 
 using Microsoft.Office.Interop.Excel;
 
@@ -470,11 +471,13 @@ namespace BPA.Model
         }
         #endregion
 
+        public Product() { }
+        public Product(ListRow listRow) => SetProperty(listRow);
+
         /// <summary>
         /// Дата повышения
         /// </summary>
         /// <returns></returns>
-
         public DateTime DateOfPromotion
         {
             get
@@ -505,8 +508,7 @@ namespace BPA.Model
             ListRow listRow = GetRow("Article", article);
             if (listRow != null)
             {
-                Product product = new Product();
-                product.SetProperty(listRow);
+                Product product = new Product(listRow);
                 return product;
             }
 
@@ -525,8 +527,7 @@ namespace BPA.Model
             ListRow listRow = Table.ListRows[Application.Selection[1].Row - Table.Range.Row];
             if (listRow != null)
             {
-                Product product = new Product();
-                product.SetProperty(listRow);
+                Product product = new Product(listRow);
                 return product;
             }
             return null;
@@ -537,13 +538,28 @@ namespace BPA.Model
         /// </summary>
         public List<Product> GetProducts()
         {
+            bool isCancel = false;
+            void CancelLocal() => isCancel = true;
+            ProcessBar processBar = new ProcessBar("Получение списка продуктов", LastRow);
+            processBar.CancelClick += CancelLocal;
+            processBar.Show();
+
             List<Product> products = new List<Product>();
             foreach (ListRow row in Table.ListRows)
             {
-                Product product = new Product();
-                product.SetProperty(row);
-                products.Add(product);
+                if (isCancel)
+                {
+                    processBar.Close();
+                    return null;
+                }
+                processBar.TaskStart($"Обрабатывается товар {row.Index} из {LastRow - Table.HeaderRowRange.Row}");
+
+                products.Add(new Product(row));
+
+                processBar.TaskDone(1);
+
             }
+            processBar.Close();
             return products;
         }
 
@@ -553,9 +569,22 @@ namespace BPA.Model
         /// <returns></returns>
         public List<Product> GetProductsLight()
         {
+            bool isCancel = false;
+            void CancelLocal() => isCancel = true;
+            ProcessBar processBar = new ProcessBar("Получение списка продуктов", LastRow);
+            processBar.CancelClick += CancelLocal;
+            processBar.Show();
+
             List<Product> products = new List<Product>();
             foreach (ListRow row in Table.ListRows)
             {
+                if (isCancel)
+                {
+                    processBar.Close();
+                    return null;
+                }
+                processBar.TaskStart($"Обрабатывается товар {row.Index} из {LastRow - Table.HeaderRowRange.Row}");
+
                 Product product = new Product()
                 {
                     Id = (int)row.Range[1, Table.ListColumns[Filds["Id"]].Index].Value,
@@ -563,27 +592,11 @@ namespace BPA.Model
                     Article = row.Range[1, Table.ListColumns[Filds["Article"]].Index].Text,
                     Calendar = row.Range[1, Table.ListColumns[Filds["Calendar"]].Index].Text
                 };
+
                 products.Add(product);
+                processBar.TaskDone(1);
             }
-            return products;
-        }
-        public List<Product> GetProductsLightForRRC()
-        {
-            List<Product> products = new List<Product>();
-            foreach (ListRow row in Table.ListRows)
-            {
-                Product product = new Product()
-                {
-                    Id = (int)row.Range[1, Table.ListColumns[Filds["Id"]].Index].Value,
-                    Article = row.Range[1, Table.ListColumns[Filds["Article"]].Index].Text,
-                    RRCCurrent = row.Range[1, Table.ListColumns[Filds["RRCCurrent"]].Index].Value ?? 0,
-                    DIYCurrent = row.Range[1, Table.ListColumns[Filds["DIYCurrent"]].Index].Value ?? 0,
-                    RRCCalculated = row.Range[1, Table.ListColumns[Filds["RRCCalculated"]].Index].Value ?? 0,
-                    DIY = row.Range[1, Table.ListColumns[Filds["DIY"]].Index].Value ?? 0,
-                    IRP = row.Range[1, Table.ListColumns[Filds["IRP"]].Index].Value ?? 0
-                };
-                products.Add(product);
-            }
+            processBar.Close();
             return products;
         }
 
@@ -626,22 +639,6 @@ namespace BPA.Model
             this.PNS = product.PNS;
 
             this.Calendar = this.Calendar;
-
-            Update();
-        }
-
-        public void UpdatePriceFromRRC(RRC rrc)
-        {
-            if (rrc != null)
-            {
-                this.RRCCurrent = rrc.RRCNDS;
-                this.DIYCurrent = rrc.DIY;
-            }
-            else
-            {
-                this.RRCCurrent = 0;
-                this.DIYCurrent = 0;
-            }
 
             Update();
         }

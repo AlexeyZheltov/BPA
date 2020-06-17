@@ -119,6 +119,7 @@
     <Compile Include="Model\Plan.cs" />
     <Compile Include="Model\ProductExclusivity.cs" />
     <Compile Include="Model\ProductCalendar.cs" />
+    <Compile Include="Model\ProductForRRC.cs" />
     <Compile Include="Model\ProductGroup.cs" />
     <Compile Include="Model\Product.cs" />
     <Compile Include="Model\ProductStatus.cs" />

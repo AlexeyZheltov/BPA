@@ -132,30 +132,32 @@ namespace BPA
 
         private void UploadPrice_Click(object sender, RibbonControlEventArgs e)
         {
-            List<Product> products = new Product().GetProducts();
+            List<ProductForRRC> products = new ProductForRRC().GetProducts();
             ProcessBar processBar = new ProcessBar("Обновление цен из справочника", products.Count);
+            bool isCancel = false;
+            void CancelLocal() => isCancel = true;
+
             try
             {
                 FunctionsForExcel.SpeedOn();
 
+                processBar.CancelClick += CancelLocal;
                 processBar.Show();
                 Globals.ThisWorkbook.Activate();
 
                 DateTime date = products[0].DateOfPromotion;
-                foreach (Product product in products)
+                foreach (ProductForRRC product in products)
                 {
-                    if (processBar.IsCancel)
+                    if (isCancel)
                         break;
-                    processBar.TaskStart($"Обрабатывается артикул {product.Article}");
-                    //product.ActionStart += processBar.SubBar.TaskStart;
-                    //product.ActionDone += processBar.SubBar.TaskDone;
-                    //processBar.SubBar.CancelClick += product.Cancel;
 
+                    processBar.TaskStart($"Обрабатывается артикул {product.Article}");
                     if (date.Year > 1)
                     {
                         RRC rrc = new RRC().GetRRC(product.Article, date);
                         product.UpdatePriceFromRRC(rrc);
                     }
+                    processBar.TaskDone(1);
                 }
             }
             catch (Exception ex)
@@ -165,31 +167,32 @@ namespace BPA
             finally
             {
                 FunctionsForExcel.SpeedOff();
-                //processBar.SubBar.Close();
                 processBar.Close();
             }
         }
 
         private void SavePrice_Click(object sender, RibbonControlEventArgs e)
         {
-            List<Product> products = new Product().GetProductsLightForRRC();
+            List<ProductForRRC> products = new ProductForRRC().GetProducts();
             ProcessBar processBar = new ProcessBar("Обновление цен из справочника", products.Count);
+            bool isCancel = false;
+            void CancelLocal() => isCancel = true;
+
             try
             {
                 FunctionsForExcel.SpeedOn();
 
+                processBar.CancelClick += CancelLocal;
                 processBar.Show();
                 Globals.ThisWorkbook.Activate();
 
                 DateTime date = products[0].DateOfPromotion;
-                foreach (Product product in products)
+                foreach (ProductForRRC product in products)
                 {
-                    if (processBar.IsCancel)
+                    if (isCancel)
                         break;
+
                     processBar.TaskStart($"Обрабатывается артикул {product.Article}");
-                    //product.ActionStart += processBar.SubBar.TaskStart;
-                    //product.ActionDone += processBar.SubBar.TaskDone;
-                    //processBar.SubBar.CancelClick += product.Cancel;
 
                     if (date.Year > 1)
                     {
@@ -203,6 +206,7 @@ namespace BPA
 
                         rrc.UpdatePriceFromProduct(product);
                     }
+                    processBar.TaskDone(1);
                 }
             }
             catch (Exception ex)
@@ -212,7 +216,6 @@ namespace BPA
             finally
             {
                 FunctionsForExcel.SpeedOff();
-                //processBar.SubBar.Close();
                 processBar.Close();
             }
         }
