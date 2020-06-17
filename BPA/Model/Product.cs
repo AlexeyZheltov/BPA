@@ -500,7 +500,8 @@ namespace BPA.Model
                     CalendarPackagingVolume = row.Range[1, product.Table.ListColumns[product.Filds["CalendarPackagingVolume"]].Index].Text,
                     CalendarUnitsPerPallet = row.Range[1, product.Table.ListColumns[product.Filds["CalendarUnitsPerPallet"]].Index].Text,
                     LocalCertificate = row.Range[1, product.Table.ListColumns[product.Filds["LocalCertificate"]].Index].Text,
-                    Status = row.Range[1, product.Table.ListColumns[product.Filds["Status"]].Index].Text
+                    Status = row.Range[1, product.Table.ListColumns[product.Filds["Status"]].Index].Text,
+                    Exclusive = row.Range[1, product.Table.ListColumns[product.Filds["Exclusive"]].Index].Text
                 };
                 products.Add(product);
                 pB.Done(1);

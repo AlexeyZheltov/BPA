@@ -316,8 +316,8 @@ namespace BPA
                         while (formula.Contains("[pricelist mt]"))
                             formula = formula.Replace("[pricelist mt]", filePriceMT.GetPrice(product.Article).ToString());
 
-                        while (formula.Contains("[diy pricelist]"))
-                            formula = formula.Replace("[diy pricelist]", actualRRC.Find(x => x.Article == product.Article).DIY);
+                        while (formula.Contains("[diy price list]"))
+                            formula = formula.Replace("[diy price list]", actualRRC.Find(x => x.Article == product.Article).DIY);
 
                         while (formula.Contains("[ррц]"))
                             formula = formula.Replace("[ррц]", actualRRC.Find(x => x.Article == product.Article).RRCNDS);
