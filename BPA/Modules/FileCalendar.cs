@@ -30,6 +30,8 @@ namespace BPA.Modules
         public int CountActions => LastRow - CalendarHeaderRow;
         private bool IsCancel = false;
 
+        public bool IsOpen { get; set; } = false;
+
         public Workbook Workbook
         {
             get
@@ -114,7 +116,6 @@ namespace BPA.Modules
                 Title = "Выберите расположение продуктового календаря",
                 DefaultExt = "*.xls*",
                 CheckFileExists = true,
-                InitialDirectory = Globals.ThisWorkbook.Path,
                 ValidateNames = true,
                 Multiselect = false,
                 Filter = "Excel|*.xls*"
@@ -123,6 +124,7 @@ namespace BPA.Modules
                 if (fileDialog.ShowDialog() == DialogResult.OK)
                 {
                     FileName = fileDialog.FileName;
+                    IsOpen = true;
                 }
             }
 
@@ -146,12 +148,17 @@ namespace BPA.Modules
         {
             if (Workbook == null) return;
 
-            ReadCalendarLoad();
+            if (!ReadCalendarLoad())
+            {
+                MessageBox.Show("Значимых записей не найдено", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
 
-            ProductCalendar productCalendar = new ProductCalendar();
-
-            productCalendar.Name = Workbook.Name;
-            productCalendar.Path = FileName;
+            ProductCalendar productCalendar = new ProductCalendar
+            {
+                Name = Workbook.Name,
+                Path = FileName
+            };
             productCalendar.Save();
 
             Close();
@@ -161,13 +168,13 @@ namespace BPA.Modules
         /// <summary>
         /// загрузка календаря
         /// </summary>
-        private void ReadCalendarLoad()
+        private bool ReadCalendarLoad()
         {
             Product product = null;
 
             for (int rw = CalendarHeaderRow + 1; rw < LastRow; rw++)
             {
-                if (IsCancel) return;
+                if (IsCancel) return false;
                 ActionStart?.Invoke($"Обрабатывается строка {rw}");
 
                 if (Worksheet.Cells[rw, 1].Text == "")
@@ -176,6 +183,8 @@ namespace BPA.Modules
                     continue;
                 }
 
+                int temp = ToBeSoldInColumn;
+                if (temp == 0) throw new ApplicationException("Файл имеет не верный формат");
                 string tobesold = Worksheet.Cells[rw, ToBeSoldInColumn].Text;
                 tobesold = tobesold.ToUpper();
 
@@ -206,8 +215,10 @@ namespace BPA.Modules
 
                 ActionDone?.Invoke(1);
             }
+            if (product == null) return false;
             product.Sort("Id");
             product.Sort("ProductGroup");
+            return true;
         }
 
 
@@ -315,6 +326,7 @@ namespace BPA.Modules
 
         public void Close()
         {
+            IsOpen = false;
             Workbook.Close(false);
         }
 

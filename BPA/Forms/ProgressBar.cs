@@ -22,7 +22,9 @@ namespace BPA.Forms
         /// <summary>
         /// Дочерний прогрессбар
         /// </summary>
+#pragma warning disable CA2213 // Disposable fields should be disposed
         public ProcessBar SubBar;
+#pragma warning restore CA2213 // Disposable fields should be disposed
 
         /// <summary>
         /// Заголовок прогрессбара, то что будет написано в названии формы

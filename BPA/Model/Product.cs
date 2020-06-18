@@ -522,7 +522,7 @@ namespace BPA.Model
         /// <returns></returns>
         public Product GetPoductActive()
         {
-            if (Application.ActiveCell.Row <= FirstRow || Application.ActiveCell.Row >= LastRow)
+            if (Application.ActiveCell.Row < FirstRow || Application.ActiveCell.Row > LastRow)
                 return null;
 
             ListRow listRow = Table.ListRows[Application.Selection[1].Row - Table.Range.Row];

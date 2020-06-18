@@ -30,6 +30,8 @@ namespace BPA
         private void AddNewCalendar_Click(object sender, RibbonControlEventArgs e)
         {
             FileCalendar fileCalendar = new FileCalendar();
+            if (!fileCalendar.IsOpen) return;
+
             ProcessBar processBar = new ProcessBar("Загрузка данных календаря", fileCalendar.CountActions);
             try
             {
@@ -86,7 +88,7 @@ namespace BPA
             finally
             {
                 FunctionsForExcel.SpeedOff();
-                processBar.SubBar.Close();
+                processBar.SubBar?.Close();
                 processBar.Close();
             }
             
@@ -368,6 +370,7 @@ namespace BPA
                     {
                         //Загурзить файл price list MT
                         filePriceMT = new FilePriceMT();
+                        if (!filePriceMT.IsOpen) return;
                         processBar = new ProcessBar($"Создание прайс-листа для {currentClient.Customer}", 1);
                         filePriceMT.ActionStart += processBar.TaskStart;
                         filePriceMT.ActionDone += processBar.TaskDone;

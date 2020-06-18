@@ -27,6 +27,8 @@ namespace BPA.Modules
         public event ActionsDone ActionDone;
         public delegate void ActionsDone(int count);
 
+        public bool IsOpen { get; set; } = false;
+
         public int CountActions => LastRow - CalendarHeaderRow;
         private bool IsCancel = false;
 
@@ -182,6 +184,7 @@ namespace BPA.Modules
                 ActionDone?.Invoke(1);
             } 
             while (firstFindedRw != rw);
+            IsOpen = true;
         }
 
         private void AddClient(int rw, int priceColumn)
@@ -240,6 +243,7 @@ namespace BPA.Modules
 
         public void Close()
         {
+            IsOpen = false;
             Workbook.Close(false);
         }
 

@@ -100,7 +100,7 @@ namespace BPA.Model
         public void UpdateProducts()
         {
             FileCalendar fileCalendar = new FileCalendar(Path);
-            List<Product> products = new Product().GetProductsLight();
+            List<Product> products = new Product().GetProducts();
             foreach (Product product in products)
             {
                 if (IsCancel) return;
