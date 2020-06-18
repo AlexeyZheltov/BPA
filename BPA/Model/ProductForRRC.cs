@@ -170,23 +170,23 @@ namespace BPA.Model
             Update();
         }
 
-        private bool IsCancel = false;
+        //private bool IsCancel = false;
         /// <summary>
         /// Событие начала задачи
         /// </summary>
-        public event ActionsStart ActionStart;
-        public delegate void ActionsStart(string name);
+        //public event ActionsStart ActionStart;
+        //public delegate void ActionsStart(string name);
 
         /// <summary>
         /// Событие завершения задачи
         /// </summary>
-        public event ActionsDone ActionDone;
-        public delegate void ActionsDone(int count);
+        //public event ActionsDone ActionDone;
+        //public delegate void ActionsDone(int count);
 
-        public void Cancel()
-        {
-            IsCancel = true;
-        }
+        //public void Cancel()
+        //{
+        //    IsCancel = true;
+        //}
 
     }
 }

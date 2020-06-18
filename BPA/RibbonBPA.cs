@@ -397,10 +397,10 @@ namespace BPA
                             formula = formula.Replace("[pricelist mt]", filePriceMT.GetPrice(product.Article).ToString());
 
                         while (formula.Contains("[diy price list]"))
-                            formula = formula.Replace("[diy price list]", actualRRC.Find(x => x.Article == product.Article).DIY);
+                            formula = formula.Replace("[diy price list]", actualRRC.Find(x => x.Article == product.Article).DIY.ToString());
 
                         while (formula.Contains("[ррц]"))
-                            formula = formula.Replace("[ррц]", actualRRC.Find(x => x.Article == product.Article).RRCNDS);
+                            formula = formula.Replace("[ррц]", actualRRC.Find(x => x.Article == product.Article).RRCNDS.ToString());
 
                         if (Parsing.Calculation(formula) is double result)
                             priceList.Add(new FinalPriceList(product)

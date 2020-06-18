@@ -82,22 +82,24 @@ namespace BPA.Model {
         /// <summary>
         /// Дата принятия
         /// </summary>
+        DateTime _date;
         public DateTime Date
         {
-            get; set;
+            get => _date.Date;
+            set => _date = value;
         }
 
         #endregion
         public RRC(Excel.ListRow row) => SetProperty(row);
         public RRC() { }
 
-        public DateTime? GetDateAsDateTime()
-        {
-            if (DateTime.TryParse(Date, out DateTime date)) return date.Date;
-            else return null;
-        }
+        //public DateTime? GetDateAsDateTime()
+        //{
+        //    if (DateTime.TryParse(Date, out DateTime date)) return date.Date;
+        //    else return null;
+        //}
 
-        public RRC GetRRC(string article, string date)
+        public RRC GetRRC(string article, DateTime date)
         {
             ListRow listRow = GetRow("Article", article);
 
@@ -236,13 +238,13 @@ namespace BPA.Model {
                 }
                 pb.Action(art);
                 buffer = rrcs.FindAll(x => x.Article == art)
-                                .Where(x => x.GetDateAsDateTime() <= currentDate)
+                                .Where(x => x.Date <= currentDate)
                                 .ToList();
 
                 buffer.Sort((x, y) =>
                 {
-                    if (x.GetDateAsDateTime() > y.GetDateAsDateTime()) return 1;
-                    else if (x.GetDateAsDateTime() < y.GetDateAsDateTime()) return -1;
+                    if (x.Date > y.Date) return 1;
+                    else if (x.Date < y.Date) return -1;
                     else return 0;
                 });
 
