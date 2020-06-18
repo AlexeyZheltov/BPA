@@ -111,9 +111,9 @@ namespace BPA.Modules
 
         public bool IsNotOpen() => FileName == "";
         
-        public List<Clients> LoadClients()
+        public List<Client> LoadClients()
         {
-            List<Clients> buffer = new List<Clients>();
+            List<Client> buffer = new List<Client>();
 
             if (CustomerColumn == 0 || GardenaChannelColumn == 0) throw new ApplicationException("Файл имеет не верный формат");
 
@@ -128,7 +128,7 @@ namespace BPA.Modules
                     range = Worksheet.Cells[rowIndex, GardenaChannelColumn];
                     string gardenaChannel = range.Text;
 
-                    if(!buffer.Exists(x => x.Customer == customer)) buffer.Add(new Clients()
+                    if(!buffer.Exists(x => x.Customer == customer)) buffer.Add(new Client()
                     {
                         Customer = customer,
                         GardenaChannel = gardenaChannel

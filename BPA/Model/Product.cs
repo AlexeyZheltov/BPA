@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace BPA.Model
 {
@@ -31,15 +32,15 @@ namespace BPA.Model
             { "SupercategoryRu","Суперкатегория(RUS)" },
             { "ProductGroup","Продукт группа" },
             { "ProductGroupEng","Название продукт группы(ENG)" },
-            { "ProductGroupRu","Название продукт группы(RUS)" },
+            { "ProductGroupRu","Название продукт группы (RUS)" },
             { "SubGroup", "SubGroup" },
             { "GenericName", "Generic Name (long)" },
             { "Model", "Model" },
             { "PNS", "PNS" },
             { "Article","Артикул" },
-            { "ArticleOld","Артикул предшественника(если есть)" },
+            { "ArticleOld","Артикул предшественника (если есть)" },
             { "ArticleEng","Название артикула(ENG)" },
-            { "ArticleRu","Название артикула(RUS)" },
+            { "ArticleRu","Название артикула (RUS)" },
             { "Calendar", "Используемый календарь" },
 
             { "CalendarToBeSoldIn","to be sold in" },
@@ -592,12 +593,109 @@ namespace BPA.Model
                     Article = row.Range[1, Table.ListColumns[Filds["Article"]].Index].Text,
                     Calendar = row.Range[1, Table.ListColumns[Filds["Calendar"]].Index].Text
                 };
-
                 products.Add(product);
-                processBar.TaskDone(1);
             }
             processBar.Close();
             return products;
+        }
+
+        /// <summary>
+        /// Получает список с укороченными данными для работы со скидками
+        /// </summary>
+        /// <param name="pB"></param>
+        /// <returns></returns>
+        public static List<Product> GetProductsForDiscounts(PBWrapper pB)
+        {
+            List<Product> products = new List<Product>();
+            Product product = new Product();
+            pB.Start(product.Table.ListRows.Count);
+            foreach (ListRow row in product.Table.ListRows)
+            {
+                if (pB.IsCancel)
+                {
+                    pB.Dispose();
+                    return null;
+                }
+                pB.Action($"{row.Index}");
+                product = new Product()
+                {
+                    Id = (int)row.Range[1, product.Table.ListColumns[product.Filds["Id"]].Index].Value,
+                    Category = row.Range[1, product.Table.ListColumns[product.Filds["Category"]].Index].Text,
+                    ProductGroupRu = row.Range[1, product.Table.ListColumns[product.Filds["ProductGroupRu"]].Index].Text,
+                    Article = row.Range[1, product.Table.ListColumns[product.Filds["Article"]].Index].Text,
+                    ArticleOld = row.Range[1, product.Table.ListColumns[product.Filds["ArticleOld"]].Index].Text,
+                    ArticleRu = row.Range[1, product.Table.ListColumns[product.Filds["ArticleRu"]].Index].Text,
+                    CalendarGTIN = row.Range[1, product.Table.ListColumns[product.Filds["CalendarGTIN"]].Index].Text,
+                    CalendarCountryOfOrigin = row.Range[1, product.Table.ListColumns[product.Filds["CalendarCountryOfOrigin"]].Index].Text,
+                    CalendarUnitOfMeasure = row.Range[1, product.Table.ListColumns[product.Filds["CalendarUnitOfMeasure"]].Index].Text,
+                    CalendarQuantityInMasterPack = row.Range[1, product.Table.ListColumns[product.Filds["CalendarQuantityInMasterPack"]].Index].Text,
+                    CalendarArticleGrossWeight = row.Range[1, product.Table.ListColumns[product.Filds["CalendarArticleGrossWeight"]].Index].Text,
+                    CalendarArticleNetWeight = row.Range[1, product.Table.ListColumns[product.Filds["CalendarArticleNetWeight"]].Index].Text,
+                    CalendarPackagingLength = row.Range[1, product.Table.ListColumns[product.Filds["CalendarPackagingLength"]].Index].Text,
+                    CalendarPackagingWidth = row.Range[1, product.Table.ListColumns[product.Filds["CalendarPackagingWidth"]].Index].Text,
+                    CalendarPackagingHeight = row.Range[1, product.Table.ListColumns[product.Filds["CalendarPackagingHeight"]].Index].Text,
+                    CalendarPackagingVolume = row.Range[1, product.Table.ListColumns[product.Filds["CalendarPackagingVolume"]].Index].Text,
+                    CalendarUnitsPerPallet = row.Range[1, product.Table.ListColumns[product.Filds["CalendarUnitsPerPallet"]].Index].Text,
+                    LocalCertificate = row.Range[1, product.Table.ListColumns[product.Filds["LocalCertificate"]].Index].Text,
+                    Status = row.Range[1, product.Table.ListColumns[product.Filds["Status"]].Index].Text,
+                    Exclusive = row.Range[1, product.Table.ListColumns[product.Filds["Exclusive"]].Index].Text
+                };
+                products.Add(product);
+                pB.Done(1);
+            }
+            pB.Dispose();
+            return products;
+        }
+
+        /// <summary>
+        /// получает список артикулов для указанного клиента
+        /// </summary>
+        /// <param name="client"></param>
+        /// <returns></returns>
+        public static List<Product> GetProductForClient(Client client)
+        {
+            List<Product> products = Product.GetProductsForDiscounts(new PBWrapper($"Создание прайс-листа для {client.Customer}", "Чтение артикула [Index]"));
+            if (products == null) return null;
+
+            List<string> exclusives = (from em in ExclusiveMag.GetAllExclusives()
+                                             select em.Name.ToLower()).ToList();
+
+            products = products.FindAll(x => x.Status.ToLower() != "выведено из ассортимента текущего года");
+
+            List<Product> actualProducts = new List<Product>();
+            foreach(Product product in products)
+            {
+                if (exclusives.Contains(product.Exclusive.ToLower()))
+                {
+                    if (product.Exclusive.ToLower() == client.CustomerStatus.ToLower())
+                        actualProducts.Add(product);
+                }
+                else
+                {
+                    switch (product.Exclusive.ToLower())
+                    {
+                        case "diy канал":
+                            if (client.ChannelType.ToLower() == "diy")
+                                actualProducts.Add(product);
+                            break;
+                        case "online":
+                            if (client.ChannelType.ToLower() == "online")
+                                actualProducts.Add(product);
+                            break;
+                        case "dealer":
+                        case "regional": //DEALERS&REGIONAL DISTR
+                            if (client.ChannelType.ToLower() == "dealer&regional distr")
+                                actualProducts.Add(product);
+                            break;
+                        default:
+                            actualProducts.Add(product);
+                            break;
+                    }
+                }
+            }
+
+
+            return actualProducts;
         }
 
         /// <summary>

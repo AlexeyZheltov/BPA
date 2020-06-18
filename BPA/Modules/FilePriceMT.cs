@@ -94,7 +94,6 @@ namespace BPA.Modules
                 Title = "Выберите расположение продуктового календаря",
                 DefaultExt = "*.xls*",
                 CheckFileExists = true,
-                InitialDirectory = Globals.ThisWorkbook.Path,
                 ValidateNames = true,
                 Multiselect = false,
                 Filter = "Excel|*.xls*"
@@ -145,10 +144,18 @@ namespace BPA.Modules
 
             clients.Clear();
 
+            int magColumn = MagColumn;
+            if (magColumn == 0)
+            {
+                Workbook.Close();
+                throw new ApplicationException($"Файл {Path.GetFileName(FileName)} имеет ошибочный формат");
+            }
             int rw = FindRow(MagColumn, mag);
             if (rw == 0)
                 return;
 
+            IsCancel = false;
+            ActionStart?.Invoke("Загрузка файла PriceListMT");
             int firstFindedRw = rw;
             double dateDouble;
             DateTime firstDate = new DateTime();
@@ -156,6 +163,7 @@ namespace BPA.Modules
 
             do
             {
+                if (IsCancel) return;
                 if (Double.TryParse(GetValueFromColumn(rw, DateFromColumn), out dateDouble))
                     firstDate = DateTime.FromOADate(dateDouble);
                     
@@ -171,10 +179,9 @@ namespace BPA.Modules
                     AddClient(rw, PriceNewColumn);
                 }
                 rw = FindRow(MagColumn, mag, Worksheet.Cells[rw, MagColumn]);
+                ActionDone?.Invoke(1);
             } 
             while (firstFindedRw != rw);
-            
-            IsCancel = true; //!
         }
 
         private void AddClient(int rw, int priceColumn)

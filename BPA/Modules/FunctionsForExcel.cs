@@ -46,5 +46,18 @@ namespace BPA.Modules
         {
             return worksheet.UsedRange.Column + worksheet.UsedRange.Columns.Count - 1;
         }
+        
+        /// <summary>
+        /// Убирает лишние пробельные симовлы и если надо приводит к нижнему регистру
+        /// </summary>
+        /// <param name="value">Строка в которой нужно удалить пробелы</param>
+        /// <param name="toLower">Нужно ли приводить к нижнему регистру. Значение по умолчанию - false</param>
+        /// <returns></returns>
+        public static string StringNormalize(string value, bool toLower = false)
+        {
+            value = value.Trim();
+            if (toLower) value = value.ToLower();
+            return System.Text.RegularExpressions.Regex.Replace(value, @"\s+", " ");
+        }
     }
 }

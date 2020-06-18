@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace BPA.Model
 {
@@ -22,6 +23,7 @@ namespace BPA.Model
         public override IDictionary<string, string> Filds => _filds;
         private readonly Dictionary<string, string> _filds = new Dictionary<string, string>
         {
+            {  "Id", "Id" },
             {  "Category","КАТЕГОРИЯ"  },
             {  "Photo","Фото продукта"  },
             {  "ProductGroup","Продукт группа - название"  },
@@ -47,6 +49,14 @@ namespace BPA.Model
         #endregion
 
         #region -- Основные свойства столбцов ---
+
+        /// <summary>
+        /// Id
+        /// </summary>
+        public int Id
+        {
+            get; set;
+        }
 
         /// <summary>
         /// КАТЕГОРИЯ
@@ -218,19 +228,18 @@ namespace BPA.Model
 
         #endregion
 
-        FinalPriceList() { }
+        public FinalPriceList() { }
 
-        FinalPriceList(Product product)
+        public FinalPriceList(Product product)
         {
-            this.Category = product.GenericName; //значение из справочника
-            //this.Photo // 
+            this.Category = product.Category;
             this.ProductGroup = product.ProductGroupRu;
             this.ArticleGardena = product.Article;
             this.ArticleOld = product.ArticleOld;
             this.Name = product.ArticleRu;
             //this.Description= product. //откуда описание
-            this.RRC = product.RRCFinal; //цена из
-            this.EAN = product.CalendarGTIN; //?
+            //this.RRC = product.RRCFinal; //цена из
+            this.EAN = product.CalendarGTIN;
             this.CountryOfOrigin = product.CalendarCountryOfOrigin;
             this.UnitOfMeasure = product.CalendarUnitOfMeasure;
             this.QuantityInMasterPack = product.CalendarQuantityInMasterPack;
@@ -242,7 +251,20 @@ namespace BPA.Model
             this.PackagingVolume = product.CalendarPackagingVolume;
             this.UnitsPerPallet = product.CalendarUnitsPerPallet;
             this.Certificate = product.LocalCertificate;
+
             //this.Warranty= product.CalendarPackagingWidth //?
+        }
+
+        public FinalPriceList(Excel.ListRow row) => SetProperty(row);
+
+        public static List<FinalPriceList> GetAllFinalPriceList()
+        {
+            List<FinalPriceList> finalPriceLists = new List<FinalPriceList>();
+            foreach (Excel.ListRow row in new FinalPriceList().Table.ListRows)
+            {
+                finalPriceLists.Add(new FinalPriceList(row));
+            }
+            return finalPriceLists;
         }
     }
 }

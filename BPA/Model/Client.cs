@@ -1,16 +1,19 @@
-﻿using Microsoft.Office.Interop.Excel;
+﻿using BPA.Forms;
+using Microsoft.Office.Interop.Excel;
+using Microsoft.VisualStudio.Tools.Applications.Deployment;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
+using BPA.Modules;
 
 namespace BPA.Model {
     /// <summary>
     /// Справочник клиентов
     /// </summary>
-    class Clients : TableBase {
+    class Client : TableBase {
         //public static ComparerCustomer ComparerCustomer => new ComparerCustomer();
         private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
 
@@ -34,9 +37,9 @@ namespace BPA.Model {
             { "CustomerBudget", "CustomerBudget" }
         };
 
-        public Clients() { }
+        public Client() { }
 
-        public Clients(Excel.ListRow row) => SetProperty(row);
+        public Client(Excel.ListRow row) => SetProperty(row);
         /// <summary>
         /// №
         /// </summary>
@@ -92,21 +95,59 @@ namespace BPA.Model {
             get; set;
         }
 
-        public class ComparerCustomer : IEqualityComparer<Clients>
+        public class ComparerCustomer : IEqualityComparer<Client>
         {
-            public bool Equals(Clients x, Clients y) => x.Customer == y.Customer;
+            public bool Equals(Client x, Client y) => x.Customer == y.Customer;
 
-            public int GetHashCode(Clients obj) => obj?.Customer.GetHashCode() ?? 0;
+            public int GetHashCode(Client obj) => obj?.Customer.GetHashCode() ?? 0;
         }
 
-        public Clients GetCurrentClients()
-        {
-            Range activeCell = Application.ActiveCell;
-            Worksheet activeSheet = Application.ActiveSheet;
-            if (activeSheet.Name != SheetName || activeCell.Row < FirstRow || activeCell.Row > LastRow) 
-                return null;
+        //public Client GetCurrentClients()
+        //{
+        //    Range activeCell = Application.ActiveCell;
+        //    Worksheet activeSheet = Application.ActiveSheet;
+        //    if (activeSheet.Name != SheetName || activeCell.Row < FirstRow || activeCell.Row > LastRow) 
+        //        return null;
             
-            Clients clients = new Clients(Table.ListRows[activeCell.Row - FirstRow + 1]);
+        //    Client clients = new Client(Table.ListRows[activeCell.Row - FirstRow + 1]);
+        //    return clients;
+        //}
+
+        public void FillFromRow(Excel.ListRow row) => SetProperty(row);
+
+        public static Client GetCurrentClient()
+        {
+            Client client = new Client();
+            Range activeCell = client.Application.ActiveCell;
+            Worksheet activeSheet = client.Application.ActiveSheet;
+            if (activeSheet.Name != client.SheetName || activeCell.Row < client.FirstRow || activeCell.Row > client.LastRow)
+                return null;
+
+            client.FillFromRow(client.Table.ListRows[activeCell.Row - client.FirstRow + 1]);
+            return client;
+        }
+
+        public static List<Client> GetAllClients()
+        {
+            List<Client> clients = new List<Client>();
+            Excel.ListObject table = new Client().Table;
+            ProcessBar processBar = new ProcessBar("Обновление листа клиентов", table.ListRows.Count);
+            bool isCancel = false;
+
+            void Cancel() => isCancel = true;
+
+            processBar.CancelClick += Cancel;
+            //processBar.TaskStart("Чтение клиентов");
+            processBar.Show(new ExcelWindows(Globals.ThisWorkbook));
+
+            foreach (Excel.ListRow row in new Client().Table.ListRows)
+            {
+                if (isCancel) return null;
+                processBar.TaskStart($"Обрабатывается строка {row.Index}");
+                clients.Add(new Client(row));
+                processBar.TaskDone(1);
+            }
+
             return clients;
         }
     }

@@ -148,7 +148,7 @@ namespace BPA.Model
         /// Запись свойств класса данными из строки ListRow
         /// </summary>
         /// <param name="row">Строка таблицы</param>
-        public void SetProperty(ListRow row)
+        protected void SetProperty(ListRow row)
         {
             foreach (var prop in GetType().GetProperties())
             {
@@ -160,7 +160,7 @@ namespace BPA.Model
                     }
                     catch
                     {
-                        //throw;
+                        
                     }
                 }
             }
@@ -222,7 +222,7 @@ namespace BPA.Model
         /// </summary>
         /// <param name="name">Имя свойства</param>
         /// <returns></returns>
-        private object GetParametrValue(string name)
+        protected object GetParametrValue(string name)
         {
             foreach (var prop in GetType().GetProperties())
             {
