@@ -694,7 +694,7 @@ namespace BPA.Model
                 }
             }
 
-
+            if (actualProducts.Count == 0) MessageBox.Show("Данному клиенту не соотвествует ни один акртикул", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
             return actualProducts;
         }
 

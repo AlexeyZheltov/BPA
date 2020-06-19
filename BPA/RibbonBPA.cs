@@ -277,6 +277,8 @@ namespace BPA
 
                 Client ClientForSort = newClients.First();
                 ClientForSort.Sort("Id");
+                Excel.Worksheet ws = Globals.ThisWorkbook.Sheets[ClientForSort.SheetName];
+                ws.Activate();
             }
             catch (Exception ex)
             {
@@ -366,17 +368,17 @@ namespace BPA
                     if (currentDiscount == null) return;
 
                     //подгрузить PriceMT если неужно, подключится к РРЦ                   
-                    if (currentDiscount.NeedFilePriceMT())
+                    if (currentDiscount.NeedFilePriceMT() && (!filePriceMT?.IsOpen ?? true))
                     {
                         //Загурзить файл price list MT
                         filePriceMT = new FilePriceMT();
-                        if (!filePriceMT.IsOpen) return;
                         processBar = new ProcessBar($"Создание прайс-листа для {currentClient.Customer}", 1);
                         filePriceMT.ActionStart += processBar.TaskStart;
                         filePriceMT.ActionDone += processBar.TaskDone;
                         processBar.CancelClick += filePriceMT.Cancel;
                         filePriceMT.Load(currentClient.Mag, currentDate);
-                        processBar.Close();
+                        if (!filePriceMT.IsOpen) return;
+                        if (!All) processBar.Close();
                     }
 
                     //Загрузка списка артикулов, какие из них актуальные?
@@ -431,6 +433,10 @@ namespace BPA
                     }
                     processBar.TaskDone(1);
                 }
+
+                Excel.Worksheet ws = Globals.ThisWorkbook.Sheets[new FinalPriceList().SheetName];
+                ws.Activate();
+                MessageBox.Show("Создание прайс-листа завершено", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
