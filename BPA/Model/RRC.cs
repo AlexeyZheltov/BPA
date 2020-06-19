@@ -187,6 +187,7 @@ namespace BPA.Model {
                 this.RRCNDS = product.RRCCalculated;
                 this.DIY = product.DIY;
                 this.Article = product.Article;
+                this.IRP = product.IRP;
             }
 
             Update();
