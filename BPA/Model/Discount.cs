@@ -173,8 +173,8 @@ namespace BPA.Model {
 
             discounts.Sort((x, y) =>
             {
-                if (x.GetPeriodAsDateTime() > y.GetPeriodAsDateTime()) return 1;
-                else if (x.GetPeriodAsDateTime() < y.GetPeriodAsDateTime()) return -1;
+                if (x.GetPeriodAsDateTime() < y.GetPeriodAsDateTime()) return 1;
+                else if (x.GetPeriodAsDateTime() > y.GetPeriodAsDateTime()) return -1;
                 else return 0;
             });
 

@@ -244,8 +244,8 @@ namespace BPA.Model {
 
                 buffer.Sort((x, y) =>
                 {
-                    if (x.Date > y.Date) return 1;
-                    else if (x.Date < y.Date) return -1;
+                    if (x.Date < y.Date) return 1;
+                    else if (x.Date > y.Date) return -1;
                     else return 0;
                 });
 

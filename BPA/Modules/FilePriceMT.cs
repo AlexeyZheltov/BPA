@@ -93,7 +93,7 @@ namespace BPA.Modules
         {
             using (OpenFileDialog fileDialog = new OpenFileDialog()
             {
-                Title = "Выберите расположение продуктового календаря",
+                Title = "Выберите файл PriceListMT",
                 DefaultExt = "*.xls*",
                 CheckFileExists = true,
                 ValidateNames = true,
