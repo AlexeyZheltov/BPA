@@ -1,4 +1,5 @@
-﻿using Microsoft.Office.Interop.Excel;
+﻿using Excel = Microsoft.Office.Interop.Excel;
+using System.Collections.Generic;
 
 namespace BPA.Modules
 {
@@ -7,14 +8,14 @@ namespace BPA.Modules
     /// </summary>
     public static class FunctionsForExcel
     {
-        public static Application Application = Globals.ThisWorkbook?.Application;
+        public static Excel.Application Application = Globals.ThisWorkbook?.Application;
 
         /// <summary>
         /// Ускорение работы Excel
         /// </summary>
         public static void SpeedOn()
         {
-            Application.Calculation = XlCalculation.xlCalculationManual;
+            Application.Calculation = Excel.XlCalculation.xlCalculationManual;
             Application.ScreenUpdating = false;
             Application.DisplayAlerts = false;
         }
@@ -24,7 +25,7 @@ namespace BPA.Modules
         /// </summary>
         public static void SpeedOff()
         {
-            Application.Calculation = XlCalculation.xlCalculationAutomatic;
+            Application.Calculation = Excel.XlCalculation.xlCalculationAutomatic;
             Application.ScreenUpdating = true;
             Application.DisplayAlerts = true;
         }
@@ -33,7 +34,7 @@ namespace BPA.Modules
         /// Максимальная строка на листе
         /// </summary>
         /// <param name="worksheet">Ссылка на лист</param>
-        public static int MaxRow(Worksheet worksheet)
+        public static int MaxRow(Excel.Worksheet worksheet)
         {
             return worksheet.UsedRange.Row + worksheet.UsedRange.Rows.Count - 1;
         }
@@ -42,7 +43,7 @@ namespace BPA.Modules
         ///  Максимальный столбец
         /// </summary>
         /// <param name="worksheet"></param>
-        public static int MaxColumn(Worksheet worksheet)
+        public static int MaxColumn(Excel.Worksheet worksheet)
         {
             return worksheet.UsedRange.Column + worksheet.UsedRange.Columns.Count - 1;
         }
@@ -69,13 +70,39 @@ namespace BPA.Modules
 
         public static bool IsSheetExists(string sheetName)
         {
-            Worksheet worksheet;
+            Excel.Worksheet worksheet;
             try
             {
                 worksheet = Globals.ThisWorkbook.Sheets[sheetName];
                 return true;
             } 
             catch { return false; }
+        }
+
+        public static void HideShowSettingsSheets()
+        {
+            List<string> AlwaysShowSheets = new List<string>
+            {
+                "Товары",
+                "Клиенты",
+                "Скидки",
+                "РРЦ",
+                "DIY",
+                "Планирование",
+                "Прайс лист"
+            };
+
+            Excel.XlSheetVisibility status = Excel.XlSheetVisibility.xlSheetVisible;
+            foreach (Excel.Worksheet sheet in Globals.ThisWorkbook.Sheets)
+                if (!AlwaysShowSheets.Contains(sheet.Name) && sheet.Visible == Excel.XlSheetVisibility.xlSheetVisible)
+                {
+                    status = Excel.XlSheetVisibility.xlSheetHidden;
+                    break;
+                }
+
+            foreach (Excel.Worksheet sheet in Globals.ThisWorkbook.Sheets)
+                if (!AlwaysShowSheets.Contains(sheet.Name))
+                    sheet.Visible = status;
         }
     }
 }
