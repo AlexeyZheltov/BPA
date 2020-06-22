@@ -59,5 +59,23 @@ namespace BPA.Modules
             if (toLower) value = value.ToLower();
             return System.Text.RegularExpressions.Regex.Replace(value, @"\s+", " ");
         }
+
+        //Function MS_SheetExist(ByVal NameSheet As String) As Boolean
+        //    Dim sh As Object
+        //    On Error Resume Next
+        //    Set sh = ActiveWorkbook.Sheets(NameSheet)
+        //    If Err.Number = 0 Then MS_SheetExist = True
+        //End Function
+
+        public static bool IsSheetExists(string sheetName)
+        {
+            Worksheet worksheet;
+            try
+            {
+                worksheet = Globals.ThisWorkbook.Sheets[sheetName];
+                return true;
+            } 
+            catch { return false; }
+        }
     }
 }
