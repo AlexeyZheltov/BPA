@@ -107,7 +107,21 @@ namespace BPA
         /// </summary>
         private void Settings_Click(object sender, RibbonControlEventArgs e)
         {
-            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            try
+            {
+                FunctionsForExcel.SpeedOn();
+
+                WorksheetsSettings WS = new WorksheetsSettings();
+                WS.ShowUnshowSheets();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                FunctionsForExcel.SpeedOff();
+            }
         }
 
         /// <summary>
