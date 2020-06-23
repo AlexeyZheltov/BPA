@@ -111,6 +111,7 @@ namespace BPA
             {
                 FunctionsForExcel.SpeedOn();
 
+                //FunctionsForExcel.HideShowSettingsSheets();
                 WorksheetsSettings WS = new WorksheetsSettings();
                 WS.ShowUnshowSheets();
             }
