@@ -138,7 +138,12 @@ namespace BPA.Modules
                 get; set;
             }
         }
-
+        
+        /// <summary>
+        /// получение магазина по дате
+        /// </summary>
+        /// <param name="mag"></param>
+        /// <param name="date"></param>
         public void Load(string mag, DateTime date)
         {
             if (Workbook == null)
@@ -159,18 +164,13 @@ namespace BPA.Modules
             IsCancel = false;
             ActionStart?.Invoke("Загрузка файла PriceListMT");
             int firstFindedRw = rw;
-            double dateDouble;
-            DateTime firstDate = new DateTime();
-            DateTime lastDate = new DateTime();
 
             do
             {
                 if (IsCancel) return;
-                if (Double.TryParse(GetValueFromColumn(rw, DateFromColumn), out dateDouble))
-                    firstDate = DateTime.FromOADate(dateDouble);
-                    
-                if (Double.TryParse(GetValueFromColumn(rw, DateToColumn), out dateDouble))
-                    lastDate = DateTime.FromOADate(dateDouble);
+
+                DateTime firstDate = GetDateFromCell(rw, DateFromColumn);
+                DateTime lastDate = GetDateFromCell(rw, DateToColumn);
 
                 if (lastDate.Year >= 9999)
                 {
@@ -185,6 +185,16 @@ namespace BPA.Modules
             } 
             while (firstFindedRw != rw);
             IsOpen = true;
+        }
+
+        private DateTime GetDateFromCell(int rw, int col)
+        {
+            if (Double.TryParse(GetValueFromColumn(rw, col), out double dateDouble))
+                return DateTime.FromOADate(dateDouble);
+            else if (DateTime.TryParse(GetValueFromColumn(rw, col), out DateTime dateTmp))
+                return dateTmp;
+            else
+                return new DateTime();
         }
 
         private void AddClient(int rw, int priceColumn)
