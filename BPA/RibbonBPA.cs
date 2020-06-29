@@ -474,7 +474,7 @@ namespace BPA
         {
             try
             {
-                //FunctionsForExcel.SpeedOn();
+                FunctionsForExcel.SpeedOn();
 
                 PlanningNewYear planningNewYear = new PlanningNewYear();
                 planningNewYear.GetSheetCopy();
@@ -484,7 +484,7 @@ namespace BPA
             }
             finally
             {
-                //FunctionsForExcel.SpeedOff();
+                FunctionsForExcel.SpeedOff();
             }
 
             ///ПЕРЕНЕСТИ В ЗАГРУЗКУ
