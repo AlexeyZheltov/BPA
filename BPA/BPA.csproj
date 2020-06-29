@@ -48,15 +48,19 @@
     This section specifies references for the project.
   -->
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Office.Tools.v4.0.Framework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -110,6 +114,12 @@
     <Compile Include="Forms\MSCalendar.Designer.cs">
       <DependentUpon>MSCalendar.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\PlanningNewYearForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\PlanningNewYearForm.Designer.cs">
+      <DependentUpon>PlanningNewYearForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ProgressBar.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -124,8 +134,10 @@
     <Compile Include="Model\FinalPriceList.cs" />
     <Compile Include="Model\GardenaChanel.cs" />
     <Compile Include="Model\Plan.cs" />
+    <Compile Include="Model\PlanningNewYear.cs" />
     <Compile Include="Model\ProductExclusivity.cs" />
     <Compile Include="Model\ProductCalendar.cs" />
+    <Compile Include="Model\ProductForPlanningNewYearcs.cs" />
     <Compile Include="Model\ProductForRRC.cs" />
     <Compile Include="Model\ProductGroup.cs" />
     <Compile Include="Model\Product.cs" />
@@ -164,6 +176,9 @@
     </Compile>
     <EmbeddedResource Include="Forms\MSCalendar.resx">
       <DependentUpon>MSCalendar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\PlanningNewYearForm.resx">
+      <DependentUpon>PlanningNewYearForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ProgressBar.resx">
       <DependentUpon>ProgressBar.cs</DependentUpon>
@@ -205,7 +220,6 @@
       <DependentUpon>Лист1.cs</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -218,7 +232,7 @@
     </ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>6D619523655754037C1CCD67A496884B9B77C51D</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>4B3302C7ECD773C5D228A2DD51D9D95181DC9E9C</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>

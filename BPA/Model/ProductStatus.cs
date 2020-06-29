@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Office.Interop.Excel;
 
 namespace BPA.Model {
     /// <summary>
@@ -35,6 +36,22 @@ namespace BPA.Model {
         public string Status {
             get; set;
         }
+
+        public ProductStatus() { }
+
+        public ProductStatus(string status)
+        {
+            ListRow listRow = GetRow(Status, status);
+            if (listRow != null)
+                SetProperty(listRow);
+        }
+
+        //public int GetStatusID(ProductForPlanningNewYear product)
+        //{
+        //    ListRow row = new ProductStatus().GetRow(Status, product.Status);
+        //    ProductStatus status.SetProperty(row);
+        //    return ProductStatus()
+        //}
 
     }
 }

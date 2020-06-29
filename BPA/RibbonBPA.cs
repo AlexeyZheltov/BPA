@@ -465,12 +465,68 @@ namespace BPA
             }
         }
 
+        /// <summary>
+        /// Кнопка создать планирование
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PlanningAdd_Click(object sender, RibbonControlEventArgs e)
         {
-            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            try
+            {
+                //FunctionsForExcel.SpeedOn();
+
+                PlanningNewYear planningNewYear = new PlanningNewYear();
+                planningNewYear.GetSheetCopy();
+            } catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                //FunctionsForExcel.SpeedOff();
+            }
+
+            ///ПЕРЕНЕСТИ В ЗАГРУЗКУ
+            //ProcessBar processBar = null;
+
+            //try
+            //{
+            //    //получаем товары по введенным данным с цчетом статуса
+            //List<ProductForPlanningNewYear> products = new ProductForPlanningNewYear().GetProducts();
+            //заполняем планнингньюер
+            //processBar = new ProcessBar("Обновление клиентов", products.Count);
+            //bool isCancel = false;
+            //void CancelLocal() => isCancel = true;
+            //    FunctionsForExcel.SpeedOn();
+            //    processBar.CancelClick += CancelLocal;
+            //    processBar.Show();
+
+            //    foreach (ProductForPlanningNewYear product in products)
+            //    {
+            //        if (isCancel)
+            //            break;
+
+            //        processBar.TaskStart($"Обрабатывается артикул {product.Article}");
+
+            //        PlanningNewYear planning = new PlanningNewYear(product);
+            //        planning.Save();
+
+            //        processBar.TaskDone(1);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //}
+            //finally
+            //{
+            //    FunctionsForExcel.SpeedOff();
+            //    processBar.Close();
+            //}
         }
 
-        private void GetPlanningData_Click(object sender, RibbonControlEventArgs e)
+            private void GetPlanningData_Click(object sender, RibbonControlEventArgs e)
         {
             MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
