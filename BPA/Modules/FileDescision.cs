@@ -71,6 +71,10 @@ namespace BPA.Modules
 
         public int CustomerColumn => FindColumn("Customer");
         public int GardenaChannelColumn => FindColumn("GardenaChannel");
+        public int DateColumn => FindColumn("Date");
+        public int ArticleColumn => FindColumn("Code");
+        public int CampaignColumn => FindColumn("Campaign");
+        public int QuantitynColumn => FindColumn("Quantity");
 
         #endregion
 
@@ -142,6 +146,48 @@ namespace BPA.Modules
             return buffer;
         }
 
+        public PlanningNewYear LoadPlanningNewYear(PlanningNewYear planningNewYear)
+        {
+            if (DateColumn == 0 || ArticleColumn == 0)
+                throw new ApplicationException("Файл имеет не верный формат");
+            
+            //временный лист
+            //List<PlanningNewYear> buffer = new List<PlanningNewYear>();
+
+            for (int rowIndex = FileHeaderRow + 1; rowIndex <= LastRow; rowIndex++)
+            {
+                if (IsCancel)
+                    return null;
+                ActionStart?.Invoke($"Обрабатывается строка {rowIndex}");
+
+                if (planningNewYear.Article != GetValueFromColumn(rowIndex, ArticleColumn))
+                    continue;
+
+                var campaign = GetValueFromColumn(rowIndex, CampaignColumn);
+                if (campaign == null ||
+                    campaign == "")
+                {
+                    if (int.TryParse(campaign, out int res) && res == 0)
+                    continue;
+                }
+
+                DateTime date = GetDateFromCell(rowIndex, DateColumn);
+                if (planningNewYear.Year != date.Year)
+                    continue;
+
+                //Здесь добавляем помесячно
+                //date.Month;
+
+                ActionDone?.Invoke(1);
+            }
+
+            return planningNewYear;
+
+            //if (buffer.Count == 0)
+            //    throw new ApplicationException("Файл не содержит значемых данных");
+            //return buffer;
+        }
+
         /////////////////////////////////
         /// <summary>
         /// получение номена строки по имени заголовка
@@ -167,6 +213,16 @@ namespace BPA.Modules
         private string GetValueFromColumn(int rw, int col)
         {
             return col != 0 ? Worksheet.Cells[rw, col].value?.ToString() : "";
+        }
+
+        private DateTime GetDateFromCell(int rw, int col)
+        {
+            if (Double.TryParse(GetValueFromColumn(rw, col), out double dateDouble))
+                return DateTime.FromOADate(dateDouble);
+            else if (DateTime.TryParse(GetValueFromColumn(rw, col), out DateTime dateTmp))
+                return dateTmp;
+            else
+                return new DateTime();
         }
 
         public void Close()

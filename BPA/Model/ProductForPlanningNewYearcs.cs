@@ -40,6 +40,8 @@ namespace BPA.Model
             { "IRPIndex","Индекс IRP" },
             { "DIYDiscount","Скидка DIY" },
             { "DIY","DIY price list, руб. без НДС" }
+
+
         };
 
         #endregion

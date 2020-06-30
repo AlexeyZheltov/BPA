@@ -522,6 +522,9 @@ namespace BPA
                     processBar.TaskStart($"Обрабатывается артикул {product.Article}");
 
                     PlanningNewYear planning = new PlanningNewYear(product);
+                    
+                    //добавление Descision И Buget
+
                     planning.Save(worksheet.Name);
 
                     processBar.TaskDone(1);
