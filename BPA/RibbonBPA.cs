@@ -486,49 +486,60 @@ namespace BPA
             {
                 FunctionsForExcel.SpeedOff();
             }
-
-            ///ПЕРЕНЕСТИ В ЗАГРУЗКУ
-            //ProcessBar processBar = null;
-
-            //try
-            //{
-            //    //получаем товары по введенным данным с цчетом статуса
-            //List<ProductForPlanningNewYear> products = new ProductForPlanningNewYear().GetProducts();
-            //заполняем планнингньюер
-            //processBar = new ProcessBar("Обновление клиентов", products.Count);
-            //bool isCancel = false;
-            //void CancelLocal() => isCancel = true;
-            //    FunctionsForExcel.SpeedOn();
-            //    processBar.CancelClick += CancelLocal;
-            //    processBar.Show();
-
-            //    foreach (ProductForPlanningNewYear product in products)
-            //    {
-            //        if (isCancel)
-            //            break;
-
-            //        processBar.TaskStart($"Обрабатывается артикул {product.Article}");
-
-            //        PlanningNewYear planning = new PlanningNewYear(product);
-            //        planning.Save();
-
-            //        processBar.TaskDone(1);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
-            //finally
-            //{
-            //    FunctionsForExcel.SpeedOff();
-            //    processBar.Close();
-            //}
         }
 
-            private void GetPlanningData_Click(object sender, RibbonControlEventArgs e)
+        private void GetPlanningData_Click(object sender, RibbonControlEventArgs e)
         {
-            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            ///ПЕРЕНЕСТИ В ЗАГРУЗКУ
+            ProcessBar processBar = null;
+
+            //Excel.Application Application = Globals.ThisWorkbook?.Application;
+            try
+            {
+                Worksheet worksheet = Globals.ThisWorkbook.Application.ActiveSheet;
+                //получаем заполненые данне
+                PlanningNewYear planningNewYearTmp = new PlanningNewYear().GetTmp(worksheet.Name);
+                if (planningNewYearTmp == null)
+                {
+                    MessageBox.Show("Создайте копию листа планирования нового года", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                List<ProductForPlanningNewYear> products = new ProductForPlanningNewYear().GetProducts(planningNewYearTmp);
+                // заполняем планнингньюер
+                processBar = new ProcessBar("Обновление клиентов", products.Count);
+                bool isCancel = false;
+                void CancelLocal() => isCancel = true;
+                FunctionsForExcel.SpeedOn();
+                processBar.CancelClick += CancelLocal;
+                processBar.Show();
+
+                foreach (ProductForPlanningNewYear product in products)
+                {
+                    if (isCancel)
+                        break;
+
+                    processBar.TaskStart($"Обрабатывается артикул {product.Article}");
+
+                    PlanningNewYear planning = new PlanningNewYear(product);
+                    planning.Save(worksheet.Name);
+
+                    processBar.TaskDone(1);
+                }
+                products.Clear();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                FunctionsForExcel.SpeedOff();
+                processBar.Close();
+            }
+
+
+            //MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void FactUpdate_Click(object sender, RibbonControlEventArgs e)

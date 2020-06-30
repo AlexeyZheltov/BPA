@@ -177,7 +177,36 @@ namespace BPA.Model
         /// Возвращает список всех продуктов со статусом коме 2
         /// </summary>
         /// <returns></returns>
-        public List<ProductForPlanningNewYear> GetProducts()
+        //public List<ProductForPlanningNewYear> GetProducts()
+        //{
+        //    bool isCancel = false;
+        //    void CancelLocal() => isCancel = true;
+        //    ProcessBar processBar = new ProcessBar("Получение списка продуктов", LastRow);
+        //    processBar.CancelClick += CancelLocal;
+        //    processBar.Show();
+
+        //    List<ProductForPlanningNewYear> products = new List<ProductForPlanningNewYear>();
+        //    foreach (ListRow row in Table.ListRows)
+        //    {
+        //        if (isCancel)
+        //        {
+        //            processBar.Close();
+        //            return null;
+        //        }
+        //        processBar.TaskStart($"Обрабатывается товар {row.Index} из {LastRow - Table.HeaderRowRange.Row}");
+
+        //        ProductForPlanningNewYear product = new ProductForPlanningNewYear(row);
+
+        //        if (StatusId != 2)
+        //            products.Add(product);                
+
+        //        processBar.TaskDone(1);
+        //    }
+        //    processBar.Close();
+        //    return products;
+        //}
+
+        public List<ProductForPlanningNewYear> GetProducts(PlanningNewYear planningNewYearTmp)
         {
             bool isCancel = false;
             void CancelLocal() => isCancel = true;
@@ -197,14 +226,47 @@ namespace BPA.Model
 
                 ProductForPlanningNewYear product = new ProductForPlanningNewYear(row);
 
-                if (StatusId != 2)
-                    products.Add(product);                
-
+                if (IsExclusive(planningNewYearTmp, product.Exclusive))
+                    if (product.Status != "Выведено из ассортимента текущего года")
+                        products.Add(product);
+                
                 processBar.TaskDone(1);
             }
             processBar.Close();
             return products;
         }
 
+        private bool IsExclusive(PlanningNewYear planningNewYearTmp, string exclusive)
+        {
+            if (exclusive == null)
+                return false;
+            //try
+            //{
+                if (ExclusivesDict.ContainsKey(exclusive))
+                {
+                    if (ExclusivesDict[exclusive] == planningNewYearTmp.CustomerStatus ||
+                        ExclusivesDict[exclusive] == planningNewYearTmp.ChanelType ||
+                        exclusive == "All channels")
+                    {
+                        return true;
+                    }
+                }
+            //} catch { return false; }
+            return false;
+        }
+
+        /// <summary>
+        /// словарь соответствия key: Эксклюзивность, val: CustomerStatus, ChannalType
+        /// </summary>
+        Dictionary<string, string> ExclusivesDict = new Dictionary<string, string>
+        {
+            {"ЛЕРУА МЕРЛЕН", "ЛЕРУА МЕРЛЕН"},
+            {"ОБИ", "ОБИ"},
+            {"DIY канал", "DIY"},
+            {"Dealer", "DEALERS&REGIONAL DISTR"},
+            {"Regional", "DEALERS&REGIONAL DISTR"},
+            {"Online", "ONLINE"},
+            {"All channels", ""}
+        };
     }
 }

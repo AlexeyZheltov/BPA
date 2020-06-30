@@ -1,6 +1,8 @@
 ﻿using Microsoft.Office.Interop.Excel;
 using System.Collections.Generic;
 using BPA.Modules;
+using System;
+using BPA.Forms;
 
 namespace BPA.Model
 {
@@ -9,8 +11,50 @@ namespace BPA.Model
     /// </summary>
     class PlanningNewYear : TableBase
     {
-        public override string TableName => "Планирование_новый_год";
-        public override string SheetName => "Планирование нового года шаблон";
+        //public override string TableName => "Планирование_новый_год";
+        //public override string SheetName => "Планирование нового года шаблон";
+        public override string TableName => GetTableName();
+        public override string SheetName => TableWorksheetName;
+
+        private string TableWorksheetName
+        {
+            get
+            {
+                if (_TableWorksheetName != "")
+                {
+                    return _TableWorksheetName;
+                }
+                else
+                {
+                    return templateSheetName;
+                }
+            }
+            set
+            {
+                _TableWorksheetName = value;
+            }
+        }
+        string _TableWorksheetName;
+
+        private string GetTableName()
+        {
+            try
+            {
+                ThisWorkbook workbook = Globals.ThisWorkbook;
+                ListObject table = workbook.Sheets[SheetName].ListObjects[1];
+                return table.Name;
+            }
+            catch
+            {
+                ThisWorkbook workbook = Globals.ThisWorkbook;
+                ListObject table = workbook.Sheets[templateSheetName].ListObjects[1];
+                return table.Name;
+            }
+        }
+
+        private string templateSheetName = "Планирование нового года шаблон";
+        private string CustomerStatusLabel = "Customer status";
+        private string ChannelTypeLabel = "Channel type";
 
         #region --- Словарь ---
 
@@ -23,6 +67,7 @@ namespace BPA.Model
         }
         private readonly Dictionary<string, string> _filds = new Dictionary<string, string>
         {
+            { "Id","№" },
             { "Article","Артикул"},
             { "RRCNDS","РРЦ, руб.с НДС"},
             { "PercentageOfChange","Процент изменения"},
@@ -37,6 +82,14 @@ namespace BPA.Model
         #endregion
 
         #region --- Свойства ---
+        /// <summary>
+        /// №
+        /// </summary>
+        public int Id
+        {
+            get; set;
+        }
+
         /// <summary>
         /// Артикул
         /// </summary>
@@ -112,6 +165,10 @@ namespace BPA.Model
         /// </summary>
 
         #endregion
+        
+        public string ChanelType;
+        public string CustomerStatus;
+
         public PlanningNewYear() { }
         public PlanningNewYear(ListRow row) => SetProperty(row);
         public PlanningNewYear(ProductForPlanningNewYear product)
@@ -130,13 +187,57 @@ namespace BPA.Model
         public void GetSheetCopy()
         {
             ThisWorkbook workbook = Globals.ThisWorkbook;
-            FunctionsForExcel.ShowSheet(SheetName);
+            FunctionsForExcel.ShowSheet(templateSheetName);
 
-            string newSheetName = SheetName.Replace("шаблон", "").Trim();
-            Worksheet newSheet = FunctionsForExcel.CreateSheetCopy(workbook.Sheets[SheetName], newSheetName);
+            string newSheetName = templateSheetName.Replace("шаблон", "").Trim();
+            Worksheet newSheet = FunctionsForExcel.CreateSheetCopy(workbook.Sheets[templateSheetName], newSheetName);
             newSheet.Activate();
 
-            FunctionsForExcel.HideSheet(SheetName);
+            FunctionsForExcel.HideSheet(templateSheetName);
+        }
+
+        public PlanningNewYear GetTmp(string worksheetName)
+        {
+            if (worksheetName == templateSheetName)
+                return null;
+            else
+                TableWorksheetName = worksheetName;
+
+            try
+            {
+                PlanningNewYear planningNewYear = new PlanningNewYear();
+                try
+                {
+                    ThisWorkbook workbook = Globals.ThisWorkbook;
+                    Range cell = workbook.Sheets[SheetName].UsedRange.Find(CustomerStatusLabel, LookAt: XlLookAt.xlWhole);
+                    planningNewYear.CustomerStatus = cell.Offset[0,1].Text;                    
+                } 
+                catch
+                {
+                    planningNewYear.CustomerStatus = "";
+                }
+            
+                try
+                {
+                    ThisWorkbook workbook = Globals.ThisWorkbook;
+                    Range cell = workbook.Sheets[SheetName].UsedRange.Find(ChannelTypeLabel, LookAt: XlLookAt.xlWhole);
+                    planningNewYear.ChanelType = cell.Offset[0, 1].Text;
+                }
+                catch
+                {
+                    planningNewYear.ChanelType = "";
+                }
+                return planningNewYear;
+            } catch
+            {
+                return null;
+            }
+        }
+
+        public void Save(string worksheetName)
+        {
+            TableWorksheetName = worksheetName;
+            Save();
         }
     }
 }
