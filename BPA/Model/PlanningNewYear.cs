@@ -55,6 +55,7 @@ namespace BPA.Model
         private string templateSheetName = "Планирование нового года шаблон";
         private string CustomerStatusLabel = "Customer status";
         private string ChannelTypeLabel = "Channel type";
+        private string YearLabel = "Период";
 
         #region --- Словарь ---
 
@@ -168,6 +169,7 @@ namespace BPA.Model
         
         public string ChanelType;
         public string CustomerStatus;
+        public double Year;
 
         public PlanningNewYear() { }
         public PlanningNewYear(ListRow row) => SetProperty(row);
@@ -206,27 +208,27 @@ namespace BPA.Model
             try
             {
                 PlanningNewYear planningNewYear = new PlanningNewYear();
-                try
+                ThisWorkbook workbook = Globals.ThisWorkbook;
+                Range rng = workbook.Sheets[SheetName].UsedRange;
+
+                planningNewYear.CustomerStatus = val(CustomerStatusLabel);
+                planningNewYear.ChanelType = val(ChannelTypeLabel);
+                if (double.TryParse(val(YearLabel), out double year))
+                    planningNewYear.Year = year;
+
+                string val(string label)
                 {
-                    ThisWorkbook workbook = Globals.ThisWorkbook;
-                    Range cell = workbook.Sheets[SheetName].UsedRange.Find(CustomerStatusLabel, LookAt: XlLookAt.xlWhole);
-                    planningNewYear.CustomerStatus = cell.Offset[0,1].Text;                    
-                } 
-                catch
-                {
-                    planningNewYear.CustomerStatus = "";
+                    try
+                    {
+                        Range cell =rng.Find(label, LookAt: XlLookAt.xlWhole);
+                        return cell.Offset[0, 1].Text;
+                    }
+                    catch
+                    {
+                        return "";
+                    }
                 }
-            
-                try
-                {
-                    ThisWorkbook workbook = Globals.ThisWorkbook;
-                    Range cell = workbook.Sheets[SheetName].UsedRange.Find(ChannelTypeLabel, LookAt: XlLookAt.xlWhole);
-                    planningNewYear.ChanelType = cell.Offset[0, 1].Text;
-                }
-                catch
-                {
-                    planningNewYear.ChanelType = "";
-                }
+
                 return planningNewYear;
             } catch
             {
