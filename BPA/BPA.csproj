@@ -171,9 +171,6 @@
     <EmbeddedResource Include="Forms\MSCalendar.resx">
       <DependentUpon>MSCalendar.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\PlanningNewYearForm.resx">
-      <DependentUpon>PlanningNewYearForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\ProgressBar.resx">
       <DependentUpon>ProgressBar.cs</DependentUpon>
     </EmbeddedResource>
