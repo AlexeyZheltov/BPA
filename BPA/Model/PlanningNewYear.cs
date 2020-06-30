@@ -169,7 +169,7 @@ namespace BPA.Model
         
         public string ChanelType;
         public string CustomerStatus;
-        public string Year;
+        public double Year;
 
         public PlanningNewYear() { }
         public PlanningNewYear(ListRow row) => SetProperty(row);
@@ -213,7 +213,8 @@ namespace BPA.Model
 
                 planningNewYear.CustomerStatus = val(CustomerStatusLabel);
                 planningNewYear.ChanelType = val(ChannelTypeLabel);
-                planningNewYear.Year = val(YearLabel);
+                if (double.TryParse(val(YearLabel), out double year))
+                    planningNewYear.Year = year;
 
                 string val(string label)
                 {
