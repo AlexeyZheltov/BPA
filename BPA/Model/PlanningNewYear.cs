@@ -14,27 +14,8 @@ namespace BPA.Model
         //public override string TableName => "Планирование_новый_год";
         //public override string SheetName => "Планирование нового года шаблон";
         public override string TableName => GetTableName();
-        public override string SheetName => TableWorksheetName;
-
-        private string TableWorksheetName
-        {
-            get
-            {
-                if (_TableWorksheetName != "")
-                {
-                    return _TableWorksheetName;
-                }
-                else
-                {
-                    return templateSheetName;
-                }
-            }
-            set
-            {
-                _TableWorksheetName = value;
-            }
-        }
-        string _TableWorksheetName;
+        public override string SheetName => _TableWorksheetName != "" ? _TableWorksheetName: templateSheetName;
+        private string _TableWorksheetName;
 
         private string GetTableName()
         {
@@ -203,7 +184,7 @@ namespace BPA.Model
             if (worksheetName == templateSheetName)
                 return null;
             else
-                TableWorksheetName = worksheetName;
+                _TableWorksheetName = worksheetName;
 
             try
             {
@@ -238,7 +219,7 @@ namespace BPA.Model
 
         public void Save(string worksheetName)
         {
-            TableWorksheetName = worksheetName;
+            _TableWorksheetName = worksheetName;
             Save();
         }
     }
