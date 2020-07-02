@@ -154,17 +154,24 @@ namespace BPA.Model
 
         public PlanningNewYear() { }
         public PlanningNewYear(ListRow row) => SetProperty(row);
-        public PlanningNewYear(ProductForPlanningNewYear product)
+
+        public PlanningNewYear Clone(ProductForPlanningNewYear product)
         {
-            this.Article = product.Article;
-            this.RRCNDS = product.RRCFinal; //?
-            this.PercentageOfChange = product.RRCPercent;  //?
-            //            this.STKEur = product.st
-            //            this.STKRub = 
-            this.IRP = product.IRP;
-            this.RRCNDS2 = product.RRCFinal; //?
-            this.IRPIndex = product.IRPIndex;
-            this.DIYPriceList = product.DIY;
+            PlanningNewYear planning = new PlanningNewYear();
+
+            planning.Year = this.Year;
+
+            planning.Article = product.Article;
+            planning.RRCNDS = product.RRCFinal; //?
+            planning.PercentageOfChange = product.RRCPercent;  //?
+            //            planning.STKEur = product.st
+            //            planning.STKRub = 
+            planning.IRP = product.IRP;
+            planning.RRCNDS2 = product.RRCFinal; //?
+            planning.IRPIndex = product.IRPIndex;
+            planning.DIYPriceList = product.DIY;
+
+            return planning;
         }
 
         public void GetSheetCopy()

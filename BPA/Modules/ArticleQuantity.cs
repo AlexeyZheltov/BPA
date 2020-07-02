@@ -19,5 +19,10 @@ namespace BPA.Modules
         {
             get; set;
         }
+
+        public string Campaign
+        {
+            get; set;
+        }
     }
 }

@@ -30,6 +30,7 @@ namespace BPA.Model
         public override IDictionary<string, string> Filds => _filds;
         private readonly Dictionary<string, string> _filds = new Dictionary<string, string>
         {
+            { "Id","№" },
             { "QuantityPrognosisYear","Прогноз за год, шт." },
             { "QuantityPrognosis01","Прогноз январь, шт." },
             { "QuantityPrognosis02","Прогноз февраль, шт." },
@@ -48,6 +49,19 @@ namespace BPA.Model
         #endregion
 
         #region -- Основные свойства столбцов ---
+        /// <summary>
+        /// №
+        /// </summary>
+        public int Id
+        {
+            get
+            {
+                return this.planningNewYear.Id;
+            }
+            set
+            {
+            }
+        }
         /// <summary>
         /// Прогноз за год, шт. 
         /// </summary>
@@ -146,8 +160,8 @@ namespace BPA.Model
         {
             string article = this.planningNewYear.Article;
 
-            List<ArticleQuantity> articleDescisionQuantities = deicionQuantities.FindAll(x => x.Article == article).ToList();
-            List<ArticleQuantity> articleBugetQuantities = bugetQuantities.FindAll(x => x.Article == article).ToList();
+            List<ArticleQuantity> articleDescisionQuantities = deicionQuantities.FindAll(x => x.Article == article && x.Campaign == "0").ToList();
+            List<ArticleQuantity> articleBugetQuantities = bugetQuantities.FindAll(x => x.Article == article && x.Campaign == "0").ToList();
 
             double[] quantities = new double[12];
             for (int m = 1; m <= 12; m++)
@@ -157,22 +171,25 @@ namespace BPA.Model
 
             //как написать подобный перебор???
             ///
-            QuantityPrognosis01 = quantities[1];
-            QuantityPrognosis02 = quantities[2];
-            QuantityPrognosis03 = quantities[3];
-            QuantityPrognosis04 = quantities[4];
-            QuantityPrognosis05 = quantities[5];
-            QuantityPrognosis06 = quantities[6];
-            QuantityPrognosis07 = quantities[7];
-            QuantityPrognosis08 = quantities[8];
-            QuantityPrognosis09 = quantities[9];
-            QuantityPrognosis10 = quantities[10];
-            QuantityPrognosis11 = quantities[11];
-            QuantityPrognosis12 = quantities[12];
+            QuantityPrognosis01 = quantities[0];
+            QuantityPrognosis02 = quantities[1];
+            QuantityPrognosis03 = quantities[2];
+            QuantityPrognosis04 = quantities[3];
+            QuantityPrognosis05 = quantities[4];
+            QuantityPrognosis06 = quantities[5];
+            QuantityPrognosis07 = quantities[6];
+            QuantityPrognosis08 = quantities[7];
+            QuantityPrognosis09 = quantities[8];
+            QuantityPrognosis10 = quantities[9];
+            QuantityPrognosis11 = quantities[10];
+            QuantityPrognosis12 = quantities[11];
             ///
 
             double SumMonthQuantity(double month, List<ArticleQuantity> articleQuantities)
             {
+                if (articleQuantities.Count <= 0)
+                    return 0;
+
                 List<ArticleQuantity> MohthQuantities = articleQuantities.FindAll(x => x.Month == month);
                 double quantity = 0;
 

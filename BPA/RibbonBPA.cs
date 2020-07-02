@@ -488,12 +488,12 @@ namespace BPA
             }
         }
 
+
         private void GetPlanningData_Click(object sender, RibbonControlEventArgs e)
         {
             ///ПЕРЕНЕСТИ В ЗАГРУЗКУ
             ProcessBar processBar = null;
 
-            //Excel.Application Application = Globals.ThisWorkbook?.Application;
             try
             {
                 Worksheet worksheet = Globals.ThisWorkbook.Application.ActiveSheet;
@@ -505,20 +505,17 @@ namespace BPA
                     return;
                 }
 
-                //получаем продукты
+                //получаем продукты на основании введенных данных
                 List<ProductForPlanningNewYear> products = new ProductForPlanningNewYear().GetProducts(planningNewYearTmp);
 
                 //получаем Desicion
                 FileDescision fileDescision = new FileDescision();
                 fileDescision.LoadForPlanning(planningNewYearTmp);
-                List<ArticleQuantity> deicionQuantities = fileDescision.ArticleQuantities;
 
                 //получаем Buget
                 FileBuget fileBuget = new FileBuget();
                 fileBuget.LoadForPlanning(planningNewYearTmp);
-                List<ArticleQuantity> bugetQuantities = fileBuget.ArticleQuantities;
 
-                // заполняем планнингньюер 
                 processBar = new ProcessBar("Обновление клиентов", products.Count);
                 bool isCancel = false;
                 void CancelLocal() => isCancel = true;
@@ -526,19 +523,24 @@ namespace BPA
                 processBar.CancelClick += CancelLocal;
                 processBar.Show();
 
+                // заполняем планнингньюер 
                 foreach (ProductForPlanningNewYear product in products)
                 {
                     if (isCancel)
                         break;
-
                     processBar.TaskStart($"Обрабатывается артикул {product.Article}");
 
-                    PlanningNewYear planning = new PlanningNewYear(product);
+                    PlanningNewYear planning = planningNewYearTmp.Clone(product);
+
                     PlanningNewYearPrognosis prognosis = new PlanningNewYearPrognosis(planning);
-                    prognosis.SetValues(deicionQuantities, bugetQuantities);
-                    
+                    prognosis.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
+
+                    PlanningNewYearPromo promo = new PlanningNewYearPromo(planning);
+                    promo.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
+
                     planning.Save(worksheet.Name);
                     prognosis.Save();
+                    promo.Save();
 
                     processBar.TaskDone(1);
                 }
@@ -553,8 +555,7 @@ namespace BPA
                 FunctionsForExcel.SpeedOff();
                 processBar.Close();
             }
-
-
+            
             //MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 

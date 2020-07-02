@@ -123,25 +123,16 @@ namespace BPA.Modules
 
             for (int rowIndex = FileHeaderRow + 1; rowIndex <= LastRow; rowIndex++)
             {
-
                 if (IsCancel)
                     return;
                 ActionStart?.Invoke($"Обрабатывается строка {rowIndex}");
-
-                var campaign = GetValueFromColumn(rowIndex, CampaignColumn);
-                if (campaign != "" && (int.TryParse(campaign, out int res) && res == 0))
-                    continue;
 
                 DateTime date = GetDateFromCell(rowIndex, DateColumn);
                 if (planning.Year != date.Year)
                     continue;
 
-                ////уточнить >=
-                //DateTime now = DateTime.Now;
-                //if (now.Month > date.Month)
-                //    continue;
-
                 string article = GetValueFromColumn(rowIndex, ArticleColumn);
+                string campaign = GetValueFromColumn(rowIndex, CampaignColumn);
                 double quantity;
                 if (article != "")
                 {
@@ -151,7 +142,8 @@ namespace BPA.Modules
                     {
                         Article = article,
                         Quantity = quantity,
-                        Month = date.Month
+                        Month = date.Month,
+                        Campaign = campaign
                     });
                 }
 

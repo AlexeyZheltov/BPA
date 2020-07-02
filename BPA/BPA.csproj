@@ -127,6 +127,7 @@
     <Compile Include="Model\ExclusiveMag.cs" />
     <Compile Include="Model\FinalPriceList.cs" />
     <Compile Include="Model\GardenaChanel.cs" />
+    <Compile Include="Model\PlanningNewYearPromo.cs" />
     <Compile Include="Model\Plan.cs" />
     <Compile Include="Model\PlanningNewYear.cs" />
     <Compile Include="Model\PlanningNewYearPrognosis.cs" />

@@ -14,8 +14,6 @@ namespace BPA.Model
     /// </summary>
     class ProductForPlanningNewYear : TableBase
     {
-        private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
-
         public override string TableName => "Товары";
         public override string SheetName => "Товары";
 
