@@ -15,9 +15,9 @@ namespace BPA.Model
         //public override string SheetName => "Планирование нового года шаблон";
         public override string TableName => GetTableName();
         public override string SheetName => _TableWorksheetName != "" ? _TableWorksheetName: templateSheetName;
-        private string _TableWorksheetName;
+        public string _TableWorksheetName;
 
-        private string GetTableName()
+        public string GetTableName()
         {
             try
             {
@@ -33,7 +33,7 @@ namespace BPA.Model
             }
         }
 
-        private string templateSheetName = "Планирование нового года шаблон";
+        public string templateSheetName = "Планирование нового года шаблон";
         private string CustomerStatusLabel = "Customer status";
         private string ChannelTypeLabel = "Channel type";
         private string YearLabel = "Период";

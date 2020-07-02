@@ -505,8 +505,20 @@ namespace BPA
                     return;
                 }
 
+                //получаем продукты
                 List<ProductForPlanningNewYear> products = new ProductForPlanningNewYear().GetProducts(planningNewYearTmp);
-                // заполняем планнингньюер
+
+                //получаем Desicion
+                FileDescision fileDescision = new FileDescision();
+                fileDescision.LoadForPlanning(planningNewYearTmp);
+                List<ArticleQuantity> deicionQuantities = fileDescision.ArticleQuantities;
+
+                //получаем Buget
+                FileBuget fileBuget = new FileBuget();
+                fileBuget.LoadForPlanning(planningNewYearTmp);
+                List<ArticleQuantity> bugetQuantities = fileBuget.ArticleQuantities;
+
+                // заполняем планнингньюер 
                 processBar = new ProcessBar("Обновление клиентов", products.Count);
                 bool isCancel = false;
                 void CancelLocal() => isCancel = true;
@@ -522,10 +534,11 @@ namespace BPA
                     processBar.TaskStart($"Обрабатывается артикул {product.Article}");
 
                     PlanningNewYear planning = new PlanningNewYear(product);
+                    PlanningNewYearPrognosis prognosis = new PlanningNewYearPrognosis(planning);
+                    prognosis.SetValues(deicionQuantities, bugetQuantities);
                     
-                    //добавление Descision И Buget
-
                     planning.Save(worksheet.Name);
+                    prognosis.Save();
 
                     processBar.TaskDone(1);
                 }

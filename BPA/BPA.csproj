@@ -129,6 +129,7 @@
     <Compile Include="Model\GardenaChanel.cs" />
     <Compile Include="Model\Plan.cs" />
     <Compile Include="Model\PlanningNewYear.cs" />
+    <Compile Include="Model\PlanningNewYearPrognosis.cs" />
     <Compile Include="Model\ProductExclusivity.cs" />
     <Compile Include="Model\ProductCalendar.cs" />
     <Compile Include="Model\ProductForPlanningNewYearcs.cs" />
@@ -140,7 +141,9 @@
     <Compile Include="Model\STK.cs" />
     <Compile Include="Model\Supercategory.cs" />
     <Compile Include="Model\TableBase.cs" />
+    <Compile Include="Modules\ArticleQuantity.cs" />
     <Compile Include="Modules\ExcelWindows.cs" />
+    <Compile Include="Modules\FileBuget.cs" />
     <Compile Include="Modules\FileCalendar.cs" />
     <Compile Include="Modules\FileDescision.cs" />
     <Compile Include="Modules\FilePriceMT.cs" />
