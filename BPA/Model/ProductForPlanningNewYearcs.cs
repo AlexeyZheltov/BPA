@@ -160,7 +160,7 @@ namespace BPA.Model
         /// </summary>
         readonly Dictionary<string, string> ExclusivesDict = new Dictionary<string, string>
         {
-            {"леруа мерден", "леруа мерден"},
+            {"леруа мерлен", "леруа мерлен"},
             {"оби", "оби"},
             {"diy канал", "diy"},
             {"dealer", "dealers&regional distr"},

@@ -160,8 +160,8 @@ namespace BPA.Model
         {
             string article = this.planningNewYear.Article;
 
-            List<ArticleQuantity> articleDescisionQuantities = deicionQuantities.FindAll(x => x.Article == article && x.Campaign == "0").ToList();
-            List<ArticleQuantity> articleBugetQuantities = bugetQuantities.FindAll(x => x.Article == article && x.Campaign == "0").ToList();
+            List<ArticleQuantity> articleDescisionQuantities = deicionQuantities.FindAll(x => x.Article == article && !isPromo(x)).ToList();
+            List<ArticleQuantity> articleBugetQuantities = bugetQuantities.FindAll(x => x.Article == article && !isPromo(x)).ToList();
 
             double[] quantities = new double[12];
             for (int m = 1; m <= 12; m++)
@@ -184,6 +184,11 @@ namespace BPA.Model
             QuantityPrognosis11 = quantities[10];
             QuantityPrognosis12 = quantities[11];
             ///
+
+            bool isPromo(ArticleQuantity articleQuantity)
+            {
+                return articleQuantity.Campaign != "0" && articleQuantity.Campaign != "" && articleQuantity.Campaign != null ? true : false;
+            }
 
             double SumMonthQuantity(double month, List<ArticleQuantity> articleQuantities)
             {

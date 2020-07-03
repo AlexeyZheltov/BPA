@@ -491,12 +491,16 @@ namespace BPA
 
         private void GetPlanningData_Click(object sender, RibbonControlEventArgs e)
         {
-            ///ПЕРЕНЕСТИ В ЗАГРУЗКУ
             ProcessBar processBar = null;
 
+            Worksheet worksheet = Globals.ThisWorkbook.Application.ActiveSheet;
+            if (worksheet.Name.IndexOf("Планирование нового года") < 0)
+            {
+                MessageBox.Show("Перейдите на страницу планирования (или создайте её) и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             try
             {
-                Worksheet worksheet = Globals.ThisWorkbook.Application.ActiveSheet;
                 //получаем заполненые данне
                 PlanningNewYear planningNewYearTmp = new PlanningNewYear().GetTmp(worksheet.Name);
                 if (planningNewYearTmp == null)
@@ -552,8 +556,9 @@ namespace BPA
             }
             finally
             {
-                FunctionsForExcel.SpeedOff();
-                processBar.Close();
+                //FunctionsForExcel.SpeedOff();
+                //if (processBar != null)
+                    processBar.Close();
             }
             
             //MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);

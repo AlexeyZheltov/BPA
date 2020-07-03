@@ -80,7 +80,7 @@ namespace BPA.Modules
         {
             using (OpenFileDialog fileDialog = new OpenFileDialog()
             {
-                Title = "Выберите расположение файла Descision",
+                Title = "Выберите расположение файла Buget",
                 DefaultExt = "*.xls*",
                 CheckFileExists = true,
                 //InitialDirectory = Globals.ThisWorkbook.Path,
