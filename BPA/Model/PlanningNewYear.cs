@@ -14,29 +14,10 @@ namespace BPA.Model
         //public override string TableName => "Планирование_новый_год";
         //public override string SheetName => "Планирование нового года шаблон";
         public override string TableName => GetTableName();
-        public override string SheetName => TableWorksheetName;
+        public override string SheetName => _TableWorksheetName != "" ? _TableWorksheetName: templateSheetName;
+        public string _TableWorksheetName;
 
-        private string TableWorksheetName
-        {
-            get
-            {
-                if (_TableWorksheetName != "")
-                {
-                    return _TableWorksheetName;
-                }
-                else
-                {
-                    return templateSheetName;
-                }
-            }
-            set
-            {
-                _TableWorksheetName = value;
-            }
-        }
-        string _TableWorksheetName;
-
-        private string GetTableName()
+        public string GetTableName()
         {
             try
             {
@@ -52,7 +33,7 @@ namespace BPA.Model
             }
         }
 
-        private string templateSheetName = "Планирование нового года шаблон";
+        public string templateSheetName = "Планирование нового года шаблон";
         private string CustomerStatusLabel = "Customer status";
         private string ChannelTypeLabel = "Channel type";
         private string YearLabel = "Период";
@@ -173,17 +154,24 @@ namespace BPA.Model
 
         public PlanningNewYear() { }
         public PlanningNewYear(ListRow row) => SetProperty(row);
-        public PlanningNewYear(ProductForPlanningNewYear product)
+
+        public PlanningNewYear Clone(ProductForPlanningNewYear product)
         {
-            this.Article = product.Article;
-            this.RRCNDS = product.RRCFinal; //?
-            this.PercentageOfChange = product.RRCPercent;  //?
-            //            this.STKEur = product.st
-            //            this.STKRub = 
-            this.IRP = product.IRP;
-            this.RRCNDS2 = product.RRCFinal; //?
-            this.IRPIndex = product.IRPIndex;
-            this.DIYPriceList = product.DIY;
+            PlanningNewYear planning = new PlanningNewYear();
+
+            planning.Year = this.Year;
+
+            planning.Article = product.Article;
+            planning.RRCNDS = product.RRCFinal; //?
+            planning.PercentageOfChange = product.RRCPercent;  //?
+            //            planning.STKEur = product.st
+            //            planning.STKRub = 
+            planning.IRP = product.IRP;
+            planning.RRCNDS2 = product.RRCFinal; //?
+            planning.IRPIndex = product.IRPIndex;
+            planning.DIYPriceList = product.DIY;
+
+            return planning;
         }
 
         public void GetSheetCopy()
@@ -203,7 +191,7 @@ namespace BPA.Model
             if (worksheetName == templateSheetName)
                 return null;
             else
-                TableWorksheetName = worksheetName;
+                _TableWorksheetName = worksheetName;
 
             try
             {
@@ -238,7 +226,7 @@ namespace BPA.Model
 
         public void Save(string worksheetName)
         {
-            TableWorksheetName = worksheetName;
+            _TableWorksheetName = worksheetName;
             Save();
         }
     }
