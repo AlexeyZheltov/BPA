@@ -556,8 +556,8 @@ namespace BPA
             }
             finally
             {
-                //FunctionsForExcel.SpeedOff();
-                //if (processBar != null)
+                FunctionsForExcel.SpeedOff();
+                if (processBar != null)
                     processBar.Close();
             }
             

@@ -143,7 +143,7 @@ namespace BPA.Modules
                         Article = article,
                         Quantity = quantity,
                         Month = date.Month,
-                        Campaign = campaign
+                        Campaign = campaign == "" ? "0": campaign
                     });
                 }
 

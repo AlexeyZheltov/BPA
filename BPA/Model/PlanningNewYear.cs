@@ -58,7 +58,9 @@ namespace BPA.Model
             { "IRP","IRP, Eur"},
             { "RRCNDS2","РРЦ, руб.с НДС2"},
             { "IRPIndex","Индекс IRP"},
-            { "DIYPriceList","DIY price list, руб. без НДС"}
+            { "DIYPriceList","DIY price list, руб. без НДС"},
+
+            { "PricePromo","Промо цена, руб."},
         };
 
         #endregion
@@ -143,11 +145,16 @@ namespace BPA.Model
             get; set;
         }
         /// <summary>
-        /// Дата принятия
+        /// Промо цена, руб.
         /// </summary>
+        public string PricePromo
+        {
+            get; set;
+        }
+
 
         #endregion
-        
+
         public string ChanelType;
         public string CustomerStatus;
         public double Year;
@@ -163,11 +170,11 @@ namespace BPA.Model
 
             planning.Article = product.Article;
             planning.RRCNDS = product.RRCFinal; //?
-            planning.PercentageOfChange = product.RRCPercent;  //?
+            //planning.PercentageOfChange = product.RRCPercent;  //?
             //            planning.STKEur = product.st
             //            planning.STKRub = 
             planning.IRP = product.IRP;
-            planning.RRCNDS2 = product.RRCFinal; //?
+            //planning.RRCNDS2 = product.RRCFinal; //?
             planning.IRPIndex = product.IRPIndex;
             planning.DIYPriceList = product.DIY;
 

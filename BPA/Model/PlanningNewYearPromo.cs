@@ -187,7 +187,7 @@ namespace BPA.Model
 
             bool isPromo(ArticleQuantity articleQuantity)
             {
-                return articleQuantity.Campaign != "0" && articleQuantity.Campaign != "" && articleQuantity.Campaign != null ? true : false;
+                return articleQuantity.Campaign != "0" && articleQuantity.Campaign != null ? true : false;
             }
 
             double SumMonthQuantity(double month, List<ArticleQuantity> articleQuantities)
@@ -205,6 +205,5 @@ namespace BPA.Model
                 return quantity;
             }
         }
-    }
-    
+    }    
 }
