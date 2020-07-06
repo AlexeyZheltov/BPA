@@ -512,12 +512,12 @@ namespace BPA
                 //получаем продукты на основании введенных данных
                 List<ProductForPlanningNewYear> products = new ProductForPlanningNewYear().GetProducts(planningNewYearTmp);
 
-                //получаем Desicion
+                //получаем Desicion, Buget
                 FileDescision fileDescision = new FileDescision();
-                fileDescision.LoadForPlanning(planningNewYearTmp);
-
-                //получаем Buget
                 FileBuget fileBuget = new FileBuget();
+
+                //загружаем Desicion, Buget
+                fileDescision.LoadForPlanning(planningNewYearTmp);
                 fileBuget.LoadForPlanning(planningNewYearTmp);
 
                 processBar = new ProcessBar("Обновление клиентов", products.Count);
