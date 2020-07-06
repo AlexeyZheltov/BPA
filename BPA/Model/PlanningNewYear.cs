@@ -107,7 +107,7 @@ namespace BPA.Model
         /// <summary>
         /// STK 2.5, Eur
         /// </summary>
-        public string STKEur
+        public double STKEur
         {
             get; set;
         }
@@ -175,23 +175,32 @@ namespace BPA.Model
         public PlanningNewYear() { }
         public PlanningNewYear(ListRow row) => SetProperty(row);
 
-        public PlanningNewYear Clone(ProductForPlanningNewYear product)
+        public PlanningNewYear Clone()
         {
             PlanningNewYear planning = new PlanningNewYear();
 
             planning.Year = this.Year;
 
-            planning.Article = product.Article;
-            planning.RRCNDS = product.RRCFinal; //?
-            //planning.PercentageOfChange = product.RRCPercent;  //?
-            //            planning.STKEur = product.st
-            //            planning.STKRub = 
-            planning.IRP = product.IRP;
-            //planning.RRCNDS2 = product.RRCFinal; //?
-            planning.IRPIndex = product.IRPIndex;
-            planning.DIYPriceList = product.DIY;
-
             return planning;
+        }
+
+        public void SetProduct(ProductForPlanningNewYear product)
+        {
+            #region setProps
+            this.Article = product.Article;
+            this.RRCNDS = product.RRCFinal; //?
+            //planning.PercentageOfChange = product.RRCPercent;  //?
+            this.IRP = product.IRP;
+            //planning.RRCNDS2 = product.RRCFinal; //?
+            this.IRPIndex = product.IRPIndex;
+            this.DIYPriceList = product.DIY;
+            #endregion
+
+            STK sTK = new STK().GetSTK(product.Article, Year);
+            if (sTK == null) return;
+
+            this.STKEur = sTK.STKEur;
+            this.STKRub = sTK.STKRub;
         }
 
         public void GetSheetCopy()

@@ -514,7 +514,7 @@ namespace BPA
 
                 //получаем продукты на основании введенных данных
                 List<ProductForPlanningNewYear> products = new ProductForPlanningNewYear().GetProducts(planningNewYearTmp);
-
+                
                 //получаем Desicion, Buget
                 FileDescision fileDescision = new FileDescision();
                 FileBuget fileBuget = new FileBuget();
@@ -537,7 +537,8 @@ namespace BPA
                         break;
                     processBar.TaskStart($"Обрабатывается артикул {product.Article}");
 
-                    PlanningNewYear planning = planningNewYearTmp.Clone(product);
+                    PlanningNewYear planning = planningNewYearTmp.Clone();
+                    planning.SetProduct(product);
 
                     PlanningNewYearPrognosis prognosis = new PlanningNewYearPrognosis(planning);
                     prognosis.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
