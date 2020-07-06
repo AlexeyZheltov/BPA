@@ -510,6 +510,7 @@ namespace BPA
                 }
 
                 planningNewYearTmp.ClearTable(worksheet.Name);
+                planningNewYearTmp.MaximumBonus = new Discount().GetDiscountForPlanning(planningNewYearTmp);
 
                 //получаем продукты на основании введенных данных
                 List<ProductForPlanningNewYear> products = new ProductForPlanningNewYear().GetProducts(planningNewYearTmp);
