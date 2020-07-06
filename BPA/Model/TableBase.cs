@@ -73,8 +73,6 @@ namespace BPA.Model
         /// </summary>
         public void Save()
         {
-            int i = 9;
-            i /= 0;
             if ((int)GetParametrValue("Id") == 0)
             {
                 int id = Insert();
@@ -281,6 +279,17 @@ namespace BPA.Model
         {
             ListRow row = GetRow((int)GetParametrValue("Id"));
             row.Range[1, Table.ListColumns[Filds[fildNameToMark]].Index].Interior.Color = 65535;
+        }
+
+        public void ClearTable()
+        {
+            if (Table.ListRows.Count < 1)
+                return;
+
+            for (double rw = Table.ListRows.Count; rw > 0; rw--)
+            {
+                Table.ListRows[rw].Delete();
+            }
         }
     }
 }
