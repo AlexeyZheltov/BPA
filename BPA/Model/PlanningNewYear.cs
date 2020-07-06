@@ -19,18 +19,16 @@ namespace BPA.Model
 
         public string GetTableName()
         {
-            try
-            {
-                ThisWorkbook workbook = Globals.ThisWorkbook;
-                ListObject table = workbook.Sheets[SheetName].ListObjects[1];
-                return table.Name;
-            }
-            catch
-            {
-                ThisWorkbook workbook = Globals.ThisWorkbook;
-                ListObject table = workbook.Sheets[templateSheetName].ListObjects[1];
-                return table.Name;
-            }
+            //try
+            //{
+            ThisWorkbook workbook = Globals.ThisWorkbook;
+            ListObject table = workbook.Sheets[SheetName].ListObjects[1];
+            return table.Name;
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //}
         }
 
         public string templateSheetName = "Планирование нового года шаблон";
@@ -235,6 +233,30 @@ namespace BPA.Model
         {
             _TableWorksheetName = worksheetName;
             Save();
+        }
+
+        public void ClearTable(string worksheetName)
+        {
+            _TableWorksheetName = worksheetName;
+
+            ClearTable();
+
+            CopyTemplateFirstRow();
+        }
+
+        private void CopyTemplateFirstRow()
+        {
+            ThisWorkbook workbook = Globals.ThisWorkbook;
+            Worksheet worksheet = workbook.Sheets[templateSheetName];
+            ListObject tableTemplate = worksheet.ListObjects[1];
+
+
+            Table.ListRows.AddEx();
+            Range firstCell = Table.ListRows[1].Range[1];
+
+            tableTemplate.ListRows[1].Range.Copy();
+            firstCell.PasteSpecial();
+
         }
     }
 }

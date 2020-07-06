@@ -509,6 +509,8 @@ namespace BPA
                     return;
                 }
 
+                planningNewYearTmp.ClearTable(worksheet.Name);
+
                 //получаем продукты на основании введенных данных
                 List<ProductForPlanningNewYear> products = new ProductForPlanningNewYear().GetProducts(planningNewYearTmp);
 
