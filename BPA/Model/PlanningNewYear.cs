@@ -156,6 +156,21 @@ namespace BPA.Model
         public string ChanelType;
         public string CustomerStatus;
         public double Year;
+        public double MaximumBonus;
+
+        /// <summary>
+        /// словарь соответствия key: Эксклюзивность, val: CustomerStatus, ChannalType
+        /// </summary>
+        public readonly Dictionary<string, string> ExclusivesDict = new Dictionary<string, string>
+        {
+            {"леруа мерлен", "леруа мерлен"},
+            {"оби", "оби"},
+            {"diy канал", "diy"},
+            {"dealer", "dealers&regional distr"},
+            {"regional", "dealers&regional distr"},
+            {"online", "online"},
+            {"all channels", ""}
+        };
 
         public PlanningNewYear() { }
         public PlanningNewYear(ListRow row) => SetProperty(row);
