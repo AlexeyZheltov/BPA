@@ -73,6 +73,8 @@ namespace BPA.Model
         /// </summary>
         public void Save()
         {
+            int i = 9;
+            i /= 0;
             if ((int)GetParametrValue("Id") == 0)
             {
                 int id = Insert();
@@ -106,7 +108,10 @@ namespace BPA.Model
                 Table.ListRows[2].Delete();
                 row = Table.ListRows[1];
             }
-            else row = Table.ListRows.Add();
+            else if (Table.ListRows[1].Range.Cells[1, 1].Text == "")
+                row = Table.ListRows[1];
+            else
+                row = Table.ListRows.Add();
             FillRow(row);
             
             row.Range[1, Table.ListColumns[Filds["Id"]].Index].Value = id;
