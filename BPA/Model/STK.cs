@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Office.Interop.Excel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ namespace BPA.Model {
         public override string TableName => "STK";
         public override string SheetName => "STK";
 
+        #region --- Словарь ---
         public override IDictionary<string, string> Filds {
             get {
                 return _filds;
@@ -25,7 +27,9 @@ namespace BPA.Model {
             { "STKRub", "STK 2.5, руб." },
             { "Date", "Дата принятия" }
         };
+        #endregion
 
+        #region --- Свойства ---
         /// <summary>
         /// №
         /// </summary>
@@ -37,20 +41,20 @@ namespace BPA.Model {
         /// <summary>
         /// Артикул
         /// </summary>
-        public int Article {
+        public string Article {
             get; set;
         }
         /// <summary>
         /// STK 2.5, Eur
         /// </summary>
-        public string STKEur {
+        public double STKEur {
             get; set;
         }
-
+        
         /// <summary>
         /// STK 2.5, руб.
         /// </summary>
-        public string STKRub {
+        public double STKRub {
             get; set;
         }
         /// <summary>
@@ -59,6 +63,62 @@ namespace BPA.Model {
         public string Date {
             get; set;
         }
+        #endregion
 
+        Opti<DateTime?> PeriodAsDateTime;
+        public DateTime? GetPeriodAsDateTime()
+        {
+            if (!PeriodAsDateTime.isCalculated)
+            {
+                if (DateTime.TryParse(Date, out DateTime dateTime))
+                    PeriodAsDateTime.Value = dateTime;
+                else
+                    PeriodAsDateTime.Value = null;
+
+                PeriodAsDateTime.isCalculated = true;
+            }
+
+            return PeriodAsDateTime.Value;
+        }
+
+        struct Opti<T>
+        {
+            public T Value
+            {
+                get; set;
+            }
+            public bool isCalculated
+            {
+                get; set;
+            }
+        }
+
+        public STK() { }
+
+        public STK(ListRow listRow) => SetProperty(listRow);
+        
+        public STK GetSTK(string article, double year)
+        {
+            ListRow listRow = GetRow("Article", article);
+            double firstIndex = listRow.Index;
+
+            if (listRow == null)
+                return null;
+
+            do
+            {
+                STK sTK = new STK(listRow);
+                DateTime? date = sTK.GetPeriodAsDateTime();
+
+                if (date != null && (date?.Year ?? -1) == year)
+                {
+                    return sTK;
+                }
+
+                listRow = GetRow("Article", article, listRow.Range[1, Table.ListColumns[Filds["Article"]].Index]);
+            } while (listRow.Index != firstIndex);
+
+            return null;
+        }
     }
 }

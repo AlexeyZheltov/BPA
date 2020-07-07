@@ -282,5 +282,16 @@ namespace BPA.Model
             ListRow row = GetRow((int)GetParametrValue("Id"));
             row.Range[1, Table.ListColumns[Filds[fildNameToMark]].Index].Interior.Color = 65535;
         }
+
+        public void ClearTable()
+        {
+            if (Table.ListRows.Count < 1)
+                return;
+
+            for (double rw = Table.ListRows.Count; rw > 0; rw--)
+            {
+                Table.ListRows[rw].Delete();
+            }
+        }
     }
 }

@@ -19,24 +19,23 @@ namespace BPA.Model
 
         public string GetTableName()
         {
-            try
-            {
-                ThisWorkbook workbook = Globals.ThisWorkbook;
-                ListObject table = workbook.Sheets[SheetName].ListObjects[1];
-                return table.Name;
-            }
-            catch
-            {
-                ThisWorkbook workbook = Globals.ThisWorkbook;
-                ListObject table = workbook.Sheets[templateSheetName].ListObjects[1];
-                return table.Name;
-            }
+            //try
+            //{
+            ThisWorkbook workbook = Globals.ThisWorkbook;
+            ListObject table = workbook.Sheets[SheetName].ListObjects[1];
+            return table.Name;
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //}
         }
 
-        public string templateSheetName = "Планирование нового года шаблон";
-        private string CustomerStatusLabel = "Customer status";
-        private string ChannelTypeLabel = "Channel type";
-        private string YearLabel = "Период";
+        public string templateSheetName = Properties.Settings.Default.templateSheetName;
+        private const string CustomerStatusLabel = "Customer status";
+        private const string ChannelTypeLabel = "Channel type";
+        private const string YearLabel = "Период";
+        private const string MaximumBonusLabel = "максмальный годовой бонус, %";
 
         #region --- Словарь ---
 
@@ -109,7 +108,7 @@ namespace BPA.Model
         /// <summary>
         /// STK 2.5, Eur
         /// </summary>
-        public string STKEur
+        public double STKEur
         {
             get; set;
         }
@@ -158,27 +157,58 @@ namespace BPA.Model
         public string ChanelType;
         public string CustomerStatus;
         public double Year;
+        public double MaximumBonus;
+
+        /// <summary>
+        /// словарь соответствия key: Эксклюзивность, val: CustomerStatus, ChannalType
+        /// </summary>
+        public readonly Dictionary<string, string> ExclusivesDict = new Dictionary<string, string>
+        {
+            {"леруа мерлен", "леруа мерлен"},
+            {"оби", "оби"},
+            {"diy канал", "diy"},
+            {"dealer", "dealers&regional distr"},
+            {"regional", "dealers&regional distr"},
+            {"online", "online"},
+            {"all channels", ""}
+        };
 
         public PlanningNewYear() { }
         public PlanningNewYear(ListRow row) => SetProperty(row);
 
-        public PlanningNewYear Clone(ProductForPlanningNewYear product)
+        public PlanningNewYear Clone()
         {
             PlanningNewYear planning = new PlanningNewYear();
 
             planning.Year = this.Year;
-
-            planning.Article = product.Article;
-            planning.RRCNDS = product.RRCFinal; //?
-            //planning.PercentageOfChange = product.RRCPercent;  //?
-            //            planning.STKEur = product.st
-            //            planning.STKRub = 
-            planning.IRP = product.IRP;
-            //planning.RRCNDS2 = product.RRCFinal; //?
-            planning.IRPIndex = product.IRPIndex;
-            planning.DIYPriceList = product.DIY;
+            planning.CustomerStatus = this.CustomerStatus;
+            planning.ChanelType = this.ChanelType;
+            planning.MaximumBonus = this.MaximumBonus;
 
             return planning;
+        }
+
+        public void SetProduct(ProductForPlanningNewYear product)
+        {
+            this.Article = product.Article;
+            this.RRCNDS = product.RRCFinal; //?
+            //planning.PercentageOfChange = product.RRCPercent;  //?
+            this.IRP = product.IRP;
+            //planning.RRCNDS2 = product.RRCFinal; //?
+            this.IRPIndex = product.IRPIndex;
+            this.DIYPriceList = product.DIY;
+        }
+        public void GetSTK()
+        {
+            if (this.Article == "")
+                return;
+
+            STK sTK = new STK().GetSTK(this.Article, this.Year);
+            if (sTK == null)
+                return;
+
+            this.STKEur = sTK.STKEur;
+            this.STKRub = sTK.STKRub;
         }
 
         public void GetSheetCopy()
@@ -236,5 +266,45 @@ namespace BPA.Model
             _TableWorksheetName = worksheetName;
             Save();
         }
+
+        public void ClearTable(string worksheetName)
+        {
+            _TableWorksheetName = worksheetName;
+
+            ClearTable();
+
+            CopyTemplateFirstRow();
+        }
+
+        private void CopyTemplateFirstRow()
+        {
+            ThisWorkbook workbook = Globals.ThisWorkbook;
+            Worksheet worksheet = workbook.Sheets[templateSheetName];
+            ListObject tableTemplate = worksheet.ListObjects[1];
+
+
+            Table.ListRows.AddEx();
+            Range firstCell = Table.ListRows[1].Range[1];
+
+            tableTemplate.ListRows[1].Range.Copy();
+            firstCell.PasteSpecial();
+
+        }
+
+        public void SetMaximumBonusValue()
+        {
+            ThisWorkbook workbook = Globals.ThisWorkbook;
+            Worksheet worksheet = workbook.Sheets[SheetName];
+            Range range = worksheet.UsedRange;
+            
+            Range cell;
+            cell = range.Find(What: "%", LookIn: XlFindLookIn.xlValues, LookAt: XlLookAt.xlPart, MatchCase: false);
+            cell = range.Find(What:MaximumBonusLabel,LookIn:XlFindLookIn.xlFormulas, LookAt:XlLookAt.xlPart, MatchCase:false);
+            if (cell == null)
+                return;
+
+            cell.Offset[0, -2].Value = this.MaximumBonus;
+        }
+
     }
 }

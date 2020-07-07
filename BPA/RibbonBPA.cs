@@ -509,15 +509,18 @@ namespace BPA
                     return;
                 }
 
+                planningNewYearTmp.ClearTable(worksheet.Name);
+                planningNewYearTmp.MaximumBonus = new Discount().GetDiscountForPlanning(planningNewYearTmp);
+
                 //получаем продукты на основании введенных данных
                 List<ProductForPlanningNewYear> products = new ProductForPlanningNewYear().GetProducts(planningNewYearTmp);
-
-                //получаем Desicion
+                
+                //получаем Desicion, Buget
                 FileDescision fileDescision = new FileDescision();
-                fileDescision.LoadForPlanning(planningNewYearTmp);
-
-                //получаем Buget
                 FileBuget fileBuget = new FileBuget();
+
+                //загружаем Desicion, Buget
+                fileDescision.LoadForPlanning(planningNewYearTmp);
                 fileBuget.LoadForPlanning(planningNewYearTmp);
 
                 processBar = new ProcessBar("Обновление клиентов", products.Count);
@@ -534,7 +537,9 @@ namespace BPA
                         break;
                     processBar.TaskStart($"Обрабатывается артикул {product.Article}");
 
-                    PlanningNewYear planning = planningNewYearTmp.Clone(product);
+                    PlanningNewYear planning = planningNewYearTmp.Clone();
+                    planning.SetProduct(product);
+                    planning.GetSTK();
 
                     PlanningNewYearPrognosis prognosis = new PlanningNewYearPrognosis(planning);
                     prognosis.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
@@ -543,6 +548,7 @@ namespace BPA
                     promo.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
 
                     planning.Save(worksheet.Name);
+                    planning.SetMaximumBonusValue();
                     prognosis.Save();
                     promo.Save();
 

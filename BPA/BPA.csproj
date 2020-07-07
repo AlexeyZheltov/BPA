@@ -193,6 +193,7 @@
     <None Include="..\.editorconfig">
       <Link>.editorconfig</Link>
     </None>
+    <None Include="app.config" />
     <None Include="BPA_TemporaryKey.pfx" />
     <None Include="Business planning.xlsm" />
     <None Include="Properties\Settings.settings">

@@ -155,19 +155,7 @@ namespace BPA.Model
         }
         #endregion
 
-        /// <summary>
-        /// словарь соответствия key: Эксклюзивность, val: CustomerStatus, ChannalType
-        /// </summary>
-        readonly Dictionary<string, string> ExclusivesDict = new Dictionary<string, string>
-        {
-            {"леруа мерлен", "леруа мерлен"},
-            {"оби", "оби"},
-            {"diy канал", "diy"},
-            {"dealer", "dealers&regional distr"},
-            {"regional", "dealers&regional distr"},
-            {"online", "online"},
-            {"all channels", ""}
-        };
+
 
         public ProductForPlanningNewYear()
         {
@@ -257,10 +245,10 @@ namespace BPA.Model
             {
                 exclusive = FunctionsForExcel.StringNormalize(exclusive, true);
 
-                if (ExclusivesDict.ContainsKey(exclusive))
+                if (planningNewYearTmp.ExclusivesDict.ContainsKey(exclusive))
                 {
-                    if (ExclusivesDict[exclusive] == FunctionsForExcel.StringNormalize(planningNewYearTmp.CustomerStatus,true) ||
-                        ExclusivesDict[exclusive] == FunctionsForExcel.StringNormalize(planningNewYearTmp.ChanelType,true) || 
+                    if (planningNewYearTmp.ExclusivesDict[exclusive] == FunctionsForExcel.StringNormalize(planningNewYearTmp.CustomerStatus,true) ||
+                        planningNewYearTmp.ExclusivesDict[exclusive] == FunctionsForExcel.StringNormalize(planningNewYearTmp.ChanelType,true) || 
                         exclusive == "all channels")
                     {
                         return true;

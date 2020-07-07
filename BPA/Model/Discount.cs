@@ -1,4 +1,5 @@
 ﻿using BPA.Modules;
+using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,6 +47,8 @@ namespace BPA.Model {
                     return (string)GetParametrValue(item.Key);
             return "";
         }
+
+        #region --- Свойства ---
 
         /// <summary>
         /// №
@@ -121,9 +124,10 @@ namespace BPA.Model {
         /// <summary>
         /// Максимальный годовой бонус
         /// </summary>
-        public string MaximumBonus {
+        public double MaximumBonus {
             get; set;
         }
+        #endregion
 
         Opti<DateTime?> PeriodAsDateTime;
         public DateTime? GetPeriodAsDateTime()
@@ -264,6 +268,32 @@ namespace BPA.Model {
         {
             public T Value { get; set; }
             public bool isCalculated { get; set; }
+        }
+
+        public double GetDiscountForPlanning(PlanningNewYear planning)
+        {
+            ListRow listRow = GetRow("ChannelType", planning.ChanelType);
+            double firstIndex = listRow.Index;
+
+            if (listRow == null) return 0;
+
+            do
+            {
+                Discount discount = new Discount(listRow);
+                if (discount.CustomerStatus == planning.CustomerStatus)
+                {
+                    DateTime? date = discount.GetPeriodAsDateTime();
+                    
+                    if (date != null && (date?.Year ?? -1) == planning.Year)
+                    {
+                        return discount.MaximumBonus;                    
+                    }
+                }
+              
+                listRow = GetRow("ChannelType", planning.ChanelType, listRow.Range[1, Table.ListColumns[Filds["ChannelType"]].Index]);
+            } while (listRow.Index != firstIndex);
+
+            return 0;
         }
     }
 }
