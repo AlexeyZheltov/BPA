@@ -180,6 +180,9 @@ namespace BPA.Model
             PlanningNewYear planning = new PlanningNewYear();
 
             planning.Year = this.Year;
+            planning.CustomerStatus = this.CustomerStatus;
+            planning.ChanelType = this.ChanelType;
+            planning.MaximumBonus = this.MaximumBonus;
 
             return planning;
         }
