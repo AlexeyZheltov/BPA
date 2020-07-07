@@ -281,13 +281,23 @@ namespace BPA.Model
             ThisWorkbook workbook = Globals.ThisWorkbook;
             Worksheet worksheet = workbook.Sheets[templateSheetName];
             ListObject tableTemplate = worksheet.ListObjects[1];
-
+            string tableTemplateName = tableTemplate.Name;
 
             Table.ListRows.AddEx();
             Range firstCell = Table.ListRows[1].Range[1];
 
             tableTemplate.ListRows[1].Range.Copy();
             firstCell.PasteSpecial();
+
+            foreach (Range cell in Table.ListRows[1].Range)
+            {
+                string formula = cell.FormulaLocal;
+
+                if (formula != "" && formula.Substring(0,1) == "=")
+                //formula = formula.Replace(tableTemplateName, "");
+                //cell.FormulaLocal = formula;
+                    cell.FormulaLocal = cell.FormulaLocal.Replace(tableTemplateName, "");
+            }
 
         }
 
