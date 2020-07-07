@@ -32,9 +32,10 @@ namespace BPA.Model
         }
 
         public string templateSheetName = Properties.Settings.Default.templateSheetName;
-        private string CustomerStatusLabel = "Customer status";
-        private string ChannelTypeLabel = "Channel type";
-        private string YearLabel = "Период";
+        private const string CustomerStatusLabel = "Customer status";
+        private const string ChannelTypeLabel = "Channel type";
+        private const string YearLabel = "Период";
+        private const string MaximumBonusLabel = "максмальный годовой бонус, %";
 
         #region --- Словарь ---
 
