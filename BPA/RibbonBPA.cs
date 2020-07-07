@@ -539,6 +539,7 @@ namespace BPA
 
                     PlanningNewYear planning = planningNewYearTmp.Clone();
                     planning.SetProduct(product);
+                    planning.GetSTK();
 
                     PlanningNewYearPrognosis prognosis = new PlanningNewYearPrognosis(planning);
                     prognosis.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);

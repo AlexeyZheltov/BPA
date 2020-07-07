@@ -186,7 +186,6 @@ namespace BPA.Model
 
         public void SetProduct(ProductForPlanningNewYear product)
         {
-            #region setProps
             this.Article = product.Article;
             this.RRCNDS = product.RRCFinal; //?
             //planning.PercentageOfChange = product.RRCPercent;  //?
@@ -194,10 +193,15 @@ namespace BPA.Model
             //planning.RRCNDS2 = product.RRCFinal; //?
             this.IRPIndex = product.IRPIndex;
             this.DIYPriceList = product.DIY;
-            #endregion
+        }
+        public void GetSTK()
+        {
+            if (this.Article == "")
+                return;
 
-            STK sTK = new STK().GetSTK(product.Article, Year);
-            if (sTK == null) return;
+            STK sTK = new STK().GetSTK(this.Article, this.Year);
+            if (sTK == null)
+                return;
 
             this.STKEur = sTK.STKEur;
             this.STKRub = sTK.STKRub;

@@ -99,23 +99,23 @@ namespace BPA.Model {
         
         public STK GetSTK(string article, double year)
         {
-            ListRow listRow = GetRow(Article, article);
+            ListRow listRow = GetRow("Article", article);
             double firstIndex = listRow.Index;
 
             if (listRow == null)
                 return null;
 
-            STK sTK = new STK(listRow);
             do
             {
-                DateTime? date = GetPeriodAsDateTime();
+                STK sTK = new STK(listRow);
+                DateTime? date = sTK.GetPeriodAsDateTime();
 
-                if ((date?.Year ?? -1) == year)
+                if (date != null && (date?.Year ?? -1) == year)
                 {
                     return sTK;
                 }
-                
-                listRow = GetRow(Article, article, listRow.Range[1, Table.ListColumns[Filds["Article"]].Index]);
+
+                listRow = GetRow("Article", article, listRow.Range[1, Table.ListColumns[Filds["Article"]].Index]);
             } while (listRow.Index != firstIndex);
 
             return null;
