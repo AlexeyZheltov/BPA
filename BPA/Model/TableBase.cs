@@ -73,8 +73,6 @@ namespace BPA.Model
         /// </summary>
         public void Save()
         {
-            int i = 9;
-            i /= 0;
             if ((int)GetParametrValue("Id") == 0)
             {
                 int id = Insert();
