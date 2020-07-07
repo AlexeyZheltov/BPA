@@ -93,6 +93,10 @@ namespace BPA.Modules
                 {
                     FileName = fileDialog.FileName;
                 }
+                else
+                {
+                    throw new FileNotFoundException($"Загрузка отменена");
+                }
             }
         }
 
