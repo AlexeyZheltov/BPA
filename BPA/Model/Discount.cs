@@ -272,24 +272,25 @@ namespace BPA.Model {
 
         public double GetDiscountForPlanning(PlanningNewYear planning)
         {
-            ListRow listRow = GetRow(ChannelType, planning.ChanelType);
+            ListRow listRow = GetRow("ChannelType", planning.ChanelType);
             double firstIndex = listRow.Index;
 
             if (listRow == null) return 0;
 
-            Discount discount = new Discount(listRow);
             do
             {
+                Discount discount = new Discount(listRow);
                 if (discount.CustomerStatus == planning.CustomerStatus)
                 {
-                    DateTime? date = GetPeriodAsDateTime();
-
-                    if ((date?.Year ?? -1) == planning.Year)
+                    DateTime? date = discount.GetPeriodAsDateTime();
+                    
+                    if (date != null && (date?.Year ?? -1) == planning.Year)
                     {
-                        return discount.MaximumBonus;
+                        return discount.MaximumBonus;                    
                     }
                 }
-                listRow = GetRow(ChannelType, planning.ChanelType, listRow.Range[1, Table.ListColumns[Filds["ChannelType"]].Index]);
+              
+                listRow = GetRow("ChannelType", planning.ChanelType, listRow.Range[1, Table.ListColumns[Filds["ChannelType"]].Index]);
             } while (listRow.Index != firstIndex);
 
             return 0;
