@@ -273,9 +273,9 @@ namespace BPA.Model {
         public double GetDiscountForPlanning(PlanningNewYear planning)
         {
             ListRow listRow = GetRow("ChannelType", planning.ChanelType);
-            double firstIndex = listRow.Index;
-
             if (listRow == null) return 0;
+
+            double firstIndex = listRow.Index;
 
             do
             {

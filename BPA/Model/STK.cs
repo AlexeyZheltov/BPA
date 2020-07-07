@@ -100,10 +100,11 @@ namespace BPA.Model {
         public STK GetSTK(string article, double year)
         {
             ListRow listRow = GetRow("Article", article);
-            double firstIndex = listRow.Index;
 
             if (listRow == null)
                 return null;
+
+            double firstIndex = listRow.Index;
 
             do
             {
