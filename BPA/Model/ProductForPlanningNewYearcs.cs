@@ -240,16 +240,20 @@ namespace BPA.Model
         private bool IsExclusive(PlanningNewYear planningNewYearTmp, string exclusive)
         {
             if (exclusive == null)
-                return false;
+                exclusive = "";
             try
             {
                 exclusive = FunctionsForExcel.StringNormalize(exclusive, true);
+
+                if (exclusive == "")
+                    return true;
 
                 if (planningNewYearTmp.ExclusivesDict.ContainsKey(exclusive))
                 {
                     if (planningNewYearTmp.ExclusivesDict[exclusive] == FunctionsForExcel.StringNormalize(planningNewYearTmp.CustomerStatus,true) ||
                         planningNewYearTmp.ExclusivesDict[exclusive] == FunctionsForExcel.StringNormalize(planningNewYearTmp.ChanelType,true) || 
                         exclusive == "all channels")
+
                     {
                         return true;
                     }
