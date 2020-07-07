@@ -548,6 +548,7 @@ namespace BPA
                     promo.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
 
                     planning.Save(worksheet.Name);
+                    planning.SetMaximumBonusValue();
                     prognosis.Save();
                     promo.Save();
 

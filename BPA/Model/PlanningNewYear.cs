@@ -289,5 +289,21 @@ namespace BPA.Model
             firstCell.PasteSpecial();
 
         }
+
+        public void SetMaximumBonusValue()
+        {
+            ThisWorkbook workbook = Globals.ThisWorkbook;
+            Worksheet worksheet = workbook.Sheets[SheetName];
+            Range range = worksheet.UsedRange;
+            
+            Range cell;
+            cell = range.Find(What: "%", LookIn: XlFindLookIn.xlValues, LookAt: XlLookAt.xlPart, MatchCase: false);
+            cell = range.Find(What:MaximumBonusLabel,LookIn:XlFindLookIn.xlFormulas, LookAt:XlLookAt.xlPart, MatchCase:false);
+            if (cell == null)
+                return;
+
+            cell.Offset[0, -2].Value = this.MaximumBonus;
+        }
+
     }
 }
