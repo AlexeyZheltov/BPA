@@ -31,7 +31,7 @@ namespace BPA.Model
             //}
         }
 
-        public string templateSheetName = "Планирование нового года шаблон";
+        public string templateSheetName = Properties.Settings.Default.templateSheetName;
         private string CustomerStatusLabel = "Customer status";
         private string ChannelTypeLabel = "Channel type";
         private string YearLabel = "Период";

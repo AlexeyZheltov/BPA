@@ -21,8 +21,8 @@ namespace BPA.Model
         }
 
         public override string TableName => this.planningNewYear.GetTableName();
-        public override string SheetName => this.planningNewYear._TableWorksheetName != "" ? 
-            this.planningNewYear._TableWorksheetName : 
+        public override string SheetName => this.planningNewYear._TableWorksheetName != "" ?
+            this.planningNewYear._TableWorksheetName :
             this.planningNewYear.templateSheetName;
 
         #region --- Словарь ---
