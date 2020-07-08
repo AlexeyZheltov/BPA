@@ -316,5 +316,28 @@ namespace BPA.Model
             cell.Offset[0, -2].Value = this.MaximumBonus;
         }
 
+        public void SetLists(List<PlanningNewYearPrognosis> prognosises, List<PlanningNewYearPromo> promos)
+        {
+            List<PlanningNewYear> plannings = GetList();
+
+            foreach (PlanningNewYear planning in plannings)
+            {
+                prognosises.Add(new PlanningNewYearPrognosis(planning));
+                promos.Add(new PlanningNewYearPromo(planning));
+            }
+        }
+
+        private List<PlanningNewYear> GetList()
+        {
+            List<PlanningNewYear> plannings = new List<PlanningNewYear>();
+            foreach (ListRow listRow in Table.ListRows)
+            {
+                PlanningNewYear planning = this.Clone();
+                planning.SetProperty(listRow);
+                plannings.Add(planning);
+            }
+
+            return plannings;
+        }
     }
 }
