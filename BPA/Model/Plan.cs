@@ -1029,5 +1029,140 @@ public double GPValue08
         } 
 
         #endregion
+        public Plan() { }
+
+        public Plan(PlanningNewYearSave planningNewYearSave)
+        {
+            ChannelType = planningNewYearSave.ChannelType;
+            CustomerStatus = planningNewYearSave.CustomerStatus;
+            PrognosisDate = planningNewYearSave.PrognosisDate;
+            Data = planningNewYearSave.planningNewYear.Article;
+            STKRub = planningNewYearSave.STKRub;
+            IRPEur = planningNewYearSave.IRPEur;
+            RRC = planningNewYearSave.RRC;
+            IRPIndex = planningNewYearSave.IRPIndex;
+            DIY = planningNewYearSave.DIY;
+            Price2Net = planningNewYearSave.Price2Net;
+            Price3Net = planningNewYearSave.Price3Net;
+            PriceTransfer = planningNewYearSave.PriceTransfer;
+
+            PriceList01 = planningNewYearSave.PriceList01;
+            PriceList02 = planningNewYearSave.PriceList02;
+            PriceList03 = planningNewYearSave.PriceList03;
+            PriceList04 = planningNewYearSave.PriceList04;
+            PriceList05 = planningNewYearSave.PriceList05;
+            PriceList06 = planningNewYearSave.PriceList06;
+            PriceList07 = planningNewYearSave.PriceList07;
+            PriceList08 = planningNewYearSave.PriceList08;
+            PriceList09 = planningNewYearSave.PriceList09;
+            PriceList10 = planningNewYearSave.PriceList10;
+            PriceList11 = planningNewYearSave.PriceList11;
+            PriceList12 = planningNewYearSave.PriceList12;
+
+            SalesVolume01 = planningNewYearSave.SalesVolume01;
+            SalesVolume02 = planningNewYearSave.SalesVolume02;
+            SalesVolume03 = planningNewYearSave.SalesVolume03;
+            SalesVolume04 = planningNewYearSave.SalesVolume04;
+            SalesVolume05 = planningNewYearSave.SalesVolume05;
+            SalesVolume06 = planningNewYearSave.SalesVolume06;
+            SalesVolume07 = planningNewYearSave.SalesVolume07;
+            SalesVolume08 = planningNewYearSave.SalesVolume08;
+            SalesVolume09 = planningNewYearSave.SalesVolume09;
+            SalesVolume10 = planningNewYearSave.SalesVolume10;
+            SalesVolume11 = planningNewYearSave.SalesVolume11;
+            SalesVolume12 = planningNewYearSave.SalesVolume12;
+
+            GS01 = planningNewYearSave.GS01;
+            GS02 = planningNewYearSave.GS02;
+            GS03 = planningNewYearSave.GS03;
+            GS04 = planningNewYearSave.GS04;
+            GS05 = planningNewYearSave.GS05;
+            GS06 = planningNewYearSave.GS06;
+            GS07 = planningNewYearSave.GS07;
+            GS08 = planningNewYearSave.GS08;
+            GS09 = planningNewYearSave.GS09;
+            GS10 = planningNewYearSave.GS10;
+            GS11 = planningNewYearSave.GS11;
+            GS12 = planningNewYearSave.GS12;
+
+            NS01 = planningNewYearSave.NS01;
+            NS02 = planningNewYearSave.NS02;
+            NS03 = planningNewYearSave.NS03;
+            NS04 = planningNewYearSave.NS04;
+            NS05 = planningNewYearSave.NS05;
+            NS06 = planningNewYearSave.NS06;
+            NS07 = planningNewYearSave.NS07;
+            NS08 = planningNewYearSave.NS08;
+            NS09 = planningNewYearSave.NS09;
+            NS10 = planningNewYearSave.NS10;
+            NS11 = planningNewYearSave.NS11;
+            NS12 = planningNewYearSave.NS12;
+
+            PromoPriceList01 = planningNewYearSave.PromoPriceList01;
+            PromoPriceList02 = planningNewYearSave.PromoPriceList02;
+            PromoPriceList03 = planningNewYearSave.PromoPriceList03;
+            PromoPriceList04 = planningNewYearSave.PromoPriceList04;
+            PromoPriceList05 = planningNewYearSave.PromoPriceList05;
+            PromoPriceList06 = planningNewYearSave.PromoPriceList06;
+            PromoPriceList07 = planningNewYearSave.PromoPriceList07;
+            PromoPriceList08 = planningNewYearSave.PromoPriceList08;
+            PromoPriceList09 = planningNewYearSave.PromoPriceList09;
+            PromoPriceList10 = planningNewYearSave.PromoPriceList10;
+            PromoPriceList11 = planningNewYearSave.PromoPriceList11;
+            PromoPriceList12 = planningNewYearSave.PromoPriceList12;
+
+            PromoSalesVolume01 = planningNewYearSave.PromoSalesVolume01;
+            PromoSalesVolume02 = planningNewYearSave.PromoSalesVolume02;
+            PromoSalesVolume03 = planningNewYearSave.PromoSalesVolume03;
+            PromoSalesVolume04 = planningNewYearSave.PromoSalesVolume04;
+            PromoSalesVolume05 = planningNewYearSave.PromoSalesVolume05;
+            PromoSalesVolume06 = planningNewYearSave.PromoSalesVolume06;
+            PromoSalesVolume07 = planningNewYearSave.PromoSalesVolume07;
+            PromoSalesVolume08 = planningNewYearSave.PromoSalesVolume08;
+            PromoSalesVolume09 = planningNewYearSave.PromoSalesVolume09;
+            PromoSalesVolume10 = planningNewYearSave.PromoSalesVolume10;
+            PromoSalesVolume11 = planningNewYearSave.PromoSalesVolume11;
+            PromoSalesVolume12 = planningNewYearSave.PromoSalesVolume12;
+            
+            PromoGS01 = planningNewYearSave.PromoGS01;
+            PromoGS02 = planningNewYearSave.PromoGS02;
+            PromoGS03 = planningNewYearSave.PromoGS03;
+            PromoGS04 = planningNewYearSave.PromoGS04;
+            PromoGS05 = planningNewYearSave.PromoGS05;
+            PromoGS06 = planningNewYearSave.PromoGS06;
+            PromoGS07 = planningNewYearSave.PromoGS07;
+            PromoGS08 = planningNewYearSave.PromoGS08;
+            PromoGS09 = planningNewYearSave.PromoGS09;
+            PromoGS10 = planningNewYearSave.PromoGS10;
+            PromoGS11 = planningNewYearSave.PromoGS11;
+            PromoGS12 = planningNewYearSave.PromoGS12;
+
+            PromoNS01 = planningNewYearSave.PromoNS01;
+            PromoNS02 = planningNewYearSave.PromoNS02;
+            PromoNS03 = planningNewYearSave.PromoNS03;
+            PromoNS04 = planningNewYearSave.PromoNS04;
+            PromoNS05 = planningNewYearSave.PromoNS05;
+            PromoNS06 = planningNewYearSave.PromoNS06;
+            PromoNS07 = planningNewYearSave.PromoNS07;
+            PromoNS08 = planningNewYearSave.PromoNS08;
+            PromoNS09 = planningNewYearSave.PromoNS09;
+            PromoNS10 = planningNewYearSave.PromoNS10;
+            PromoNS11 = planningNewYearSave.PromoNS11;
+            PromoNS12 = planningNewYearSave.PromoNS12;
+
+            GPValue01 = planningNewYearSave.GPValue01;
+            GPValue02 = planningNewYearSave.GPValue02;
+            GPValue03 = planningNewYearSave.GPValue03;
+            GPValue04 = planningNewYearSave.GPValue04;
+            GPValue05 = planningNewYearSave.GPValue05;
+            GPValue06 = planningNewYearSave.GPValue06;
+            GPValue07 = planningNewYearSave.GPValue07;
+            GPValue08 = planningNewYearSave.GPValue08;
+            GPValue09 = planningNewYearSave.GPValue09;
+            GPValue10 = planningNewYearSave.GPValue10;
+            GPValue11 = planningNewYearSave.GPValue11;
+            GPValue12 = planningNewYearSave.GPValue12;
+        }
+    
     }
 }
