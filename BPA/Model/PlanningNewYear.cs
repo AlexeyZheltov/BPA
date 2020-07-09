@@ -200,7 +200,8 @@ namespace BPA.Model
             return planning;
         }
 
-        private int CurrentMonth => DateTime.Now.Month;
+        public DateTime CurrentDate = DateTime.Now;
+        private int CurrentMonth => CurrentDate.Month;
 
         public void SetProduct(ProductForPlanningNewYear product)
         {
