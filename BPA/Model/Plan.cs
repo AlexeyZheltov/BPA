@@ -23,6 +23,7 @@ namespace BPA.Model {
             { "ChannelType", "Channel type" },
             { "CustomerStatus", "Customer status" },
             { "PrognosisDate", "Дата прогноза" },
+            { "Data", "Данные справочника товаров" }, //?
             { "STKRub", "STK 2.5, руб." },
             { "IRPEur", "IRP, Eur" },
             { "RRC", "РРЦ, руб.с НДС" },
@@ -97,18 +98,18 @@ namespace BPA.Model {
             { "PromoPriceList11", "Promo Price-list ноябрь" },
             { "PromoPriceList12", "Promo Price-list декабрь" },
 
-            { "PromoSalesVolume01", "Promo Promo Объем продаж январь" },
-            { "PromoSalesVolume02", "Promo Promo Объем продаж февраль" },
-            { "PromoSalesVolume03", "Promo Promo Объем продаж март" },
-            { "PromoSalesVolume04", "Promo Promo Объем продаж апрель" },
-            { "PromoSalesVolume05", "Promo Promo Объем продаж май" },
-            { "PromoSalesVolume06", "Promo Promo Объем продаж июнь" },
-            { "PromoSalesVolume07", "Promo Promo Объем продаж июль" },
-            { "PromoSalesVolume08", "Promo Promo Объем продаж август" },
-            { "PromoSalesVolume09", "Promo Promo Объем продаж сентябрь" },
-            { "PromoSalesVolume10", "Promo Promo Объем продаж октябрь" },
-            { "PromoSalesVolume11", "Promo Promo Объем продаж ноябрь" },
-            { "PromoSalesVolume12", "Promo Promo Объем продаж декабрь" },
+            { "PromoSalesVolume01", "Promo Объем продаж январь" },
+            { "PromoSalesVolume02", "Promo Объем февраль" },
+            { "PromoSalesVolume03", "Promo Объем продаж март" },
+            { "PromoSalesVolume04", "Promo Объем продаж апрель" },
+            { "PromoSalesVolume05", "Promo Объем продаж май" },
+            { "PromoSalesVolume06", "Promo Объем продаж июнь" },
+            { "PromoSalesVolume07", "Promo Объем продаж июль" },
+            { "PromoSalesVolume08", "Promo Объем продаж август" },
+            { "PromoSalesVolume09", "Promo Объем продаж сентябрь" },
+            { "PromoSalesVolume10", "Promo Объем продаж октябрь" },
+            { "PromoSalesVolume11", "Promo Объем продаж ноябрь" },
+            { "PromoSalesVolume12", "Promo Объем продаж декабрь" },
 
             { "PromoGS01", "Promo GS январь" },
             { "PromoGS02", "Promo GS февраль" },
@@ -136,13 +137,25 @@ namespace BPA.Model {
             { "PromoNS11", "Promo NS ноябрь" },
             { "PromoNS12", "Promo NS декабрь" },
 
+            { "GPValue01","GP Value январь" },
+            { "GPValue02","GP Value февраль" },
+            { "GPValue03","GP Value март" },
+            { "GPValue04","GP Value апрель" },
+            { "GPValue05","GP Value май" },
+            { "GPValue06","GP Value июнь" },
+            { "GPValue07","GP Value июль" },
+            { "GPValue08","GP Value август" },
+            { "GPValue09","GP Value сентябрь" },
+            { "GPValue10","GP Value октябрь" },
+            { "GPValue11","GP Value ноябрь" },
+            { "GPValue12","GP Value декабрь" }
         };
 
-
+        #region -- Основные свойства столбцов ---
         /// <summary>
         /// Id
         /// </summary>
-        public string Id {
+        public int Id {
             get; set;
         }
 
@@ -156,767 +169,865 @@ namespace BPA.Model {
         /// <summary>
         /// CustomerStatus
         /// </summary>
-        public int CustomerStatus {
+        public string CustomerStatus {
             get; set;
         }
 
         /// <summary>
         /// Дата прогноза
         /// </summary>
-        public string PrognosisDate {
+        public DateTime PrognosisDate {
+            get; set;
+        }
+
+        /// <summary>
+        /// ??
+        /// </summary>
+        public string Data
+        {
             get; set;
         }
 
         /// <summary>
         /// STK 2.5, руб.
         /// </summary>
-        public string STKRub {
+        public double STKRub {
+            get; set;
+        }
+
+        /// <summary>
+        ///  IRP
+        /// </summary>
+        public double IRPEur
+        {
             get; set;
         }
 
         /// <summary>
         /// РРЦ, руб.с НДС
         /// </summary>
-        public string RRC {
+        public double RRC {
             get; set;
         }
 
         /// <summary>
         /// Индекс IRP
         /// </summary>
-        public string IRPIndex {
+        public double IRPIndex {
             get; set;
         }
 
         /// <summary>
         /// DIY price list, руб. без НДС
         /// </summary>
-        public string DIY {
+        public double DIY {
             get; set;
         }
 
         /// <summary>
         /// 2 net цена, руб.
         /// </summary>
-        public string Price2Net {
+        public double Price2Net {
             get; set;
         }
 
         /// <summary>
         /// Зимние инструменты 2 net цена, руб.
         /// </summary>
-        public string Price3Net {
+        public double Price3Net {
             get; set;
         }
 
         /// <summary>
         /// Transfer цена, руб.
         /// </summary>
-        public string PriceTransfer {
+        public double PriceTransfer {
             get; set;
         }
+        #endregion
 
-#region Price-list
+        #region Price-list
 
         /// <summary>
         /// Price-list январь
         /// </summary>
-        public string PriceList01 {
+        public double PriceList01 {
             get; set;
         }
 
         /// <summary>
         /// Price-list февраль
         /// </summary>
-        public string PriceList02 {
+        public double PriceList02 {
             get; set;
         }
 
         /// <summary>
         /// Price-list март
         /// </summary>
-        public string PriceList03 {
+        public double PriceList03 {
             get; set;
         }
 
         /// <summary>
         /// Price-list апрель
         /// </summary>
-        public string PriceList04 {
+        public double PriceList04 {
             get; set;
         }
 
         /// <summary>
         /// Price-list май
         /// </summary>
-        public string PriceList05 {
+        public double PriceList05 {
             get; set;
         }
 
         /// <summary>
         /// Price-list июнь
         /// </summary>
-        public string PriceList06 {
+        public double PriceList06 {
             get; set;
         }
 
         /// <summary>
         /// Price-list июль
         /// </summary>
-        public string PriceList07 {
+        public double PriceList07 {
             get; set;
         }
 
         /// <summary>
         /// Price-list август
         /// </summary>
-        public string PriceList08 {
+        public double PriceList08 {
             get; set;
         }
 
         /// <summary>
         /// Price-list сентябрь
         /// </summary>
-        public string PriceList09 {
+        public double PriceList09 {
             get; set;
         }
 
         /// <summary>
         /// Price-list октябрь
         /// </summary>
-        public string PriceList10 {
+        public double PriceList10 {
             get; set;
         }
 
         /// <summary>
         /// Price-list ноябрь
         /// </summary>
-        public string PriceList11 {
+        public double PriceList11 {
             get; set;
         }
 
         /// <summary>
         /// Price-list декабрь
         /// </summary>
-        public string PriceList12 {
+        public double PriceList12 {
             get; set;
         }
         #endregion
 
-
-#region SalesVolume
+        #region SalesVolume
 
         /// <summary>
         /// Объем продаж январь
         /// </summary>
-        public string SalesVolume01 {
+        public double SalesVolume01 {
             get; set;
         }
 
         /// <summary>
         /// Объем продаж февраль
         /// </summary>
-        public string SalesVolume02 {
+        public double SalesVolume02 {
             get; set;
         }
 
         /// <summary>
         /// Объем продаж март
         /// </summary>
-        public string SalesVolume03 {
+        public double SalesVolume03 {
             get; set;
         }
 
         /// <summary>
         /// Объем продаж апрель
         /// </summary>
-        public string SalesVolume04 {
+        public double SalesVolume04 {
             get; set;
         }
 
         /// <summary>
         /// Объем продаж май
         /// </summary>
-        public string SalesVolume05 {
+        public double SalesVolume05 {
             get; set;
         }
 
         /// <summary>
         /// Объем продаж июнь
         /// </summary>
-        public string SalesVolume06 {
+        public double SalesVolume06 {
             get; set;
         }
 
         /// <summary>
         /// Объем продаж июль
         /// </summary>
-        public string SalesVolume07 {
+        public double SalesVolume07 {
             get; set;
         }
 
         /// <summary>
         /// Объем продаж август
         /// </summary>
-        public string SalesVolume08 {
+        public double SalesVolume08 {
             get; set;
         }
 
         /// <summary>
         /// Объем продаж сентябрь
         /// </summary>
-        public string SalesVolume09 {
+        public double SalesVolume09 {
             get; set;
         }
 
         /// <summary>
         /// Объем продаж октябрь
         /// </summary>
-        public string SalesVolume10 {
+        public double SalesVolume10 {
             get; set;
         }
 
         /// <summary>
         /// Объем продаж ноябрь
         /// </summary>
-        public string SalesVolume11 {
+        public double SalesVolume11 {
             get; set;
         }
 
         /// <summary>
         /// Объем продаж декабрь
         /// </summary>
-        public string SalesVolume12 {
+        public double SalesVolume12 {
             get; set;
         }
         #endregion
 
-
- #region GS
+        #region GS
 
         /// <summary>
         /// GS январь
         /// </summary>
-        public string GS01 {
+        public double GS01 {
             get; set;
         }
 
         /// <summary>
         /// GS февраль
         /// </summary>
-        public string GS02 {
+        public double GS02 {
             get; set;
         }
 
         /// <summary>
         /// GS март
         /// </summary>
-        public string GS03 {
+        public double GS03 {
             get; set;
         }
 
         /// <summary>
         /// GS апрель
         /// </summary>
-        public string GS04 {
+        public double GS04 {
             get; set;
         }
 
         /// <summary>
         /// GS май
         /// </summary>
-        public string GS05 {
+        public double GS05 {
             get; set;
         }
 
         /// <summary>
         /// GS июнь
         /// </summary>
-        public string GS06 {
+        public double GS06 {
             get; set;
         }
 
         /// <summary>
         /// GS июль
         /// </summary>
-        public string GS07 {
+        public double GS07 {
             get; set;
         }
 
         /// <summary>
         /// GS август
         /// </summary>
-        public string GS08 {
+        public double GS08 {
             get; set;
         }
 
         /// <summary>
         /// GS сентябрь
         /// </summary>
-        public string GS09 {
+        public double GS09 {
             get; set;
         }
 
         /// <summary>
         /// GS октябрь
         /// </summary>
-        public string GS10 {
+        public double GS10 {
             get; set;
         }
 
         /// <summary>
         /// GS ноябрь
         /// </summary>
-        public string GS11 {
+        public double GS11 {
             get; set;
         }
 
         /// <summary>
         /// GS декабрь
         /// </summary>
-        public string GS12 {
+        public double GS12 {
             get; set;
         }
         #endregion
 
-
- #region NS
+        #region NS
 
         /// <summary>
         /// NS январь
         /// </summary>
-        public string NS01 {
+        public double NS01 {
             get; set;
         }
 
         /// <summary>
         /// NS февраль
         /// </summary>
-        public string NS02 {
+        public double NS02 {
             get; set;
         }
 
         /// <summary>
         /// NS март
         /// </summary>
-        public string NS03 {
+        public double NS03 {
             get; set;
         }
 
         /// <summary>
         /// NS апрель
         /// </summary>
-        public string NS04 {
+        public double NS04 {
             get; set;
         }
 
         /// <summary>
         /// NS май
         /// </summary>
-        public string NS05 {
+        public double NS05 {
             get; set;
         }
 
         /// <summary>
         /// NS июнь
         /// </summary>
-        public string NS06 {
+        public double NS06 {
             get; set;
         }
 
         /// <summary>
         /// NS июль
         /// </summary>
-        public string NS07 {
+        public double NS07 {
             get; set;
         }
 
         /// <summary>
         /// NS август
         /// </summary>
-        public string NS08 {
+        public double NS08 {
             get; set;
         }
 
         /// <summary>
         /// NS сентябрь
         /// </summary>
-        public string NS09 {
+        public double NS09 {
             get; set;
         }
 
         /// <summary>
         /// NS октябрь
         /// </summary>
-        public string NS10 {
+        public double NS10 {
             get; set;
         }
 
         /// <summary>
         /// NS ноябрь
         /// </summary>
-        public string NS11 {
+        public double NS11 {
             get; set;
         }
 
         /// <summary>
         /// NS декабрь
         /// </summary>
-        public string NS12 {
+        public double NS12 {
             get; set;
         }
         #endregion
 
-
-#region Promo Price-list
+        #region Promo Price-list
 
         /// <summary>
         /// Promo Price-list январь
         /// </summary>
-        public string PromoPriceList01 {
+        public double PromoPriceList01 {
             get; set;
         }
 
         /// <summary>
         /// Promo Price-list февраль
         /// </summary>
-        public string PromoPriceList02 {
+        public double PromoPriceList02 {
             get; set;
         }
 
         /// <summary>
         /// Promo Price-list март
         /// </summary>
-        public string PromoPriceList03 {
+        public double PromoPriceList03 {
             get; set;
         }
 
         /// <summary>
         /// Promo Price-list апрель
         /// </summary>
-        public string PromoPriceList04 {
+        public double PromoPriceList04 {
             get; set;
         }
 
         /// <summary>
         /// Promo Price-list май
         /// </summary>
-        public string PromoPriceList05 {
+        public double PromoPriceList05 {
             get; set;
         }
 
         /// <summary>
         /// Promo Price-list июнь
         /// </summary>
-        public string PromoPriceList06 {
+        public double PromoPriceList06 {
             get; set;
         }
 
         /// <summary>
         /// Promo Price-list июль
         /// </summary>
-        public string PromoPriceList07 {
+        public double PromoPriceList07 {
             get; set;
         }
 
         /// <summary>
         /// Promo Price-list август
         /// </summary>
-        public string PromoPriceList08 {
+        public double PromoPriceList08 {
             get; set;
         }
 
         /// <summary>
         /// Promo Price-list сентябрь
         /// </summary>
-        public string PromoPriceList09 {
+        public double PromoPriceList09 {
             get; set;
         }
 
         /// <summary>
         /// Promo Price-list октябрь
         /// </summary>
-        public string PromoPriceList10 {
+        public double PromoPriceList10 {
             get; set;
         }
 
         /// <summary>
         /// Promo Price-list ноябрь
         /// </summary>
-        public string PromoPriceList11 {
+        public double PromoPriceList11 {
             get; set;
         }
 
         /// <summary>
         /// Promo Price-list декабрь
         /// </summary>
-        public string PromoPriceList12 {
+        public double PromoPriceList12 {
             get; set;
         }
         #endregion
 
-
-#region Promo Объем продаж
+        #region Promo Объем продаж
 
         /// <summary>
         /// Promo Promo Объем продаж январь
         /// </summary>
-        public string PromoSalesVolume01 {
+        public double PromoSalesVolume01 {
             get; set;
         }
 
         /// <summary>
         /// Promo Promo Объем продаж февраль
         /// </summary>
-        public string PromoSalesVolume02 {
+        public double PromoSalesVolume02 {
             get; set;
         }
 
         /// <summary>
         /// Promo Promo Объем продаж март
         /// </summary>
-        public string PromoSalesVolume03 {
+        public double PromoSalesVolume03 {
             get; set;
         }
 
         /// <summary>
         /// Promo Promo Объем продаж апрель
         /// </summary>
-        public string PromoSalesVolume04 {
+        public double PromoSalesVolume04 {
             get; set;
         }
 
         /// <summary>
         /// Promo Promo Объем продаж май
         /// </summary>
-        public string PromoSalesVolume05 {
+        public double PromoSalesVolume05 {
             get; set;
         }
 
         /// <summary>
         /// Promo Promo Объем продаж июнь
         /// </summary>
-        public string PromoSalesVolume06 {
+        public double PromoSalesVolume06 {
             get; set;
         }
 
         /// <summary>
         /// Promo Promo Объем продаж июль
         /// </summary>
-        public string PromoSalesVolume07 {
+        public double PromoSalesVolume07 {
             get; set;
         }
 
         /// <summary>
         /// Promo Promo Объем продаж август
         /// </summary>
-        public string PromoSalesVolume08 {
+        public double PromoSalesVolume08 {
             get; set;
         }
 
         /// <summary>
         /// Promo Promo Объем продаж сентябрь
         /// </summary>
-        public string PromoSalesVolume09 {
+        public double PromoSalesVolume09 {
             get; set;
         }
 
         /// <summary>
         /// Promo Promo Объем продаж октябрь
         /// </summary>
-        public string PromoSalesVolume10 {
+        public double PromoSalesVolume10 {
             get; set;
         }
 
         /// <summary>
         /// Promo Promo Объем продаж ноябрь
         /// </summary>
-        public string PromoSalesVolume11 {
+        public double PromoSalesVolume11 {
             get; set;
         }
 
         /// <summary>
         /// Promo Promo Объем продаж декабрь
         /// </summary>
-        public string PromoSalesVolume12 {
+        public double PromoSalesVolume12 {
             get; set;
         }
         #endregion
 
-#region Promo GS
+        #region Promo GS
 
         /// <summary>
         /// Promo GS январь
         /// </summary>
-        public string PromoGS01 {
+        public double PromoGS01 {
             get; set;
         }
 
         /// <summary>
         /// Promo GS февраль
         /// </summary>
-        public string PromoGS02 {
+        public double PromoGS02 {
             get; set;
         }
 
         /// <summary>
         /// Promo GS март
         /// </summary>
-        public string PromoGS03 {
+        public double PromoGS03 {
             get; set;
         }
 
         /// <summary>
         /// Promo GS апрель
         /// </summary>
-        public string PromoGS04 {
+        public double PromoGS04 {
             get; set;
         }
 
         /// <summary>
         /// Promo GS май
         /// </summary>
-        public string PromoGS05 {
+        public double PromoGS05 {
             get; set;
         }
 
         /// <summary>
         /// Promo GS июнь
         /// </summary>
-        public string PromoGS06 {
+        public double PromoGS06 {
             get; set;
         }
 
         /// <summary>
         /// Promo GS июль
         /// </summary>
-        public string PromoGS07 {
+        public double PromoGS07 {
             get; set;
         }
 
         /// <summary>
         /// Promo GS август
         /// </summary>
-        public string PromoGS08 {
+        public double PromoGS08 {
             get; set;
         }
 
         /// <summary>
         /// Promo GS сентябрь
         /// </summary>
-        public string PromoGS09 {
+        public double PromoGS09 {
             get; set;
         }
 
         /// <summary>
         /// Promo GS октябрь
         /// </summary>
-        public string PromoGS10 {
+        public double PromoGS10 {
             get; set;
         }
 
         /// <summary>
         /// Promo GS ноябрь
         /// </summary>
-        public string PromoGS11 {
+        public double PromoGS11 {
             get; set;
         }
 
         /// <summary>
         /// Promo GS декабрь
         /// </summary>
-        public string PromoGS12 {
+        public double PromoGS12 {
             get; set;
         }
         #endregion
-
-
-#region Promo NS
+        
+        #region Promo NS
 
         /// <summary>
         /// Promo NS январь
         /// </summary>
-        public string PromoNS01 {
+        public double PromoNS01 {
             get; set;
         }
 
         /// <summary>
         /// Promo NS февраль
         /// </summary>
-        public string PromoNS02 {
+        public double PromoNS02 {
             get; set;
         }
 
         /// <summary>
         /// Promo NS март
         /// </summary>
-        public string PromoNS03 {
+        public double PromoNS03 {
             get; set;
         }
 
         /// <summary>
         /// Promo NS апрель
         /// </summary>
-        public string PromoNS04 {
+        public double PromoNS04 {
             get; set;
         }
 
         /// <summary>
         /// Promo NS май
         /// </summary>
-        public string PromoNS05 {
+        public double PromoNS05 {
             get; set;
         }
 
         /// <summary>
         /// Promo NS июнь
         /// </summary>
-        public string PromoNS06 {
+        public double PromoNS06 {
             get; set;
         }
 
         /// <summary>
         /// Promo NS июль
         /// </summary>
-        public string PromoNS07 {
+        public double PromoNS07 {
             get; set;
         }
 
         /// <summary>
         /// Promo NS август
         /// </summary>
-        public string PromoNS08 {
+        public double PromoNS08 {
             get; set;
         }
 
         /// <summary>
         /// Promo NS сентябрь
         /// </summary>
-        public string PromoNS09 {
+        public double PromoNS09 {
             get; set;
         }
 
         /// <summary>
         /// Promo NS октябрь
         /// </summary>
-        public string PromoNS10 {
+        public double PromoNS10 {
             get; set;
         }
 
         /// <summary>
         /// Promo NS ноябрь
         /// </summary>
-        public string PromoNS11 {
+        public double PromoNS11 {
             get; set;
         }
 
         /// <summary>
         /// Promo NS декабрь
         /// </summary>
-        public string PromoNS12 {
+        public double PromoNS12 {
             get; set;
         }
         #endregion
 
+        #region GP Value
+        /// <summary>
+        /// GP Value январь 
+        /// </summary>
+        public double GPValue01
+        {
+            get; set;
+        } 
+        /// <summary>
+        /// GP Value февраль 
+        /// </summary>
+        public double GPValue02
+        {
+            get; set;
+        } 
+        /// <summary>
+        /// GP Value март 
+        /// </summary>
+        public double GPValue03
+        {
+            get; set;
+        } 
+        /// <summary>
+        /// GP Value апрель 
+        /// </summary>
+        public double GPValue04
+        {
+            get; set;
+        } 
+        /// <summary>
+        /// GP Value май 
+        /// </summary>
+        public double GPValue05
+        {
+            get; set;
+        } 
+        /// <summary>
+        /// GP Value июнь 
+        /// </summary>
+        public double GPValue06
+        {
+            get; set;
+        } 
+        /// <summary>
+        /// GP Value июль 
+        /// </summary>
+        public double GPValue07
+        {
+            get; set;
+        } 
+        /// <summary>
+        /// GP Value август 
+        /// </summary>
+public double GPValue08
+        {
+            get; set;
+        } 
+        /// <summary>
+        /// GP Value сентябрь 
+        /// </summary>
+        public double GPValue09
+        {
+            get; set;
+        } 
+        /// <summary>
+        /// GP Value октябрь 
+        /// </summary>
+        public double GPValue10
+        {
+            get; set;
+        } 
+        /// <summary>
+        /// GP Value ноябрь 
+        /// </summary>
+        public double GPValue11
+        {
+            get; set;
+        } 
+        /// <summary>
+        /// GP Value декабрь 
+        /// </summary>
+        public double GPValue12
+        {
+            get; set;
+        } 
+
+        #endregion
     }
 }
