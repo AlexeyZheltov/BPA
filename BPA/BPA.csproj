@@ -131,6 +131,7 @@
     <Compile Include="Model\Plan.cs" />
     <Compile Include="Model\PlanningNewYear.cs" />
     <Compile Include="Model\PlanningNewYearPrognosis.cs" />
+    <Compile Include="Model\PlanningNewYearSave.cs" />
     <Compile Include="Model\ProductExclusivity.cs" />
     <Compile Include="Model\ProductCalendar.cs" />
     <Compile Include="Model\ProductForPlanningNewYearcs.cs" />
