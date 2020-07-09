@@ -200,6 +200,8 @@ namespace BPA.Model
             return planning;
         }
 
+        private int CurrentMonth => DateTime.Now.Month;
+
         public void SetProduct(ProductForPlanningNewYear product)
         {
             this.Article = product.Article;
@@ -347,6 +349,43 @@ namespace BPA.Model
             }
 
             return plannings;
+        }
+
+        /// <summary>
+        /// проверка promo/prognosis
+        /// </summary>
+        /// <param name="articleQuantity"></param>
+        /// <returns></returns>
+        public bool isPromo(ArticleQuantity articleQuantity)
+        {
+            return articleQuantity.Campaign != "0" && articleQuantity.Campaign != null ? true : false;
+        }
+
+        public double[] GetQuantities(List<ArticleQuantity> articleDescisionQuantities, List<ArticleQuantity> articleBugetQuantities)
+        {
+            double[] quantities = new double[12];
+            for (int m = 1; m <= 12; m++)
+            {
+                quantities[m - 1] = m < CurrentMonth ?
+                    SumMonthQuantity(m, articleDescisionQuantities) :
+                    SumMonthQuantity(m, articleBugetQuantities);
+            }
+            return quantities;
+        }
+
+        private double SumMonthQuantity(double month, List<ArticleQuantity> articleQuantities)
+        {
+            if (articleQuantities.Count <= 0)
+                return 0;
+
+            List<ArticleQuantity> MohthQuantities = articleQuantities.FindAll(x => x.Month == month);
+            double quantity = 0;
+
+            foreach (ArticleQuantity articleQuantity in MohthQuantities)
+            {
+                quantity += articleQuantity.Quantity;
+            }
+            return quantity;
         }
     }
 }
