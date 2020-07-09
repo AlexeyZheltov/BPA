@@ -570,9 +570,81 @@ namespace BPA
             //MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        /// <summary> 
+        ///Планирование/обновить факт
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FactUpdate_Click(object sender, RibbonControlEventArgs e)
         {
-            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            ProcessBar processBar = null;
+
+            Worksheet worksheet = Globals.ThisWorkbook.Application.ActiveSheet;
+            if (worksheet.Name.IndexOf("Планирование нового года") < 0)
+            {
+                MessageBox.Show("Перейдите на страницу планирования (или создайте её) и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            try
+            {
+                List<PlanningNewYearPrognosis> prognosises = new List<PlanningNewYearPrognosis>();
+                List<PlanningNewYearPromo> promos = new List<PlanningNewYearPromo>();
+                
+                PlanningNewYear planningNewYearTmp = new PlanningNewYear().GetTmp(worksheet.Name);
+                planningNewYearTmp.SetLists(prognosises, promos);
+
+                //получаем Desicion, Buget
+                if (prognosises.Count < 1 && promos.Count < 1)
+                    return;
+
+                FileDescision fileDescision = new FileDescision();
+                FileBuget fileBuget = new FileBuget();
+                
+                fileDescision.LoadForPlanning(planningNewYearTmp);
+                fileBuget.LoadForPlanning(planningNewYearTmp);
+
+                int count = prognosises.Count > promos.Count ? prognosises.Count : promos.Count;
+                processBar = new ProcessBar("Обновление клиентов", count);
+                bool isCancel = false;
+                void CancelLocal() => isCancel = true;
+                FunctionsForExcel.SpeedOn();
+                processBar.CancelClick += CancelLocal;
+                processBar.Show();
+
+                for (int p = 0; p < count; p++)
+                {
+                    if (isCancel)
+                        break;
+
+                    PlanningNewYearPrognosis prognosis = prognosises[p];
+                    PlanningNewYearPromo promo = promos[p];
+
+                    string article = prognosis.planningNewYear.Article;
+                    processBar.TaskStart($"Обрабатывается артикул {article}");
+
+                    //сопоставить каждый prognosis и promo ArticleQuantities из файлов
+                    prognosis.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
+                    promo.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
+
+                    prognosis.Save();
+                    promo.Save();
+
+                    processBar.TaskDone(1);
+                }
+
+                prognosises.Clear();
+                promos.Clear();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                FunctionsForExcel.SpeedOff();
+                if (processBar != null)
+                    processBar.Close();
+            }
         }
 
         private void AddNewIRP_Click(object sender, RibbonControlEventArgs e)
