@@ -338,6 +338,17 @@ namespace BPA.Model
                 promos.Add(new PlanningNewYearPromo(planning));
             }
         }
+        public void SetLists(List<PlanningNewYearSave> saves)
+        {
+            List<PlanningNewYear> plannings = GetList();
+
+            foreach (PlanningNewYear planning in plannings)
+            {
+                PlanningNewYearSave planningNewYearSave = new PlanningNewYearSave(planning);
+                planningNewYearSave.SetValues();
+                saves.Add(planningNewYearSave);
+            }
+        }
 
         private List<PlanningNewYear> GetList()
         {
