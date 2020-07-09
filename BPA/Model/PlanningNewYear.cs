@@ -174,7 +174,18 @@ namespace BPA.Model
         };
 
         public PlanningNewYear() { }
-        public PlanningNewYear(ListRow row) => SetProperty(row);
+        public PlanningNewYear(string worksheetName)
+        {
+            if (worksheetName == templateSheetName)
+                return;
+            else
+                _TableWorksheetName = worksheetName;
+        }
+        public PlanningNewYear(ListRow row)
+        {
+            _TableWorksheetName = row.Range.Cells[1, 1].Parent.Name;
+            SetProperty(row);
+        }
 
         public PlanningNewYear Clone()
         {
@@ -225,14 +236,9 @@ namespace BPA.Model
 
         public PlanningNewYear GetTmp(string worksheetName)
         {
-            if (worksheetName == templateSheetName)
-                return null;
-            else
-                _TableWorksheetName = worksheetName;
-
             try
             {
-                PlanningNewYear planningNewYear = new PlanningNewYear();
+                PlanningNewYear planningNewYear = new PlanningNewYear(worksheetName);
                 ThisWorkbook workbook = Globals.ThisWorkbook;
                 Range rng = workbook.Sheets[SheetName].UsedRange;
 
