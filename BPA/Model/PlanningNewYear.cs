@@ -154,7 +154,7 @@ namespace BPA.Model
 
         #endregion
 
-        public string ChanelType;
+        public string ChannelType;
         public string CustomerStatus;
         public double Year;
         public double MaximumBonus;
@@ -194,7 +194,7 @@ namespace BPA.Model
             planning._TableWorksheetName = this.SheetName;
             planning.Year = this.Year;
             planning.CustomerStatus = this.CustomerStatus;
-            planning.ChanelType = this.ChanelType;
+            planning.ChannelType = this.ChannelType;
             planning.MaximumBonus = this.MaximumBonus;
 
             return planning;
@@ -248,7 +248,7 @@ namespace BPA.Model
                 Range rng = workbook.Sheets[planningNewYear.SheetName].UsedRange;
 
                 planningNewYear.CustomerStatus = val(CustomerStatusLabel);
-                planningNewYear.ChanelType = val(ChannelTypeLabel);
+                planningNewYear.ChannelType = val(ChannelTypeLabel);
                 if (double.TryParse(val(YearLabel), out double year))
                     planningNewYear.Year = year;
 

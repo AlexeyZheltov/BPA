@@ -272,7 +272,7 @@ namespace BPA.Model {
 
         public double GetDiscountForPlanning(PlanningNewYear planning)
         {
-            ListRow listRow = GetRow("ChannelType", planning.ChanelType);
+            ListRow listRow = GetRow("ChannelType", planning.ChannelType);
             if (listRow == null) return 0;
 
             double firstIndex = listRow.Index;
@@ -290,7 +290,7 @@ namespace BPA.Model {
                     }
                 }
               
-                listRow = GetRow("ChannelType", planning.ChanelType, listRow.Range[1, Table.ListColumns[Filds["ChannelType"]].Index]);
+                listRow = GetRow("ChannelType", planning.ChannelType, listRow.Range[1, Table.ListColumns[Filds["ChannelType"]].Index]);
             } while (listRow.Index != firstIndex);
 
             return 0;

@@ -251,7 +251,7 @@ namespace BPA.Model
                 if (planningNewYearTmp.ExclusivesDict.ContainsKey(exclusive))
                 {
                     if (planningNewYearTmp.ExclusivesDict[exclusive] == FunctionsForExcel.StringNormalize(planningNewYearTmp.CustomerStatus,true) ||
-                        planningNewYearTmp.ExclusivesDict[exclusive] == FunctionsForExcel.StringNormalize(planningNewYearTmp.ChanelType,true) || 
+                        planningNewYearTmp.ExclusivesDict[exclusive] == FunctionsForExcel.StringNormalize(planningNewYearTmp.ChannelType,true) || 
                         exclusive == "all channels")
 
                     {
