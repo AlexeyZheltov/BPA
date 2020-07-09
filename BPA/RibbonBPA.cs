@@ -652,9 +652,60 @@ namespace BPA
             MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        /// <summary>
+        /// Планирование / сохранить планирование
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PlanningSave_Click(object sender, RibbonControlEventArgs e)
         {
-            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            ProcessBar processBar = null;
+
+            Worksheet worksheet = Globals.ThisWorkbook.Application.ActiveSheet;
+            if (worksheet.Name.IndexOf("Планирование нового года") < 0 ||
+                worksheet.Name == Properties.Settings.Default.templateSheetName)
+            {
+                MessageBox.Show("Перейдите на страницу планирования (или создайте её) и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            try
+            {
+                PlanningNewYear planningNewYearTmp = new PlanningNewYear().GetTmp(worksheet.Name);
+                List <PlanningNewYearSave> saves = new List<PlanningNewYearSave>();
+                planningNewYearTmp.SetLists(saves);
+
+                processBar = new ProcessBar("Обновление клиентов", saves.Count);
+                bool isCancel = false;
+                void CancelLocal() => isCancel = true;
+                FunctionsForExcel.SpeedOn();
+                processBar.CancelClick += CancelLocal;
+                processBar.Show();
+
+                foreach (PlanningNewYearSave planningNewYearSave in saves)
+                {
+                    if (isCancel)
+                        break;
+
+                    processBar.TaskStart($"Обрабатывается артикул { planningNewYearSave.planningNewYear.Article}");
+                    Plan planning = new Plan(planningNewYearSave);
+                    planning.Save();
+
+                    processBar.TaskDone(1);
+                    Globals.ThisWorkbook.Sheets[planning.SheetName].Activate();
+                }
+
+                saves.Clear();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                FunctionsForExcel.SpeedOff();
+                if (processBar != null)
+                    processBar.Close();
+            }
         }
     }
 }
