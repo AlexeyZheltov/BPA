@@ -339,6 +339,7 @@ namespace BPA.Model
             cell.Offset[0, -2].Value = this.MaximumBonus;
         }
 
+        #region Получение списков
         public void SetLists(List<PlanningNewYearPrognosis> prognosises, List<PlanningNewYearPromo> promos)
         {
             List<PlanningNewYear> plannings = GetList();
@@ -373,7 +374,9 @@ namespace BPA.Model
 
             return plannings;
         }
+        #endregion
 
+        #region проверка promo/prognosis
         /// <summary>
         /// проверка promo/prognosis
         /// </summary>
@@ -410,5 +413,7 @@ namespace BPA.Model
             }
             return quantity;
         }
+
+        #endregion
     }
 }

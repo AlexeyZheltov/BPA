@@ -587,20 +587,24 @@ namespace BPA
             }
             try
             {
+                PlanningNewYear planningNewYearTmp = new PlanningNewYear().GetTmp(worksheet.Name);
                 if (!planningNewYearTmp.HasData())
                 {
                     MessageBox.Show($"Заполните { worksheet.Name } и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
+
                 List<PlanningNewYearPrognosis> prognosises = new List<PlanningNewYearPrognosis>();
                 List<PlanningNewYearPromo> promos = new List<PlanningNewYearPromo>();
                 
-                PlanningNewYear planningNewYearTmp = new PlanningNewYear().GetTmp(worksheet.Name);
                 planningNewYearTmp.SetLists(prognosises, promos);
 
                 //получаем Desicion, Buget
                 if (prognosises.Count < 1 && promos.Count < 1)
+                {
+                    MessageBox.Show($"Заполните { worksheet.Name } и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
+                }
 
                 FileDescision fileDescision = new FileDescision();
                 FileBuget fileBuget = new FileBuget();
