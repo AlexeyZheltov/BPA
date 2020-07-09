@@ -191,6 +191,7 @@ namespace BPA.Model
         {
             PlanningNewYear planning = new PlanningNewYear();
 
+            planning._TableWorksheetName = this.SheetName;
             planning.Year = this.Year;
             planning.CustomerStatus = this.CustomerStatus;
             planning.ChanelType = this.ChanelType;
@@ -239,8 +240,10 @@ namespace BPA.Model
             try
             {
                 PlanningNewYear planningNewYear = new PlanningNewYear(worksheetName);
+                if (planningNewYear == null)
+                    return null;
                 ThisWorkbook workbook = Globals.ThisWorkbook;
-                Range rng = workbook.Sheets[SheetName].UsedRange;
+                Range rng = workbook.Sheets[planningNewYear.SheetName].UsedRange;
 
                 planningNewYear.CustomerStatus = val(CustomerStatusLabel);
                 planningNewYear.ChanelType = val(ChannelTypeLabel);
