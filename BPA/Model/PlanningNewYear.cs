@@ -203,6 +203,17 @@ namespace BPA.Model
         public DateTime CurrentDate = DateTime.Now;
         private int CurrentMonth => CurrentDate.Month;
 
+        public bool HasData()
+        {
+            if (Table.ListRows.Count < 1)
+                return false;
+            
+            Range cell= Table.ListRows[1].Range[1, Table.ListColumns[Filds["Id"]].Index];
+            if (cell.Value == 0 || cell.Value == null)
+                return false;
+
+            return true;
+        }
         public void SetProduct(ProductForPlanningNewYear product)
         {
             this.Article = product.Article;

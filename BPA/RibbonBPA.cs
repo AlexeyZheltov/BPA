@@ -587,6 +587,11 @@ namespace BPA
             }
             try
             {
+                if (!planningNewYearTmp.HasData())
+                {
+                    MessageBox.Show($"Заполните { worksheet.Name } и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
                 List<PlanningNewYearPrognosis> prognosises = new List<PlanningNewYearPrognosis>();
                 List<PlanningNewYearPromo> promos = new List<PlanningNewYearPromo>();
                 
@@ -671,6 +676,13 @@ namespace BPA
             try
             {
                 PlanningNewYear planningNewYearTmp = new PlanningNewYear().GetTmp(worksheet.Name);
+
+                if (!planningNewYearTmp.HasData())
+                {
+                    MessageBox.Show($"Заполните { worksheet.Name } и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
                 List <PlanningNewYearSave> saves = new List<PlanningNewYearSave>();
                 planningNewYearTmp.SetLists(saves);
 
