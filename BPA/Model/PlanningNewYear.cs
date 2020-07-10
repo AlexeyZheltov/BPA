@@ -353,7 +353,7 @@ namespace BPA.Model
         public void SetLists(List<PlanningNewYearSave> saves)
         {
             List<PlanningNewYear> plannings = GetList();
-
+            
             foreach (PlanningNewYear planning in plannings)
             {
                 PlanningNewYearSave planningNewYearSave = new PlanningNewYearSave(planning);
