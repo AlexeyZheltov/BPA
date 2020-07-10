@@ -1171,7 +1171,7 @@ namespace BPA.Model
         {
             get 
             {
-                return this.planningNewYear.CurrentDate;
+                return new DateTime(this.planningNewYear.Year,1,1);
             }
             set
             {

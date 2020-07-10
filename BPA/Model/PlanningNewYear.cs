@@ -156,7 +156,7 @@ namespace BPA.Model
 
         public string ChannelType;
         public string CustomerStatus;
-        public double Year;
+        public int Year;
         public double MaximumBonus;
 
         /// <summary>
@@ -261,7 +261,7 @@ namespace BPA.Model
 
                 planningNewYear.CustomerStatus = val(CustomerStatusLabel);
                 planningNewYear.ChannelType = val(ChannelTypeLabel);
-                if (double.TryParse(val(YearLabel), out double year))
+                if (Int32.TryParse(val(YearLabel), out int year))
                     planningNewYear.Year = year;
 
                 string val(string label)
