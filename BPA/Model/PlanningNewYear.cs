@@ -343,6 +343,8 @@ namespace BPA.Model
         public void SetLists(List<PlanningNewYearPrognosis> prognosises, List<PlanningNewYearPromo> promos)
         {
             List<PlanningNewYear> plannings = GetList();
+            if (plannings == null)
+                return;
 
             foreach (PlanningNewYear planning in plannings)
             {
@@ -353,7 +355,9 @@ namespace BPA.Model
         public void SetLists(List<PlanningNewYearSave> saves)
         {
             List<PlanningNewYear> plannings = GetList();
-            
+            if (plannings == null)
+                return;
+
             foreach (PlanningNewYear planning in plannings)
             {
                 PlanningNewYearSave planningNewYearSave = new PlanningNewYearSave(planning);
@@ -365,6 +369,8 @@ namespace BPA.Model
         private List<PlanningNewYear> GetList()
         {
             ProcessBar processBar = null;
+            if (Table.ListRows.Count < 1)
+                return null;
 
             processBar = new ProcessBar($"Получение списка артикулов на листе { SheetName } ", Table.ListRows.Count);
             bool isCancel = false;

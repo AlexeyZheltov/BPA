@@ -602,7 +602,7 @@ namespace BPA
                 planningNewYearTmp.SetLists(prognosises, promos);
 
                 //получаем Desicion, Buget
-                if (prognosises.Count < 1 && promos.Count < 1)
+                if (prognosises == null || promos == null || (prognosises.Count < 0 || prognosises.Count < 0))
                 {
                     MessageBox.Show($"Заполните { worksheet.Name } и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -692,6 +692,12 @@ namespace BPA
 
                 List <PlanningNewYearSave> saves = new List<PlanningNewYearSave>();
                 planningNewYearTmp.SetLists(saves);
+
+                if (saves == null || saves.Count < 1)
+                {
+                    MessageBox.Show($"Заполните { worksheet.Name } и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
 
                 processBar = new ProcessBar("Обновление клиентов", saves.Count);
                 bool isCancel = false;
