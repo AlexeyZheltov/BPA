@@ -172,5 +172,17 @@ namespace BPA.Modules
                 worksheet.Visible = XlSheetVisibility.xlSheetHidden;
             }
         }
+
+        public static bool HasRange(Worksheet worksheet, string rangeName)
+        {
+            try
+            {
+                Range range = worksheet.Range[rangeName];
+                return true;
+            } catch
+            {
+                return false;
+            }
+        }
     }
 }
