@@ -30,7 +30,7 @@ namespace BPA.Model
         private readonly Dictionary<string, string> _filds = new Dictionary<string, string>
         {
             { "Id", "№" },
-            { "Data", "Артикул" },              //?
+            { "Article", "Артикул" },              //?
             { "STKRub", "STK 2.5, руб." },
             { "IRPEur", "IRP, Eur" },
             { "RRC", "РРЦ, руб.с НДС" },
@@ -180,6 +180,14 @@ namespace BPA.Model
             set
             {
             }
+        }
+
+        /// <summary>
+        /// Артикул
+        /// </summary>
+        public string Article
+        {
+            get; set;
         }
 
         /// <summary>

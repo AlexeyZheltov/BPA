@@ -20,6 +20,7 @@ namespace BPA.Model {
         private readonly Dictionary<string, string> _filds = new Dictionary<string, string>
         {
             { "Id", "ID" },
+            { "Article", "Артикул" },
             { "ChannelType", "Channel type" },
             { "CustomerStatus", "Customer status" },
             { "PrognosisDate", "Дата прогноза" },
@@ -159,6 +160,14 @@ namespace BPA.Model {
             get; set;
         }
 
+        /// <summary>
+        /// Артикул
+        /// </summary>
+        public string Article
+        {
+            get; set;
+        }
+        
         /// <summary>
         /// Channel type
         /// </summary>
@@ -1036,7 +1045,7 @@ public double GPValue08
             ChannelType = planningNewYearSave.ChannelType;
             CustomerStatus = planningNewYearSave.CustomerStatus;
             PrognosisDate = planningNewYearSave.PrognosisDate;
-            Data = planningNewYearSave.planningNewYear.Article;
+            Article = planningNewYearSave.Article;
             STKRub = planningNewYearSave.STKRub;
             IRPEur = planningNewYearSave.IRPEur;
             RRC = planningNewYearSave.RRC;
