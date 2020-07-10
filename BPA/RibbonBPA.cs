@@ -494,7 +494,8 @@ namespace BPA
             ProcessBar processBar = null;
 
             Worksheet worksheet = Globals.ThisWorkbook.Application.ActiveSheet;
-            if (worksheet.Name.IndexOf("Планирование нового года") < 0)
+            if (!FunctionsForExcel.HasRange(worksheet, Properties.Settings.Default.PlannningNYIndicatorCellName) ||
+                worksheet.Name == Properties.Settings.Default.templateSheetName)
             {
                 MessageBox.Show("Перейдите на страницу планирования (или создайте её) и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -580,7 +581,8 @@ namespace BPA
             ProcessBar processBar = null;
 
             Worksheet worksheet = Globals.ThisWorkbook.Application.ActiveSheet;
-            if (worksheet.Name.IndexOf("Планирование нового года") < 0)
+            if (!FunctionsForExcel.HasRange(worksheet, Properties.Settings.Default.PlannningNYIndicatorCellName) ||
+                worksheet.Name == Properties.Settings.Default.templateSheetName)
             {
                 MessageBox.Show("Перейдите на страницу планирования (или создайте её) и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -671,7 +673,8 @@ namespace BPA
             ProcessBar processBar = null;
 
             Worksheet worksheet = Globals.ThisWorkbook.Application.ActiveSheet;
-            if (worksheet.Name.IndexOf("Планирование нового года") < 0 ||
+
+            if (!FunctionsForExcel.HasRange(worksheet, Properties.Settings.Default.PlannningNYIndicatorCellName) ||
                 worksheet.Name == Properties.Settings.Default.templateSheetName)
             {
                 MessageBox.Show("Перейдите на страницу планирования (или создайте её) и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
