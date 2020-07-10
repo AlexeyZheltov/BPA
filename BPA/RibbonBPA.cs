@@ -703,7 +703,7 @@ namespace BPA
                         break;
 
                     processBar.TaskStart($"Обрабатывается артикул { planningNewYearSave.planningNewYear.Article}");
-                    Plan planning = new Plan(planningNewYearSave);
+                    Plan planning = new Plan().GetPlan(planningNewYearSave);
                     planning.Save();
 
                     processBar.TaskDone(1);

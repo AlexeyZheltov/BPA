@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Office.Interop.Excel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1040,7 +1041,28 @@ public double GPValue08
         #endregion
         public Plan() { }
 
-        public Plan(PlanningNewYearSave planningNewYearSave)
+        public Plan GetPlan(PlanningNewYearSave planningNewYearSave)
+        {
+            ListRow listRow = GetRow("Article", planningNewYearSave.Article);
+
+            if (listRow != null)
+            {
+                int firstIndex = listRow.Index;
+                do
+                {
+                    if (listRow.Range[1, Table.ListColumns[Filds["PrognosisDate"]].Index].Value == planningNewYearSave.PrognosisDate)
+                    {
+                        SetProperty(listRow);
+                        break;
+                        ////return new Plan(planningNewYearSave);
+                    }
+                    listRow = GetRow("Article", planningNewYearSave.Article, listRow.Range[1, Table.ListColumns[Filds["Article"]].Index]);
+                } while (listRow.Index != firstIndex);
+            }
+            SetPlan(planningNewYearSave);
+            return this;
+        }
+        public void SetPlan(PlanningNewYearSave planningNewYearSave)
         {
             ChannelType = planningNewYearSave.ChannelType;
             CustomerStatus = planningNewYearSave.CustomerStatus;
@@ -1172,6 +1194,5 @@ public double GPValue08
             GPValue11 = planningNewYearSave.GPValue11;
             GPValue12 = planningNewYearSave.GPValue12;
         }
-    
     }
 }
