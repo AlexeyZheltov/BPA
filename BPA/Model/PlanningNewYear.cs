@@ -330,9 +330,7 @@ namespace BPA.Model
             Worksheet worksheet = workbook.Sheets[SheetName];
             Range range = worksheet.UsedRange;
             
-            Range cell;
-            cell = range.Find(What: "%", LookIn: XlFindLookIn.xlValues, LookAt: XlLookAt.xlPart, MatchCase: false);
-            cell = range.Find(What:MaximumBonusLabel,LookIn:XlFindLookIn.xlFormulas, LookAt:XlLookAt.xlPart, MatchCase:false);
+            Range cell = range.Find(What:MaximumBonusLabel,LookIn:XlFindLookIn.xlFormulas, LookAt:XlLookAt.xlPart, MatchCase:false);
             if (cell == null)
                 return;
 
