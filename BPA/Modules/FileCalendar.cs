@@ -184,7 +184,11 @@ namespace BPA.Modules
                 }
 
                 int temp = ToBeSoldInColumn;
-                if (temp == 0) throw new ApplicationException("Файл имеет не верный формат");
+                if (temp == 0)
+                {
+                    Close();
+                    throw new ApplicationException("Файл имеет неверный формат");
+                }
                 string tobesold = Worksheet.Cells[rw, ToBeSoldInColumn].Text;
                 tobesold = tobesold.ToUpper();
 

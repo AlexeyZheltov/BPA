@@ -123,7 +123,10 @@ namespace BPA.Modules
         public void LoadForPlanning(PlanningNewYear planning)
         {
             if (DateColumn == 0 || ArticleColumn == 0 || CampaignColumn == 0)
-                throw new ApplicationException("Файл имеет не верный формат");
+            {
+                Close();
+                throw new ApplicationException("Файл имеет неверный формат");
+            }
 
             for (int rowIndex = FileHeaderRow + 1; rowIndex <= LastRow; rowIndex++)
             {
