@@ -364,13 +364,30 @@ namespace BPA.Model
 
         private List<PlanningNewYear> GetList()
         {
+            ProcessBar processBar = null;
+
+            processBar = new ProcessBar($"Получение списка артикулов на листе { SheetName } ", Table.ListRows.Count);
+            bool isCancel = false;
+            void CancelLocal() => isCancel = true;
+            FunctionsForExcel.SpeedOn();
+            processBar.CancelClick += CancelLocal;
+            processBar.Show();
+
             List<PlanningNewYear> plannings = new List<PlanningNewYear>();
             foreach (ListRow listRow in Table.ListRows)
             {
+                if (isCancel)
+                    break;
+
                 PlanningNewYear planning = this.Clone();
                 planning.SetProperty(listRow);
                 plannings.Add(planning);
+
+                processBar.TaskDone(1);
             }
+
+            processBar.Close();
+            processBar = null;
 
             return plannings;
         }
