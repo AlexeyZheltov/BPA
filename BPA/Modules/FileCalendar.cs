@@ -211,6 +211,7 @@ namespace BPA.Modules
 
                     return false;
                 }
+
                 product = new Product().GetProduct(GetValueFromColumn(rw, LocalIDGardenaColumn));
 
                 if (product != null)
@@ -243,15 +244,8 @@ namespace BPA.Modules
         {
             int rowNumber = FindRow(articul);
             if (rowNumber == 0) return null;
-            return GetProduct(rowNumber);
-        }
 
-        public Product GetProduct(int row)
-        {
-            Product product = new Product();
-            product = CreateProduct(row, product);
-
-            return product;
+            return CreateProduct(rowNumber, new Product());
         }
 
 
@@ -299,7 +293,9 @@ namespace BPA.Modules
             product.CalendarProductSizeWidth = GetValueFromColumn(row, ProductSizeWidthColumn);
             product.CalendarProductSizeLength = GetValueFromColumn(row, ProductSizeLengthColumn);
             product.CalendarUnitsPerPallet = GetValueFromColumn(row, UnitsPerPalletColumn);
+
             product.Article = GetValueFromColumn(row, LocalIDGardenaColumn);
+
             product.GenericName = GetValueFromColumn(row, GenericNameColumn);
             product.Model = GetValueFromColumn(row, ModelColumn);
             product.SubGroup = GetValueFromColumn(row, SubgroupColumn);

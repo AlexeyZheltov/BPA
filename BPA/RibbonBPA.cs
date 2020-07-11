@@ -146,8 +146,11 @@ namespace BPA
                 Product product = new Product().GetPoductActive();
                 ProductCalendar calendar = new ProductCalendar(product.Calendar);
                 FileCalendar fileCalendar = new FileCalendar(calendar.Path);
-                product.SetFromCalendar(fileCalendar.Workbook);
-                fileCalendar.Close();
+                if (fileCalendar != null)
+                {
+                    product.SetFromCalendar(fileCalendar.Workbook);
+                    fileCalendar.Close();
+                }
             }
             catch (Exception ex)
             {
