@@ -385,7 +385,8 @@ namespace BPA.Model
 
                 PlanningNewYear planning = this.Clone();
                 planning.SetProperty(listRow);
-                plannings.Add(planning);
+                if ((int)planning.Id != 0)
+                    plannings.Add(planning);
 
                 processBar.TaskDone(1);
             }

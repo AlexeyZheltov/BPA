@@ -143,7 +143,9 @@ namespace BPA.Model
                 }
                 processBar.TaskStart($"Обрабатывается товар {row.Index} из {LastRow - Table.HeaderRowRange.Row}");
 
-                products.Add(new ProductForRRC(row));
+                ProductForRRC product = new ProductForRRC(row);
+                if ((int)product.Id !=0)
+                    products.Add(product);
 
                 processBar.TaskDone(1);
 
