@@ -75,7 +75,7 @@ namespace BPA.Modules
         /// </summary>
         public void ShowUnshowSheets()
         {
-            ThisWorkbook thisWorkbook = Globals.ThisWorkbook;
+            //ThisWorkbook thisWorkbook = Globals.ThisWorkbook;
 
             foreach (string sheetName in SheetsVisibleStatus.Keys)
             {

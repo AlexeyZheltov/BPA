@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace BPA.Model
 {
@@ -19,6 +20,9 @@ namespace BPA.Model
         /// </summary>
         public virtual string TableName => "Table";
         public virtual string SheetName => "Table";
+
+        protected virtual IDictionary<string, int> ColDict { get { return _coldict; } }
+        private Dictionary<string, int> _coldict = new Dictionary<string, int>();
 
         /// <summary>
         /// Объект умной таблицы
@@ -148,20 +152,32 @@ namespace BPA.Model
             ListRow row = GetRow((int)GetParametrValue("Id"));
             row?.Delete();
         }
-        
+
+        public void ReadColNumbers()
+        {
+            _coldict = new Dictionary<string, int>();
+            foreach(KeyValuePair<string, string> item in Filds)
+            {
+                _coldict.Add(item.Key, Table.ListColumns[item.Value].Index);
+            }
+        }
+
         /// <summary>
         /// Запись свойств класса данными из строки ListRow
         /// </summary>
         /// <param name="row">Строка таблицы</param>
         protected void SetProperty(ListRow row)
         {
+            object[,] buffer = row.Range.Value;
+            //Запомнить столбцы, читать строку целиком.
             foreach (var prop in GetType().GetProperties())
             {
                 if (Filds.ContainsKey(prop.Name))
                 {
                     try
                     {
-                        prop.SetValue(this, Convert.ChangeType(row.Range[1, Table.ListColumns[Filds[prop.Name]].Index].Value, prop.PropertyType));
+                        //prop.SetValue(this, Convert.ChangeType(row.Range[1, Table.ListColumns[Filds[prop.Name]].Index].Value, prop.PropertyType));
+                        prop.SetValue(this, Convert.ChangeType(buffer[1, _coldict[prop.Name]], prop.PropertyType));
                     }
                     catch
                     {
