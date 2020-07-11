@@ -98,8 +98,11 @@ namespace BPA
             finally
             {
                 FunctionsForExcel.SpeedOff();
-                processBar.SubBar?.Close();
-                processBar.Close();
+                if (processBar != null)
+                {
+                    processBar.SubBar?.Close();
+                    processBar.Close();
+                }
             }
             
         }
