@@ -159,15 +159,9 @@ namespace BPA.Model
                 this.RRCCurrent = rrc.RRCNDS;
                 this.DIYCurrent = rrc.DIY;
                 this.IRP = rrc.IRP;
-            }
-            else
-            {
-                this.RRCCurrent = 0;
-                this.DIYCurrent = 0;
-                this.IRP = 0;
-            }
 
-            Update();
+                Update();
+            }
         }
 
         //private bool IsCancel = false;
