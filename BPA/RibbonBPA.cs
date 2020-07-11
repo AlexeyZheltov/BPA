@@ -50,7 +50,10 @@ namespace BPA
             finally
             {
                 FunctionsForExcel.SpeedOff();
-                processBar.Close();
+                if (processBar != null) 
+                    processBar.Close();
+                if (fileCalendar != null)
+                    fileCalendar.Close();
             }
         }
 
@@ -78,7 +81,14 @@ namespace BPA
                     calendar.ActionStart += processBar.SubBar.TaskStart;
                     calendar.ActionDone += processBar.SubBar.TaskDone;
                     processBar.SubBar.CancelClick += calendar.Cancel;
-                    calendar.UpdateProducts();
+                    try
+                    {
+                        calendar.UpdateProducts();
+                    }
+                    catch(FileNotFoundException)
+                    {
+
+                    }
                 }
             }
             catch (Exception ex)

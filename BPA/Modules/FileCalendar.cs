@@ -160,7 +160,6 @@ namespace BPA.Modules
             };
             productCalendar.Save();
 
-            Close();
             IsCancel = true;
         }
 
