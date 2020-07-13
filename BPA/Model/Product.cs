@@ -738,6 +738,7 @@ namespace BPA.Model
             this.SubGroup = product.SubGroup;
             this.ProductGroup = product.ProductGroup;
             this.PNS = product.PNS;
+            this.IRP = product.IRP;
 
             this.Calendar = this.Calendar;
 

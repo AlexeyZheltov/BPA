@@ -30,6 +30,7 @@ namespace BPA.Model
         private readonly Dictionary<string, string> _filds = new Dictionary<string, string>
         {
             { "Id","№" },
+
             { "QuantityPromoYear","Промо прогноз за год, шт. " },
             { "QuantityPromo01","Промо прогноз январь, шт." },
             { "QuantityPromo02","Промо прогноз февраль, шт." },
@@ -42,7 +43,35 @@ namespace BPA.Model
             { "QuantityPromo09","Промо прогноз сентрябрь, шт." },
             { "QuantityPromo10","Промо прогноз октябрь, шт." },
             { "QuantityPromo11","Промо прогноз ноябрь, шт." },
-            { "QuantityPromo12","Промо прогноз декабрь, шт." },         
+            { "QuantityPromo12","Промо прогноз декабрь, шт." },
+
+            { "GSPromoYear","Промо GS за год, руб." },
+            { "GSPromo01","Промо GS январь, руб." },
+            { "GSPromo02","Промо GS февраль, руб." },
+            { "GSPromo03","Промо GS март, руб." },
+            { "GSPromo04","Промо GS апрель, руб." },
+            { "GSPromo05","Промо GS май, руб." },
+            { "GSPromo06","Промо GS июнь, руб." },
+            { "GSPromo07","Промо GS июль, руб." },
+            { "GSPromo08","Промо GS август, руб." },
+            { "GSPromo09","Промо GS сентрябрь, руб." },
+            { "GSPromo10","Промо GS октябрь, руб." },
+            { "GSPromo11","Промо GS ноябрь, руб." },
+            { "GSPromo12","Промо GS декабрь, руб." },
+
+            { "NSPromoYear","Промо NS за год, руб." },
+            { "NSPromo01","Промо NS январь, руб." },
+            { "NSPromo02","Промо NS февраль, руб." },
+            { "NSPromo03","Промо NS март, руб." },
+            { "NSPromo04","Промо NS апрель, руб." },
+            { "NSPromo05","Промо NS май, руб." },
+            { "NSPromo06","Промо NS июнь, руб." },
+            { "NSPromo07","Промо NS июль, руб." },
+            { "NSPromo08","Промо NS август, руб." },
+            { "NSPromo09","Промо NS сентрябрь, руб." },
+            { "NSPromo10","Промо NS октябрь, руб." },
+            { "NSPromo11","Промо NS ноябрь, руб." },
+            { "NSPromo12","Промо NS декабрь, руб." }
         };
 
         #endregion
@@ -152,6 +181,189 @@ namespace BPA.Model
         {
             get; set;
         } 
+        /// <summary>
+        /// Промо GS за год, руб. 
+        /// </summary>
+        public double GSPromoYear
+        {
+            get; set;
+        } 
+        /// <summary>
+        /// Промо GS январь, руб. 
+        /// </summary>
+        public double GSPromo01
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо GS февраль, руб. 
+        /// </summary>
+        public double GSPromo02
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо GS март, руб. 
+        /// </summary>
+        public double GSPromo03
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо GS апрель, руб. 
+        /// </summary>
+        public double GSPromo04
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо GS май, руб. 
+        /// </summary>
+        public double GSPromo05
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо GS июнь, руб. 
+        /// </summary>
+        public double GSPromo06
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо GS июль, руб. 
+        /// </summary>
+        public double GSPromo07
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо GS август, руб. 
+        /// </summary>
+        public double GSPromo08
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо GS сентрябрь, руб. 
+        /// </summary>
+        public double GSPromo09
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо GS октябрь, руб. 
+        /// </summary>
+        public double GSPromo10
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо GS ноябрь, руб. 
+        /// </summary>
+        public double GSPromo11
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо GS декабрь, руб. 
+        /// </summary>
+        public double GSPromo12
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS за год, руб. 
+        /// </summary>
+        public double NSPromoYear
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS январь, руб. 
+        /// </summary>
+        public double NSPromo01
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS февраль, руб. 
+        /// </summary>
+        public double NSPromo02
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS март, руб. 
+        /// </summary>
+        public double NSPromo03
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS апрель, руб. 
+        /// </summary>
+        public double NSPromo04
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS май, руб. 
+        /// </summary>
+        public double NSPromo05
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS июнь, руб. 
+        /// </summary>
+        public double NSPromo06
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS июль, руб. 
+        /// </summary>
+        public double NSPromo07
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS август, руб. 
+        /// </summary>
+        public double NSPromo08
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS сентрябрь, руб. 
+        /// </summary>
+        public double NSPromo09
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS октябрь, руб. 
+        /// </summary>
+        public double NSPromo10
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS ноябрь, руб. 
+        /// </summary>
+        public double NSPromo11
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS декабрь, руб. 
+        /// </summary>
+        public double NSPromo12
+        {
+            get; set;
+        }
+
         #endregion
 
         /// <summary>
@@ -163,26 +375,53 @@ namespace BPA.Model
         {
             string article = this.planningNewYear.Article;
 
+            //Извлечение из списков Descision и Buget элементы с соответствующим артикулом и Promo
             List<ArticleQuantity> articleDescisionQuantities = deicionQuantities.FindAll(x => x.Article == article && this.planningNewYear.isPromo(x)).ToList();
             List<ArticleQuantity> articleBugetQuantities = bugetQuantities.FindAll(x => x.Article == article && this.planningNewYear.isPromo(x)).ToList();
 
-            double[] quantities = this.planningNewYear.GetQuantities(articleDescisionQuantities, articleBugetQuantities);
+            ArticleQuantity[] articles = this.planningNewYear.GetsArticleQuantities(articleDescisionQuantities, articleBugetQuantities);
 
             #region setproperties
             //как написать подобный перебор???
             ///
-            QuantityPromo01 = quantities[0];
-            QuantityPromo02 = quantities[1];
-            QuantityPromo03 = quantities[2];
-            QuantityPromo04 = quantities[3];
-            QuantityPromo05 = quantities[4];
-            QuantityPromo06 = quantities[5];
-            QuantityPromo07 = quantities[6];
-            QuantityPromo08 = quantities[7];
-            QuantityPromo09 = quantities[8];
-            QuantityPromo10 = quantities[9];
-            QuantityPromo11 = quantities[10];
-            QuantityPromo12 = quantities[11];
+            QuantityPromo01 = articles[0].Quantity;
+            QuantityPromo02 = articles[1].Quantity;
+            QuantityPromo03 = articles[2].Quantity;
+            QuantityPromo04 = articles[3].Quantity;
+            QuantityPromo05 = articles[4].Quantity;
+            QuantityPromo06 = articles[5].Quantity;
+            QuantityPromo07 = articles[6].Quantity;
+            QuantityPromo08 = articles[7].Quantity;
+            QuantityPromo09 = articles[8].Quantity;
+            QuantityPromo10 = articles[9].Quantity;
+            QuantityPromo11 = articles[10].Quantity;
+            QuantityPromo12 = articles[11].Quantity;
+
+            GSPromo01 = articles[0].PriceList;
+            GSPromo02 = articles[1].PriceList;
+            GSPromo03 = articles[2].PriceList;
+            GSPromo04 = articles[3].PriceList;
+            GSPromo05 = articles[4].PriceList;
+            GSPromo06 = articles[5].PriceList;
+            GSPromo07 = articles[6].PriceList;
+            GSPromo08 = articles[7].PriceList;
+            GSPromo09 = articles[8].PriceList;
+            GSPromo10 = articles[9].PriceList;
+            GSPromo11 = articles[10].PriceList;
+            GSPromo12 = articles[11].PriceList;
+
+            NSPromo01 = GSPromo01 - articles[0].Bonus;
+            NSPromo02 = GSPromo02 - articles[1].Bonus;
+            NSPromo03 = GSPromo03 - articles[2].Bonus;
+            NSPromo04 = GSPromo04 - articles[3].Bonus;
+            NSPromo05 = GSPromo05 - articles[4].Bonus;
+            NSPromo06 = GSPromo06 - articles[5].Bonus;
+            NSPromo07 = GSPromo07 - articles[6].Bonus;
+            NSPromo08 = GSPromo08 - articles[7].Bonus;
+            NSPromo09 = GSPromo09 - articles[8].Bonus;
+            NSPromo10 = GSPromo10 - articles[9].Bonus;
+            NSPromo11 = GSPromo11 - articles[10].Bonus;
+            NSPromo12 = GSPromo12 - articles[11].Bonus;
             ///
             #endregion
         }

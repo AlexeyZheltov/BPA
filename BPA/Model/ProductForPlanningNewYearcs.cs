@@ -231,7 +231,8 @@ namespace BPA.Model
 
                 if (IsExclusive(planningNewYearTmp, product.Exclusive))
                     if (product.Status != "Выведено из ассортимента текущего года")
-                        products.Add(product);
+                        if ((int)product.Id != 0)
+                            products.Add(product);
                 
                 processBar.TaskDone(1);
             }

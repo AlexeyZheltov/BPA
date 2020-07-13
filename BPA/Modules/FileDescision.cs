@@ -73,6 +73,8 @@ namespace BPA.Modules
         public int ArticleColumn => FindColumn("Code");
         public int CampaignColumn => FindColumn("Campaign");
         public int QuantitynColumn => FindColumn("Quantity");
+        public int PriceListTotalColumn => FindColumn("PricelistPriceTotal");
+        public int BonusColumn => FindColumn("Bonus");
 
         #endregion
 
@@ -124,7 +126,11 @@ namespace BPA.Modules
         {
             List<Client> buffer = new List<Client>();
 
-            if (CustomerColumn == 0 || GardenaChannelColumn == 0) throw new ApplicationException("Файл имеет не верный формат");
+            if (CustomerColumn == 0 || GardenaChannelColumn == 0)
+            {
+                Close();
+                throw new ApplicationException("Файл имеет неверный формат");
+            }
 
             for(int rowIndex = FileHeaderRow + 1; rowIndex <= LastRow; rowIndex++)
             {
@@ -157,7 +163,10 @@ namespace BPA.Modules
         public void LoadForPlanning(PlanningNewYear planning)
         {
             if (DateColumn == 0 || ArticleColumn == 0 || CampaignColumn ==0)
-                throw new ApplicationException("Файл имеет не верный формат");
+            {
+                Close();
+                throw new ApplicationException("Файл имеет неверный формат");
+            }
 
             for (int rowIndex = FileHeaderRow + 1; rowIndex <= LastRow; rowIndex++)
             {
@@ -172,16 +181,23 @@ namespace BPA.Modules
                 string article = GetValueFromColumn(rowIndex, ArticleColumn);
                 string campaign = GetValueFromColumn(rowIndex, CampaignColumn);
                 double quantity;
+                double priceList;
+                double bonus;
+
                 if (article != "")
                 {
                     quantity = double.TryParse(GetValueFromColumn(rowIndex, QuantitynColumn), out quantity) ? quantity : 0;
+                    priceList = double.TryParse(GetValueFromColumn(rowIndex, PriceListTotalColumn), out priceList) ? priceList : 0;
+                    bonus = double.TryParse(GetValueFromColumn(rowIndex, BonusColumn), out bonus) ? bonus : 0;
 
                     ArticleQuantities.Add(new ArticleQuantity
                     {
                         Article = article,
                         Quantity = quantity,
                         Month = date.Month,
-                        Campaign = campaign == "" ? "0" : campaign
+                        Campaign = campaign == "" ? "0" : campaign,
+                        PriceList = priceList,
+                        Bonus = bonus
                     });
                 }
 
@@ -194,48 +210,50 @@ namespace BPA.Modules
         //public PlanningNewYear LoadPrognosis(PlanningNewYearPrognosis planningNewYearPrognosis)
         //{
         //    if (DateColumn == 0 || ArticleColumn == 0)
-        //        throw new ApplicationException("Файл имеет не верный формат");
-            
-        //    //временный лист
-        //    //List<PlanningNewYear> buffer = new List<PlanningNewYear>();
+            //{
+            //    Close();
+            //    throw new ApplicationException("Файл имеет неверный формат");
+            //}
+    //    //временный лист
+    //    //List<PlanningNewYear> buffer = new List<PlanningNewYear>();
 
-        //    for (int rowIndex = FileHeaderRow + 1; rowIndex <= LastRow; rowIndex++)
-        //    {
-        //        if (IsCancel)
-        //            return null;
-        //        ActionStart?.Invoke($"Обрабатывается строка {rowIndex}");
+    //    for (int rowIndex = FileHeaderRow + 1; rowIndex <= LastRow; rowIndex++)
+    //    {
+    //        if (IsCancel)
+    //            return null;
+    //        ActionStart?.Invoke($"Обрабатывается строка {rowIndex}");
 
-        //        if (planningNewYear.Article != GetValueFromColumn(rowIndex, ArticleColumn))
-        //            continue;
+    //        if (planningNewYear.Article != GetValueFromColumn(rowIndex, ArticleColumn))
+    //            continue;
 
-        //        var campaign = GetValueFromColumn(rowIndex, CampaignColumn);
-        //        if (campaign != "" && (int.TryParse(campaign, out int res) && res == 0))                
-        //            continue;
+    //        var campaign = GetValueFromColumn(rowIndex, CampaignColumn);
+    //        if (campaign != "" && (int.TryParse(campaign, out int res) && res == 0))                
+    //            continue;
 
-        //        DateTime date = GetDateFromCell(rowIndex, DateColumn);
-        //        if (planningNewYear.Year != date.Year)
-        //            continue;
+    //        DateTime date = GetDateFromCell(rowIndex, DateColumn);
+    //        if (planningNewYear.Year != date.Year)
+    //            continue;
 
-        //        //Здесь добавляем помесячно
-        //        //date.Month;
+    //        //Здесь добавляем помесячно
+    //        //date.Month;
 
-        //        ActionDone?.Invoke(1);
-        //    }
+    //        ActionDone?.Invoke(1);
+    //    }
 
-        //    return planningNewYear;
+    //    return planningNewYear;
 
-        //    //if (buffer.Count == 0)
-        //    //    throw new ApplicationException("Файл не содержит значемых данных");
-        //    //return buffer;
-        //}
+    //    //if (buffer.Count == 0)
+    //    //    throw new ApplicationException("Файл не содержит значемых данных");
+    //    //return buffer;
+    //}
 
-        /////////////////////////////////
-        /// <summary>
-        /// получение номена строки по имени заголовка
-        /// </summary>
-        /// <param name="fildName"></param>
-        /// <returns></returns>
-        private int FindColumn(string fildName)
+    /////////////////////////////////
+    /// <summary>
+    /// получение номена строки по имени заголовка
+    /// </summary>
+    /// <param name="fildName"></param>
+    /// <returns></returns>
+    private int FindColumn(string fildName)
         {
             return Worksheet.Cells.Find(fildName, LookAt: Excel.XlLookAt.xlWhole)?.Column ?? 0;
         }

@@ -50,8 +50,10 @@ namespace BPA
             finally
             {
                 FunctionsForExcel.SpeedOff();
-                processBar.Close();
-                fileCalendar.Close();
+                if (processBar != null) 
+                    processBar.Close();
+                if (fileCalendar != null)
+                    fileCalendar.Close();
             }
 
         }
@@ -80,7 +82,14 @@ namespace BPA
                     calendar.ActionStart += processBar.SubBar.TaskStart;
                     calendar.ActionDone += processBar.SubBar.TaskDone;
                     processBar.SubBar.CancelClick += calendar.Cancel;
-                    calendar.UpdateProducts();
+                    try
+                    {
+                        calendar.UpdateProducts();
+                    }
+                    catch(FileNotFoundException)
+                    {
+
+                    }
                 }
             }
             catch (Exception ex)
@@ -90,8 +99,11 @@ namespace BPA
             finally
             {
                 FunctionsForExcel.SpeedOff();
-                processBar.SubBar?.Close();
-                processBar.Close();
+                if (processBar != null)
+                {
+                    processBar.SubBar?.Close();
+                    processBar.Close();
+                }
             }
             
         }
@@ -109,22 +121,24 @@ namespace BPA
         /// </summary>
         private void Settings_Click(object sender, RibbonControlEventArgs e)
         {
-            try
-            {
-                FunctionsForExcel.SpeedOn();
+            SettingsForm form = new SettingsForm();
+            form.ShowDialog(new ExcelWindows(Globals.ThisWorkbook));
+            //try
+            //{
+            //    FunctionsForExcel.SpeedOn();
 
-                //FunctionsForExcel.HideShowSettingsSheets();
-                WorksheetsSettings WS = new WorksheetsSettings();
-                WS.ShowUnshowSheets();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                FunctionsForExcel.SpeedOff();
-            }
+            //    //FunctionsForExcel.HideShowSettingsSheets();
+            //    WorksheetsSettings WS = new WorksheetsSettings();
+            //    WS.ShowUnshowSheets();
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //}
+            //finally
+            //{
+            //    FunctionsForExcel.SpeedOff();
+            //}
         }
 
         /// <summary>
@@ -139,8 +153,11 @@ namespace BPA
                 Product product = new Product().GetPoductActive();
                 ProductCalendar calendar = new ProductCalendar(product.Calendar);
                 FileCalendar fileCalendar = new FileCalendar(calendar.Path);
-                product.SetFromCalendar(fileCalendar.Workbook);
-                fileCalendar.Close();
+                if (fileCalendar != null)
+                {
+                    product.SetFromCalendar(fileCalendar.Workbook);
+                    fileCalendar.Close();
+                }
             }
             catch (Exception ex)
             {
@@ -498,7 +515,8 @@ namespace BPA
             ProcessBar processBar = null;
 
             Worksheet worksheet = Globals.ThisWorkbook.Application.ActiveSheet;
-            if (worksheet.Name.IndexOf("Планирование нового года") < 0)
+            if (!FunctionsForExcel.HasRange(worksheet, Properties.Settings.Default.PlannningNYIndicatorCellName) ||
+                worksheet.Name == Properties.Settings.Default.templateSheetName)
             {
                 MessageBox.Show("Перейдите на страницу планирования (или создайте её) и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -584,7 +602,8 @@ namespace BPA
             ProcessBar processBar = null;
 
             Worksheet worksheet = Globals.ThisWorkbook.Application.ActiveSheet;
-            if (worksheet.Name.IndexOf("Планирование нового года") < 0)
+            if (!FunctionsForExcel.HasRange(worksheet, Properties.Settings.Default.PlannningNYIndicatorCellName) ||
+                worksheet.Name == Properties.Settings.Default.templateSheetName)
             {
                 MessageBox.Show("Перейдите на страницу планирования (или создайте её) и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -604,7 +623,7 @@ namespace BPA
                 planningNewYearTmp.SetLists(prognosises, promos);
 
                 //получаем Desicion, Buget
-                if (prognosises.Count < 1 && promos.Count < 1)
+                if (prognosises == null || promos == null || (prognosises.Count < 0 || prognosises.Count < 0))
                 {
                     MessageBox.Show($"Заполните { worksheet.Name } и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -685,7 +704,8 @@ namespace BPA
             ProcessBar processBar = null;
 
             Worksheet worksheet = Globals.ThisWorkbook.Application.ActiveSheet;
-            if (worksheet.Name.IndexOf("Планирование нового года") < 0 ||
+
+            if (!FunctionsForExcel.HasRange(worksheet, Properties.Settings.Default.PlannningNYIndicatorCellName) ||
                 worksheet.Name == Properties.Settings.Default.templateSheetName)
             {
                 MessageBox.Show("Перейдите на страницу планирования (или создайте её) и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -704,6 +724,12 @@ namespace BPA
                 List <PlanningNewYearSave> saves = new List<PlanningNewYearSave>();
                 planningNewYearTmp.SetLists(saves);
 
+                if (saves == null || saves.Count < 1)
+                {
+                    MessageBox.Show($"Заполните { worksheet.Name } и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
                 processBar = new ProcessBar("Обновление клиентов", saves.Count);
                 bool isCancel = false;
                 void CancelLocal() => isCancel = true;
@@ -717,7 +743,7 @@ namespace BPA
                         break;
 
                     processBar.TaskStart($"Обрабатывается артикул { planningNewYearSave.planningNewYear.Article}");
-                    Plan planning = new Plan(planningNewYearSave);
+                    Plan planning = new Plan().GetPlan(planningNewYearSave);
                     planning.Save();
 
                     processBar.TaskDone(1);

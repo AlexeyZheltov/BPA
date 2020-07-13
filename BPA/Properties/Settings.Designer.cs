@@ -37,6 +37,18 @@ namespace BPA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("PlanningNYCell")]
+        public string PlannningNYIndicatorCellName {
+            get {
+                return ((string)(this["PlannningNYIndicatorCellName"]));
+            }
+            set {
+                this["PlannningNYIndicatorCellName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string ProductCalendarPath {
             get {

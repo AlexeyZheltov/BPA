@@ -12,7 +12,6 @@ namespace BPA.Modules
     {
         private readonly string FileName;
         private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
-        private readonly string ToBeSoldInNeed = "RUSSIA";
         private readonly int CalendarHeaderRow = 6;
 
         /// <summary>
@@ -111,6 +110,19 @@ namespace BPA.Modules
 
         public FileCalendar()
         {
+            BPASettings settings = new BPASettings();
+            
+            if (settings.GetProductCalendarPath(out string path))
+            {
+                FileName = path;
+                IsOpen = true;
+            }
+            else
+            {
+                           
+            }
+
+
             using (OpenFileDialog fileDialog = new OpenFileDialog()
             {
                 Title = "Выберите расположение продуктового календаря",
@@ -161,7 +173,6 @@ namespace BPA.Modules
             };
             productCalendar.Save();
 
-            Close();
             IsCancel = true;
         }
 
@@ -185,14 +196,34 @@ namespace BPA.Modules
                 }
 
                 int temp = ToBeSoldInColumn;
-                if (temp == 0) throw new ApplicationException("Файл имеет не верный формат");
+                if (temp == 0)
+                {
+                    Close();
+                    throw new ApplicationException("Файл имеет неверный формат");
+                }
                 string tobesold = Worksheet.Cells[rw, ToBeSoldInColumn].Text;
-                tobesold = tobesold.ToUpper();
 
-                if (!tobesold.Contains(ToBeSoldInNeed))
+                if (!CheckToBeSold())
                 {
                     ActionDone?.Invoke(1);
                     continue;
+                }
+
+                bool CheckToBeSold()
+                {
+                    if (tobesold.ToLower().Contains("without russia"))
+                        return false;
+
+                    if (tobesold.ToLower().Contains("global"))
+                        return true;
+                    if (tobesold.Contains("R4") || tobesold.Contains("R5"))
+                        return true;
+                    if (tobesold.Contains("RU") || tobesold.Contains("RUS"))
+                        return true;
+                    if (tobesold.ToLower().Contains("russia"))
+                        return true;
+
+                    return false;
                 }
 
                 product = new Product().GetProduct(GetValueFromColumn(rw, LocalIDGardenaColumn));
@@ -227,15 +258,8 @@ namespace BPA.Modules
         {
             int rowNumber = FindRow(articul);
             if (rowNumber == 0) return null;
-            return GetProduct(rowNumber);
-        }
 
-        public Product GetProduct(int row)
-        {
-            Product product = new Product();
-            product = CreateProduct(row, product);
-
-            return product;
+            return CreateProduct(rowNumber, new Product());
         }
 
 
@@ -283,7 +307,9 @@ namespace BPA.Modules
             product.CalendarProductSizeWidth = GetValueFromColumn(row, ProductSizeWidthColumn);
             product.CalendarProductSizeLength = GetValueFromColumn(row, ProductSizeLengthColumn);
             product.CalendarUnitsPerPallet = GetValueFromColumn(row, UnitsPerPalletColumn);
+
             product.Article = GetValueFromColumn(row, LocalIDGardenaColumn);
+
             product.GenericName = GetValueFromColumn(row, GenericNameColumn);
             product.Model = GetValueFromColumn(row, ModelColumn);
             product.SubGroup = GetValueFromColumn(row, SubgroupColumn);

@@ -145,7 +145,9 @@ namespace BPA.Model
                 }
                 processBar.TaskStart($"Обрабатывается товар {row.Index} из {LastRow - Table.HeaderRowRange.Row}");
 
-                products.Add(new ProductForRRC(row));
+                ProductForRRC product = new ProductForRRC(row);
+                if ((int)product.Id !=0)
+                    products.Add(product);
 
                 processBar.TaskDone(1);
 
@@ -161,15 +163,9 @@ namespace BPA.Model
                 this.RRCCurrent = rrc.RRCNDS;
                 this.DIYCurrent = rrc.DIY;
                 this.IRP = rrc.IRP;
-            }
-            else
-            {
-                this.RRCCurrent = 0;
-                this.DIYCurrent = 0;
-                this.IRP = 0;
-            }
 
-            Update();
+                Update();
+            }
         }
 
         //private bool IsCancel = false;
