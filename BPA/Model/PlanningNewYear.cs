@@ -409,33 +409,48 @@ namespace BPA.Model
             return articleQuantity.Campaign != "0" && articleQuantity.Campaign != null ? true : false;
         }
 
-        public double[] GetQuantities(List<ArticleQuantity> articleDescisionQuantities, List<ArticleQuantity> articleBugetQuantities)
+        #endregion
+
+        public ArticleQuantity[] GetsArticleQuantities(List<ArticleQuantity> articleDescisionQuantities, List<ArticleQuantity> articleBugetQuantities)
         {
-            double[] quantities = new double[12];
+            ArticleQuantity[] articles = new ArticleQuantity[12];
             for (int m = 1; m <= 12; m++)
             {
-                quantities[m - 1] = m < CurrentMonth ?
-                    SumMonthQuantity(m, articleDescisionQuantities) :
-                    SumMonthQuantity(m, articleBugetQuantities);
+                articles[m - 1] = SumMonth(m);
             }
-            return quantities;
-        }
+            return articles;
 
-        private double SumMonthQuantity(double month, List<ArticleQuantity> articleQuantities)
-        {
-            if (articleQuantities.Count <= 0)
-                return 0;
-
-            List<ArticleQuantity> MohthQuantities = articleQuantities.FindAll(x => x.Month == month);
-            double quantity = 0;
-
-            foreach (ArticleQuantity articleQuantity in MohthQuantities)
+            ArticleQuantity SumMonth(double month)
             {
-                quantity += articleQuantity.Quantity;
-            }
-            return quantity;
-        }
+                ArticleQuantity newArticleQuantity = new ArticleQuantity();
 
-        #endregion
+                List<ArticleQuantity> articleQuantities = month < CurrentMonth ?
+                    articleDescisionQuantities : articleBugetQuantities;
+
+                if (articleQuantities.Count < 1)
+                    return newArticleQuantity;
+
+                //на случай если будет несколько записей на один месяц по одному артикула
+                List<ArticleQuantity> monthQuantities = articleQuantities.FindAll(x => x.Month == month);
+
+                if (monthQuantities.Count < 1)
+                    return newArticleQuantity;
+
+                foreach (ArticleQuantity articleQuantity in monthQuantities)
+                {
+                    newArticleQuantity.Quantity += articleQuantity.Quantity;
+                    newArticleQuantity.PriceList += articleQuantity.PriceList;
+                    double bonus = month < CurrentMonth ? articleQuantity.Bonus : articleQuantity.PriceList * MaximumBonus;
+                    newArticleQuantity.Bonus += bonus;
+                }
+                //
+
+                newArticleQuantity.Article= monthQuantities[0].Article;
+                newArticleQuantity.Campaign= monthQuantities[0].Campaign;
+
+                return newArticleQuantity;
+            }
+            //
+        }
     }
 }

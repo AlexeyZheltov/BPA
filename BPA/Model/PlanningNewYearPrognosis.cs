@@ -374,26 +374,52 @@ namespace BPA.Model
         {
             string article = this.planningNewYear.Article;
 
+            //Извлечение из списков Descision и Buget элементы с соответствующим артикулом и НЕ Promo
             List<ArticleQuantity> articleDescisionQuantities = deicionQuantities.FindAll(x => x.Article == article && !this.planningNewYear.isPromo(x)).ToList();
             List<ArticleQuantity> articleBugetQuantities = bugetQuantities.FindAll(x => x.Article == article && !this.planningNewYear.isPromo(x)).ToList();
 
-            double[] quantities = this.planningNewYear.GetQuantities(articleDescisionQuantities, articleBugetQuantities);
-
+            ArticleQuantity[] articles = this.planningNewYear.GetsArticleQuantities(articleDescisionQuantities, articleBugetQuantities);
             #region setproperties
             //как написать подобный перебор???
             ///
-            QuantityPrognosis01 = quantities[0];
-            QuantityPrognosis02 = quantities[1];
-            QuantityPrognosis03 = quantities[2];
-            QuantityPrognosis04 = quantities[3];
-            QuantityPrognosis05 = quantities[4];
-            QuantityPrognosis06 = quantities[5];
-            QuantityPrognosis07 = quantities[6];
-            QuantityPrognosis08 = quantities[7];
-            QuantityPrognosis09 = quantities[8];
-            QuantityPrognosis10 = quantities[9];
-            QuantityPrognosis11 = quantities[10];
-            QuantityPrognosis12 = quantities[11];
+            QuantityPrognosis01 = articles[0].Quantity;
+            QuantityPrognosis02 = articles[1].Quantity;
+            QuantityPrognosis03 = articles[2].Quantity;
+            QuantityPrognosis04 = articles[3].Quantity;
+            QuantityPrognosis05 = articles[4].Quantity;
+            QuantityPrognosis06 = articles[5].Quantity;
+            QuantityPrognosis07 = articles[6].Quantity;
+            QuantityPrognosis08 = articles[7].Quantity;
+            QuantityPrognosis09 = articles[8].Quantity;
+            QuantityPrognosis10 = articles[9].Quantity;
+            QuantityPrognosis11 = articles[10].Quantity;
+            QuantityPrognosis12 = articles[11].Quantity;
+
+            GSPrognosis01 = articles[0].PriceList;
+            GSPrognosis02 = articles[1].PriceList;
+            GSPrognosis03 = articles[2].PriceList;
+            GSPrognosis04 = articles[3].PriceList;
+            GSPrognosis05 = articles[4].PriceList;
+            GSPrognosis06 = articles[5].PriceList;
+            GSPrognosis07 = articles[6].PriceList;
+            GSPrognosis08 = articles[7].PriceList;
+            GSPrognosis09 = articles[8].PriceList;
+            GSPrognosis10 = articles[9].PriceList;
+            GSPrognosis11 = articles[10].PriceList;
+            GSPrognosis12 = articles[11].PriceList;
+
+            NSPrognosis01 = GSPrognosis01 - articles[0].Bonus;
+            NSPrognosis02 = GSPrognosis02 - articles[1].Bonus;
+            NSPrognosis03 = GSPrognosis03 - articles[2].Bonus;
+            NSPrognosis04 = GSPrognosis04 - articles[3].Bonus;
+            NSPrognosis05 = GSPrognosis05 - articles[4].Bonus;
+            NSPrognosis06 = GSPrognosis06 - articles[5].Bonus;
+            NSPrognosis07 = GSPrognosis07 - articles[6].Bonus;
+            NSPrognosis08 = GSPrognosis08 - articles[7].Bonus;
+            NSPrognosis09 = GSPrognosis09 - articles[8].Bonus;
+            NSPrognosis10 = GSPrognosis10 - articles[9].Bonus;
+            NSPrognosis11 = GSPrognosis11 - articles[10].Bonus;
+            NSPrognosis12 = GSPrognosis12 - articles[11].Bonus;
             ///
             #endregion
         }
