@@ -365,6 +365,7 @@ namespace BPA.Model
         private List<PlanningNewYear> GetList()
         {
             List<PlanningNewYear> plannings = new List<PlanningNewYear>();
+            new PlanningNewYear().ReadColNumbers();
             foreach (ListRow listRow in Table.ListRows)
             {
                 PlanningNewYear planning = this.Clone();

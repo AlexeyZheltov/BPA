@@ -135,6 +135,7 @@ namespace BPA
             try
             {
                 FunctionsForExcel.SpeedOn();
+                new Product().ReadColNumbers();
                 Product product = new Product().GetPoductActive();
                 ProductCalendar calendar = new ProductCalendar(product.Calendar);
                 FileCalendar fileCalendar = new FileCalendar(calendar.Path);
@@ -334,6 +335,7 @@ namespace BPA
 
             try
             {
+                new Client().ReadColNumbers();
                 if (All)
                 {
                     //загрузить всех подопытных

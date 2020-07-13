@@ -21,6 +21,8 @@ namespace BPA.Model
         public override string TableName => "Товары";
         public override string SheetName => "Товары";
 
+        public static Dictionary<string, int> ColDict { get; set; } = new Dictionary<string, int>();
+
         #region --- Словарь ---
 
         public override IDictionary<string, string> Filds => _filds;
@@ -28,10 +30,10 @@ namespace BPA.Model
         {
             { "Id","№" },
             { "Category","Категория для прайс-листа диллеров" },
-            { "SupercategoryEng","Суперкатегория(ENG)"  },
-            { "SupercategoryRu","Суперкатегория(RUS)" },
+            { "SupercategoryEng","Суперкатегория (ENG)"  },
+            { "SupercategoryRu","Суперкатегория (RUS)" },
             { "ProductGroup","Продукт группа" },
-            { "ProductGroupEng","Название продукт группы(ENG)" },
+            { "ProductGroupEng","Название продукт группы (ENG)" },
             { "ProductGroupRu","Название продукт группы (RUS)" },
             { "SubGroup", "SubGroup" },
             { "GenericName", "Generic Name (long)" },
@@ -39,7 +41,7 @@ namespace BPA.Model
             { "PNS", "PNS" },
             { "Article","Артикул" },
             { "ArticleOld","Артикул предшественника (если есть)" },
-            { "ArticleEng","Название артикула(ENG)" },
+            { "ArticleEng","Название артикула (ENG)" },
             { "ArticleRu","Название артикула (RUS)" },
             { "Calendar", "Используемый календарь" },
 
@@ -546,6 +548,7 @@ namespace BPA.Model
             processBar.Show();
 
             List<Product> products = new List<Product>();
+            new Product().ReadColNumbers();
             foreach (ListRow row in Table.ListRows)
             {
                 if (isCancel)

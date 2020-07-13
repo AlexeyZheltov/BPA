@@ -151,6 +151,7 @@ namespace BPA.Model {
             Discount discount = new Discount();
             pB.Start(discount.Table.ListRows.Count);
 
+            new Discount().ReadColNumbers();
             foreach(Excel.ListRow row in discount.Table.ListRows)
             {
                 if (pB.IsCancel)
@@ -277,6 +278,7 @@ namespace BPA.Model {
 
             double firstIndex = listRow.Index;
 
+            new Discount().ReadColNumbers();
             do
             {
                 Discount discount = new Discount(listRow);

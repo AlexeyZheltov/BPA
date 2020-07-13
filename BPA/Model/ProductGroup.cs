@@ -12,6 +12,8 @@ namespace BPA.Model {
         public override string TableName => "Продукт_Группы";
         public override string SheetName => "Продукт Группы";
 
+        public static Dictionary<string, int> ColDict { get; set; } = new Dictionary<string, int>();
+
         public override IDictionary<string, string> Filds {
             get {
                 return _filds;

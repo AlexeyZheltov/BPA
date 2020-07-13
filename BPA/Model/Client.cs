@@ -20,6 +20,8 @@ namespace BPA.Model {
         public override string TableName => "Клиенты";
         public override string SheetName => "Клиенты";
 
+        public static Dictionary<string, int> ColDict { get; set; } = new Dictionary<string, int>();
+
         public override IDictionary<string, string> Filds {
             get {
                 return _filds;
@@ -139,6 +141,8 @@ namespace BPA.Model {
             processBar.CancelClick += Cancel;
             //processBar.TaskStart("Чтение клиентов");
             processBar.Show(new ExcelWindows(Globals.ThisWorkbook));
+
+            new Client().ReadColNumbers();
 
             foreach (Excel.ListRow row in new Client().Table.ListRows)
             {

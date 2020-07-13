@@ -14,6 +14,7 @@ namespace BPA.Model
         public override string TableName => "Суперкатегории";
         public override string SheetName => "Суперкатегории";
 
+        public static Dictionary<string, int> ColDict { get; set; } = new Dictionary<string, int>();
         public override IDictionary<string, string> Filds { get { return _filds; } }
         private readonly Dictionary<string, string> _filds = new Dictionary<string, string>
         {

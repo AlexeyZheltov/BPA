@@ -260,6 +260,7 @@ namespace BPA.Model
         public static List<FinalPriceList> GetAllFinalPriceList()
         {
             List<FinalPriceList> finalPriceLists = new List<FinalPriceList>();
+            new FinalPriceList().ReadColNumbers();
             foreach (Excel.ListRow row in new FinalPriceList().Table.ListRows)
             {
                 finalPriceLists.Add(new FinalPriceList(row));
