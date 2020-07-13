@@ -13,6 +13,8 @@ namespace BPA.Model {
         public override string TableName => "STK";
         public override string SheetName => "STK";
 
+        public static Dictionary<string, int> ColDict { get; set; } = new Dictionary<string, int>();
+
         #region --- Словарь ---
         public override IDictionary<string, string> Filds {
             get {

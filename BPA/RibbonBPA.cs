@@ -55,6 +55,7 @@ namespace BPA
                 if (fileCalendar != null)
                     fileCalendar.Close();
             }
+
         }
 
         /// <summary>
@@ -120,22 +121,24 @@ namespace BPA
         /// </summary>
         private void Settings_Click(object sender, RibbonControlEventArgs e)
         {
-            try
-            {
-                FunctionsForExcel.SpeedOn();
+            SettingsForm form = new SettingsForm();
+            form.ShowDialog(new ExcelWindows(Globals.ThisWorkbook));
+            //try
+            //{
+            //    FunctionsForExcel.SpeedOn();
 
-                //FunctionsForExcel.HideShowSettingsSheets();
-                WorksheetsSettings WS = new WorksheetsSettings();
-                WS.ShowUnshowSheets();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                FunctionsForExcel.SpeedOff();
-            }
+            //    //FunctionsForExcel.HideShowSettingsSheets();
+            //    WorksheetsSettings WS = new WorksheetsSettings();
+            //    WS.ShowUnshowSheets();
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //}
+            //finally
+            //{
+            //    FunctionsForExcel.SpeedOff();
+            //}
         }
 
         /// <summary>
@@ -146,6 +149,7 @@ namespace BPA
             try
             {
                 FunctionsForExcel.SpeedOn();
+                new Product().ReadColNumbers();
                 Product product = new Product().GetPoductActive();
                 ProductCalendar calendar = new ProductCalendar(product.Calendar);
                 FileCalendar fileCalendar = new FileCalendar(calendar.Path);
@@ -348,6 +352,7 @@ namespace BPA
 
             try
             {
+                new Client().ReadColNumbers();
                 if (All)
                 {
                     //загрузить всех подопытных
@@ -676,7 +681,17 @@ namespace BPA
 
         private void AddNewIRP_Click(object sender, RibbonControlEventArgs e)
         {
-            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            BPASettings settings = new BPASettings();
+            if(settings.GetProductCalendarPath(out string path, true))
+            {
+                MessageBox.Show(path);
+            }
+            else
+            {
+                MessageBox.Show("Kernel Panic");
+            }
+
         }
 
         /// <summary>

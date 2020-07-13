@@ -110,6 +110,19 @@ namespace BPA.Modules
 
         public FileCalendar()
         {
+            BPASettings settings = new BPASettings();
+            
+            if (settings.GetProductCalendarPath(out string path))
+            {
+                FileName = path;
+                IsOpen = true;
+            }
+            else
+            {
+                           
+            }
+
+
             using (OpenFileDialog fileDialog = new OpenFileDialog()
             {
                 Title = "Выберите расположение продуктового календаря",
@@ -170,6 +183,7 @@ namespace BPA.Modules
         {
             Product product = null;
 
+            new Product().ReadColNumbers();
             for (int rw = CalendarHeaderRow + 1; rw < LastRow; rw++)
             {
                 if (IsCancel) return false;

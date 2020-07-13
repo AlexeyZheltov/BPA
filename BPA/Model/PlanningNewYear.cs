@@ -378,6 +378,7 @@ namespace BPA.Model
             processBar.Show();
 
             List<PlanningNewYear> plannings = new List<PlanningNewYear>();
+            new PlanningNewYear().ReadColNumbers();
             foreach (ListRow listRow in Table.ListRows)
             {
                 if (isCancel)

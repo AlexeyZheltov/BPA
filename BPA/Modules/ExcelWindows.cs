@@ -10,7 +10,7 @@ namespace BPA.Modules
 {
     class ExcelWindows : IWin32Window
     {
-        Excel.Window window;
+        readonly Excel.Window window;
         public ExcelWindows(ThisWorkbook wb) => window = wb.Windows[1];
 
         public IntPtr Handle => (IntPtr)window.Hwnd;
