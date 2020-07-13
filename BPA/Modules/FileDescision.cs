@@ -73,6 +73,8 @@ namespace BPA.Modules
         public int ArticleColumn => FindColumn("Code");
         public int CampaignColumn => FindColumn("Campaign");
         public int QuantitynColumn => FindColumn("Quantity");
+        public int PriceListTotalColumn => FindColumn("PricelistPriceTotal");
+        public int BonusColumn => FindColumn("Bonus");
 
         #endregion
 
@@ -179,16 +181,23 @@ namespace BPA.Modules
                 string article = GetValueFromColumn(rowIndex, ArticleColumn);
                 string campaign = GetValueFromColumn(rowIndex, CampaignColumn);
                 double quantity;
+                double priceList;
+                double bonus;
+
                 if (article != "")
                 {
                     quantity = double.TryParse(GetValueFromColumn(rowIndex, QuantitynColumn), out quantity) ? quantity : 0;
+                    priceList = double.TryParse(GetValueFromColumn(rowIndex, PriceListTotalColumn), out priceList) ? priceList : 0;
+                    bonus = double.TryParse(GetValueFromColumn(rowIndex, BonusColumn), out bonus) ? bonus : 0;
 
                     ArticleQuantities.Add(new ArticleQuantity
                     {
                         Article = article,
                         Quantity = quantity,
                         Month = date.Month,
-                        Campaign = campaign == "" ? "0" : campaign
+                        Campaign = campaign == "" ? "0" : campaign,
+                        PriceList = priceList,
+                        Bonus = bonus
                     });
                 }
 

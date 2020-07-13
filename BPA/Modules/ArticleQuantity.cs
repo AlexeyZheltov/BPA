@@ -19,8 +19,15 @@ namespace BPA.Modules
         {
             get; set;
         }
-
         public string Campaign
+        {
+            get; set;
+        }
+        public double PriceList
+        {
+            get; set;
+        }
+        public double Bonus
         {
             get; set;
         }

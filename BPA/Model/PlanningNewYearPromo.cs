@@ -42,7 +42,35 @@ namespace BPA.Model
             { "QuantityPromo09","Промо прогноз сентрябрь, шт." },
             { "QuantityPromo10","Промо прогноз октябрь, шт." },
             { "QuantityPromo11","Промо прогноз ноябрь, шт." },
-            { "QuantityPromo12","Промо прогноз декабрь, шт." },         
+            { "QuantityPromo12","Промо прогноз декабрь, шт." },
+
+            { "GSPromoYear","Промо GS за год, руб." },
+            { "GSPromo01","Промо GS январь, руб." },
+            { "GSPromo02","Промо GS февраль, руб." },
+            { "GSPromo03","Промо GS март, руб." },
+            { "GSPromo04","Промо GS апрель, руб." },
+            { "GSPromo05","Промо GS май, руб." },
+            { "GSPromo06","Промо GS июнь, руб." },
+            { "GSPromo07","Промо GS июль, руб." },
+            { "GSPromo08","Промо GS август, руб." },
+            { "GSPromo09","Промо GS сентрябрь, руб." },
+            { "GSPromo10","Промо GS октябрь, руб." },
+            { "GSPromo11","Промо GS ноябрь, руб." },
+            { "GSPromo12","Промо GS декабрь, руб." },
+
+            { "NSPromoYear","Промо NS за год, руб." },
+            { "NSPromo01","Промо NS январь, руб." },
+            { "NSPromo02","Промо NS февраль, руб." },
+            { "NSPromo03","Промо NS март, руб." },
+            { "NSPromo04","Промо NS апрель, руб." },
+            { "NSPromo05","Промо NS май, руб." },
+            { "NSPromo06","Промо NS июнь, руб." },
+            { "NSPromo07","Промо NS июль, руб." },
+            { "NSPromo08","Промо NS август, руб." },
+            { "NSPromo09","Промо NS сентрябрь, руб." },
+            { "NSPromo10","Промо NS октябрь, руб." },
+            { "NSPromo11","Промо NS ноябрь, руб." },
+            { "NSPromo12","Промо NS декабрь, руб." }
         };
 
         #endregion
@@ -152,6 +180,189 @@ namespace BPA.Model
         {
             get; set;
         } 
+        /// <summary>
+        /// Промо GS за год, руб. 
+        /// </summary>
+        public double GSPromoYear
+        {
+            get; set;
+        } 
+        /// <summary>
+        /// Промо GS январь, руб. 
+        /// </summary>
+        public double GSPromo01
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо GS февраль, руб. 
+        /// </summary>
+        public double GSPromo02
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо GS март, руб. 
+        /// </summary>
+        public double GSPromo03
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо GS апрель, руб. 
+        /// </summary>
+        public double GSPromo04
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо GS май, руб. 
+        /// </summary>
+        public double GSPromo05
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо GS июнь, руб. 
+        /// </summary>
+        public double GSPromo06
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо GS июль, руб. 
+        /// </summary>
+        public double GSPromo07
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо GS август, руб. 
+        /// </summary>
+        public double GSPromo08
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо GS сентрябрь, руб. 
+        /// </summary>
+        public double GSPromo09
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо GS октябрь, руб. 
+        /// </summary>
+        public double GSPromo10
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо GS ноябрь, руб. 
+        /// </summary>
+        public double GSPromo11
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо GS декабрь, руб. 
+        /// </summary>
+        public double GSPromo12
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS за год, руб. 
+        /// </summary>
+        public double NSPromoYear
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS январь, руб. 
+        /// </summary>
+        public double NSPromo01
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS февраль, руб. 
+        /// </summary>
+        public double NSPromo02
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS март, руб. 
+        /// </summary>
+        public double NSPromo03
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS апрель, руб. 
+        /// </summary>
+        public double NSPromo04
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS май, руб. 
+        /// </summary>
+        public double NSPromo05
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS июнь, руб. 
+        /// </summary>
+        public double NSPromo06
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS июль, руб. 
+        /// </summary>
+        public double NSPromo07
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS август, руб. 
+        /// </summary>
+        public double NSPromo08
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS сентрябрь, руб. 
+        /// </summary>
+        public double NSPromo09
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS октябрь, руб. 
+        /// </summary>
+        public double NSPromo10
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS ноябрь, руб. 
+        /// </summary>
+        public double NSPromo11
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Промо NS декабрь, руб. 
+        /// </summary>
+        public double NSPromo12
+        {
+            get; set;
+        }
+
         #endregion
 
         /// <summary>
