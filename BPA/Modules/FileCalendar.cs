@@ -119,27 +119,8 @@ namespace BPA.Modules
             }
             else
             {
-                           
+                throw new ApplicationException("Загр Отменено");
             }
-
-
-            using (OpenFileDialog fileDialog = new OpenFileDialog()
-            {
-                Title = "Выберите расположение продуктового календаря",
-                DefaultExt = "*.xls*",
-                CheckFileExists = true,
-                ValidateNames = true,
-                Multiselect = false,
-                Filter = "Excel|*.xls*"
-            })
-            {
-                if (fileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    FileName = fileDialog.FileName;
-                    IsOpen = true;
-                }
-            }
-
         }
 
         public FileCalendar(string filename)

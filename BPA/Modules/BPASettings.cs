@@ -24,7 +24,7 @@ namespace BPA.Modules
 
         public bool GetBudgetPath(out string path, bool requestFile = false)
         {
-            var (_result, _path) = GetSetting("GetBudgetPath", requestFile);
+            var (_result, _path) = GetSetting("BudgetPath", requestFile);
             path = _path;
             return _result;
         }

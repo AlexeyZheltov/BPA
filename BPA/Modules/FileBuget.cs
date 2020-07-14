@@ -28,6 +28,7 @@ namespace BPA.Modules
         public int CountActions => LastRow - FileHeaderRow;
         private bool IsCancel = false;
 
+        public bool IsOpen { get; set; } = false;
         public Excel.Workbook Workbook
         {
             get
@@ -79,25 +80,16 @@ namespace BPA.Modules
 
         public FileBuget()
         {
-            using (OpenFileDialog fileDialog = new OpenFileDialog()
+            BPASettings settings = new BPASettings();
+
+            if (settings.GetBudgetPath(out string path))
             {
-                Title = "Выберите расположение файла Buget",
-                DefaultExt = "*.xls*",
-                CheckFileExists = true,
-                //InitialDirectory = Globals.ThisWorkbook.Path,
-                ValidateNames = true,
-                Multiselect = false,
-                Filter = "Excel|*.xls*"
-            })
+                FileName = path;
+                IsOpen = true;
+            }
+            else
             {
-                if (fileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    FileName = fileDialog.FileName;
-                }
-                else
-                {
-                    throw new FileNotFoundException($"Загрузка отменена");
-                }
+                throw new ApplicationException("Загрузка отменена");
             }
         }
 
@@ -118,14 +110,13 @@ namespace BPA.Modules
 
         public List<ArticleQuantity> ArticleQuantities = new List<ArticleQuantity>();
 
-        public bool IsNotOpen() => FileName == "";
+        //public bool IsNotOpen() => FileName == "";
         
         //получение списка артикулов и месяцов
         public void LoadForPlanning(PlanningNewYear planning)
         {
             if (DateColumn == 0 || ArticleColumn == 0 || CampaignColumn == 0)
             {
-                Close();
                 throw new ApplicationException("Файл имеет неверный формат");
             }
 
@@ -160,8 +151,6 @@ namespace BPA.Modules
 
                 ActionDone?.Invoke(1);
             }
-            Close();
-
         }
 
         /////////////////////////////////
@@ -203,6 +192,7 @@ namespace BPA.Modules
 
         public void Close()
         {
+            IsOpen = false;
             Workbook.Close(false);
         }
 

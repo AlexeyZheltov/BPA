@@ -29,6 +29,8 @@ namespace BPA.Modules
         public int CountActions => LastRow - FileHeaderRow;
         private bool IsCancel = false;
 
+        public bool IsOpen { get; set; } = false;
+
         public Excel.Workbook Workbook
         {
             get
@@ -80,27 +82,17 @@ namespace BPA.Modules
 
         public FileDescision()
         {
-            using (OpenFileDialog fileDialog = new OpenFileDialog()
-            {
-                Title = "Выберите расположение файла Descision",
-                DefaultExt = "*.xls*",
-                CheckFileExists = true,
-                //InitialDirectory = Globals.ThisWorkbook.Path,
-                ValidateNames = true,
-                Multiselect = false,
-                Filter = "Excel|*.xls*"
-            })
-            {
-                if (fileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    FileName = fileDialog.FileName;
-                }
-                else
-                {
-                    throw new FileNotFoundException($"Загрузка отменена");                
-                }
-            }
+            BPASettings settings = new BPASettings();
 
+            if (settings.GetDecisionPath(out string path))
+            {
+                FileName = path;
+                IsOpen = true;
+            }
+            else
+            {
+                throw new ApplicationException("Загрузка отменена");
+            }
         }
 
         public FileDescision(string filename)
@@ -120,7 +112,7 @@ namespace BPA.Modules
 
         public List<ArticleQuantity> ArticleQuantities = new List<ArticleQuantity>();
         
-        public bool IsNotOpen() => FileName == "";
+        //public bool IsNotOpen() => FileName == "";
         
         public List<Client> LoadClients()
         {
@@ -164,7 +156,6 @@ namespace BPA.Modules
         {
             if (DateColumn == 0 || ArticleColumn == 0 || CampaignColumn ==0)
             {
-                Close();
                 throw new ApplicationException("Файл имеет неверный формат");
             }
 
@@ -203,8 +194,6 @@ namespace BPA.Modules
 
                 ActionDone?.Invoke(1);
             }
-            Close();
-
         }
 
         //public PlanningNewYear LoadPrognosis(PlanningNewYearPrognosis planningNewYearPrognosis)
@@ -286,6 +275,7 @@ namespace BPA.Modules
 
         public void Close()
         {
+            IsOpen = false;
             Workbook.Close(false);
         }
 
