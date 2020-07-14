@@ -29,10 +29,9 @@ namespace BPA
         /// </summary>
         private void AddNewCalendar_Click(object sender, RibbonControlEventArgs e)
         {
+            ProcessBar processBar = null;
             FileCalendar fileCalendar = null;
 
-
-            ProcessBar processBar = new ProcessBar("Загрузка данных календаря", fileCalendar.CountActions);
             try
             {
                 fileCalendar = new FileCalendar();
@@ -40,6 +39,8 @@ namespace BPA
 
                 new Product().ReadColNumbers();
                 new ProductCalendar().ReadColNumbers();
+
+                processBar = new ProcessBar("Загрузка данных календаря", fileCalendar.CountActions);
                 FunctionsForExcel.SpeedOn();
                 Globals.ThisWorkbook.Activate();
                 processBar.Show();
@@ -55,11 +56,9 @@ namespace BPA
             finally
             {
                 FunctionsForExcel.SpeedOff();
-                if (processBar != null) 
-                    processBar.Close();
+                processBar?.Close();
                 if (fileCalendar?.IsOpen ?? false) fileCalendar.Close();
             }
-
         }
 
         /// <summary>
@@ -109,7 +108,7 @@ namespace BPA
                 if (processBar != null)
                 {
                     processBar.SubBar?.Close();
-                    processBar.Close();
+                    processBar?.Close();
                 }
             }
             
@@ -219,7 +218,7 @@ namespace BPA
             finally
             {
                 FunctionsForExcel.SpeedOff();
-                processBar.Close();
+                processBar?.Close();
             }
         }
 
@@ -272,8 +271,7 @@ namespace BPA
             finally
             {
                 FunctionsForExcel.SpeedOff();
-                if (processBar != null)
-                    processBar.Close();
+                processBar?.Close();
             }
         }
 
@@ -621,8 +619,7 @@ namespace BPA
             finally
             {
                 FunctionsForExcel.SpeedOff();
-                if (processBar != null)
-                    processBar.Close();
+                processBar?.Close();
                 if (fileBuget?.IsOpen ?? false) fileBuget.Close();
                 if (fileDescision?.IsOpen ?? false) fileDescision.Close();
             }
@@ -722,8 +719,7 @@ namespace BPA
             finally
             {
                 FunctionsForExcel.SpeedOff();
-                if (processBar != null)
-                    processBar.Close();
+                processBar?.Close();
                 if (fileBuget?.IsOpen ?? false) fileBuget.Close();
                 if (fileDescision?.IsOpen ?? false) fileDescision.Close();
             }
@@ -814,8 +810,7 @@ namespace BPA
             finally
             {
                 FunctionsForExcel.SpeedOff();
-                if (processBar != null)
-                    processBar.Close();
+                processBar?.Close();
             }
         }
     }
