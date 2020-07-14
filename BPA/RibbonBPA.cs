@@ -31,8 +31,6 @@ namespace BPA
         {
             FileCalendar fileCalendar = null;
 
-            new Product().ReadColNumbers();
-            new ProductCalendar().ReadColNumbers();
 
             ProcessBar processBar = new ProcessBar("Загрузка данных календаря", fileCalendar.CountActions);
             try
@@ -40,6 +38,8 @@ namespace BPA
                 fileCalendar = new FileCalendar();
                 if (!fileCalendar.IsOpen) return;
 
+                new Product().ReadColNumbers();
+                new ProductCalendar().ReadColNumbers();
                 FunctionsForExcel.SpeedOn();
                 Globals.ThisWorkbook.Activate();
                 processBar.Show();
