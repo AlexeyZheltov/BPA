@@ -223,8 +223,7 @@ namespace BPA
 
         private void SavePrice_Click(object sender, RibbonControlEventArgs e)
         {
-            List<ProductForRRC> products = new ProductForRRC().GetProducts();
-            ProcessBar processBar = new ProcessBar("Обновление цен из справочника", products.Count);
+            ProcessBar processBar = null;
             bool isCancel = false;
             void CancelLocal() => isCancel = true;
 
@@ -234,6 +233,9 @@ namespace BPA
 
                 new ProductForRRC().ReadColNumbers();
                 new RRC().ReadColNumbers();
+                List<ProductForRRC> products = new ProductForRRC().GetProducts();
+                processBar = new ProcessBar("Обновление цен из справочника", products.Count);
+
                 processBar.CancelClick += CancelLocal;
                 processBar.Show();
                 Globals.ThisWorkbook.Activate();
@@ -268,7 +270,8 @@ namespace BPA
             finally
             {
                 FunctionsForExcel.SpeedOff();
-                processBar.Close();
+                if (processBar != null)
+                    processBar.Close();
             }
         }
 

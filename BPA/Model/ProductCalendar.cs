@@ -13,7 +13,6 @@ namespace BPA.Model
     {
         public override string TableName => "Продуктовые_календари";
         public override string SheetName => "Продуктовые календари";
-        //private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
 
         public static Dictionary<string, int> ColDict { get; set; } = new Dictionary<string, int>();
 

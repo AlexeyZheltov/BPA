@@ -14,7 +14,7 @@ namespace BPA.Model
         //public override string TableName => "Планирование_новый_год";
         //public override string SheetName => "Планирование нового года шаблон";
         public override string TableName => GetTableName();
-        public override string SheetName => _TableWorksheetName != "" ? _TableWorksheetName: templateSheetName;
+        public override string SheetName => _TableWorksheetName != null ? _TableWorksheetName: templateSheetName;
         public string _TableWorksheetName;
 
         public string GetTableName()
