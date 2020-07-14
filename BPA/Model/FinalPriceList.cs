@@ -18,6 +18,8 @@ namespace BPA.Model
         public override string TableName => "Прайс_лист";
         public override string SheetName => "Прайс лист";
 
+        public static Dictionary<string, int> ColDict { get; set; } = new Dictionary<string, int>();
+
         #region --- Словарь ---
 
         public override IDictionary<string, string> Filds => _filds;
@@ -260,7 +262,6 @@ namespace BPA.Model
         public static List<FinalPriceList> GetAllFinalPriceList()
         {
             List<FinalPriceList> finalPriceLists = new List<FinalPriceList>();
-            new FinalPriceList().ReadColNumbers();
             foreach (Excel.ListRow row in new FinalPriceList().Table.ListRows)
             {
                 finalPriceLists.Add(new FinalPriceList(row));

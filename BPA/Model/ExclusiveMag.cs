@@ -13,6 +13,7 @@ namespace BPA.Model
     {
         public override string TableName => "Exclusives";
         public override string SheetName => "Exclusives";
+        public static Dictionary<string, int> ColDict { get; set; } = new Dictionary<string, int>();
 
         public override IDictionary<string, string> Filds
         {
@@ -38,7 +39,6 @@ namespace BPA.Model
         {
             List<ExclusiveMag> result = new List<ExclusiveMag>();
 
-            new ExclusiveMag().ReadColNumbers();
             foreach(Excel.ListRow row in new ExclusiveMag().Table.ListRows)
                 result.Add(new ExclusiveMag(row));
 

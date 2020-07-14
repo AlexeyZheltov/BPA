@@ -24,6 +24,9 @@ namespace BPA.Model
             this.planningNewYear._TableWorksheetName :
             planningNewYear.templateSheetName;
 
+        public static Dictionary<string, int> ColDict { get; set; } = new Dictionary<string, int>();
+
+
         #region --- Словарь ---
 
         public override IDictionary<string, string> Filds => _filds;

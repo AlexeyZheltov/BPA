@@ -13,7 +13,6 @@ namespace BPA.Model
     {
         public override string TableName => "Продуктовые_календари";
         public override string SheetName => "Продуктовые календари";
-        //private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
 
         public static Dictionary<string, int> ColDict { get; set; } = new Dictionary<string, int>();
 
@@ -82,7 +81,6 @@ namespace BPA.Model
         public List<ProductCalendar> GetProductCalendars()
         {
             List<ProductCalendar> productCalendars = new List<ProductCalendar>();
-            new ProductCalendar().ReadColNumbers();
             foreach (ListRow row in Table.ListRows)
             {
                 ProductCalendar productCalendar = new ProductCalendar();

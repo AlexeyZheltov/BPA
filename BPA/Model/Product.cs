@@ -548,7 +548,6 @@ namespace BPA.Model
             processBar.Show();
 
             List<Product> products = new List<Product>();
-            new Product().ReadColNumbers();
             foreach (ListRow row in Table.ListRows)
             {
                 if (isCancel)

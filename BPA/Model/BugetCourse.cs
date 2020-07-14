@@ -11,6 +11,7 @@ namespace BPA.Model {
     class BugetCourse : TableBase {
         public override string TableName => "Бюджетные_курсы";
         public override string SheetName => "Бюджетные курсы";
+        public static Dictionary<string, int> ColDict { get; set; } = new Dictionary<string, int>();
 
         public override IDictionary<string, string> Filds {
             get {

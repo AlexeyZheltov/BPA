@@ -11,6 +11,7 @@ namespace BPA.Model {
     class DIY : TableBase {
         public override string TableName => "DIY";
         public override string SheetName => "DIY";
+        public static Dictionary<string, int> ColDict { get; set; } = new Dictionary<string, int>();
 
         public override IDictionary<string, string> Filds {
             get {

@@ -91,22 +91,17 @@ namespace BPA.Modules
 
         public FilePriceMT()
         {
-            using (OpenFileDialog fileDialog = new OpenFileDialog()
-            {
-                Title = "Выберите файл PriceListMT",
-                DefaultExt = "*.xls*",
-                CheckFileExists = true,
-                ValidateNames = true,
-                Multiselect = false,
-                Filter = "Excel|*.xls*"
-            })
-            {
-                if (fileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    FileName = fileDialog.FileName;
-                }
-            }
+            BPASettings settings = new BPASettings();
 
+            if (settings.GetPriceListMT(out string path))
+            {
+                FileName = path;
+                IsOpen = true;
+            }
+            else
+            {
+                throw new ApplicationException("Загрузка отменена");
+            }
         }
 
         public FilePriceMT(string filename)

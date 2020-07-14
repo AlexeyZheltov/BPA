@@ -15,6 +15,8 @@ namespace BPA.Model {
     class Discount : TableBase {
         public override string TableName => "Скидки";
         public override string SheetName => "Скидки";
+        public static Dictionary<string, int> ColDict { get; set; } = new Dictionary<string, int>();
+
 
         public override IDictionary<string, string> Filds {
             get {
@@ -151,7 +153,6 @@ namespace BPA.Model {
             Discount discount = new Discount();
             pB.Start(discount.Table.ListRows.Count);
 
-            new Discount().ReadColNumbers();
             foreach(Excel.ListRow row in discount.Table.ListRows)
             {
                 if (pB.IsCancel)
@@ -169,6 +170,8 @@ namespace BPA.Model {
 
         public static Discount GetCurrentDiscount(Client client, DateTime currentDate)
         {
+            new Discount().ReadColNumbers();
+
             List<Discount> discounts = Discount.GetAllDiscounts(new PBWrapper($"Создание прайс-листа для {client.Customer}", "Чтение скидок [Index]"));
             if (discounts == null) return null;
             discounts = discounts.FindAll(x => x.ChannelType == client.ChannelType
@@ -278,7 +281,6 @@ namespace BPA.Model {
 
             double firstIndex = listRow.Index;
 
-            new Discount().ReadColNumbers();
             do
             {
                 Discount discount = new Discount(listRow);
