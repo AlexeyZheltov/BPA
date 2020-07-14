@@ -32,6 +32,9 @@ namespace BPA
             FileCalendar fileCalendar = new FileCalendar();
             if (!fileCalendar.IsOpen) return;
 
+            new Product().ReadColNumbers();
+            new ProductCalendar().ReadColNumbers();
+
             ProcessBar processBar = new ProcessBar("Загрузка данных календаря", fileCalendar.CountActions);
             try
             {
@@ -65,6 +68,9 @@ namespace BPA
         /// <param name="e"></param>
         private void UpdateProducts_Click(object sender, RibbonControlEventArgs e)
         {
+            new Product().ReadColNumbers();
+            new ProductCalendar().ReadColNumbers();
+
             List<ProductCalendar> calendars = new ProductCalendar().GetProductCalendars();
             ProcessBar processBar = new ProcessBar("Обновление продуктовых календарей", calendars.Count);
             try
@@ -150,6 +156,8 @@ namespace BPA
             {
                 FunctionsForExcel.SpeedOn();
                 new Product().ReadColNumbers();
+                new ProductCalendar().ReadColNumbers();
+
                 Product product = new Product().GetPoductActive();
                 ProductCalendar calendar = new ProductCalendar(product.Calendar);
                 FileCalendar fileCalendar = new FileCalendar(calendar.Path);
@@ -171,6 +179,9 @@ namespace BPA
 
         private void UploadPrice_Click(object sender, RibbonControlEventArgs e)
         {
+            new ProductForRRC().ReadColNumbers();
+            new RRC().ReadColNumbers();
+
             List<ProductForRRC> products = new ProductForRRC().GetProducts();
             ProcessBar processBar = new ProcessBar("Обновление цен из справочника", products.Count);
             bool isCancel = false;
@@ -221,6 +232,8 @@ namespace BPA
             {
                 FunctionsForExcel.SpeedOn();
 
+                new ProductForRRC().ReadColNumbers();
+                new RRC().ReadColNumbers();
                 processBar.CancelClick += CancelLocal;
                 processBar.Show();
                 Globals.ThisWorkbook.Activate();
@@ -267,6 +280,7 @@ namespace BPA
 
             try
             {
+                new Client().ReadColNumbers();
                 fileDescision = new FileDescision();
                 if (fileDescision.IsNotOpen()) return;
 
@@ -346,13 +360,20 @@ namespace BPA
         {
             ProcessBar processBar = null;
             FilePriceMT filePriceMT = null;
+
             bool isCancel = false;
             void Cancel() => isCancel = true;
             List<Client> priceClients = new List<Client>();
 
             try
             {
+                new FinalPriceList().ReadColNumbers();
+                new ExclusiveMag().ReadColNumbers();
                 new Client().ReadColNumbers();
+                new RRC().ReadColNumbers();
+                new Product().ReadColNumbers();
+                new Discount().ReadColNumbers();
+
                 if (All)
                 {
                     //загрузить всех подопытных
@@ -496,8 +517,9 @@ namespace BPA
             try
             {
                 FunctionsForExcel.SpeedOn();
+                new PlanningNewYear().ReadColNumbers();
 
-                PlanningNewYear planningNewYear = new PlanningNewYear();
+                PlanningNewYear planningNewYear = new PlanningNewYear(Properties.Settings.Default.templateSheetName);
                 planningNewYear.GetSheetCopy();
             } catch (Exception ex)
             {
@@ -509,10 +531,14 @@ namespace BPA
             }
         }
 
-
         private void GetPlanningData_Click(object sender, RibbonControlEventArgs e)
         {
             ProcessBar processBar = null;
+            
+            new Discount().ReadColNumbers();
+            new PlanningNewYear().ReadColNumbers();
+            new ProductForPlanningNewYear().ReadColNumbers();
+            new STK().ReadColNumbers();
 
             Worksheet worksheet = Globals.ThisWorkbook.Application.ActiveSheet;
             if (!FunctionsForExcel.HasRange(worksheet, Properties.Settings.Default.PlannningNYIndicatorCellName) ||
@@ -601,6 +627,7 @@ namespace BPA
         {
             ProcessBar processBar = null;
 
+
             Worksheet worksheet = Globals.ThisWorkbook.Application.ActiveSheet;
             if (!FunctionsForExcel.HasRange(worksheet, Properties.Settings.Default.PlannningNYIndicatorCellName) ||
                 worksheet.Name == Properties.Settings.Default.templateSheetName)
@@ -610,6 +637,11 @@ namespace BPA
             }
             try
             {
+                PlanningNewYear planningForColl = new PlanningNewYear(worksheet.Name);
+                planningForColl.ReadColNumbers();
+                new PlanningNewYearPrognosis(planningForColl).ReadColNumbers();
+                new PlanningNewYearPromo(planningForColl).ReadColNumbers();
+                
                 PlanningNewYear planningNewYearTmp = new PlanningNewYear().GetTmp(worksheet.Name);
                 if (!planningNewYearTmp.HasData())
                 {
@@ -704,6 +736,11 @@ namespace BPA
             ProcessBar processBar = null;
 
             Worksheet worksheet = Globals.ThisWorkbook.Application.ActiveSheet;
+
+            PlanningNewYear planningForColl = new PlanningNewYear(worksheet.Name);
+            planningForColl.ReadColNumbers();
+            new PlanningNewYearSave(planningForColl).ReadColNumbers();
+            new Plan().ReadColNumbers();
 
             if (!FunctionsForExcel.HasRange(worksheet, Properties.Settings.Default.PlannningNYIndicatorCellName) ||
                 worksheet.Name == Properties.Settings.Default.templateSheetName)

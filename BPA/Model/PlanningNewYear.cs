@@ -36,7 +36,7 @@ namespace BPA.Model
         private const string ChannelTypeLabel = "Channel type";
         private const string YearLabel = "Период";
         private const string MaximumBonusLabel = "максмальный годовой бонус, %";
-
+        public static Dictionary<string, int> ColDict { get; set; } = new Dictionary<string, int>();
         #region --- Словарь ---
 
         public override IDictionary<string, string> Filds
@@ -378,7 +378,7 @@ namespace BPA.Model
             processBar.Show();
 
             List<PlanningNewYear> plannings = new List<PlanningNewYear>();
-            new PlanningNewYear().ReadColNumbers();
+
             foreach (ListRow listRow in Table.ListRows)
             {
                 if (isCancel)

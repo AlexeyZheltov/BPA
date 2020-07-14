@@ -183,7 +183,6 @@ namespace BPA.Modules
         {
             Product product = null;
 
-            new Product().ReadColNumbers();
             for (int rw = CalendarHeaderRow + 1; rw < LastRow; rw++)
             {
                 if (IsCancel) return false;

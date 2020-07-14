@@ -82,7 +82,6 @@ namespace BPA.Model
         public List<ProductCalendar> GetProductCalendars()
         {
             List<ProductCalendar> productCalendars = new List<ProductCalendar>();
-            new ProductCalendar().ReadColNumbers();
             foreach (ListRow row in Table.ListRows)
             {
                 ProductCalendar productCalendar = new ProductCalendar();

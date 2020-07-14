@@ -142,8 +142,6 @@ namespace BPA.Model {
             //processBar.TaskStart("Чтение клиентов");
             processBar.Show(new ExcelWindows(Globals.ThisWorkbook));
 
-            new Client().ReadColNumbers();
-
             foreach (Excel.ListRow row in new Client().Table.ListRows)
             {
                 if (isCancel) return null;

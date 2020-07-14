@@ -154,6 +154,9 @@ namespace BPA.Model
             row?.Delete();
         }
 
+        /// <summary>
+        /// Установка столбцов. Необходимо вызвать единожды для всех экземляров
+        /// </summary>
         public void ReadColNumbers()
         {
             string buffer = "";
