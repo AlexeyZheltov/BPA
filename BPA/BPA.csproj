@@ -159,6 +159,7 @@
     <Compile Include="Modules\FunctionsForExcel.cs" />
     <Compile Include="Modules\Parsing.cs" />
     <Compile Include="Modules\PBWrapper.cs" />
+    <Compile Include="Modules\PriceListForPlaning.cs" />
     <Compile Include="Modules\StringCalculator.cs" />
     <Compile Include="Modules\WorksheetsSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

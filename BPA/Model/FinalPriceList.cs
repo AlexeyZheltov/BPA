@@ -13,7 +13,6 @@ namespace BPA.Model
     /// </summary>
     internal class FinalPriceList : TableBase
     {
-        private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
 
         public override string TableName => "Прайс_лист";
         public override string SheetName => "Прайс лист";
