@@ -31,6 +31,7 @@ namespace BPA.Model
             { "RRCCurrent","РРЦ текущий" },
             { "DIYCurrent","DIY текущий" },
             { "RRCCalculated","РРЦ расчетная, руб." },
+            { "RRCFinal","РРЦ финальная, руб." },
             { "DIY","DIY price list, руб. без НДС" }
         };
 
@@ -80,6 +81,14 @@ namespace BPA.Model
         /// РРЦ расчетная, руб.
         /// </summary>
         public Double RRCCalculated
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// РРЦ финальная, руб.
+        /// </summary>
+        public Double RRCCFinal
         {
             get; set;
         }

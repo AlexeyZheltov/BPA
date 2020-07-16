@@ -186,7 +186,7 @@ namespace BPA.Model {
             if (product != null)
             {
                 this.Date = product.DateOfPromotion;
-                this.RRCNDS = product.RRCCalculated;
+                this.RRCNDS = product.RRCCFinal;
                 this.DIY = product.DIY;
                 this.Article = product.Article;
                 this.IRP = product.IRP;
