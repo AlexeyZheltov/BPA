@@ -82,5 +82,53 @@ namespace BPA.Properties {
                 this["PriceListMTPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("PlanningNYCell")]
+        public string PlannningNYIndicatorCellName {
+            get {
+                return ((string)(this["PlannningNYIndicatorCellName"]));
+            }
+            set {
+                this["PlannningNYIndicatorCellName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("DatabaseStat")]
+        public string SHEET_NAME_FILE_BUGET {
+            get {
+                return ((string)(this["SHEET_NAME_FILE_BUGET"]));
+            }
+            set {
+                this["SHEET_NAME_FILE_BUGET"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Цены клиентов")]
+        public string SHEET_NAME_FILE_PRICELISTMT {
+            get {
+                return ((string)(this["SHEET_NAME_FILE_PRICELISTMT"]));
+            }
+            set {
+                this["SHEET_NAME_FILE_PRICELISTMT"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Database")]
+        public string SHEET_NAME_FILE_DECISION {
+            get {
+                return ((string)(this["SHEET_NAME_FILE_DECISION"]));
+            }
+            set {
+                this["SHEET_NAME_FILE_DECISION"] = value;
+            }
+        }
     }
 }

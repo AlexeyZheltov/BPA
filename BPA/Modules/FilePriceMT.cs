@@ -1,9 +1,11 @@
 ﻿using Microsoft.Office.Interop.Excel;
-
+using Excel = Microsoft.Office.Interop.Excel;
 using System;
 using System.IO;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using SettingsBPA = BPA.Properties.Settings;
+
 
 
 namespace BPA.Modules
@@ -12,6 +14,7 @@ namespace BPA.Modules
     {
 
         private readonly string FileName;
+        private readonly string FileSheetName = SettingsBPA.Default.SHEET_NAME_FILE_PRICELISTMT;
         private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
         private readonly int CalendarHeaderRow = 1;
 
@@ -56,14 +59,36 @@ namespace BPA.Modules
         }
         private Workbook _Workbook;
 
-        private Worksheet Worksheet => Workbook?.Sheets[1];
+        public Excel.Worksheet worksheet
+        {
+            get
+            {
+                if (_worksheet == null)
+                {
+                    try
+                    {
+                        _worksheet = Workbook?.Sheets[FileSheetName];
+                    }
+                    catch
+                    {
+                        throw new ApplicationException($"Лист { FileSheetName } в книге { FileName } не найден!");
+                    }
+                }
+                return _worksheet;
+            }
+            set
+            {
+                _worksheet = value;
+            }
+        }
+        private Excel.Worksheet _worksheet;
 
         public int LastRow
         {
             get
             {
                 if (_LastRow == 0)
-                    _LastRow = Worksheet.UsedRange.Row + Worksheet.UsedRange.Rows.Count - 1;
+                    _LastRow = worksheet.UsedRange.Row + worksheet.UsedRange.Rows.Count - 1;
                 return _LastRow;
             }
         }
@@ -175,7 +200,7 @@ namespace BPA.Modules
                 {
                     AddClient(rw, PriceNewColumn);
                 }
-                rw = FindRow(MagColumn, mag, Worksheet.Cells[rw, MagColumn]);
+                rw = FindRow(MagColumn, mag, worksheet.Cells[rw, MagColumn]);
                 ActionDone?.Invoke(1);
             } 
             while (firstFindedRw != rw);
@@ -257,18 +282,18 @@ namespace BPA.Modules
         /// <returns></returns>
         private int FindColumn(string fildName)
         {
-            return Worksheet.Cells.Find(fildName, LookAt: XlLookAt.xlWhole)?.Column ?? 0;
+            return worksheet.Cells.Find(fildName, LookAt: XlLookAt.xlWhole)?.Column ?? 0;
         }
 
 
         private int FindRow(int column, string articul)
         {
-            return Worksheet.Columns[column].Find(articul, LookAt: XlLookAt.xlWhole)?.Row ?? 0;
+            return worksheet.Columns[column].Find(articul, LookAt: XlLookAt.xlWhole)?.Row ?? 0;
         }
 
         private int FindRow(int column, string articul, Range afterCell)
         {
-            return Worksheet.Columns[column].Find(articul, After:afterCell, LookAt: XlLookAt.xlWhole)?.Row ?? 0;
+            return worksheet.Columns[column].Find(articul, After:afterCell, LookAt: XlLookAt.xlWhole)?.Row ?? 0;
         }
 
         /// <summary>
@@ -279,7 +304,7 @@ namespace BPA.Modules
         /// <returns></returns>
         private string GetValueFromColumn(int rw, int col)
         {
-            return col != 0 ? Worksheet.Cells[rw, col].value?.ToString() : "";
+            return col != 0 ? worksheet.Cells[rw, col].value?.ToString() : "";
         }
 
         public void Close()

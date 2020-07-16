@@ -4,12 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using SettingsBPA = BPA.Properties.Settings;
+
 
 namespace BPA.Modules
 {
     class FileDescision
     {
         private readonly string FileName = "";
+        private readonly string FileSheetName = SettingsBPA.Default.SHEET_NAME_FILE_DECISION;
         private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
         //private readonly string ToBeSoldInNeed = "RUSSIA";
         private readonly int FileHeaderRow = 1;
@@ -55,13 +58,36 @@ namespace BPA.Modules
         }
         private Excel.Workbook _Workbook;
 
-        private Excel.Worksheet Worksheet => Workbook?.Sheets[1];
+        //private Excel.Worksheet worksheet => Workbook?.Sheets[FileSheetName];
+        public Excel.Worksheet worksheet
+        {
+            get
+            {
+                if (_worksheet == null)
+                {
+                    try
+                    {
+                        _worksheet = Workbook?.Sheets[FileSheetName];
+                    }
+                    catch
+                    {
+                        throw new ApplicationException($"Лист { FileSheetName } в книге { FileName } не найден!");
+                    }
+                }
+                return _worksheet;
+            }
+            set
+            {
+                _worksheet = value;
+            }
+        }
+        private Excel.Worksheet _worksheet;
 
         public int LastRow
         {
             get
             {
-                if (_LastRow == 0) _LastRow = Worksheet.UsedRange.Row + Worksheet.UsedRange.Rows.Count - 1;
+                if (_LastRow == 0) _LastRow = worksheet.UsedRange.Row + worksheet.UsedRange.Rows.Count - 1;
                 return _LastRow;
             }
         }
@@ -128,11 +154,11 @@ namespace BPA.Modules
             {
                 if (IsCancel) return null;
                 ActionStart?.Invoke($"Обрабатывается строка {rowIndex}");
-                Excel.Range range = Worksheet.Cells[rowIndex, CustomerColumn];
+                Excel.Range range = worksheet.Cells[rowIndex, CustomerColumn];
                 string customer = range.Text;
                 if(customer.Trim().Length > 0)
                 {
-                    range = Worksheet.Cells[rowIndex, GardenaChannelColumn];
+                    range = worksheet.Cells[rowIndex, GardenaChannelColumn];
                     string gardenaChannel = range.Text;
 
                     if(!buffer.Exists(x => x.Customer == customer)) buffer.Add(new Client()
@@ -244,12 +270,12 @@ namespace BPA.Modules
     /// <returns></returns>
     private int FindColumn(string fildName)
         {
-            return Worksheet.Cells.Find(fildName, LookAt: Excel.XlLookAt.xlWhole)?.Column ?? 0;
+            return worksheet.Cells.Find(fildName, LookAt: Excel.XlLookAt.xlWhole)?.Column ?? 0;
         }
 
         private int FindRow(string articul)
         {
-            return Worksheet.Cells.Find(articul, LookAt: Excel.XlLookAt.xlWhole)?.Row ?? 0;
+            return worksheet.Cells.Find(articul, LookAt: Excel.XlLookAt.xlWhole)?.Row ?? 0;
         }
 
         /// <summary>
@@ -260,7 +286,7 @@ namespace BPA.Modules
         /// <returns></returns>
         private string GetValueFromColumn(int rw, int col)
         {
-            return col != 0 ? Worksheet.Cells[rw, col].value?.ToString() : "";
+            return col != 0 ? worksheet.Cells[rw, col].value?.ToString() : "";
         }
 
         private DateTime GetDateFromCell(int rw, int col)

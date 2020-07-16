@@ -4,12 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
+using SettingsBPA = BPA.Properties.Settings;
 
 namespace BPA.Modules
 {
     class FileBuget
     {
         private readonly string FileName = "";
+        private readonly string FileSheetName = SettingsBPA.Default.SHEET_NAME_FILE_BUGET;
         private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
         private readonly int FileHeaderRow = 1;
 
@@ -53,14 +55,37 @@ namespace BPA.Modules
         }
         private Excel.Workbook _Workbook;
 
-        private Excel.Worksheet Worksheet => Workbook?.Sheets[1];
+        //        private Excel.Worksheet worksheet => Workbook?.Sheets[FileSheetName];
+        public Excel.Worksheet worksheet
+        {
+            get
+            {
+                if (_worksheet == null)
+                {
+                    try
+                    {
+                        _worksheet = Workbook?.Sheets[FileSheetName];
+                    }
+                    catch
+                    {
+                        throw new ApplicationException($"Лист { FileSheetName } в книге { FileName } не найден!");
+                    }
+                }
+                return _worksheet;
+            }
+            set
+            {
+                _worksheet = value;
+            }
+        }
+        private Excel.Worksheet _worksheet;
 
         public int LastRow
         {
             get
             {
                 if (_LastRow == 0)
-                    _LastRow = Worksheet.UsedRange.Row + Worksheet.UsedRange.Rows.Count - 1;
+                    _LastRow = worksheet.UsedRange.Row + worksheet.UsedRange.Rows.Count - 1;
                 return _LastRow;
             }
         }
@@ -161,12 +186,12 @@ namespace BPA.Modules
         /// <returns></returns>
         private int FindColumn(string fildName)
         {
-            return Worksheet.Cells.Find(fildName, LookAt: Excel.XlLookAt.xlWhole)?.Column ?? 0;
+            return worksheet.Cells.Find(fildName, LookAt: Excel.XlLookAt.xlWhole)?.Column ?? 0;
         }
 
         private int FindRow(string articul)
         {
-            return Worksheet.Cells.Find(articul, LookAt: Excel.XlLookAt.xlWhole)?.Row ?? 0;
+            return worksheet.Cells.Find(articul, LookAt: Excel.XlLookAt.xlWhole)?.Row ?? 0;
         }
 
         /// <summary>
@@ -177,7 +202,7 @@ namespace BPA.Modules
         /// <returns></returns>
         private string GetValueFromColumn(int rw, int col)
         {
-            return col != 0 ? Worksheet.Cells[rw, col].value?.ToString() : "";
+            return col != 0 ? worksheet.Cells[rw, col].value?.ToString() : "";
         }
 
         private DateTime GetDateFromCell(int rw, int col)

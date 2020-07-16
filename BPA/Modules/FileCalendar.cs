@@ -55,13 +55,13 @@ namespace BPA.Modules
         }
         private Workbook _Workbook;
 
-        private Worksheet Worksheet => Workbook?.Sheets[1];
+        private Worksheet worksheet => Workbook?.Sheets[1];
 
         public int LastRow
         {
             get
             {
-                if (_LastRow == 0) _LastRow = Worksheet.UsedRange.Row + Worksheet.UsedRange.Rows.Count - 1;
+                if (_LastRow == 0) _LastRow = worksheet.UsedRange.Row + worksheet.UsedRange.Rows.Count - 1;
                 return _LastRow;
             }
         }
@@ -169,7 +169,7 @@ namespace BPA.Modules
                 if (IsCancel) return false;
                 ActionStart?.Invoke($"Обрабатывается строка {rw}");
 
-                if (Worksheet.Cells[rw, 1].Text == "")
+                if (worksheet.Cells[rw, 1].Text == "")
                 {
                     ActionDone?.Invoke(1);
                     continue;
@@ -181,7 +181,7 @@ namespace BPA.Modules
                     Close();
                     throw new ApplicationException("Файл имеет неверный формат");
                 }
-                string tobesold = Worksheet.Cells[rw, ToBeSoldInColumn].Text;
+                string tobesold = worksheet.Cells[rw, ToBeSoldInColumn].Text;
 
                 if (!CheckToBeSold())
                 {
@@ -312,12 +312,12 @@ namespace BPA.Modules
         /// <returns></returns>
         private int FindColumn(string fildName)
         {
-            return Worksheet.Cells.Find(fildName, LookAt: XlLookAt.xlWhole)?.Column ?? 0;
+            return worksheet.Cells.Find(fildName, LookAt: XlLookAt.xlWhole)?.Column ?? 0;
         }
 
         private int FindRow(string articul)
         {
-            return Worksheet.Cells.Find(articul, LookAt: XlLookAt.xlWhole)?.Row ?? 0;
+            return worksheet.Cells.Find(articul, LookAt: XlLookAt.xlWhole)?.Row ?? 0;
         }
 
         /// <summary>
@@ -328,7 +328,7 @@ namespace BPA.Modules
         /// <returns></returns>
         private string GetValueFromColumn(int rw, int col)
         {
-            return col != 0 ? Worksheet.Cells[rw, col].value?.ToString() : "";
+            return col != 0 ? worksheet.Cells[rw, col].value?.ToString() : "";
         }
 
         public void Close()
