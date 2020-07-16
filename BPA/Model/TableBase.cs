@@ -116,7 +116,7 @@ namespace BPA.Model
             else
                 row = Table.ListRows.Add();
             FillRow(row);
-            
+
             row.Range[1, Table.ListColumns[Filds["Id"]].Index].Value = id;
             return id;
         }
@@ -166,15 +166,20 @@ namespace BPA.Model
                 foreach (KeyValuePair<string, string> item in Filds)
                 {
                     buffer = item.Value;
-                    ColDict.Add(item.Key, Table.ListColumns[buffer].Index);
+                    try
+                    {
+                        ColDict.Add(item.Key, Table.ListColumns[buffer].Index);
+                    } catch
+                    {
+
+                    }
                 }
                 PropertyInfo pi = GetType().GetProperty("ColDict");
                 pi.SetValue(this, ColDict);
-
             }
             catch
             {
-                string msg = buffer;
+                throw new ApplicationException($"Ошибка в поиске столбцов { SheetName }");
             }
         }
 
