@@ -1,6 +1,7 @@
 ﻿using Excel = Microsoft.Office.Interop.Excel;
 using System.Collections.Generic;
 using Microsoft.Office.Interop.Excel;
+using System;
 
 namespace BPA.Modules
 {
@@ -184,5 +185,37 @@ namespace BPA.Modules
                 return false;
             }
         }
+
+        #region --Проверка значения ячейки на ошибку--
+        public static bool IsRangeValueError(object obj)
+        {
+            foreach (CVErrEnum cVErr in Enum.GetValues(typeof(CVErrEnum)))
+            {
+                if (IsXLCVErr(obj, cVErr)) return true;
+            }
+            return false;
+        }
+        private static bool IsXLCVErr(object obj)
+        {
+            return (obj) is Int32;
+        }
+
+        private static bool IsXLCVErr(object obj, CVErrEnum whichError)
+        {
+            return (obj is Int32) && ((Int32)obj == (Int32)whichError);
+        }
+
+        private enum CVErrEnum : Int32
+        {
+            ErrDiv0 = -2146826281,
+            ErrGettingData = -2146826245,
+            ErrNA = -2146826246,
+            ErrName = -2146826259,
+            ErrNull = -2146826288,
+            ErrNum = -2146826252,
+            ErrRef = -2146826265,
+            ErrValue = -2146826273
+        }
+        #endregion
     }
 }
