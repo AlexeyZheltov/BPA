@@ -202,7 +202,10 @@ namespace BPA.Model
                     try
                     {
                         //prop.SetValue(this, Convert.ChangeType(row.Range[1, Table.ListColumns[Filds[prop.Name]].Index].Value, prop.PropertyType));
-                        prop.SetValue(this, Convert.ChangeType(buffer[1, ColDict[prop.Name]], prop.PropertyType));
+                        if (!FunctionsForExcel.IsRangeValueError(buffer[1, ColDict[prop.Name]]))
+                            prop.SetValue(this, Convert.ChangeType(buffer[1, ColDict[prop.Name]], prop.PropertyType));
+                        else
+                            prop.SetValue(this, prop.PropertyType.IsValueType ? Activator.CreateInstance(prop.PropertyType) : null);
                     }
                     catch
                     {
@@ -218,6 +221,7 @@ namespace BPA.Model
             if (index == 0) return null;
             return Table.ListRows[index];
         }
+
 
         public ListRow GetRow(string fildName, object value, Range afterCell = null)
         {
