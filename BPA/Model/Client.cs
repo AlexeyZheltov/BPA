@@ -42,6 +42,17 @@ namespace BPA.Model {
         public Client() { }
 
         public Client(Excel.ListRow row) => SetProperty(row);
+
+        /// <summary>
+        /// Нужно описать конструктор!!!!
+        /// </summary>
+        /// <param name="planning"></param>
+        public Client(PlanningNewYear planning)
+        {
+            CustomerStatus = planning.CustomerStatus;
+            ChannelType = planning.ChannelType;
+        }
+
         /// <summary>
         /// №
         /// </summary>
