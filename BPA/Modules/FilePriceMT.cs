@@ -182,6 +182,42 @@ namespace BPA.Modules
             IsOpen = true;
         }
 
+        /// <summary>
+        /// получение магазина по дате
+        /// </summary>
+        /// <param name="date"></param>
+        public void Load(DateTime date)
+        {
+            if (Workbook == null)
+                return;
+
+            clients.Clear();
+
+            int dateFromCol = FindColumn("От");
+            int dateToCol = FindColumn("До");
+            IsCancel = false;
+            ActionStart?.Invoke("Загрузка файла PriceListMT");
+
+            for (int rw = 2; rw<LastRow; rw++)
+            {
+                if (IsCancel) return;
+
+                DateTime firstDate = GetDateFromCell(rw, dateFromCol);
+                DateTime lastDate = GetDateFromCell(rw, dateToCol);
+
+                if (lastDate.Year >= 9999)
+                {
+                    AddClient(rw, PriceOfListingColumn);
+                }
+                else if (date <= lastDate && date >= firstDate)
+                {
+                    AddClient(rw, PriceNewColumn);
+                }
+                ActionDone?.Invoke(1);
+            }
+            IsOpen = true;
+        }
+
         private DateTime GetDateFromCell(int rw, int col)
         {
             if (Double.TryParse(GetValueFromColumn(rw, col), out double dateDouble))
