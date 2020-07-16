@@ -540,9 +540,6 @@ namespace BPA
             FileDescision fileDescision = null;
             FileBuget fileBuget = null;
 
-            new Discount().ReadColNumbers();
-            new ProductForPlanningNewYear().ReadColNumbers();
-            new STK().ReadColNumbers();
 
             Worksheet worksheet = Globals.ThisWorkbook.Application.ActiveSheet;
             if (!FunctionsForExcel.HasRange(worksheet, Properties.Settings.Default.PlannningNYIndicatorCellName) ||
@@ -553,6 +550,12 @@ namespace BPA
             }
             try
             {
+                new Discount().ReadColNumbers();
+                new ProductForPlanningNewYear().ReadColNumbers();
+                new STK().ReadColNumbers();
+                new Client().ReadColNumbers();
+                new Product().ReadColNumbers();
+                new RRC().ReadColNumbers();
 
                 new PlanningNewYear(worksheet.Name).ReadColNumbers();
                 new PlanningNewYearPrognosis(new PlanningNewYear(worksheet.Name)).ReadColNumbers();
@@ -583,6 +586,12 @@ namespace BPA
                 if (fileDescision?.IsOpen ?? false) fileDescision.Close();
                 if (fileBuget?.IsOpen ?? false) fileBuget.Close();
 
+                //создание клиента для формирования PriceList-цены
+                Client client = new Client(planningNewYearTmp);
+                PriceListForPlaning priceListForPlaning = new PriceListForPlaning(client, planningNewYearTmp.CurrentDate);
+                priceListForPlaning.Load();
+                //
+
                 processBar = new ProcessBar("Обновление клиентов", products.Count);
                 bool isCancel = false;
                 void CancelLocal() => isCancel = true;
@@ -603,6 +612,7 @@ namespace BPA
 
                     PlanningNewYearPrognosis prognosis = new PlanningNewYearPrognosis(planning);
                     prognosis.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
+                    prognosis.PriceList = priceListForPlaning.GetPrice(product.Article);
 
                     PlanningNewYearPromo promo = new PlanningNewYearPromo(planning);
                     promo.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
@@ -651,6 +661,10 @@ namespace BPA
             }
             try
             {
+                new Client().ReadColNumbers();
+                new Product().ReadColNumbers();
+                new RRC().ReadColNumbers();
+                new Discount().ReadColNumbers();
 
                 new PlanningNewYear(worksheet.Name).ReadColNumbers();
                 new PlanningNewYearPrognosis(new PlanningNewYear(worksheet.Name)).ReadColNumbers();
@@ -685,6 +699,12 @@ namespace BPA
                 if (fileBuget?.IsOpen ?? false) fileBuget.Close();
                 if (fileDescision?.IsOpen ?? false) fileDescision.Close();
 
+                //создание клиента для формирования PriceList-цены
+                Client client = new Client(planningNewYearTmp);
+                PriceListForPlaning priceListForPlaning = new PriceListForPlaning(client, planningNewYearTmp.CurrentDate);
+                priceListForPlaning.Load();
+                //
+
                 int count = prognosises.Count > promos.Count ? prognosises.Count : promos.Count;
                 processBar = new ProcessBar("Обновление клиентов", count);
                 bool isCancel = false;
@@ -706,6 +726,7 @@ namespace BPA
 
                     //сопоставить каждый prognosis и promo ArticleQuantities из файлов
                     prognosis.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
+                    prognosis.PriceList = priceListForPlaning.GetPrice(prognosis.planningNewYear.Article);
                     promo.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
 
                     prognosis.Save();

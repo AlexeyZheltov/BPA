@@ -17,7 +17,7 @@ namespace BPA.Modules
 
         public PriceListForPlaning(Client client, DateTime date)
         {
-            if(client is Client cl && date is DateTime dt)
+            if (client is Client cl && date is DateTime dt)
             {
                 currentClient = cl;
                 currentDate = dt;
@@ -41,7 +41,7 @@ namespace BPA.Modules
             {
                 //Загурзить файл price list MT
                 filePriceMT = new FilePriceMT();
-                filePriceMT.Load(currentClient.Mag, currentDate);
+                filePriceMT.Load(currentDate);
                 if (!filePriceMT.IsOpen) throw new ApplicationException("Не удалось загрузить File PriceListMT");
             }
 

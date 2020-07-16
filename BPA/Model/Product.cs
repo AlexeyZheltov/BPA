@@ -658,7 +658,7 @@ namespace BPA.Model
         {
             List<Product> products = Product.GetProductsForDiscounts(new PBWrapper($"Создание прайс-листа для {client.Customer}", "Чтение артикула [Index]"));
             if (products == null) return null;
-
+            new ExclusiveMag().ReadColNumbers();
             List<string> exclusives = (from em in ExclusiveMag.GetAllExclusives()
                                              select em.Name.ToLower()).ToList();
 
