@@ -290,10 +290,10 @@ namespace BPA.Modules
 
             product.Article = GetValueFromColumn(row, LocalIDGardenaColumn);
 
-            product.GenericName = GetValueFromColumn(row, GenericNameColumn);
+            //product.GenericName = GetValueFromColumn(row, GenericNameColumn);
             product.Model = GetValueFromColumn(row, ModelColumn);
             product.SubGroup = GetValueFromColumn(row, SubgroupColumn);
-            product.ProductGroup = GetValueFromColumn(row, ProductGroupColumn);
+            //product.ProductGroup = GetValueFromColumn(row, ProductGroupColumn);
             product.PNS = GetValueFromColumn(row, IdColumn);
 
 
