@@ -13,6 +13,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Text;
 using Microsoft.Office.Core;
+using SettingsBPA = BPA.Properties.Settings;
 
 namespace BPA
 {
@@ -522,7 +523,7 @@ namespace BPA
                 FunctionsForExcel.SpeedOn();
                 new PlanningNewYear().ReadColNumbers();
 
-                PlanningNewYear planningNewYear = new PlanningNewYear(Properties.Settings.Default.templateSheetName);
+                PlanningNewYear planningNewYear = new PlanningNewYear(SettingsBPA.Default.SHEET_NAME_PLANNING_TEMPLATE);
                 planningNewYear.GetSheetCopy();
             } catch (Exception ex)
             {
@@ -542,8 +543,8 @@ namespace BPA
 
 
             Worksheet worksheet = Globals.ThisWorkbook.Application.ActiveSheet;
-            if (!FunctionsForExcel.HasRange(worksheet, Properties.Settings.Default.PlannningNYIndicatorCellName) ||
-                worksheet.Name == Properties.Settings.Default.templateSheetName)
+            if (!FunctionsForExcel.HasRange(worksheet, SettingsBPA.Default.PlannningNYIndicatorCellName) ||
+                worksheet.Name == SettingsBPA.Default.SHEET_NAME_PLANNING_TEMPLATE)
             {
                 MessageBox.Show("Перейдите на страницу планирования (или создайте её) и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -653,8 +654,8 @@ namespace BPA
             FileBuget fileBuget = null;
 
             Worksheet worksheet = Globals.ThisWorkbook.Application.ActiveSheet;
-            if (!FunctionsForExcel.HasRange(worksheet, Properties.Settings.Default.PlannningNYIndicatorCellName) ||
-                worksheet.Name == Properties.Settings.Default.templateSheetName)
+            if (!FunctionsForExcel.HasRange(worksheet, SettingsBPA.Default.PlannningNYIndicatorCellName) ||
+                worksheet.Name == SettingsBPA.Default.SHEET_NAME_PLANNING_TEMPLATE)
             {
                 MessageBox.Show("Перейдите на страницу планирования (или создайте её) и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -781,8 +782,8 @@ namespace BPA
             new PlanningNewYearSave(new PlanningNewYear(worksheet.Name)).ReadColNumbers();
             new Plan().ReadColNumbers();
 
-            if (!FunctionsForExcel.HasRange(worksheet, Properties.Settings.Default.PlannningNYIndicatorCellName) ||
-                worksheet.Name == Properties.Settings.Default.templateSheetName)
+            if (!FunctionsForExcel.HasRange(worksheet, SettingsBPA.Default.PlannningNYIndicatorCellName) ||
+                worksheet.Name == SettingsBPA.Default.SHEET_NAME_PLANNING_TEMPLATE)
             {
                 MessageBox.Show("Перейдите на страницу планирования (или создайте её) и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;

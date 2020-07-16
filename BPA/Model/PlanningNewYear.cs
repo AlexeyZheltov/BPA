@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using BPA.Modules;
 using System;
 using BPA.Forms;
+using SettingsBPA = BPA.Properties.Settings;
 
 namespace BPA.Model
 {
@@ -31,7 +32,7 @@ namespace BPA.Model
             //}
         }
 
-        public string templateSheetName = Properties.Settings.Default.templateSheetName;
+        public readonly string templateSheetName = SettingsBPA.Default.SHEET_NAME_PLANNING_TEMPLATE;
         private const string CustomerStatusLabel = "Customer status";
         private const string ChannelTypeLabel = "Channel type";
         private const string YearLabel = "Период";

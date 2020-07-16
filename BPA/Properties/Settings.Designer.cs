@@ -12,7 +12,7 @@ namespace BPA.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.6.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.4.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -26,24 +26,12 @@ namespace BPA.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Планирование нового года шаблон")]
-        public string templateSheetName {
+        public string SHEET_NAME_PLANNING_TEMPLATE {
             get {
-                return ((string)(this["templateSheetName"]));
+                return ((string)(this["SHEET_NAME_PLANNING_TEMPLATE"]));
             }
             set {
-                this["templateSheetName"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("PlanningNYCell")]
-        public string PlannningNYIndicatorCellName {
-            get {
-                return ((string)(this["PlannningNYIndicatorCellName"]));
-            }
-            set {
-                this["PlannningNYIndicatorCellName"] = value;
+                this["SHEET_NAME_PLANNING_TEMPLATE"] = value;
             }
         }
         
