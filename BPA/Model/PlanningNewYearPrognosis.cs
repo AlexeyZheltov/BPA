@@ -32,6 +32,7 @@ namespace BPA.Model
         private readonly Dictionary<string, string> _filds = new Dictionary<string, string>
         {
             { "Id","№" },
+            { "PriceList","Price list цена, руб." },
 
             { "QuantityPrognosisYear","Прогноз за год, шт." },
             { "QuantityPrognosis01","Прогноз январь, шт." },
@@ -91,6 +92,13 @@ namespace BPA.Model
             set
             {
             }
+        }
+        /// <summary>
+        /// Price list цена, руб.
+        /// </summary>
+        public double PriceList
+        {
+            get; set;
         }
         /// <summary>
         /// Прогноз за год, шт. 
