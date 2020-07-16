@@ -541,7 +541,6 @@ namespace BPA
             FileBuget fileBuget = null;
 
             new Discount().ReadColNumbers();
-            new PlanningNewYear().ReadColNumbers();
             new ProductForPlanningNewYear().ReadColNumbers();
             new STK().ReadColNumbers();
 
@@ -554,6 +553,11 @@ namespace BPA
             }
             try
             {
+
+                new PlanningNewYear(worksheet.Name).ReadColNumbers();
+                new PlanningNewYearPrognosis(new PlanningNewYear(worksheet.Name)).ReadColNumbers();
+                new PlanningNewYearPromo(new PlanningNewYear(worksheet.Name)).ReadColNumbers();
+
                 //получаем заполненые данне
                 PlanningNewYear planningNewYearTmp = new PlanningNewYear().GetTmp(worksheet.Name);
                 if (planningNewYearTmp == null)
@@ -647,10 +651,11 @@ namespace BPA
             }
             try
             {
-                PlanningNewYear planningForColl = new PlanningNewYear(worksheet.Name);
-                planningForColl.ReadColNumbers();
-                new PlanningNewYearPrognosis(planningForColl).ReadColNumbers();
-                new PlanningNewYearPromo(planningForColl).ReadColNumbers();
+
+                new PlanningNewYear(worksheet.Name).ReadColNumbers();
+                new PlanningNewYearPrognosis(new PlanningNewYear(worksheet.Name)).ReadColNumbers();
+                new PlanningNewYearPromo(new PlanningNewYear(worksheet.Name)).ReadColNumbers();
+
                 
                 PlanningNewYear planningNewYearTmp = new PlanningNewYear().GetTmp(worksheet.Name);
                 if (!planningNewYearTmp.HasData())
@@ -751,9 +756,8 @@ namespace BPA
 
             Worksheet worksheet = Globals.ThisWorkbook.Application.ActiveSheet;
 
-            PlanningNewYear planningForColl = new PlanningNewYear(worksheet.Name);
-            planningForColl.ReadColNumbers();
-            new PlanningNewYearSave(planningForColl).ReadColNumbers();
+            new PlanningNewYear(worksheet.Name).ReadColNumbers();
+            new PlanningNewYearSave(new PlanningNewYear(worksheet.Name)).ReadColNumbers();
             new Plan().ReadColNumbers();
 
             if (!FunctionsForExcel.HasRange(worksheet, Properties.Settings.Default.PlannningNYIndicatorCellName) ||
