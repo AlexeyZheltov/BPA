@@ -43,7 +43,7 @@ namespace BPA.Model
             { "QuantityPromo06","Промо прогноз июнь, шт." },
             { "QuantityPromo07","Промо прогноз июль, шт." },
             { "QuantityPromo08","Промо прогноз август, шт." },
-            { "QuantityPromo09","Промо прогноз сентрябрь, шт." },
+            { "QuantityPromo09","Промо прогноз сентябрь, шт." },
             { "QuantityPromo10","Промо прогноз октябрь, шт." },
             { "QuantityPromo11","Промо прогноз ноябрь, шт." },
             { "QuantityPromo12","Промо прогноз декабрь, шт." },
@@ -57,7 +57,7 @@ namespace BPA.Model
             { "GSPromo06","Промо GS июнь, руб." },
             { "GSPromo07","Промо GS июль, руб." },
             { "GSPromo08","Промо GS август, руб." },
-            { "GSPromo09","Промо GS сентрябрь, руб." },
+            { "GSPromo09","Промо GS сентябрь, руб." },
             { "GSPromo10","Промо GS октябрь, руб." },
             { "GSPromo11","Промо GS ноябрь, руб." },
             { "GSPromo12","Промо GS декабрь, руб." },
@@ -71,7 +71,7 @@ namespace BPA.Model
             { "NSPromo06","Промо NS июнь, руб." },
             { "NSPromo07","Промо NS июль, руб." },
             { "NSPromo08","Промо NS август, руб." },
-            { "NSPromo09","Промо NS сентрябрь, руб." },
+            { "NSPromo09","Промо NS сентябрь, руб." },
             { "NSPromo10","Промо NS октябрь, руб." },
             { "NSPromo11","Промо NS ноябрь, руб." },
             { "NSPromo12","Промо NS декабрь, руб." }
@@ -157,7 +157,7 @@ namespace BPA.Model
             get; set;
         } 
         /// <summary>
-        /// Промо прогноз сентрябрь, шт. 
+        /// Промо прогноз сентябрь, шт. 
         /// </summary>
         public double QuantityPromo09
         {
@@ -248,7 +248,7 @@ namespace BPA.Model
             get; set;
         }
         /// <summary>
-        /// Промо GS сентрябрь, руб. 
+        /// Промо GS сентябрь, руб. 
         /// </summary>
         public double GSPromo09
         {
@@ -339,7 +339,7 @@ namespace BPA.Model
             get; set;
         }
         /// <summary>
-        /// Промо NS сентрябрь, руб. 
+        /// Промо NS сентябрь, руб. 
         /// </summary>
         public double NSPromo09
         {

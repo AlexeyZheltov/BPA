@@ -43,7 +43,7 @@ namespace BPA.Model
             { "QuantityPrognosis06","Прогноз июнь, шт." },
             { "QuantityPrognosis07","Прогноз июль, шт." },
             { "QuantityPrognosis08","Прогноз август, шт." },
-            { "QuantityPrognosis09","Прогноз сентрябрь, шт." },
+            { "QuantityPrognosis09","Прогноз сентябрь, шт." },
             { "QuantityPrognosis10","Прогноз октябрь, шт." },
             { "QuantityPrognosis11","Прогноз ноябрь, шт." },
             { "QuantityPrognosis12","Прогноз декабрь, шт." },
@@ -57,7 +57,7 @@ namespace BPA.Model
             { "GSPrognosis06","GS июнь, руб." },
             { "GSPrognosis07","GS июль, руб." },
             { "GSPrognosis08","GS август, руб." },
-            { "GSPrognosis09","GS сентрябрь, руб." },
+            { "GSPrognosis09","GS сентябрь, руб." },
             { "GSPrognosis10","GS октябрь, руб." },
             { "GSPrognosis11","GS ноябрь, руб." },
             { "GSPrognosis12","GS декабрь, руб." },
@@ -71,7 +71,7 @@ namespace BPA.Model
             { "NSPrognosis06","NS июнь, руб." },
             { "NSPrognosis07","NS июль, руб." },
             { "NSPrognosis08","NS август, руб." },
-            { "NSPrognosis09","NS сентрябрь, руб." },
+            { "NSPrognosis09","NS сентябрь, руб." },
             { "NSPrognosis10","NS октябрь, руб." },
             { "NSPrognosis11","NS ноябрь, руб." },
             { "NSPrognosis12","NS декабрь, шт." }
@@ -164,7 +164,7 @@ namespace BPA.Model
             get; set;
         }
         /// <summary>
-        /// Прогноз сентрябрь, шт. 
+        /// Прогноз сентябрь, шт. 
         /// </summary>
         public double QuantityPrognosis09
         {
@@ -255,7 +255,7 @@ namespace BPA.Model
             get; set;
         }
         /// <summary>
-        /// GS сентрябрь, руб. 
+        /// GS сентябрь, руб. 
         /// </summary>
         public double GSPrognosis09
         {
@@ -346,7 +346,7 @@ namespace BPA.Model
             get; set;
         }
         /// <summary>
-        /// NS сентрябрь, руб. 
+        /// NS сентябрь, руб. 
         /// </summary>
         public double NSPrognosis09
         {
