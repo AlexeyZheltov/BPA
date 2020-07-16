@@ -13,7 +13,7 @@ namespace BPA.Modules
     internal class FilePriceMT
     {
 
-        private readonly string FileName;
+        private readonly string FileName = "";
         private readonly string FileSheetName = SettingsBPA.Default.SHEET_NAME_FILE_PRICELISTMT;
         private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
         private readonly int CalendarHeaderRow = 1;

@@ -10,7 +10,7 @@ namespace BPA.Modules
 {
     internal class FileCalendar
     {
-        private readonly string FileName;
+        private readonly string FileName = "";
         private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
         private readonly int CalendarHeaderRow = 6;
 
