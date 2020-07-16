@@ -75,7 +75,7 @@ namespace BPA.Forms
             settings.ProductCalendarPath = ProductCalendar_Path_TextBox.Text;
             settings.BudgetPath = Budget_Path_TextBox.Text;
             settings.DecisionPath = Decision_Path_TextBox.Text;
-            settings.PriceListMTPath = Decision_Path_TextBox.Text;
+            settings.PriceListMTPath = PriceListMT_Path_TextBox.Text;
         }
     }
 }
