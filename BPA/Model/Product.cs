@@ -29,7 +29,8 @@ namespace BPA.Model
         private readonly Dictionary<string, string> _filds = new Dictionary<string, string>
         {
             { "Id","№" },
-            { "Category","Суперкатегория" },
+            { "Category","Категория для прайс-листа дилеров" },
+            { "SuperCategory","Суперкатегория" },
             { "SupercategoryEng","Суперкатегория (ENG)"  },
             { "SupercategoryRu","Суперкатегория (RUS)" },
             { "ProductGroup","Продукт группа" },
@@ -103,6 +104,13 @@ namespace BPA.Model
         }
         /// <summary>
         /// Суперкатегория(ENG)
+        /// </summary>
+        public string Supercategory
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Суперкатегория
         /// </summary>
         public string SupercategoryEng
         {
