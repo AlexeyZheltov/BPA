@@ -348,24 +348,53 @@ namespace BPA.Model
             if (plannings == null)
                 return;
 
+            ProcessBar processBar = null;
+            processBar = new ProcessBar($"Сбор данных для сохранения { SheetName } ", Table.ListRows.Count);
+            bool isCancel = false;
+            void CancelLocal() => isCancel = true;
+            processBar.CancelClick += CancelLocal;
+            processBar.Show();
+
             foreach (PlanningNewYear planning in plannings)
             {
+                if (isCancel)
+                    break;
+                processBar.TaskStart($"Обрабатывается артикул { planning.Article }");
+
                 prognosises.Add(new PlanningNewYearPrognosis(planning));
                 promos.Add(new PlanningNewYearPromo(planning));
+                processBar.TaskDone(1);
             }
+            processBar.Close();
+            processBar = null;
         }
         public void SetLists(List<PlanningNewYearSave> saves)
         {
             List<PlanningNewYear> plannings = GetList();
             if (plannings == null)
                 return;
+            
+            ProcessBar processBar = null;
+            processBar = new ProcessBar($"Сбор данных для сохранения { SheetName } ", Table.ListRows.Count);
+            bool isCancel = false;
+            void CancelLocal() => isCancel = true;
+            processBar.CancelClick += CancelLocal;
+            processBar.Show();
 
             foreach (PlanningNewYear planning in plannings)
             {
+                if (isCancel)
+                    break;
+                processBar.TaskStart($"Обрабатывается артикул { planning.Article }");
+
                 PlanningNewYearSave planningNewYearSave = new PlanningNewYearSave(planning);
                 planningNewYearSave.SetValues();
                 saves.Add(planningNewYearSave);
+                
+                processBar.TaskDone(1);
             }
+            processBar.Close();
+            processBar = null;
         }
 
         private List<PlanningNewYear> GetList()
@@ -390,6 +419,7 @@ namespace BPA.Model
 
                 PlanningNewYear planning = this.Clone();
                 planning.SetProperty(listRow);
+                processBar.TaskStart($"Обрабатывается артикул { planning.Article }");
                 if ((int)planning.Id != 0)
                     plannings.Add(planning);
 
