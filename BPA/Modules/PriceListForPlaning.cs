@@ -55,6 +55,11 @@ namespace BPA.Modules
 
             foreach (Product product in products)
             {
+                if (product.Category == "")
+                {
+                    if (filePriceMT?.IsOpen ?? false) filePriceMT.Close();
+                    throw new ApplicationException($"Для {product.Article} не указана категория");
+                }
                 //получить формулу
                 string formula = currentDiscount.GetFormulaByName(product.Category);
 
@@ -74,11 +79,14 @@ namespace BPA.Modules
                         RRC = result
                     });
                 else
-                    continue;
-                Debug.Print($"В одной из формул для {currentClient.Customer} содержится ошибка");
-                //throw new ApplicationException($"В одной из формул для {currentClient.Customer} содержится ошибка");
+                {
+                    if (filePriceMT?.IsOpen ?? false) filePriceMT.Close();
+                    throw new ApplicationException($"В одной из формул для {currentClient.Customer} содержится ошибка");
+                    //Debug.Print($"В одной из формул для {currentClient.Customer} содержится ошибка");
+                    //continue;
+                }
             }
-            filePriceMT?.Close();
+            if (filePriceMT?.IsOpen ?? false) filePriceMT.Close();
             filePriceMT = null;
             isLoaded = true;
         }

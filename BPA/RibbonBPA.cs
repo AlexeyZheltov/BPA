@@ -428,9 +428,8 @@ namespace BPA
                 foreach (Client currentClient in priceClients)
                 {
                     Discount currentDiscount = Discount.GetCurrentDiscount(currentClient, currentDate);
-                    //if (currentDiscount == null) return;
-                    if (currentDiscount == null)
-                        continue;
+                    if (currentDiscount == null) return;
+                    //if (currentDiscount == null) continue;
 
                     //подгрузить PriceMT если неужно, подключится к РРЦ                   
                     if (currentDiscount.NeedFilePriceMT() && (!filePriceMT?.IsOpen ?? true))
@@ -460,8 +459,11 @@ namespace BPA
                         if (isCancel) return;
                         //получить формулу
                         processBar.TaskStart($"Расчет цены для {product.Article}");
-                        if (product.Category == "") 
-                            continue;
+                        if (product.Category == "")
+                        {
+                            MessageBox.Show($"Для {product.Article} не указана категория", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
                         string formula = currentDiscount.GetFormulaByName(product.Category);
 
                         //Найти метку или метки. [Pricelist MT]  [DIY Pricelist] [РРЦ] и заменить
