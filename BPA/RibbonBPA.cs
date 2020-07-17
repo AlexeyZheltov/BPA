@@ -378,6 +378,8 @@ namespace BPA
                 new Product().ReadColNumbers();
                 new Discount().ReadColNumbers();
 
+                FunctionsForExcel.SpeedOn();
+
                 if (All)
                 {
                     //загрузить всех подопытных
