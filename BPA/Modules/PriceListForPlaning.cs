@@ -1,6 +1,7 @@
 ﻿using BPA.Model;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -72,7 +73,10 @@ namespace BPA.Modules
                     {
                         RRC = result
                     });
-                else throw new ApplicationException($"В одной из формул для {currentClient.Customer} содержится ошибка");
+                else
+                    continue;
+                Debug.Print($"В одной из формул для {currentClient.Customer} содержится ошибка");
+                //throw new ApplicationException($"В одной из формул для {currentClient.Customer} содержится ошибка");
             }
             filePriceMT?.Close();
             filePriceMT = null;
