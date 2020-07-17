@@ -130,6 +130,7 @@ namespace BPA.Modules
                 throw new FileNotFoundException($"Файл {filename} не найден");
             }
             FileName = filename;
+            IsOpen = true;
         }
 
         public FileCalendar(Workbook workbook)
