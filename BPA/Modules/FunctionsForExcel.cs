@@ -63,14 +63,12 @@ namespace BPA.Modules
             return System.Text.RegularExpressions.Regex.Replace(value, @"\s+", " ");
         }
 
-        //Function MS_SheetExist(ByVal NameSheet As String) As Boolean
-        //    Dim sh As Object
-        //    On Error Resume Next
-        //    Set sh = ActiveWorkbook.Sheets(NameSheet)
-        //    If Err.Number = 0 Then MS_SheetExist = True
-        //End Function
-
-        public static bool IsSheetExists(string sheetName)
+        /// <summary>
+        /// ПРоверка наличия листа,работает через Catch (!)
+        /// </summary>
+        /// <param name="sheetName"></param>
+        /// <returns></returns>
+        public static bool IsSheetExistsTry(string sheetName)
         {
             Excel.Worksheet worksheet;
             try
@@ -79,6 +77,23 @@ namespace BPA.Modules
                 return true;
             } 
             catch { return false; }
+        }
+
+        /// <summary>
+        /// ПРоверка наличия листа,работает через перебор листов
+        /// </summary>
+        /// <param name="sheetName"></param>
+        /// <returns></returns>
+        public static bool IsSheetExists(string sheetName)
+        {
+            //Excel.Worksheet worksheet;
+
+            foreach (Worksheet worksheet in Globals.ThisWorkbook.Sheets)
+            {
+                if (worksheet.Name == sheetName) 
+                    return true;
+            }
+            return false;
         }
 
         /// <summary>
