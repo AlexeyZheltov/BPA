@@ -604,6 +604,8 @@ namespace BPA.Model
                     Calendar = row.Range[1, Table.ListColumns[Filds["Calendar"]].Index].Text
                 };
                 products.Add(product);
+
+                processBar.TaskDone(1);
             }
             processBar.Close();
             return products;

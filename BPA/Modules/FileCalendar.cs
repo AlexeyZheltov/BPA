@@ -1,7 +1,7 @@
 ﻿using BPA.Model;
 
 using Microsoft.Office.Interop.Excel;
-
+using BPA.Forms;
 using System;
 using System.IO;
 using System.Windows.Forms;
@@ -164,9 +164,16 @@ namespace BPA.Modules
         private bool ReadCalendarLoad()
         {
             Product product = null;
+            ProcessBar processBar = null;
+            processBar = new ProcessBar("Загрузка данных календаря", CountActions);
+            processBar.Show();
+            ActionStart += processBar.TaskStart;
+            ActionDone += processBar.TaskDone;
+            processBar.CancelClick += Cancel;
 
             for (int rw = CalendarHeaderRow + 1; rw < LastRow; rw++)
             {
+
                 if (IsCancel) return false;
                 ActionStart?.Invoke($"Обрабатывается строка {rw}");
 
@@ -228,6 +235,7 @@ namespace BPA.Modules
 
                 ActionDone?.Invoke(1);
             }
+            processBar?.Close();
             if (product == null) return false;
             product.Sort("Id");
             product.Sort("ProductGroup");

@@ -160,6 +160,7 @@ namespace BPA.Model {
                 clients.Add(new Client(row));
                 processBar.TaskDone(1);
             }
+            processBar?.Close();
 
             return clients;
         }

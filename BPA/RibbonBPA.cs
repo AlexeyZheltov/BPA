@@ -30,7 +30,6 @@ namespace BPA
         /// </summary>
         private void AddNewCalendar_Click(object sender, RibbonControlEventArgs e)
         {
-            ProcessBar processBar = null;
             FileCalendar fileCalendar = null;
 
             try
@@ -41,13 +40,9 @@ namespace BPA
                 new Product().ReadColNumbers();
                 new ProductCalendar().ReadColNumbers();
 
-                processBar = new ProcessBar("Загрузка данных календаря", fileCalendar.CountActions);
                 FunctionsForExcel.SpeedOn();
                 Globals.ThisWorkbook.Activate();
-                processBar.Show();
-                fileCalendar.ActionStart += processBar.TaskStart;
-                fileCalendar.ActionDone += processBar.TaskDone;
-                processBar.CancelClick += fileCalendar.Cancel;
+
                 fileCalendar.LoadCalendar();
             }
             catch (Exception ex)
@@ -57,7 +52,6 @@ namespace BPA
             finally
             {
                 FunctionsForExcel.SpeedOff();
-                processBar?.Close();
                 if (fileCalendar?.IsOpen ?? false) fileCalendar.Close();
             }
         }
@@ -71,9 +65,9 @@ namespace BPA
         {
             new Product().ReadColNumbers();
             new ProductCalendar().ReadColNumbers();
-
+            ProcessBar processBar = null;
             List<ProductCalendar> calendars = new ProductCalendar().GetProductCalendars();
-            ProcessBar processBar = new ProcessBar("Обновление продуктовых календарей", calendars.Count);
+            processBar = new ProcessBar("Обновление продуктовых календарей", calendars.Count);
             try
             {
                 FunctionsForExcel.SpeedOn();
@@ -97,6 +91,8 @@ namespace BPA
                     {
 
                     }
+                    processBar.SubBar.TaskDone();
+                    processBar.TaskDone(1);
                 }
             }
             catch (Exception ex)
@@ -183,9 +179,9 @@ namespace BPA
         {
             new ProductForRRC().ReadColNumbers();
             new RRC().ReadColNumbers();
-
+            ProcessBar processBar = null;
             List<ProductForRRC> products = new ProductForRRC().GetProducts();
-            ProcessBar processBar = new ProcessBar("Обновление цен из справочника", products.Count);
+            processBar = new ProcessBar("Обновление цен из справочника", products.Count);
             bool isCancel = false;
             void CancelLocal() => isCancel = true;
 
@@ -399,7 +395,7 @@ namespace BPA
                         processBar.TaskDone(1);
                     }
 
-                    processBar.Close();
+                    processBar?.Close();
                 }
                 else
                 {
@@ -442,7 +438,7 @@ namespace BPA
                         processBar.CancelClick += filePriceMT.Cancel;
                         filePriceMT.Load(currentClient.Mag, currentDate);
                         if (!filePriceMT.IsOpen) return;
-                        if (!All) processBar.Close();
+                        if (!All) processBar.Close(); ///else not close???
                     }
 
                     //Загрузка списка артикулов, какие из них актуальные?
