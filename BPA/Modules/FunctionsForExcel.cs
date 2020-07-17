@@ -104,7 +104,7 @@ namespace BPA.Modules
         /// <returns></returns>
         public static Excel.Worksheet CreateSheetCopy(Excel.Worksheet worksheet, string copyWorksheetName = "", string afterSheetName = "")
         {
-            Excel.Worksheet afterSheet = (afterSheetName != null && IsSheetExists(afterSheetName)) ? worksheet.Parent.Sheets[afterSheetName] : worksheet;
+            Excel.Worksheet afterSheet = (afterSheetName != "" && IsSheetExists(afterSheetName)) ? worksheet.Parent.Sheets[afterSheetName] : worksheet;
 
             worksheet.Copy(After: afterSheet);
             Excel.Worksheet newWorksheet = Application.ActiveSheet;
