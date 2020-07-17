@@ -71,7 +71,7 @@ namespace BPA.Modules
                     }
                     catch
                     {
-                        throw new ApplicationException($"Лист { FileSheetName } в книге { FileName } не найден!");
+                        throw new ApplicationException($"Лист \"{ FileSheetName }\" в книге { FileName } не найден!");
                     }
                 }
                 return _worksheet;

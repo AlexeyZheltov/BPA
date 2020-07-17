@@ -119,7 +119,7 @@ namespace BPA.Modules
             }
             else
             {
-                throw new ApplicationException("Загр Отменено");
+                throw new ApplicationException("Загрузка отменена");
             }
         }
 
