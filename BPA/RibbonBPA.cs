@@ -194,17 +194,22 @@ namespace BPA
                 Globals.ThisWorkbook.Activate();
 
                 DateTime date = products[0].DateOfPromotion;
+
+                List<RRC> rrcs = new RRC().GetSortedRRCList();
+
                 foreach (ProductForRRC product in products)
                 {
                     if (isCancel)
                         break;
 
                     processBar.TaskStart($"Обрабатывается артикул {product.Article}");
-                    if (date.Year > 1)
+                    List<RRC> RRCArt = rrcs.FindAll(x => x.Article == product.Article && x.Date <= date).ToList();
+
+                    if (RRCArt.Count > 0)
                     {
-                        RRC rrc = new RRC().GetRRC(product.Article, date);
-                        product.UpdatePriceFromRRC(rrc);
+                        product.UpdatePriceFromRRC(RRCArt[RRCArt .Count- 1]);
                     }
+
                     processBar.TaskDone(1);
                 }
             }
@@ -239,6 +244,9 @@ namespace BPA
                 Globals.ThisWorkbook.Activate();
 
                 DateTime date = products[0].DateOfPromotion;
+
+                List<RRC> rrcs = new RRC().GetSortedRRCList();
+
                 foreach (ProductForRRC product in products)
                 {
                     if (isCancel)
@@ -248,15 +256,18 @@ namespace BPA
 
                     if (date.Year > 1)
                     {
-                        RRC rrc = new RRC().GetRRC(product.Article, date, true);
+                        RRC rrc = rrcs.Find(x => x.Article == product.Article && x.Date == date);
 
                         if (rrc == null)
                         {
                             rrc = new RRC();
+                            rrc.SetProduct(product);
                             rrc.Save();
+                        } else
+                        {
+                            rrc.SetProduct(product);
+                            rrc.Update();
                         }
-
-                        rrc.UpdatePriceFromProduct(product);
                     }
                     processBar.TaskDone(1);
                 }
