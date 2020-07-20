@@ -137,6 +137,12 @@
     <Compile Include="Forms\MSCalendar.Designer.cs">
       <DependentUpon>MSCalendar.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\SettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SettingsForm.Designer.cs">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ProgressBar.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -167,6 +173,7 @@
     <Compile Include="Model\Supercategory.cs" />
     <Compile Include="Model\TableBase.cs" />
     <Compile Include="Modules\ArticleQuantity.cs" />
+    <Compile Include="Modules\BPASettings.cs" />
     <Compile Include="Modules\ExcelWindows.cs" />
     <Compile Include="Modules\FileBuget.cs" />
     <Compile Include="Modules\FileCalendar.cs" />
@@ -175,6 +182,7 @@
     <Compile Include="Modules\FunctionsForExcel.cs" />
     <Compile Include="Modules\Parsing.cs" />
     <Compile Include="Modules\PBWrapper.cs" />
+    <Compile Include="Modules\PriceListForPlaning.cs" />
     <Compile Include="Modules\StringCalculator.cs" />
     <Compile Include="Modules\WorksheetsSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -201,6 +209,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ProgressBar.resx">
       <DependentUpon>ProgressBar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SettingsForm.resx">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

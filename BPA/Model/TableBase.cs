@@ -1,4 +1,5 @@
-﻿using Microsoft.Office.Interop.Excel;
+﻿using BPA.Modules;
+using Microsoft.Office.Interop.Excel;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace BPA.Model
 {
@@ -73,23 +75,26 @@ namespace BPA.Model
         /// </summary>
         public void Save()
         {
-            if ((int)GetParametrValue("Id") == 0)
+            if (GetParametrValueId() == 0)
             {
                 int id = Insert();
 
-                foreach (var prop in GetType().GetProperties())
-                {
-                    if (prop.Name == "Id")
-                    {
-                        prop.SetValue(this, id);
-                    }
-                }
+                GetType().GetProperty("Id").SetValue(this, id);
+
+                //foreach (var prop in GetType().GetProperties())
+                //{
+                //    if (prop.Name == "Id")
+                //    {
+                //        prop.SetValue(this, id);
+                //    }
+                //}
             }
             else
             {
                 Update();
             }
         }
+
 
         /// <summary>
         /// Вставка данных в таблицу
@@ -111,7 +116,7 @@ namespace BPA.Model
             else
                 row = Table.ListRows.Add();
             FillRow(row);
-            
+
             row.Range[1, Table.ListColumns[Filds["Id"]].Index].Value = id;
             return id;
         }
@@ -121,7 +126,7 @@ namespace BPA.Model
         /// </summary>
         public void Update()
         {
-            ListRow row = GetRow((int)GetParametrValue("Id"));
+            ListRow row = GetRow(GetParametrValueId());
             FillRow(row);
         }
 
@@ -145,23 +150,62 @@ namespace BPA.Model
         /// </summary>
         public void Delete()
         {
-            ListRow row = GetRow((int)GetParametrValue("Id"));
+            ListRow row = GetRow(GetParametrValueId());
             row?.Delete();
         }
-        
+
+        /// <summary>
+        /// Установка столбцов. Необходимо вызвать единожды для всех экземляров
+        /// </summary>
+        public void ReadColNumbers()
+        {
+            string buffer = "";
+            try
+            {
+                Dictionary<string, int> ColDict = new Dictionary<string, int>();
+                foreach (KeyValuePair<string, string> item in Filds)
+                {
+                    buffer = item.Value;
+                    try
+                    {
+                        ColDict.Add(item.Key, Table.ListColumns[buffer].Index);
+                    } catch
+                    {
+
+                    }
+                }
+                PropertyInfo pi = GetType().GetProperty("ColDict");
+                pi.SetValue(this, ColDict);
+            }
+            catch
+            {
+                throw new ApplicationException($"Ошибка в поиске столбцов { SheetName }");
+            }
+        }
+
         /// <summary>
         /// Запись свойств класса данными из строки ListRow
         /// </summary>
         /// <param name="row">Строка таблицы</param>
         protected void SetProperty(ListRow row)
         {
+            //PropertyInfo[] pi = GetType().GetProperties();
+            //PropertyInfo[] pir = GetType().GetRuntimeProperties().ToArray();
+            Dictionary<string, int> ColDict = (Dictionary<string, int>)GetType().GetProperty("ColDict").GetValue(this);
+            object[,] buffer = row.Range.Value;
+            //Запомнить столбцы, читать строку целиком.
+
             foreach (var prop in GetType().GetProperties())
             {
                 if (Filds.ContainsKey(prop.Name))
                 {
                     try
                     {
-                        prop.SetValue(this, Convert.ChangeType(row.Range[1, Table.ListColumns[Filds[prop.Name]].Index].Value, prop.PropertyType));
+                        //prop.SetValue(this, Convert.ChangeType(row.Range[1, Table.ListColumns[Filds[prop.Name]].Index].Value, prop.PropertyType));
+                        if (!FunctionsForExcel.IsRangeValueError(buffer[1, ColDict[prop.Name]]))
+                            prop.SetValue(this, Convert.ChangeType(buffer[1, ColDict[prop.Name]], prop.PropertyType));
+                        else
+                            prop.SetValue(this, prop.PropertyType.IsValueType ? Activator.CreateInstance(prop.PropertyType) : null);
                     }
                     catch
                     {
@@ -177,6 +221,7 @@ namespace BPA.Model
             if (index == 0) return null;
             return Table.ListRows[index];
         }
+
 
         public ListRow GetRow(string fildName, object value, Range afterCell = null)
         {
@@ -239,6 +284,9 @@ namespace BPA.Model
             return null;
         }
 
+        public int GetParametrValueId() => (int)GetType().GetProperty("Id").GetValue(this);
+
+
         /// <summary>
         /// Получение ключа поля по наименованию столбца Table
         /// </summary>
@@ -246,11 +294,17 @@ namespace BPA.Model
         /// <returns></returns>
         private string GetKey(string keyValue)
         {
-            foreach (var pair in Filds)
-            {
-                if (pair.Value == keyValue) return pair.Key;
-            }
-            return string.Empty;
+            var quere = (from pair in Filds
+                         where pair.Value == keyValue
+                         select pair.Key).ToList();
+
+            return quere.Count > 0 ? quere[0] : string.Empty;
+
+            //foreach (var pair in Filds)
+            //{
+            //    if (pair.Value == keyValue) return pair.Key;
+            //}
+            //return string.Empty;
         }
 
         private int GetNextId()
@@ -277,19 +331,21 @@ namespace BPA.Model
 
         public void Mark(string fildNameToMark)
         {
-            ListRow row = GetRow((int)GetParametrValue("Id"));
-            row.Range[1, Table.ListColumns[Filds[fildNameToMark]].Index].Interior.Color = 65535;
+            Dictionary<string, int> ColDict = (Dictionary<string, int>)GetType().GetProperty("ColDict").GetValue(this);
+            ListRow row = GetRow(GetParametrValueId());
+            row.Range[1, ColDict[fildNameToMark]].Interior.Color = 65535;
         }
 
         public void ClearTable()
         {
-            if (Table.ListRows.Count < 1)
-                return;
+            Table.DataBodyRange.Rows.Delete();
+            //if (Table.ListRows.Count < 1)
+            //    return;
 
-            for (double rw = Table.ListRows.Count; rw > 0; rw--)
-            {
-                Table.ListRows[rw].Delete();
-            }
+            //for (double rw = Table.ListRows.Count; rw > 0; rw--)
+            //{
+            //    Table.ListRows[rw].Delete();
+            //}
         }
     }
 }

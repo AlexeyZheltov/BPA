@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using BPA.Modules;
 using System;
 using BPA.Forms;
+using SettingsBPA = BPA.Properties.Settings;
 
 namespace BPA.Model
 {
@@ -14,7 +15,7 @@ namespace BPA.Model
         //public override string TableName => "Планирование_новый_год";
         //public override string SheetName => "Планирование нового года шаблон";
         public override string TableName => GetTableName();
-        public override string SheetName => _TableWorksheetName != "" ? _TableWorksheetName: templateSheetName;
+        public override string SheetName => _TableWorksheetName != null ? _TableWorksheetName: templateSheetName;
         public string _TableWorksheetName;
 
         public string GetTableName()
@@ -31,12 +32,12 @@ namespace BPA.Model
             //}
         }
 
-        public string templateSheetName = Properties.Settings.Default.templateSheetName;
+        public readonly string templateSheetName = SettingsBPA.Default.SHEET_NAME_PLANNING_TEMPLATE;
         private const string CustomerStatusLabel = "Customer status";
         private const string ChannelTypeLabel = "Channel type";
         private const string YearLabel = "Период";
         private const string MaximumBonusLabel = "максмальный годовой бонус, %";
-
+        public static Dictionary<string, int> ColDict { get; set; } = new Dictionary<string, int>();
         #region --- Словарь ---
 
         public override IDictionary<string, string> Filds
@@ -157,6 +158,7 @@ namespace BPA.Model
         public string ChannelType;
         public string CustomerStatus;
         public int Year;
+        public DateTime planningDate;
         public double MaximumBonus;
 
         /// <summary>
@@ -262,8 +264,10 @@ namespace BPA.Model
                 planningNewYear.CustomerStatus = val(CustomerStatusLabel);
                 planningNewYear.ChannelType = val(ChannelTypeLabel);
                 if (Int32.TryParse(val(YearLabel), out int year))
+                {
                     planningNewYear.Year = year;
-
+                    planningNewYear.planningDate = new DateTime(year, 1, 1);
+                }
                 string val(string label)
                 {
                     try
@@ -344,24 +348,53 @@ namespace BPA.Model
             if (plannings == null)
                 return;
 
+            ProcessBar processBar = null;
+            processBar = new ProcessBar($"Сбор данных для сохранения { SheetName } ", Table.ListRows.Count);
+            bool isCancel = false;
+            void CancelLocal() => isCancel = true;
+            processBar.CancelClick += CancelLocal;
+            processBar.Show();
+
             foreach (PlanningNewYear planning in plannings)
             {
+                if (isCancel)
+                    break;
+                processBar.TaskStart($"Обрабатывается артикул { planning.Article }");
+
                 prognosises.Add(new PlanningNewYearPrognosis(planning));
                 promos.Add(new PlanningNewYearPromo(planning));
+                processBar.TaskDone(1);
             }
+            processBar.Close();
+            processBar = null;
         }
         public void SetLists(List<PlanningNewYearSave> saves)
         {
             List<PlanningNewYear> plannings = GetList();
             if (plannings == null)
                 return;
+            
+            ProcessBar processBar = null;
+            processBar = new ProcessBar($"Сбор данных для сохранения { SheetName } ", Table.ListRows.Count);
+            bool isCancel = false;
+            void CancelLocal() => isCancel = true;
+            processBar.CancelClick += CancelLocal;
+            processBar.Show();
 
             foreach (PlanningNewYear planning in plannings)
             {
+                if (isCancel)
+                    break;
+                processBar.TaskStart($"Обрабатывается артикул { planning.Article }");
+
                 PlanningNewYearSave planningNewYearSave = new PlanningNewYearSave(planning);
                 planningNewYearSave.SetValues();
                 saves.Add(planningNewYearSave);
+                
+                processBar.TaskDone(1);
             }
+            processBar.Close();
+            processBar = null;
         }
 
         private List<PlanningNewYear> GetList()
@@ -378,6 +411,7 @@ namespace BPA.Model
             processBar.Show();
 
             List<PlanningNewYear> plannings = new List<PlanningNewYear>();
+
             foreach (ListRow listRow in Table.ListRows)
             {
                 if (isCancel)
@@ -385,6 +419,7 @@ namespace BPA.Model
 
                 PlanningNewYear planning = this.Clone();
                 planning.SetProperty(listRow);
+                processBar.TaskStart($"Обрабатывается артикул { planning.Article }");
                 if ((int)planning.Id != 0)
                     plannings.Add(planning);
 
@@ -409,33 +444,48 @@ namespace BPA.Model
             return articleQuantity.Campaign != "0" && articleQuantity.Campaign != null ? true : false;
         }
 
-        public double[] GetQuantities(List<ArticleQuantity> articleDescisionQuantities, List<ArticleQuantity> articleBugetQuantities)
+        #endregion
+
+        public ArticleQuantity[] GetsArticleQuantities(List<ArticleQuantity> articleDescisionQuantities, List<ArticleQuantity> articleBugetQuantities)
         {
-            double[] quantities = new double[12];
+            ArticleQuantity[] articles = new ArticleQuantity[12];
             for (int m = 1; m <= 12; m++)
             {
-                quantities[m - 1] = m < CurrentMonth ?
-                    SumMonthQuantity(m, articleDescisionQuantities) :
-                    SumMonthQuantity(m, articleBugetQuantities);
+                articles[m - 1] = SumMonth(m);
             }
-            return quantities;
-        }
+            return articles;
 
-        private double SumMonthQuantity(double month, List<ArticleQuantity> articleQuantities)
-        {
-            if (articleQuantities.Count <= 0)
-                return 0;
-
-            List<ArticleQuantity> MohthQuantities = articleQuantities.FindAll(x => x.Month == month);
-            double quantity = 0;
-
-            foreach (ArticleQuantity articleQuantity in MohthQuantities)
+            ArticleQuantity SumMonth(double month)
             {
-                quantity += articleQuantity.Quantity;
-            }
-            return quantity;
-        }
+                ArticleQuantity newArticleQuantity = new ArticleQuantity();
 
-        #endregion
+                List<ArticleQuantity> articleQuantities = month < CurrentMonth ?
+                    articleDescisionQuantities : articleBugetQuantities;
+
+                if (articleQuantities.Count < 1)
+                    return newArticleQuantity;
+
+                //на случай если будет несколько записей на один месяц по одному артикула
+                List<ArticleQuantity> monthQuantities = articleQuantities.FindAll(x => x.Month == month);
+
+                if (monthQuantities.Count < 1)
+                    return newArticleQuantity;
+
+                foreach (ArticleQuantity articleQuantity in monthQuantities)
+                {
+                    newArticleQuantity.Quantity += articleQuantity.Quantity;
+                    newArticleQuantity.PriceList += articleQuantity.PriceList;
+                    double bonus = month < CurrentMonth ? articleQuantity.Bonus : articleQuantity.PriceList * MaximumBonus;
+                    newArticleQuantity.Bonus += bonus;
+                }
+                //
+
+                newArticleQuantity.Article= monthQuantities[0].Article;
+                newArticleQuantity.Campaign= monthQuantities[0].Campaign;
+
+                return newArticleQuantity;
+            }
+            //
+        }
     }
 }

@@ -2,11 +2,32 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="BPA.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="templateSheetName" Type="System.String" Scope="User">
+    <Setting Name="SHEET_NAME_PLANNING_TEMPLATE" Type="System.String" Scope="User">
       <Value Profile="(Default)">Планирование нового года шаблон</Value>
+    </Setting>
+    <Setting Name="ProductCalendarPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="BudgetPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="DecisionPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="PriceListMTPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="PlannningNYIndicatorCellName" Type="System.String" Scope="User">
       <Value Profile="(Default)">PlanningNYCell</Value>
+    </Setting>
+    <Setting Name="SHEET_NAME_FILE_BUGET" Type="System.String" Scope="User">
+      <Value Profile="(Default)">DatabaseStat</Value>
+    </Setting>
+    <Setting Name="SHEET_NAME_FILE_PRICELISTMT" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Цены клиентов</Value>
+    </Setting>
+    <Setting Name="SHEET_NAME_FILE_DECISION" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Database</Value>
     </Setting>
   </Settings>
 </SettingsFile>

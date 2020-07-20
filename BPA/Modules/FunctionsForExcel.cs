@@ -1,6 +1,7 @@
 ﻿using Excel = Microsoft.Office.Interop.Excel;
 using System.Collections.Generic;
 using Microsoft.Office.Interop.Excel;
+using System;
 
 namespace BPA.Modules
 {
@@ -62,14 +63,12 @@ namespace BPA.Modules
             return System.Text.RegularExpressions.Regex.Replace(value, @"\s+", " ");
         }
 
-        //Function MS_SheetExist(ByVal NameSheet As String) As Boolean
-        //    Dim sh As Object
-        //    On Error Resume Next
-        //    Set sh = ActiveWorkbook.Sheets(NameSheet)
-        //    If Err.Number = 0 Then MS_SheetExist = True
-        //End Function
-
-        public static bool IsSheetExists(string sheetName)
+        /// <summary>
+        /// ПРоверка наличия листа,работает через Catch (!)
+        /// </summary>
+        /// <param name="sheetName"></param>
+        /// <returns></returns>
+        public static bool IsSheetExistsTry(string sheetName)
         {
             Excel.Worksheet worksheet;
             try
@@ -81,6 +80,23 @@ namespace BPA.Modules
         }
 
         /// <summary>
+        /// ПРоверка наличия листа,работает через перебор листов
+        /// </summary>
+        /// <param name="sheetName"></param>
+        /// <returns></returns>
+        public static bool IsSheetExists(string sheetName)
+        {
+            //Excel.Worksheet worksheet;
+
+            foreach (Worksheet worksheet in Globals.ThisWorkbook.Sheets)
+            {
+                if (worksheet.Name == sheetName) 
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Создает и возвращает копию листа в текщей книге с указанным именем или именем по умолчанию
         /// </summary>
         /// <param name="worksheet"></param>
@@ -88,7 +104,7 @@ namespace BPA.Modules
         /// <returns></returns>
         public static Excel.Worksheet CreateSheetCopy(Excel.Worksheet worksheet, string copyWorksheetName = "", string afterSheetName = "")
         {
-            Excel.Worksheet afterSheet = (afterSheetName != null && IsSheetExists(afterSheetName)) ? worksheet.Parent.Sheets[afterSheetName] : worksheet;
+            Excel.Worksheet afterSheet = (afterSheetName != "" && IsSheetExists(afterSheetName)) ? worksheet.Parent.Sheets[afterSheetName] : worksheet;
 
             worksheet.Copy(After: afterSheet);
             Excel.Worksheet newWorksheet = Application.ActiveSheet;
@@ -184,5 +200,37 @@ namespace BPA.Modules
                 return false;
             }
         }
+
+        #region --Проверка значения ячейки на ошибку--
+        public static bool IsRangeValueError(object obj)
+        {
+            foreach (CVErrEnum cVErr in Enum.GetValues(typeof(CVErrEnum)))
+            {
+                if (IsXLCVErr(obj, cVErr)) return true;
+            }
+            return false;
+        }
+        private static bool IsXLCVErr(object obj)
+        {
+            return (obj) is Int32;
+        }
+
+        private static bool IsXLCVErr(object obj, CVErrEnum whichError)
+        {
+            return (obj is Int32) && ((Int32)obj == (Int32)whichError);
+        }
+
+        private enum CVErrEnum : Int32
+        {
+            ErrDiv0 = -2146826281,
+            ErrGettingData = -2146826245,
+            ErrNA = -2146826246,
+            ErrName = -2146826259,
+            ErrNull = -2146826288,
+            ErrNum = -2146826252,
+            ErrRef = -2146826265,
+            ErrValue = -2146826273
+        }
+        #endregion
     }
 }

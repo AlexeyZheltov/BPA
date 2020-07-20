@@ -2,6 +2,7 @@
 using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,8 @@ namespace BPA.Model {
     class Discount : TableBase {
         public override string TableName => "Скидки";
         public override string SheetName => "Скидки";
+        public static Dictionary<string, int> ColDict { get; set; } = new Dictionary<string, int>();
+
 
         public override IDictionary<string, string> Filds {
             get {
@@ -168,6 +171,8 @@ namespace BPA.Model {
 
         public static Discount GetCurrentDiscount(Client client, DateTime currentDate)
         {
+            new Discount().ReadColNumbers();
+
             List<Discount> discounts = Discount.GetAllDiscounts(new PBWrapper($"Создание прайс-листа для {client.Customer}", "Чтение скидок [Index]"));
             if (discounts == null) return null;
             discounts = discounts.FindAll(x => x.ChannelType == client.ChannelType
@@ -184,7 +189,8 @@ namespace BPA.Model {
 
             if (discounts.Count == 0)
             {
-                MessageBox.Show($"Клиенту {client.Customer} нет соответствий на листе \"Скидки\"", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //MessageBox.Show($"Клиенту {client.Customer} нет соответствий на листе \"Скидки\"", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Debug.Print($"Клиенту {client.Customer} нет соответствий на листе \"Скидки\"", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return null;
             }
             Discount currentDiscount = discounts[0];

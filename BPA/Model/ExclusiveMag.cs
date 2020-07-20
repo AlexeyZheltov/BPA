@@ -13,6 +13,7 @@ namespace BPA.Model
     {
         public override string TableName => "Exclusives";
         public override string SheetName => "Exclusives";
+        public static Dictionary<string, int> ColDict { get; set; } = new Dictionary<string, int>();
 
         public override IDictionary<string, string> Filds
         {
@@ -23,11 +24,17 @@ namespace BPA.Model
         }
         private readonly Dictionary<string, string> _filds = new Dictionary<string, string>
         {
+            ["Id"] = "№",
             ["Name"] = "Name"
         };
 
         public ExclusiveMag() { }
         public ExclusiveMag(Excel.ListRow row) => SetProperty(row);
+
+        /// <summary>
+        /// №
+        /// </summary>
+        public int Id { get; set; }
 
         /// <summary>
         /// Имя экслюзива

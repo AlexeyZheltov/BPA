@@ -16,6 +16,8 @@ namespace BPA.Model {
         public override string TableName => "РРЦ";
         public override string SheetName => "РРЦ";
 
+        public static Dictionary<string, int> ColDict { get; set; } = new Dictionary<string, int>();
+
         #region --- Словарь ---
 
         public override IDictionary<string, string> Filds
@@ -184,7 +186,7 @@ namespace BPA.Model {
             if (product != null)
             {
                 this.Date = product.DateOfPromotion;
-                this.RRCNDS = product.RRCCalculated;
+                this.RRCNDS = product.RRCCFinal;
                 this.DIY = product.DIY;
                 this.Article = product.Article;
                 this.IRP = product.IRP;

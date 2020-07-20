@@ -4,12 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using SettingsBPA = BPA.Properties.Settings;
+
 
 namespace BPA.Modules
 {
     class FileDescision
     {
         private readonly string FileName = "";
+        private readonly string FileSheetName = SettingsBPA.Default.SHEET_NAME_FILE_DECISION;
         private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
         //private readonly string ToBeSoldInNeed = "RUSSIA";
         private readonly int FileHeaderRow = 1;
@@ -28,6 +31,8 @@ namespace BPA.Modules
 
         public int CountActions => LastRow - FileHeaderRow;
         private bool IsCancel = false;
+
+        public bool IsOpen { get; set; } = false;
 
         public Excel.Workbook Workbook
         {
@@ -53,13 +58,36 @@ namespace BPA.Modules
         }
         private Excel.Workbook _Workbook;
 
-        private Excel.Worksheet Worksheet => Workbook?.Sheets[1];
+        //private Excel.Worksheet worksheet => Workbook?.Sheets[FileSheetName];
+        public Excel.Worksheet worksheet
+        {
+            get
+            {
+                if (_worksheet == null)
+                {
+                    try
+                    {
+                        _worksheet = Workbook?.Sheets[FileSheetName];
+                    }
+                    catch
+                    {
+                        throw new ApplicationException($"Лист \"{ FileSheetName }\" в книге { FileName } не найден!");
+                    }
+                }
+                return _worksheet;
+            }
+            set
+            {
+                _worksheet = value;
+            }
+        }
+        private Excel.Worksheet _worksheet;
 
         public int LastRow
         {
             get
             {
-                if (_LastRow == 0) _LastRow = Worksheet.UsedRange.Row + Worksheet.UsedRange.Rows.Count - 1;
+                if (_LastRow == 0) _LastRow = worksheet.UsedRange.Row + worksheet.UsedRange.Rows.Count - 1;
                 return _LastRow;
             }
         }
@@ -73,32 +101,24 @@ namespace BPA.Modules
         public int ArticleColumn => FindColumn("Code");
         public int CampaignColumn => FindColumn("Campaign");
         public int QuantitynColumn => FindColumn("Quantity");
+        public int PriceListTotalColumn => FindColumn("PricelistPriceTotal");
+        public int BonusColumn => FindColumn("Bonus");
 
         #endregion
 
         public FileDescision()
         {
-            using (OpenFileDialog fileDialog = new OpenFileDialog()
-            {
-                Title = "Выберите расположение файла Descision",
-                DefaultExt = "*.xls*",
-                CheckFileExists = true,
-                //InitialDirectory = Globals.ThisWorkbook.Path,
-                ValidateNames = true,
-                Multiselect = false,
-                Filter = "Excel|*.xls*"
-            })
-            {
-                if (fileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    FileName = fileDialog.FileName;
-                }
-                else
-                {
-                    throw new FileNotFoundException($"Загрузка отменена");                
-                }
-            }
+            BPASettings settings = new BPASettings();
 
+            if (settings.GetDecisionPath(out string path))
+            {
+                FileName = path;
+                IsOpen = true;
+            }
+            else
+            {
+                throw new ApplicationException("Загрузка отменена");
+            }
         }
 
         public FileDescision(string filename)
@@ -118,7 +138,7 @@ namespace BPA.Modules
 
         public List<ArticleQuantity> ArticleQuantities = new List<ArticleQuantity>();
         
-        public bool IsNotOpen() => FileName == "";
+        //public bool IsNotOpen() => FileName == "";
         
         public List<Client> LoadClients()
         {
@@ -134,11 +154,11 @@ namespace BPA.Modules
             {
                 if (IsCancel) return null;
                 ActionStart?.Invoke($"Обрабатывается строка {rowIndex}");
-                Excel.Range range = Worksheet.Cells[rowIndex, CustomerColumn];
+                Excel.Range range = worksheet.Cells[rowIndex, CustomerColumn];
                 string customer = range.Text;
                 if(customer.Trim().Length > 0)
                 {
-                    range = Worksheet.Cells[rowIndex, GardenaChannelColumn];
+                    range = worksheet.Cells[rowIndex, GardenaChannelColumn];
                     string gardenaChannel = range.Text;
 
                     if(!buffer.Exists(x => x.Customer == customer)) buffer.Add(new Client()
@@ -162,7 +182,6 @@ namespace BPA.Modules
         {
             if (DateColumn == 0 || ArticleColumn == 0 || CampaignColumn ==0)
             {
-                Close();
                 throw new ApplicationException("Файл имеет неверный формат");
             }
 
@@ -179,23 +198,28 @@ namespace BPA.Modules
                 string article = GetValueFromColumn(rowIndex, ArticleColumn);
                 string campaign = GetValueFromColumn(rowIndex, CampaignColumn);
                 double quantity;
+                double priceList;
+                double bonus;
+
                 if (article != "")
                 {
                     quantity = double.TryParse(GetValueFromColumn(rowIndex, QuantitynColumn), out quantity) ? quantity : 0;
+                    priceList = double.TryParse(GetValueFromColumn(rowIndex, PriceListTotalColumn), out priceList) ? priceList : 0;
+                    bonus = double.TryParse(GetValueFromColumn(rowIndex, BonusColumn), out bonus) ? bonus : 0;
 
                     ArticleQuantities.Add(new ArticleQuantity
                     {
                         Article = article,
                         Quantity = quantity,
                         Month = date.Month,
-                        Campaign = campaign == "" ? "0" : campaign
+                        Campaign = campaign == "" ? "0" : campaign,
+                        PriceList = priceList,
+                        Bonus = bonus
                     });
                 }
 
                 ActionDone?.Invoke(1);
             }
-            Close();
-
         }
 
         //public PlanningNewYear LoadPrognosis(PlanningNewYearPrognosis planningNewYearPrognosis)
@@ -246,12 +270,12 @@ namespace BPA.Modules
     /// <returns></returns>
     private int FindColumn(string fildName)
         {
-            return Worksheet.Cells.Find(fildName, LookAt: Excel.XlLookAt.xlWhole)?.Column ?? 0;
+            return worksheet.Cells.Find(fildName, LookAt: Excel.XlLookAt.xlWhole)?.Column ?? 0;
         }
 
         private int FindRow(string articul)
         {
-            return Worksheet.Cells.Find(articul, LookAt: Excel.XlLookAt.xlWhole)?.Row ?? 0;
+            return worksheet.Cells.Find(articul, LookAt: Excel.XlLookAt.xlWhole)?.Row ?? 0;
         }
 
         /// <summary>
@@ -262,7 +286,7 @@ namespace BPA.Modules
         /// <returns></returns>
         private string GetValueFromColumn(int rw, int col)
         {
-            return col != 0 ? Worksheet.Cells[rw, col].value?.ToString() : "";
+            return col != 0 ? worksheet.Cells[rw, col].value?.ToString() : "";
         }
 
         private DateTime GetDateFromCell(int rw, int col)
@@ -277,6 +301,7 @@ namespace BPA.Modules
 
         public void Close()
         {
+            IsOpen = false;
             Workbook.Close(false);
         }
 

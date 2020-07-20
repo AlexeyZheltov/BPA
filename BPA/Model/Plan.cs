@@ -13,6 +13,8 @@ namespace BPA.Model {
         public override string TableName => "Планирование";
         public override string SheetName => "Планирование";
 
+        public static Dictionary<string, int> ColDict { get; set; } = new Dictionary<string, int>();
+
         public override IDictionary<string, string> Filds {
             get {
                 return _filds;

@@ -4,12 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
+using SettingsBPA = BPA.Properties.Settings;
 
 namespace BPA.Modules
 {
     class FileBuget
     {
         private readonly string FileName = "";
+        private readonly string FileSheetName = SettingsBPA.Default.SHEET_NAME_FILE_BUGET;
         private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
         private readonly int FileHeaderRow = 1;
 
@@ -28,6 +30,7 @@ namespace BPA.Modules
         public int CountActions => LastRow - FileHeaderRow;
         private bool IsCancel = false;
 
+        public bool IsOpen { get; set; } = false;
         public Excel.Workbook Workbook
         {
             get
@@ -52,14 +55,37 @@ namespace BPA.Modules
         }
         private Excel.Workbook _Workbook;
 
-        private Excel.Worksheet Worksheet => Workbook?.Sheets[1];
+        //        private Excel.Worksheet worksheet => Workbook?.Sheets[FileSheetName];
+        public Excel.Worksheet worksheet
+        {
+            get
+            {
+                if (_worksheet == null)
+                {
+                    try
+                    {
+                        _worksheet = Workbook?.Sheets[FileSheetName];
+                    }
+                    catch
+                    {
+                        throw new ApplicationException($"Лист \"{ FileSheetName }\" в книге { FileName } не найден!");
+                    }
+                }
+                return _worksheet;
+            }
+            set
+            {
+                _worksheet = value;
+            }
+        }
+        private Excel.Worksheet _worksheet;
 
         public int LastRow
         {
             get
             {
                 if (_LastRow == 0)
-                    _LastRow = Worksheet.UsedRange.Row + Worksheet.UsedRange.Rows.Count - 1;
+                    _LastRow = worksheet.UsedRange.Row + worksheet.UsedRange.Rows.Count - 1;
                 return _LastRow;
             }
         }
@@ -73,30 +99,22 @@ namespace BPA.Modules
         public int ArticleColumn => FindColumn("Code");
         public int CampaignColumn => FindColumn("CampaignDisc");
         public int QuantitynColumn => FindColumn("Qty");
+        public int PriceListColumn => FindColumn("PriceList");
 
         #endregion
 
         public FileBuget()
         {
-            using (OpenFileDialog fileDialog = new OpenFileDialog()
+            BPASettings settings = new BPASettings();
+
+            if (settings.GetBudgetPath(out string path))
             {
-                Title = "Выберите расположение файла Buget",
-                DefaultExt = "*.xls*",
-                CheckFileExists = true,
-                //InitialDirectory = Globals.ThisWorkbook.Path,
-                ValidateNames = true,
-                Multiselect = false,
-                Filter = "Excel|*.xls*"
-            })
+                FileName = path;
+                IsOpen = true;
+            }
+            else
             {
-                if (fileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    FileName = fileDialog.FileName;
-                }
-                else
-                {
-                    throw new FileNotFoundException($"Загрузка отменена");
-                }
+                throw new ApplicationException("Загрузка отменена");
             }
         }
 
@@ -117,14 +135,13 @@ namespace BPA.Modules
 
         public List<ArticleQuantity> ArticleQuantities = new List<ArticleQuantity>();
 
-        public bool IsNotOpen() => FileName == "";
+        //public bool IsNotOpen() => FileName == "";
         
         //получение списка артикулов и месяцов
         public void LoadForPlanning(PlanningNewYear planning)
         {
             if (DateColumn == 0 || ArticleColumn == 0 || CampaignColumn == 0)
             {
-                Close();
                 throw new ApplicationException("Файл имеет неверный формат");
             }
 
@@ -141,23 +158,24 @@ namespace BPA.Modules
                 string article = GetValueFromColumn(rowIndex, ArticleColumn);
                 string campaign = GetValueFromColumn(rowIndex, CampaignColumn);
                 double quantity;
+                double priceList;
                 if (article != "")
                 {
                     quantity = double.TryParse(GetValueFromColumn(rowIndex, QuantitynColumn), out quantity) ? quantity : 0;
+                    priceList = double.TryParse(GetValueFromColumn(rowIndex, PriceListColumn), out priceList) ? priceList : 0;
 
                     ArticleQuantities.Add(new ArticleQuantity
                     {
                         Article = article,
                         Quantity = quantity,
                         Month = date.Month,
-                        Campaign = campaign == "" ? "0": campaign
+                        Campaign = campaign == "" ? "0": campaign,
+                        PriceList = priceList
                     });
                 }
 
                 ActionDone?.Invoke(1);
             }
-            Close();
-
         }
 
         /////////////////////////////////
@@ -168,12 +186,12 @@ namespace BPA.Modules
         /// <returns></returns>
         private int FindColumn(string fildName)
         {
-            return Worksheet.Cells.Find(fildName, LookAt: Excel.XlLookAt.xlWhole)?.Column ?? 0;
+            return worksheet.Cells.Find(fildName, LookAt: Excel.XlLookAt.xlWhole)?.Column ?? 0;
         }
 
         private int FindRow(string articul)
         {
-            return Worksheet.Cells.Find(articul, LookAt: Excel.XlLookAt.xlWhole)?.Row ?? 0;
+            return worksheet.Cells.Find(articul, LookAt: Excel.XlLookAt.xlWhole)?.Row ?? 0;
         }
 
         /// <summary>
@@ -184,7 +202,7 @@ namespace BPA.Modules
         /// <returns></returns>
         private string GetValueFromColumn(int rw, int col)
         {
-            return col != 0 ? Worksheet.Cells[rw, col].value?.ToString() : "";
+            return col != 0 ? worksheet.Cells[rw, col].value?.ToString() : "";
         }
 
         private DateTime GetDateFromCell(int rw, int col)
@@ -199,6 +217,7 @@ namespace BPA.Modules
 
         public void Close()
         {
+            IsOpen = false;
             Workbook.Close(false);
         }
 

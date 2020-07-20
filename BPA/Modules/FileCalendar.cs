@@ -1,7 +1,7 @@
 ﻿using BPA.Model;
 
 using Microsoft.Office.Interop.Excel;
-
+using BPA.Forms;
 using System;
 using System.IO;
 using System.Windows.Forms;
@@ -10,7 +10,7 @@ namespace BPA.Modules
 {
     internal class FileCalendar
     {
-        private readonly string FileName;
+        private readonly string FileName = "";
         private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
         private readonly int CalendarHeaderRow = 6;
 
@@ -55,13 +55,13 @@ namespace BPA.Modules
         }
         private Workbook _Workbook;
 
-        private Worksheet Worksheet => Workbook?.Sheets[1];
+        private Worksheet worksheet => Workbook?.Sheets[1];
 
         public int LastRow
         {
             get
             {
-                if (_LastRow == 0) _LastRow = Worksheet.UsedRange.Row + Worksheet.UsedRange.Rows.Count - 1;
+                if (_LastRow == 0) _LastRow = worksheet.UsedRange.Row + worksheet.UsedRange.Rows.Count - 1;
                 return _LastRow;
             }
         }
@@ -110,23 +110,17 @@ namespace BPA.Modules
 
         public FileCalendar()
         {
-            using (OpenFileDialog fileDialog = new OpenFileDialog()
+            BPASettings settings = new BPASettings();
+            
+            if (settings.GetProductCalendarPath(out string path))
             {
-                Title = "Выберите расположение продуктового календаря",
-                DefaultExt = "*.xls*",
-                CheckFileExists = true,
-                ValidateNames = true,
-                Multiselect = false,
-                Filter = "Excel|*.xls*"
-            })
-            {
-                if (fileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    FileName = fileDialog.FileName;
-                    IsOpen = true;
-                }
+                FileName = path;
+                IsOpen = true;
             }
-
+            else
+            {
+                throw new ApplicationException("Загрузка отменена");
+            }
         }
 
         public FileCalendar(string filename)
@@ -136,6 +130,7 @@ namespace BPA.Modules
                 throw new FileNotFoundException($"Файл {filename} не найден");
             }
             FileName = filename;
+            IsOpen = true;
         }
 
         public FileCalendar(Workbook workbook)
@@ -169,13 +164,20 @@ namespace BPA.Modules
         private bool ReadCalendarLoad()
         {
             Product product = null;
+            ProcessBar processBar = null;
+            processBar = new ProcessBar("Загрузка данных календаря", CountActions);
+            processBar.Show();
+            ActionStart += processBar.TaskStart;
+            ActionDone += processBar.TaskDone;
+            processBar.CancelClick += Cancel;
 
             for (int rw = CalendarHeaderRow + 1; rw < LastRow; rw++)
             {
+
                 if (IsCancel) return false;
                 ActionStart?.Invoke($"Обрабатывается строка {rw}");
 
-                if (Worksheet.Cells[rw, 1].Text == "")
+                if (worksheet.Cells[rw, 1].Text == "")
                 {
                     ActionDone?.Invoke(1);
                     continue;
@@ -187,7 +189,7 @@ namespace BPA.Modules
                     Close();
                     throw new ApplicationException("Файл имеет неверный формат");
                 }
-                string tobesold = Worksheet.Cells[rw, ToBeSoldInColumn].Text;
+                string tobesold = worksheet.Cells[rw, ToBeSoldInColumn].Text;
 
                 if (!CheckToBeSold())
                 {
@@ -233,6 +235,7 @@ namespace BPA.Modules
 
                 ActionDone?.Invoke(1);
             }
+            processBar?.Close();
             if (product == null) return false;
             product.Sort("Id");
             product.Sort("ProductGroup");
@@ -296,10 +299,10 @@ namespace BPA.Modules
 
             product.Article = GetValueFromColumn(row, LocalIDGardenaColumn);
 
-            product.GenericName = GetValueFromColumn(row, GenericNameColumn);
+            //product.GenericName = GetValueFromColumn(row, GenericNameColumn);
             product.Model = GetValueFromColumn(row, ModelColumn);
             product.SubGroup = GetValueFromColumn(row, SubgroupColumn);
-            product.ProductGroup = GetValueFromColumn(row, ProductGroupColumn);
+            //product.ProductGroup = GetValueFromColumn(row, ProductGroupColumn);
             product.PNS = GetValueFromColumn(row, IdColumn);
 
 
@@ -318,12 +321,12 @@ namespace BPA.Modules
         /// <returns></returns>
         private int FindColumn(string fildName)
         {
-            return Worksheet.Cells.Find(fildName, LookAt: XlLookAt.xlWhole)?.Column ?? 0;
+            return worksheet.Cells.Find(fildName, LookAt: XlLookAt.xlWhole)?.Column ?? 0;
         }
 
         private int FindRow(string articul)
         {
-            return Worksheet.Cells.Find(articul, LookAt: XlLookAt.xlWhole)?.Row ?? 0;
+            return worksheet.Cells.Find(articul, LookAt: XlLookAt.xlWhole)?.Row ?? 0;
         }
 
         /// <summary>
@@ -334,7 +337,7 @@ namespace BPA.Modules
         /// <returns></returns>
         private string GetValueFromColumn(int rw, int col)
         {
-            return col != 0 ? Worksheet.Cells[rw, col].value?.ToString() : "";
+            return col != 0 ? worksheet.Cells[rw, col].value?.ToString() : "";
         }
 
         public void Close()

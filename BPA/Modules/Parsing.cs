@@ -47,7 +47,8 @@ namespace BPA.Modules
         }
         public static string CalculateStringFormula(string tmpFormula)
         {
-
+            if (tmpFormula.Length == 0) 
+                return "";
             tmpFormula = tmpFormula.Replace(" ", "");
             if (tmpFormula.Substring(0, 1) == "=")
                 tmpFormula = tmpFormula.Substring(1, tmpFormula.Length - 1);

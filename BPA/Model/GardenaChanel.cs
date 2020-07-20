@@ -11,6 +11,7 @@ namespace BPA.Model {
     class GardenaChannel : TableBase {
         public override string TableName => "Клиенты";
         public override string SheetName => "Клиенты";
+        public static Dictionary<string, int> ColDict { get; set; } = new Dictionary<string, int>();
 
         public override IDictionary<string, string> Filds {
             get {

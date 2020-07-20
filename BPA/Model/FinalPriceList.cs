@@ -13,10 +13,11 @@ namespace BPA.Model
     /// </summary>
     internal class FinalPriceList : TableBase
     {
-        private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
 
         public override string TableName => "Прайс_лист";
         public override string SheetName => "Прайс лист";
+
+        public static Dictionary<string, int> ColDict { get; set; } = new Dictionary<string, int>();
 
         #region --- Словарь ---
 

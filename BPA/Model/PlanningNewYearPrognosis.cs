@@ -24,12 +24,16 @@ namespace BPA.Model
             this.planningNewYear._TableWorksheetName :
             this.planningNewYear.templateSheetName;
 
+        public static Dictionary<string, int> ColDict { get; set; } = new Dictionary<string, int>();
+
         #region --- Словарь ---
 
         public override IDictionary<string, string> Filds => _filds;
         private readonly Dictionary<string, string> _filds = new Dictionary<string, string>
         {
             { "Id","№" },
+            { "PriceList","Price list цена, руб." },
+
             { "QuantityPrognosisYear","Прогноз за год, шт." },
             { "QuantityPrognosis01","Прогноз январь, шт." },
             { "QuantityPrognosis02","Прогноз февраль, шт." },
@@ -39,10 +43,38 @@ namespace BPA.Model
             { "QuantityPrognosis06","Прогноз июнь, шт." },
             { "QuantityPrognosis07","Прогноз июль, шт." },
             { "QuantityPrognosis08","Прогноз август, шт." },
-            { "QuantityPrognosis09","Прогноз сентрябрь, шт." },
+            { "QuantityPrognosis09","Прогноз сентябрь, шт." },
             { "QuantityPrognosis10","Прогноз октябрь, шт." },
             { "QuantityPrognosis11","Прогноз ноябрь, шт." },
             { "QuantityPrognosis12","Прогноз декабрь, шт." },
+
+            { "GSPrognosisYear","GS за год, руб." },
+            { "GSPrognosis01","GS январь, руб." },
+            { "GSPrognosis02","GS февраль, руб." },
+            { "GSPrognosis03","GS март, руб." },
+            { "GSPrognosis04","GS апрель, руб." },
+            { "GSPrognosis05","GS май, руб." },
+            { "GSPrognosis06","GS июнь, руб." },
+            { "GSPrognosis07","GS июль, руб." },
+            { "GSPrognosis08","GS август, руб." },
+            { "GSPrognosis09","GS сентябрь, руб." },
+            { "GSPrognosis10","GS октябрь, руб." },
+            { "GSPrognosis11","GS ноябрь, руб." },
+            { "GSPrognosis12","GS декабрь, руб." },
+
+            { "NSPrognosisYear","NS за год, руб." },
+            { "NSPrognosis01","NS январь, руб." },
+            { "NSPrognosis02","NS февраль, руб." },
+            { "NSPrognosis03","NS март, руб." },
+            { "NSPrognosis04","NS апрель, руб." },
+            { "NSPrognosis05","NS май, руб." },
+            { "NSPrognosis06","NS июнь, руб." },
+            { "NSPrognosis07","NS июль, руб." },
+            { "NSPrognosis08","NS август, руб." },
+            { "NSPrognosis09","NS сентябрь, руб." },
+            { "NSPrognosis10","NS октябрь, руб." },
+            { "NSPrognosis11","NS ноябрь, руб." },
+            { "NSPrognosis12","NS декабрь, шт." }
         };
 
         #endregion
@@ -60,6 +92,13 @@ namespace BPA.Model
             set
             {
             }
+        }
+        /// <summary>
+        /// Price list цена, руб.
+        /// </summary>
+        public double PriceList
+        {
+            get; set;
         }
         /// <summary>
         /// Прогноз за год, шт. 
@@ -125,7 +164,7 @@ namespace BPA.Model
             get; set;
         }
         /// <summary>
-        /// Прогноз сентрябрь, шт. 
+        /// Прогноз сентябрь, шт. 
         /// </summary>
         public double QuantityPrognosis09
         {
@@ -152,6 +191,188 @@ namespace BPA.Model
         {
             get; set;
         }
+        /// <summary>
+        /// GS за год, руб. 
+        /// </summary>
+        public double GSPrognosisYear
+        {
+            get; set;
+        }
+        /// <summary>
+        /// GS январь, руб. 
+        /// </summary>
+        public double GSPrognosis01
+        {
+            get; set;
+        }
+        /// <summary>
+        /// GS февраль, руб. 
+        /// </summary>
+        public double GSPrognosis02
+        {
+            get; set;
+        }
+        /// <summary>
+        /// GS март, руб. 
+        /// </summary>
+        public double GSPrognosis03
+        {
+            get; set;
+        }
+        /// <summary>
+        /// GS апрель, руб. 
+        /// </summary>
+        public double GSPrognosis04
+        {
+            get; set;
+        }
+        /// <summary>
+        /// GS май, руб. 
+        /// </summary>
+        public double GSPrognosis05
+        {
+            get; set;
+        }
+        /// <summary>
+        /// GS июнь, руб. 
+        /// </summary>
+        public double GSPrognosis06
+        {
+            get; set;
+        }
+        /// <summary>
+        /// GS июль, руб. 
+        /// </summary>
+        public double GSPrognosis07
+        {
+            get; set;
+        }
+        /// <summary>
+        /// GS август, руб. 
+        /// </summary>
+        public double GSPrognosis08
+        {
+            get; set;
+        }
+        /// <summary>
+        /// GS сентябрь, руб. 
+        /// </summary>
+        public double GSPrognosis09
+        {
+            get; set;
+        }
+        /// <summary>
+        /// GS октябрь, руб. 
+        /// </summary>
+        public double GSPrognosis10
+        {
+            get; set;
+        }
+        /// <summary>
+        /// GS ноябрь, руб. 
+        /// </summary>
+        public double GSPrognosis11
+        {
+            get; set;
+        }
+        /// <summary>
+        /// GS декабрь, руб. 
+        /// </summary>
+        public double GSPrognosis12
+        {
+            get; set;
+        }
+        /// <summary>
+        /// NS за год, руб. 
+        /// </summary>
+        public double NSPrognosisYear
+        {
+            get; set;
+        }
+        /// <summary>
+        /// NS январь, руб. 
+        /// </summary>
+        public double NSPrognosis01
+        {
+            get; set;
+        }
+        /// <summary>
+        /// NS февраль, руб. 
+        /// </summary>
+        public double NSPrognosis02
+        {
+            get; set;
+        }
+        /// <summary>
+        /// NS март, руб. 
+        /// </summary>
+        public double NSPrognosis03
+        {
+            get; set;
+        }
+        /// <summary>
+        /// NS апрель, руб. 
+        /// </summary>
+        public double NSPrognosis04
+        {
+            get; set;
+        }
+        /// <summary>
+        /// NS май, руб. 
+        /// </summary>
+        public double NSPrognosis05
+        {
+            get; set;
+        }
+        /// <summary>
+        /// NS июнь, руб. 
+        /// </summary>
+        public double NSPrognosis06
+        {
+            get; set;
+        }
+        /// <summary>
+        /// NS июль, руб. 
+        /// </summary>
+        public double NSPrognosis07
+        {
+            get; set;
+        }
+        /// <summary>
+        /// NS август, руб. 
+        /// </summary>
+        public double NSPrognosis08
+        {
+            get; set;
+        }
+        /// <summary>
+        /// NS сентябрь, руб. 
+        /// </summary>
+        public double NSPrognosis09
+        {
+            get; set;
+        }
+        /// <summary>
+        /// NS октябрь, руб. 
+        /// </summary>
+        public double NSPrognosis10
+        {
+            get; set;
+        }
+        /// <summary>
+        /// NS ноябрь, руб. 
+        /// </summary>
+        public double NSPrognosis11
+        {
+            get; set;
+        }
+        /// <summary>
+        /// NS декабрь, шт. 
+        /// </summary>
+        public double NSPrognosis12
+        {
+            get; set;
+        }
         #endregion
         
         /// <summary>
@@ -163,26 +384,52 @@ namespace BPA.Model
         {
             string article = this.planningNewYear.Article;
 
+            //Извлечение из списков Descision и Buget элементы с соответствующим артикулом и НЕ Promo
             List<ArticleQuantity> articleDescisionQuantities = deicionQuantities.FindAll(x => x.Article == article && !this.planningNewYear.isPromo(x)).ToList();
             List<ArticleQuantity> articleBugetQuantities = bugetQuantities.FindAll(x => x.Article == article && !this.planningNewYear.isPromo(x)).ToList();
 
-            double[] quantities = this.planningNewYear.GetQuantities(articleDescisionQuantities, articleBugetQuantities);
-
+            ArticleQuantity[] articles = this.planningNewYear.GetsArticleQuantities(articleDescisionQuantities, articleBugetQuantities);
             #region setproperties
             //как написать подобный перебор???
             ///
-            QuantityPrognosis01 = quantities[0];
-            QuantityPrognosis02 = quantities[1];
-            QuantityPrognosis03 = quantities[2];
-            QuantityPrognosis04 = quantities[3];
-            QuantityPrognosis05 = quantities[4];
-            QuantityPrognosis06 = quantities[5];
-            QuantityPrognosis07 = quantities[6];
-            QuantityPrognosis08 = quantities[7];
-            QuantityPrognosis09 = quantities[8];
-            QuantityPrognosis10 = quantities[9];
-            QuantityPrognosis11 = quantities[10];
-            QuantityPrognosis12 = quantities[11];
+            QuantityPrognosis01 = articles[0].Quantity;
+            QuantityPrognosis02 = articles[1].Quantity;
+            QuantityPrognosis03 = articles[2].Quantity;
+            QuantityPrognosis04 = articles[3].Quantity;
+            QuantityPrognosis05 = articles[4].Quantity;
+            QuantityPrognosis06 = articles[5].Quantity;
+            QuantityPrognosis07 = articles[6].Quantity;
+            QuantityPrognosis08 = articles[7].Quantity;
+            QuantityPrognosis09 = articles[8].Quantity;
+            QuantityPrognosis10 = articles[9].Quantity;
+            QuantityPrognosis11 = articles[10].Quantity;
+            QuantityPrognosis12 = articles[11].Quantity;
+
+            GSPrognosis01 = articles[0].PriceList;
+            GSPrognosis02 = articles[1].PriceList;
+            GSPrognosis03 = articles[2].PriceList;
+            GSPrognosis04 = articles[3].PriceList;
+            GSPrognosis05 = articles[4].PriceList;
+            GSPrognosis06 = articles[5].PriceList;
+            GSPrognosis07 = articles[6].PriceList;
+            GSPrognosis08 = articles[7].PriceList;
+            GSPrognosis09 = articles[8].PriceList;
+            GSPrognosis10 = articles[9].PriceList;
+            GSPrognosis11 = articles[10].PriceList;
+            GSPrognosis12 = articles[11].PriceList;
+
+            NSPrognosis01 = GSPrognosis01 - articles[0].Bonus;
+            NSPrognosis02 = GSPrognosis02 - articles[1].Bonus;
+            NSPrognosis03 = GSPrognosis03 - articles[2].Bonus;
+            NSPrognosis04 = GSPrognosis04 - articles[3].Bonus;
+            NSPrognosis05 = GSPrognosis05 - articles[4].Bonus;
+            NSPrognosis06 = GSPrognosis06 - articles[5].Bonus;
+            NSPrognosis07 = GSPrognosis07 - articles[6].Bonus;
+            NSPrognosis08 = GSPrognosis08 - articles[7].Bonus;
+            NSPrognosis09 = GSPrognosis09 - articles[8].Bonus;
+            NSPrognosis10 = GSPrognosis10 - articles[9].Bonus;
+            NSPrognosis11 = GSPrognosis11 - articles[10].Bonus;
+            NSPrognosis12 = GSPrognosis12 - articles[11].Bonus;
             ///
             #endregion
         }

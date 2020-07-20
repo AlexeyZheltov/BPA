@@ -26,12 +26,60 @@ namespace BPA.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Планирование нового года шаблон")]
-        public string templateSheetName {
+        public string SHEET_NAME_PLANNING_TEMPLATE {
             get {
-                return ((string)(this["templateSheetName"]));
+                return ((string)(this["SHEET_NAME_PLANNING_TEMPLATE"]));
             }
             set {
-                this["templateSheetName"] = value;
+                this["SHEET_NAME_PLANNING_TEMPLATE"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ProductCalendarPath {
+            get {
+                return ((string)(this["ProductCalendarPath"]));
+            }
+            set {
+                this["ProductCalendarPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string BudgetPath {
+            get {
+                return ((string)(this["BudgetPath"]));
+            }
+            set {
+                this["BudgetPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DecisionPath {
+            get {
+                return ((string)(this["DecisionPath"]));
+            }
+            set {
+                this["DecisionPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PriceListMTPath {
+            get {
+                return ((string)(this["PriceListMTPath"]));
+            }
+            set {
+                this["PriceListMTPath"] = value;
             }
         }
         
@@ -44,6 +92,42 @@ namespace BPA.Properties {
             }
             set {
                 this["PlannningNYIndicatorCellName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("DatabaseStat")]
+        public string SHEET_NAME_FILE_BUGET {
+            get {
+                return ((string)(this["SHEET_NAME_FILE_BUGET"]));
+            }
+            set {
+                this["SHEET_NAME_FILE_BUGET"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Цены клиентов")]
+        public string SHEET_NAME_FILE_PRICELISTMT {
+            get {
+                return ((string)(this["SHEET_NAME_FILE_PRICELISTMT"]));
+            }
+            set {
+                this["SHEET_NAME_FILE_PRICELISTMT"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Database")]
+        public string SHEET_NAME_FILE_DECISION {
+            get {
+                return ((string)(this["SHEET_NAME_FILE_DECISION"]));
+            }
+            set {
+                this["SHEET_NAME_FILE_DECISION"] = value;
             }
         }
     }

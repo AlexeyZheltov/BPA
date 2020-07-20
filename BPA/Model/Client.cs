@@ -20,6 +20,8 @@ namespace BPA.Model {
         public override string TableName => "Клиенты";
         public override string SheetName => "Клиенты";
 
+        public static Dictionary<string, int> ColDict { get; set; } = new Dictionary<string, int>();
+
         public override IDictionary<string, string> Filds {
             get {
                 return _filds;
@@ -40,6 +42,17 @@ namespace BPA.Model {
         public Client() { }
 
         public Client(Excel.ListRow row) => SetProperty(row);
+
+        /// <summary>
+        /// Нужно описать конструктор!!!!
+        /// </summary>
+        /// <param name="planning"></param>
+        public Client(PlanningNewYear planning)
+        {
+            CustomerStatus = planning.CustomerStatus;
+            ChannelType = planning.ChannelType;
+        }
+
         /// <summary>
         /// №
         /// </summary>
@@ -147,6 +160,7 @@ namespace BPA.Model {
                 clients.Add(new Client(row));
                 processBar.TaskDone(1);
             }
+            processBar?.Close();
 
             return clients;
         }

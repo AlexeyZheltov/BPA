@@ -14,8 +14,7 @@ namespace BPA.Modules
             "Channel type",
             "Customer status",
             "Продуктовые календари",
-            "Суперкатегории",
-            "Продукт группы",
+            "Product Structure",
             "Статусы товаров",
             "STK",
             "Бюджетные курсы",
@@ -75,7 +74,7 @@ namespace BPA.Modules
         /// </summary>
         public void ShowUnshowSheets()
         {
-            ThisWorkbook thisWorkbook = Globals.ThisWorkbook;
+            //ThisWorkbook thisWorkbook = Globals.ThisWorkbook;
 
             foreach (string sheetName in SheetsVisibleStatus.Keys)
             {

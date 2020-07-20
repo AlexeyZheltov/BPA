@@ -21,17 +21,20 @@ namespace BPA.Model
         public override string TableName => "Товары";
         public override string SheetName => "Товары";
 
+        public static Dictionary<string, int> ColDict { get; set; } = new Dictionary<string, int>();
+
         #region --- Словарь ---
 
         public override IDictionary<string, string> Filds => _filds;
         private readonly Dictionary<string, string> _filds = new Dictionary<string, string>
         {
             { "Id","№" },
-            { "Category","Категория для прайс-листа диллеров" },
-            { "SupercategoryEng","Суперкатегория(ENG)"  },
-            { "SupercategoryRu","Суперкатегория(RUS)" },
+            { "Category","Категория для прайс-листа дилеров" },
+            { "SuperCategory","Суперкатегория" },
+            { "SupercategoryEng","Суперкатегория (ENG)"  },
+            { "SupercategoryRu","Суперкатегория (RUS)" },
             { "ProductGroup","Продукт группа" },
-            { "ProductGroupEng","Название продукт группы(ENG)" },
+            { "ProductGroupEng","Название продукт группы (ENG)" },
             { "ProductGroupRu","Название продукт группы (RUS)" },
             { "SubGroup", "SubGroup" },
             { "GenericName", "Generic Name (long)" },
@@ -39,7 +42,7 @@ namespace BPA.Model
             { "PNS", "PNS" },
             { "Article","Артикул" },
             { "ArticleOld","Артикул предшественника (если есть)" },
-            { "ArticleEng","Название артикула(ENG)" },
+            { "ArticleEng","Название артикула (ENG)" },
             { "ArticleRu","Название артикула (RUS)" },
             { "Calendar", "Используемый календарь" },
 
@@ -101,6 +104,13 @@ namespace BPA.Model
         }
         /// <summary>
         /// Суперкатегория(ENG)
+        /// </summary>
+        public string Supercategory
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Суперкатегория
         /// </summary>
         public string SupercategoryEng
         {
@@ -594,6 +604,8 @@ namespace BPA.Model
                     Calendar = row.Range[1, Table.ListColumns[Filds["Calendar"]].Index].Text
                 };
                 products.Add(product);
+
+                processBar.TaskDone(1);
             }
             processBar.Close();
             return products;
@@ -656,7 +668,7 @@ namespace BPA.Model
         {
             List<Product> products = Product.GetProductsForDiscounts(new PBWrapper($"Создание прайс-листа для {client.Customer}", "Чтение артикула [Index]"));
             if (products == null) return null;
-
+            new ExclusiveMag().ReadColNumbers();
             List<string> exclusives = (from em in ExclusiveMag.GetAllExclusives()
                                              select em.Name.ToLower()).ToList();
 
