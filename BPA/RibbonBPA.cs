@@ -63,6 +63,16 @@ namespace BPA
         /// <param name="e"></param>
         private void UpdateProducts_Click(object sender, RibbonControlEventArgs e)
         {
+            if (MessageBox.Show
+                (
+                    $"Если вы выбирете действие \"Обновить календарь\", все ранее заполенные данные, будут обновлены в соответствии с продуктовыми календарями и заменены на содержащиеся там данные. \n\nОбновить календари?",
+                    "Внимание",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question,
+                    MessageBoxDefaultButton.Button2
+                )
+                == DialogResult.No) return;
+
             new Product().ReadColNumbers();
             new ProductCalendar().ReadColNumbers();
             ProcessBar processBar = null;
