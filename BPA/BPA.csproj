@@ -152,6 +152,7 @@
     <Compile Include="Modules\ArticleQuantity.cs" />
     <Compile Include="Modules\BPASettings.cs" />
     <Compile Include="Modules\ExcelWindows.cs" />
+    <Compile Include="Modules\FileBase.cs" />
     <Compile Include="Modules\FileBuget.cs" />
     <Compile Include="Modules\FileCalendar.cs" />
     <Compile Include="Modules\FileDescision.cs" />

@@ -447,7 +447,7 @@ namespace BPA
                         filePriceMT.ActionStart += processBar.TaskStart;
                         filePriceMT.ActionDone += processBar.TaskDone;
                         processBar.CancelClick += filePriceMT.Cancel;
-                        filePriceMT.Load(currentClient.Mag, currentDate);
+                        filePriceMT.Load(currentDate, currentClient.Mag);
                         if (!filePriceMT.IsOpen) return;
                         if (!All) processBar.Close(); ///else not close???
                     }
@@ -472,23 +472,28 @@ namespace BPA
                             return;
                         }
                         string formula = currentDiscount.GetFormulaByName(product.Category);
+                        try
+                        {
+                            //Найти метку или метки. [Pricelist MT]  [DIY Pricelist] [РРЦ] и заменить
+                            while (formula.Contains("[pricelist mt]"))
+                                formula = formula.Replace("[pricelist mt]", filePriceMT.GetPrice(product.Article).ToString());
 
-                        //Найти метку или метки. [Pricelist MT]  [DIY Pricelist] [РРЦ] и заменить
-                        while (formula.Contains("[pricelist mt]"))
-                            formula = formula.Replace("[pricelist mt]", filePriceMT.GetPrice(product.Article).ToString());
+                            while (formula.Contains("[diy price list]"))
+                                formula = formula.Replace("[diy price list]", actualRRC.Find(x => x.Article == product.Article).DIY.ToString());
 
-                        while (formula.Contains("[diy price list]"))
-                            formula = formula.Replace("[diy price list]", actualRRC.Find(x => x.Article == product.Article).DIY.ToString());
-
-                        while (formula.Contains("[ррц]"))
-                            formula = formula.Replace("[ррц]", actualRRC.Find(x => x.Article == product.Article).RRCNDS.ToString());
-
-                        if (Parsing.Calculation(formula) is double result)
-                            priceList.Add(new FinalPriceList(product)
+                            while (formula.Contains("[ррц]"))
+                                formula = formula.Replace("[ррц]", actualRRC.Find(x => x.Article == product.Article).RRCNDS.ToString());
+                            if (Parsing.Calculation(formula) is double result)
+                                priceList.Add(new FinalPriceList(product)
+                                {
+                                    RRC = result
+                                });
+                            else
                             {
-                                RRC = result
-                            });
-                        else
+                                MessageBox.Show($"В одной из формул для {currentClient.Customer} содержится ошибка", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+                        } catch
                         {
                             MessageBox.Show($"В одной из формул для {currentClient.Customer} содержится ошибка", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
