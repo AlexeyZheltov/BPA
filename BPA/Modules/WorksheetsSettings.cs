@@ -19,7 +19,8 @@ namespace BPA.Modules
             "STK",
             "Бюджетные курсы",
             "Эксклюзивность",
-            "GardenChannel"
+            "GardenChannel",
+            "Сертификация"
         };
 
         /// <summary>
