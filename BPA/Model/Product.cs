@@ -68,7 +68,7 @@ namespace BPA.Model
             { "CalendarProductSizeWidth","Product size width" },
             { "CalendarUnitsPerPallet","Units Per Pallet" },
 
-            { "Status","Статус" },
+            { "Status","Актуальный статус" },
             { "Exclusive","Эксклюзив клиента или канала продажи" },
             { "LocalCertificate","Локальный сертификат" },
 
@@ -208,7 +208,7 @@ namespace BPA.Model
             get; set;
         }
         /// <summary>
-        /// Статус
+        /// Актуальный статус
         /// </summary>
         public string Status
         {
@@ -672,7 +672,7 @@ namespace BPA.Model
             List<string> exclusives = (from em in ExclusiveMag.GetAllExclusives()
                                              select em.Name.ToLower()).ToList();
 
-            products = products.FindAll(x => x.Status.ToLower() != "выведено из ассортимента текущего года");
+            products = products.FindAll(x => x.Status.ToLower() != "выведено из ассортимента текущего года" && x.Status.ToLower() != "выведено из глобального ассортимента");
 
             List<Product> actualProducts = new List<Product>();
             foreach(Product product in products)
