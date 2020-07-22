@@ -14,7 +14,7 @@ namespace BPA.Modules
             "Channel type",
             "Customer status",
             "Продуктовые календари",
-            "Product Structure",
+            "Структура ассортимента",
             "Статусы товаров",
             "STK",
             "Бюджетные курсы",

@@ -142,12 +142,10 @@
     <Compile Include="Model\ProductCalendar.cs" />
     <Compile Include="Model\ProductForPlanningNewYearcs.cs" />
     <Compile Include="Model\ProductForRRC.cs" />
-    <Compile Include="Model\ProductGroup.cs" />
     <Compile Include="Model\Product.cs" />
     <Compile Include="Model\ProductStatus.cs" />
     <Compile Include="Model\RRC.cs" />
     <Compile Include="Model\STK.cs" />
-    <Compile Include="Model\Supercategory.cs" />
     <Compile Include="Model\TableBase.cs" />
     <Compile Include="Modules\ArticleQuantity.cs" />
     <Compile Include="Modules\BPASettings.cs" />
