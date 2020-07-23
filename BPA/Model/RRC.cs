@@ -33,6 +33,8 @@ namespace BPA.Model {
             { "Id","№" },
             { "Article", "Артикул" },
             { "IRP", "IRP, Eur" },
+            { "RRP", "RRP, Eur" },
+            { "IRPIndex", "IRP index" },
             { "RRCNDS", "РРЦ, руб. с НДС" },
             { "DIY", "DIY price list, руб. без НДС" },
             { "Date", "Дата принятия" }
@@ -62,6 +64,22 @@ namespace BPA.Model {
         /// IRP, Eur
         /// </summary>
         public double IRP
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// RRP, Eur
+        /// </summary>
+        public double RRP
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// IRP index
+        /// </summary>
+        public double IRPIndex
         {
             get; set;
         }
@@ -231,10 +249,12 @@ namespace BPA.Model {
             if (product != null)
             {
                 this.Date = product.DateOfPromotion;
-                this.RRCNDS = product.RRCCFinal;
+                this.RRCNDS = product.RRCFinal;
                 this.DIY = product.DIY;
                 this.Article = product.Article;
                 this.IRP = product.IRP;
+                this.IRPIndex = product.IRPIndex;
+                this.RRP = this.RRCNDS / product.BugetCourse;
             }
         }
 
