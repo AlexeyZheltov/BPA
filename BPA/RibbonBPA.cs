@@ -403,6 +403,7 @@ namespace BPA
                     Client client = new Client();
                     processBar = new ProcessBar($"Загрузка списка клиентов", client.Table.ListRows.Count);
                     processBar.CancelClick += Cancel;
+                    processBar.Show();
 
                     foreach(Excel.ListRow row in client.Table.ListRows)
                     {
