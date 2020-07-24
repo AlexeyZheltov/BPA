@@ -214,8 +214,9 @@ namespace BPA.Modules
 
         public string GetValueFromColumnStr(int rw, int col)
         {
-            object obj = FileArray[rw, col]; 
-            return obj is string ? Convert.ToString(obj) : "";
+            object obj = FileArray[rw, col];
+            return obj.ToString();
+            //return obj is string ? Convert.ToString(obj) : "";
         }
         public double GetValueFromColumnDbl(int rw, int col)
         {
