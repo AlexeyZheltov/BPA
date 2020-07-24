@@ -104,7 +104,6 @@ namespace BPA.Model
             if (fileCalendar == null)
                 return;
 
-            List<Product> products = new Product().GetProducts();
             foreach (Product product in products)
             {
                 if (IsCancel) return;

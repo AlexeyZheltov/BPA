@@ -91,7 +91,8 @@ namespace BPA
             {
                 FunctionsForExcel.SpeedOn();
                 
-                Product product = new Product();
+                List<Product> products = new Product().GetProducts();
+
                 processBar.Show();
                 Globals.ThisWorkbook.Activate();
                 foreach (ProductCalendar calendar in calendars)
