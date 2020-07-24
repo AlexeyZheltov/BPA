@@ -511,7 +511,7 @@ namespace BPA
                             }
                         } catch
                         {
-                            MessageBox.Show($"В одной из формул для {currentClient.Customer} содержится ошибка", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show($"{currentClient.Customer} не найден на листе { actualRRC[0].SheetName }", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
                         }
                         processBar.TaskDone(1);
