@@ -1,4 +1,5 @@
-﻿using BPA.Modules;
+﻿using BPA.Forms;
+using BPA.Modules;
 
 using Microsoft.Office.Interop.Excel;
 
@@ -98,11 +99,16 @@ namespace BPA.Model
         /// <summary>
         /// Обновление продуктов из календаря
         /// </summary>
-        public void UpdateProducts()
+        public void UpdateProducts(List<Product> products, ProcessBar pB)
         {
             FileCalendar fileCalendar = new FileCalendar(Path);
             if (fileCalendar == null)
                 return;
+            
+            pB.AddSubBar("Обновление данных", products.Count); ///Вот этих ПБ созается очень много!
+            this.ActionStart += pB.SubBar.TaskStart;
+            this.ActionDone += pB.SubBar.TaskDone;
+            pB.SubBar.CancelClick += this.Cancel;
 
             foreach (Product product in products)
             {

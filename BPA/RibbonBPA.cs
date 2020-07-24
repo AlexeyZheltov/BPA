@@ -99,19 +99,15 @@ namespace BPA
                 {
                     if (processBar.IsCancel) break;
                     processBar.TaskStart($"Обрабатывается календарь {calendar.Name}");
-                    processBar.AddSubBar("Обновление данных", product.Table.ListRows.Count); ///Вот этих ПБ созается очень много!
-                    calendar.ActionStart += processBar.SubBar.TaskStart;
-                    calendar.ActionDone += processBar.SubBar.TaskDone;
-                    processBar.SubBar.CancelClick += calendar.Cancel;
+                    
                     try
                     {
-                        calendar.UpdateProducts();
+                        calendar.UpdateProducts(products, processBar);
                     }
                     catch(FileNotFoundException)
                     {
 
                     }
-                    processBar.SubBar.TaskDone();
                     processBar.TaskDone(1);
                 }
             }
