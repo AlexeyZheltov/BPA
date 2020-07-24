@@ -2,7 +2,7 @@
 //using Application = Microsoft.Office.Interop.Excel.Application;
 using System;
 using System.Windows.Forms;
-
+using BPA.Forms;
 
 namespace BPA.Modules
 {
@@ -13,24 +13,26 @@ namespace BPA.Modules
         protected string FileSheetName = "";
         protected int FileHeaderRow = 1;
 
-        protected virtual void OnActionStart(string str)
+        public void SetProcessBarForLoad(ref ProcessBar pB)
         {
-            ActionStart?.Invoke(str);
+            pB = new ProcessBar($"Загрузка файла  { FileName } ", CountActions);
+            pB.CancelClick += Cancel;
+            ActionStart += pB.TaskStart;
+            ActionDone += pB.TaskDone;
+            pB.Show(new ExcelWindows(Globals.ThisWorkbook));
         }
-        protected virtual void OnActionDone(int i)
-        {
-            ActionDone?.Invoke(i);
-        }
+
         /// <summary>
         /// Событие начала задачи
         /// </summary>
-        public event Action<string> ActionStart;
+        public Action<string> ActionStart;
         /// <summary>
         /// Событие завершения задачи
         /// </summary>
-        public event Action<int> ActionDone;
+        public Action<int> ActionDone;
 
-        public int CountActions => LastRow - FileHeaderRow;
+        //public int CountActions => LastRow - FileHeaderRow;
+        public int CountActions => ArrRrows;
         public bool IsCancel = false;
 
         public bool IsOpen { get; set; } = false;

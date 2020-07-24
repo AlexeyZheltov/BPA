@@ -70,7 +70,9 @@ namespace BPA.Modules
                 FileName = path;
                 FileHeaderRow = 2;
                 FileSheetName = SettingsBPA.Default.SHEET_NAME_FILE_BUGET;
+                
                 IsOpen = true;
+                SetFileData();
             }
             else
             {
@@ -97,27 +99,17 @@ namespace BPA.Modules
         //получение списка артикулов и месяцов
         public void LoadForPlanning(PlanningNewYear planning)
         {
-            ProcessBar processBar = null;
-
-            SetFileData();
-
             if (DateColumn == 0 || ArticleColumn == 0 || CampaignColumn == 0)
             {
                 throw new ApplicationException("Файл имеет неверный формат");
             }
 
-            processBar = new ProcessBar($"Загрузка файла  { FileName } ", LastRow - FileHeaderRow);
-            processBar.Show();
-            ActionStart += processBar.TaskStart;
-            ActionDone += processBar.TaskDone;
-            processBar.CancelClick += Cancel;
-
-
             for (int rowIndex = 2; rowIndex < ArrRrows; rowIndex++)
             {
                 if (IsCancel)
                     return;
-                OnActionStart($"Обрабатывается строка {rowIndex}");
+
+                ActionStart?.Invoke($"Обрабатывается строка {rowIndex}");
 
                 DateTime date = GetDateFromCell(rowIndex, DateColumn);
                 if (planning.Year != date.Year)
@@ -139,7 +131,7 @@ namespace BPA.Modules
                         PriceList = priceList
                     });
                 }
-                OnActionDone(1);
+                ActionDone?.Invoke(1);
             }
         }
     }

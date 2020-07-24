@@ -11,17 +11,6 @@ namespace BPA.Modules
     internal class FileCalendar : FileBase
     {
         private int fileHeaderRow = 6;
-        /// <summary>
-        /// Событие начала задачи
-        /// </summary>
-        //public event ActionsStart ActionStart;
-        public delegate void ActionsStart(string name);
-
-        /// <summary>
-        /// Событие завершения задачи
-        /// </summary>
-        //public event ActionsDone ActionDone;
-        public delegate void ActionsDone(int count);
 
         #region --- Columns ---
         public int IdColumn
@@ -358,8 +347,10 @@ namespace BPA.Modules
             {
                 FileName = path;
                 FileSheetName = "";
-                IsOpen = true;
                 FileHeaderRow = fileHeaderRow;
+
+                IsOpen = true;
+                SetFileData();
             }
             else
             {
@@ -376,6 +367,8 @@ namespace BPA.Modules
             FileName = filename;
             IsOpen = true;
             FileHeaderRow = fileHeaderRow;
+
+            SetFileData();
         }
 
         public FileCalendar(Workbook workbook)
@@ -384,6 +377,8 @@ namespace BPA.Modules
             FileName = workbook.Path;
             IsOpen = true;
             FileHeaderRow = fileHeaderRow;
+
+            SetFileData();
         }
 
         public void LoadCalendar()
@@ -413,24 +408,16 @@ namespace BPA.Modules
         private bool ReadCalendarLoad()
         {
             Product product = null;
-            ProcessBar processBar = null;
-            processBar = new ProcessBar("Загрузка данных календаря", CountActions);
-            processBar.Show();
-            ActionStart += processBar.TaskStart;
-            ActionDone += processBar.TaskDone;
-            processBar.CancelClick += Cancel;
-
-            SetFileData();
 
             for (int rowIndex = 2; rowIndex < ArrRrows; rowIndex++)
             {
 
                 if (IsCancel) return false;
-                OnActionStart($"Обрабатывается строка {rowIndex}");
+                ActionStart?.Invoke($"Обрабатывается строка {rowIndex}");
 
                 if (GetValueFromColumnStr(rowIndex, 1) == "")
                 {
-                    OnActionDone(1);
+                    ActionDone?.Invoke(1);
                     continue;
                 }
 
@@ -444,7 +431,7 @@ namespace BPA.Modules
 
                 if (!CheckToBeSold())
                 {
-                    OnActionDone(1);
+                    ActionDone?.Invoke(1);
                     continue;
                 }
 
@@ -486,9 +473,8 @@ namespace BPA.Modules
                     product.Mark("Calendar");
                 }
 
-                OnActionDone(1);
+                ActionDone?.Invoke(1);
             }
-            processBar?.Close();
             if (product == null) return false;
             product.Sort("Id");
             product.Sort("ProductGroup");

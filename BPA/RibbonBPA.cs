@@ -31,6 +31,7 @@ namespace BPA
         private void AddNewCalendar_Click(object sender, RibbonControlEventArgs e)
         {
             FileCalendar fileCalendar = null;
+            ProcessBar processBar = null;
 
             try
             {
@@ -43,7 +44,15 @@ namespace BPA
                 FunctionsForExcel.SpeedOn();
                 Globals.ThisWorkbook.Activate();
 
+                fileCalendar = new FileCalendar();
+                if (!fileCalendar.IsOpen)
+                    return;
+                fileCalendar.SetProcessBarForLoad(ref processBar);
                 fileCalendar.LoadCalendar();
+                fileCalendar.Close();
+                processBar?.Close();
+                if (fileCalendar?.IsOpen ?? false) fileCalendar.Close();
+
             }
             catch (Exception ex)
             {
@@ -296,24 +305,20 @@ namespace BPA
         private void ClientsUpdate_Click(object sender, RibbonControlEventArgs e)
         {
             FunctionsForExcel.SpeedOn();
-            ProcessBar processBar = null;
             FileDescision fileDescision = null;
+            ProcessBar processBar = null;
 
             try
             {
                 new Client().ReadColNumbers();
+
                 fileDescision = new FileDescision();
-                if (!fileDescision.IsOpen) return;
-
-                processBar = new ProcessBar("Обновление клиентов", fileDescision.CountActions);
-                processBar.CancelClick += fileDescision.Cancel;
-                fileDescision.ActionStart += processBar.TaskStart;
-                fileDescision.ActionDone += processBar.TaskDone;
-                processBar.Show(new ExcelWindows(Globals.ThisWorkbook));
-
+                if (!fileDescision.IsOpen) 
+                    return;
+                fileDescision.SetProcessBarForLoad(ref processBar);
                 List<Client> clientsFromDecision = fileDescision.LoadClients();
-
                 processBar.Close();
+                if (fileDescision?.IsOpen ?? false) fileDescision.Close();
 
                 //Загрузить данные из листа клиентов
                 List<Client> clients = Client.GetAllClients();
@@ -333,7 +338,7 @@ namespace BPA
 
                 void Cancel() => isCancel = true;
 
-                processBar = new ProcessBar("Обновление клиентов", fileDescision.CountActions);
+                processBar = new ProcessBar("Обновление клиентов", newClients.Count); ///???
                 processBar.CancelClick += Cancel;
                 processBar.Show(new ExcelWindows(Globals.ThisWorkbook));
 
@@ -453,13 +458,16 @@ namespace BPA
                     if (currentDiscount.NeedFilePriceMT() && (!filePriceMT?.IsOpen ?? true))
                     {
                         //Загурзить файл price list MT
+                        processBar = null;
                         filePriceMT = new FilePriceMT();
-                        processBar = new ProcessBar($"Создание прайс-листа для {currentClient.Customer}", 1);
-                        filePriceMT.ActionStart += processBar.TaskStart;
-                        filePriceMT.ActionDone += processBar.TaskDone;
-                        processBar.CancelClick += filePriceMT.Cancel;
+                        if (!filePriceMT.IsOpen)
+                            return;
+                        filePriceMT.SetProcessBarForLoad(ref processBar);
                         filePriceMT.Load(currentDate, currentClient.Mag);
-                        if (!filePriceMT.IsOpen) return;
+                        processBar.Close();
+                        if (filePriceMT?.IsOpen ?? false) filePriceMT.Close();
+
+                        if (!filePriceMT.IsOpen) return; //?
                         if (!All) processBar.Close(); ///else not close???
                     }
 
@@ -606,17 +614,28 @@ namespace BPA
 
                 //получаем продукты на основании введенных данных
                 List<ProductForPlanningNewYear> products = new ProductForPlanningNewYear().GetProducts(planningNewYearTmp);
-                
-                //получаем Desicion, Buget
-                fileDescision = new FileDescision();
-                fileBuget = new FileBuget();
-                if (!fileBuget.IsOpen || !fileDescision.IsOpen) return;
 
-                //загружаем Desicion, Buget
+                //получаем Desicion
+                //processBar = null;
+                fileDescision = new FileDescision();
+                if (!fileDescision.IsOpen)
+                    return;
+                fileDescision.SetProcessBarForLoad(ref processBar);
                 fileDescision.LoadForPlanning(planningNewYearTmp);
-                fileBuget.LoadForPlanning(planningNewYearTmp);
+                processBar.Close();
                 if (fileDescision?.IsOpen ?? false) fileDescision.Close();
+                //
+
+                //загружаем  Buget
+                processBar = null;
+                fileBuget = new FileBuget();
+                if (!fileBuget.IsOpen)
+                    return;
+                fileBuget.SetProcessBarForLoad(ref processBar);
+                fileBuget.LoadForPlanning(planningNewYearTmp);
+                processBar.Close();
                 if (fileBuget?.IsOpen ?? false) fileBuget.Close();
+                //
 
                 //создание клиента для формирования PriceList-цены
                 Client client = new Client(planningNewYearTmp);
@@ -722,14 +741,27 @@ namespace BPA
                     return;
                 }
 
+                //получаем Desicion
+                processBar = null;
                 fileDescision = new FileDescision();
-                fileBuget = new FileBuget();
-                if (!fileBuget.IsOpen || !fileDescision.IsOpen) return;
-                
+                fileDescision.SetProcessBarForLoad(ref processBar);
+                if (!fileDescision.IsOpen)
+                    return;
                 fileDescision.LoadForPlanning(planningNewYearTmp);
-                fileBuget.LoadForPlanning(planningNewYearTmp);
-                if (fileBuget?.IsOpen ?? false) fileBuget.Close();
+                processBar.Close();
                 if (fileDescision?.IsOpen ?? false) fileDescision.Close();
+                //
+
+                //получаем Buget
+                processBar = null;
+                fileBuget= new FileBuget();
+                fileBuget.SetProcessBarForLoad(ref processBar);
+                if (!fileBuget.IsOpen)
+                    return;
+                fileBuget.LoadForPlanning(planningNewYearTmp);
+                processBar.Close();
+                if (fileBuget?.IsOpen ?? false) fileBuget.Close();
+                //
 
                 //создание клиента для формирования PriceList-цены
                 Client client = new Client(planningNewYearTmp);

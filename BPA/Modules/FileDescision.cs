@@ -101,7 +101,9 @@ namespace BPA.Modules
                 FileName = path;
                 FileHeaderRow = 1;
                 FileSheetName = SettingsBPA.Default.SHEET_NAME_FILE_DECISION;
+                
                 IsOpen = true;
+                SetFileData();
             }
             else
             {
@@ -128,7 +130,6 @@ namespace BPA.Modules
         public List<Client> LoadClients()
         {
             List<Client> buffer = new List<Client>();
-            SetFileData();
 
             if (CustomerColumn == 0 || GardenaChannelColumn == 0)
             {
@@ -140,14 +141,11 @@ namespace BPA.Modules
             for (int rowIndex = 2; rowIndex < ArrRrows; rowIndex++)
             {
                 if (IsCancel) return null;
-                OnActionStart($"Обрабатывается строка {rowIndex}");
-                //Excel.Range range = worksheet.Cells[rowIndex, CustomerColumn];
-                //string customer = range.Text;
+                ActionStart?.Invoke($"Обрабатывается строка {rowIndex}");
+
                 string customer = GetValueFromColumnStr(rowIndex, CustomerColumn);
                 if(customer.Trim().Length > 0)
                 {
-                    //range = worksheet.Cells[rowIndex, GardenaChannelColumn];
-                    //string gardenaChannel = range.Text;
                     string gardenaChannel = GetValueFromColumnStr(rowIndex, GardenaChannelColumn);
 
                     if (!buffer.Exists(x => x.Customer == customer)) buffer.Add(new Client()
@@ -156,7 +154,7 @@ namespace BPA.Modules
                         GardenaChannel = gardenaChannel
                     });
                 }
-                OnActionDone(1);
+                ActionDone?.Invoke(1);
             }
 
             if (buffer.Count == 0) throw new ApplicationException("Файл не содержит значемых данных");
@@ -167,26 +165,17 @@ namespace BPA.Modules
         //получение списка артикулов и месяцов
         public void LoadForPlanning(PlanningNewYear planning)
         {
-            ProcessBar processBar = null;
             
-            SetFileData();
-
             if (DateColumn == 0 || ArticleColumn == 0 || CampaignColumn ==0)
             {
                 throw new ApplicationException("Файл имеет неверный формат");
-            }
-            
-            processBar = new ProcessBar($"Загрузка файла  { FileName } ", LastRow - FileHeaderRow);
-            processBar.Show();
-            ActionStart += processBar.TaskStart;
-            ActionDone += processBar.TaskDone;
-            processBar.CancelClick += Cancel;
+            }            
 
             for (int rowIndex = 2; rowIndex < ArrRrows; rowIndex++)
             {
                 if (IsCancel)
                     return;
-                OnActionStart($"Обрабатывается строка {rowIndex}");
+                ActionStart?.Invoke($"Обрабатывается строка {rowIndex}");
 
                 DateTime date = GetDateFromCell(rowIndex, DateColumn);
 
@@ -212,10 +201,8 @@ namespace BPA.Modules
                         Bonus = bonus
                     });
                 }
-
-                OnActionDone(1);
+                ActionDone?.Invoke(1);
             }
-            processBar?.Close();
         }
     }
 }

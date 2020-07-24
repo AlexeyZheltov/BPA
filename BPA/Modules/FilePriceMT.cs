@@ -11,18 +11,6 @@ namespace BPA.Modules
 {
     internal class FilePriceMT : FileBase
     {
-        ///// <summary>
-        ///// Событие начала задачи
-        ///// </summary>
-        //public event ActionsStart ActionStart;
-        public delegate void ActionsStart(string name);
-
-        ///// <summary>
-        ///// Событие завершения задачи
-        ///// </summary>
-        //public event ActionsDone ActionDone;
-        public delegate void ActionsDone(int count);
-
         #region --- Columns ---
         //public int CustomerColumn => FindColumn("Покупатель");
         public int CustomerColumn {
@@ -161,9 +149,11 @@ namespace BPA.Modules
             if (settings.GetPriceListMT(out string path))
             {
                 FileName = path;
-                IsOpen = true;
                 FileSheetName = SettingsBPA.Default.SHEET_NAME_FILE_PRICELISTMT;
                 FileHeaderRow = 1;
+
+                IsOpen = true;
+                SetFileData();
             }
             else
             {
@@ -213,7 +203,6 @@ namespace BPA.Modules
                 return;
 
             clients.Clear();
-            SetFileData();
 
             if (DateFromColumn == 0 || DateToColumn == 0 || MagColumn == 0)
             {
@@ -228,7 +217,7 @@ namespace BPA.Modules
                 if (IsCancel)
                     return;
 
-                OnActionStart("Загрузка файла PriceListMT");
+                ActionStart?.Invoke("Загрузка файла PriceListMT");
 
                 string magVal;
 
@@ -248,18 +237,19 @@ namespace BPA.Modules
                 else if (date <= lastDate && date >= firstDate) {
                     AddClient(rowIndex, PriceNewColumn);
                 }
-                OnActionDone(1);
+                ActionDone?.Invoke(1);
             }
             IsOpen = true;
-        }
 
-        private void AddClient(int rowIndex, int priceColumn)
-        {
-            clients.Add(new Client {
-                Name = GetValueFromColumnStr(rowIndex, CustomerColumn),
-                Art = GetValueFromColumnStr(rowIndex, ArticleColumn),
-                Price = GetValueFromColumnDbl(rowIndex, priceColumn)
-            });
+            void AddClient(int rowIndex, int priceColumn)
+            {
+                clients.Add(new Client
+                {
+                    Name = GetValueFromColumnStr(rowIndex, CustomerColumn),
+                    Art = GetValueFromColumnStr(rowIndex, ArticleColumn),
+                    Price = GetValueFromColumnDbl(rowIndex, priceColumn)
+                });
+            }
         }
 
         public double GetPrice(string Art)
