@@ -464,7 +464,6 @@ namespace BPA
                         processBar.Close();
                         if (filePriceMT?.IsOpen ?? false) filePriceMT.Close();
 
-                        if (!filePriceMT.IsOpen) return; //?
                         if (!All) processBar.Close(); ///else not close???
                     }
 
