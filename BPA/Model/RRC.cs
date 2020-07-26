@@ -1,4 +1,5 @@
-﻿using BPA.Modules;
+﻿using BPA.Forms;
+using BPA.Modules;
 using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
@@ -32,6 +33,8 @@ namespace BPA.Model {
             { "Id","№" },
             { "Article", "Артикул" },
             { "IRP", "IRP, Eur" },
+            { "RRP", "RRP, Eur" },
+            { "IRPIndex", "IRP index" },
             { "RRCNDS", "РРЦ, руб. с НДС" },
             { "DIY", "DIY price list, руб. без НДС" },
             { "Date", "Дата принятия" }
@@ -61,6 +64,22 @@ namespace BPA.Model {
         /// IRP, Eur
         /// </summary>
         public double IRP
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// RRP, Eur
+        /// </summary>
+        public double RRP
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// IRP index
+        /// </summary>
+        public double IRPIndex
         {
             get; set;
         }
@@ -135,6 +154,50 @@ namespace BPA.Model {
             return null;
         }
 
+        public List<RRC> GetSortedRRCList()
+        {
+            List<RRC> rrcs = new RRC().GetRRCList();
+            if (rrcs.Count == 0) return rrcs;
+
+            rrcs.Sort((x, y) =>
+            {
+                if (x.Date < y.Date) return 1;
+                else if (x.Date > y.Date) return -1;
+                else return 0;
+            });
+
+            return rrcs;
+        }
+        public List<RRC> GetRRCList()
+        {
+            bool isCancel = false;
+            void CancelLocal() => isCancel = true;
+            ProcessBar processBar = new ProcessBar("Получение списка цен", LastRow);
+            processBar.CancelClick += CancelLocal;
+            processBar.Show();
+
+            List<RRC> rrcs = new List<RRC>();
+
+            foreach (Excel.ListRow row in Table.ListRows)
+            {
+                if (isCancel)
+                {
+                    processBar.Close();
+                    return null;
+                }
+                processBar.TaskStart($"Обрабатывается строка {row.Index} из {LastRow - Table.HeaderRowRange.Row}");
+
+                RRC rrc = new RRC(row);
+                if ((int)rrc.Id != 0)
+                    rrcs.Add(rrc);
+
+                processBar.TaskDone(1);
+            }
+
+            processBar.Close();
+            return rrcs;
+        }
+
         /// <summary>
         /// поиск в справочнике цен артикула article с указанной датой date
         /// </summary>
@@ -181,18 +244,18 @@ namespace BPA.Model {
        /// Обновление Справочника из ProductForRRC
        /// </summary>
        /// <param name="product"></param>
-        public void UpdatePriceFromProduct(ProductForRRC product)
+        public void SetProduct(ProductForRRC product)
         {
             if (product != null)
             {
                 this.Date = product.DateOfPromotion;
-                this.RRCNDS = product.RRCCFinal;
+                this.RRCNDS = product.RRCFinal;
                 this.DIY = product.DIY;
                 this.Article = product.Article;
                 this.IRP = product.IRP;
+                this.IRPIndex = product.IRPIndex;
+                this.RRP = this.RRCNDS / product.BugetCourse;
             }
-
-            Update();
         }
 
         public static List<RRC> GetAllRRC(PBWrapper pB)

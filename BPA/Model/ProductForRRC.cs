@@ -3,6 +3,7 @@ using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,6 +29,7 @@ namespace BPA.Model
             { "Id","№" },
             { "Article","Артикул" },
             { "IRP","IRP, Eur" },
+            { "IRPIndex","Индекс IRP" },
             { "RRCCurrent","РРЦ текущий" },
             { "DIYCurrent","DIY текущий" },
             { "RRCCalculated","РРЦ расчетная, руб." },
@@ -62,6 +64,14 @@ namespace BPA.Model
         }
 
         /// <summary>
+        /// Индекс IRP
+        /// </summary>
+        public Double IRPIndex
+        {
+            get; set;
+        }
+
+        /// <summary>
         /// РРЦ текущий
         /// </summary>
         public Double RRCCurrent
@@ -88,7 +98,7 @@ namespace BPA.Model
         /// <summary>
         /// РРЦ финальная, руб.
         /// </summary>
-        public Double RRCCFinal
+        public Double RRCFinal
         {
             get; set;
         }
@@ -113,12 +123,12 @@ namespace BPA.Model
         {
             get
             {
-                string dateOfPromotionLabel = "Дата повышения";
+                string Label = "Дата повышения";
 
                 try
                 {
-                    Range dateCell = Table.DataBodyRange.Cells[1, 1].Parent.UsedRange.Find(dateOfPromotionLabel, LookAt: XlLookAt.xlWhole);
-                    return DateTime.Parse(dateCell.Offset[0, 1].Text);
+                    Range cell = Table.DataBodyRange.Cells[1, 1].Parent.UsedRange.Find(Label, LookAt: XlLookAt.xlWhole);
+                    return DateTime.Parse(cell.Offset[0, 1].Text);
                 }
                 catch
                 {
@@ -132,6 +142,34 @@ namespace BPA.Model
             }
         }
         private DateTime _DateOfPromotion;
+
+        /// <summary>
+        /// Дата повышения
+        /// </summary>
+        /// <returns></returns>
+        public double BugetCourse
+        {
+            get
+            {
+                string Label = "Бюджетный курс";
+
+                try
+                {
+                    Range cell = Table.DataBodyRange.Cells[1, 1].Parent.UsedRange.Find(Label, LookAt: XlLookAt.xlWhole);
+                    return double.Parse(cell.Offset[0, 1].Text);
+                }
+                catch
+                {
+                    return 0;
+                }
+            }
+
+            set
+            {
+                _BugetCourse = value;
+            }
+        }
+        private double _BugetCourse;
 
         /// <summary>
         /// Получение списка продуктов для РРЦ
@@ -172,6 +210,7 @@ namespace BPA.Model
                 this.RRCCurrent = rrc.RRCNDS;
                 this.DIYCurrent = rrc.DIY;
                 this.IRP = rrc.IRP;
+                this.IRPIndex = rrc.IRPIndex;
 
                 Update();
             }

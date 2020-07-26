@@ -230,7 +230,7 @@ namespace BPA.Model
                 ProductForPlanningNewYear product = new ProductForPlanningNewYear(row);
 
                 if (IsExclusive(planningNewYearTmp, product.Exclusive))
-                    if (product.Status != "Выведено из ассортимента текущего года")
+                    if (product.Status != "Выведено из ассортимента текущего года" && product.Status != "Выведено из глобального ассортимента")
                         if ((int)product.Id != 0)
                             products.Add(product);
                 

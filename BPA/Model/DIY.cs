@@ -10,7 +10,7 @@ namespace BPA.Model {
     /// </summary>
     class DIY : TableBase {
         public override string TableName => "DIY";
-        public override string SheetName => "DIY";
+        public override string SheetName => "Структура цен DIY";
         public static Dictionary<string, int> ColDict { get; set; } = new Dictionary<string, int>();
 
         public override IDictionary<string, string> Filds {
