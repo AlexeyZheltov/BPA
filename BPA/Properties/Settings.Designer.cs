@@ -25,7 +25,7 @@ namespace BPA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Планирование нового года шаблон")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Планирование НГ шаблон")]
         public string SHEET_NAME_PLANNING_TEMPLATE {
             get {
                 return ((string)(this["SHEET_NAME_PLANNING_TEMPLATE"]));
@@ -85,7 +85,7 @@ namespace BPA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("PlanningNYCell")]
+        [global::System.Configuration.DefaultSettingValueAttribute("PlanningNYCellNew")]
         public string PlannningNYIndicatorCellName {
             get {
                 return ((string)(this["PlannningNYIndicatorCellName"]));

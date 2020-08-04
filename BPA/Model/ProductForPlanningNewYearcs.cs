@@ -31,16 +31,31 @@ namespace BPA.Model
             { "Status","Статус" },
             { "Exclusive","Эксклюзив клиента или канала продажи" },
 
-            { "IRP","IRP, Eur" },
-            { "RRCCurrent","РРЦ текущий" },
-            { "DIYCurrent","DIY текущий" },
-            { "RRCPercent","Процент повышения РРЦ" },
-            { "RRCCalculated","РРЦ расчетная, руб." },
-            { "RRCFinal","РРЦ финальная, руб." },
-            { "RRCEuro","РРЦ, евро" },
-            { "IRPIndex","Индекс IRP" },
-            { "DIYDiscount","Скидка DIY" },
-            { "DIY","DIY price list, руб. без НДС" }
+            //{ "IRP","IRP, Eur" },
+            //{ "RRCCurrent","РРЦ текущий" },
+            //{ "DIYCurrent","DIY текущий" },
+            //{ "RRCPercent","Процент повышения РРЦ" },
+            //{ "RRCCalculated","РРЦ расчетная, руб." },
+            //{ "RRCFinal","РРЦ финальная, руб." },
+            //{ "RRCEuro","РРЦ, евро" },
+            //{ "IRPIndex","Индекс IRP" },
+            //{ "DIYDiscount","Скидка DIY" },
+            //{ "DIY","DIY price list, руб. без НДС" },
+
+            { "SuperCategory","Суперкатегория" },
+            { "SupercategoryEng","Суперкатегория (ENG)"  },
+            { "ProductGroup","Продукт группа" },
+            { "ProductGroupEng","Название продукт группы (ENG)" },
+            { "SubGroup", "SubGroup" },
+            { "GenericName", "Generic Name (long)" },
+            { "PNS", "PNS" },
+
+            { "ArticleOld","Артикул предшественника (если есть)" },
+            { "ArticleRu","Название артикула (RUS)" },
+
+            { "CalendarSalesStartDate","Sales Start Date" },
+            { "CalendarPreliminaryEliminationDate","Preliminary Elimination Date" },
+            { "CalendarEliminationDate","Elimination Date" },
         };
 
         #endregion
@@ -70,94 +85,183 @@ namespace BPA.Model
         {
             get; set;
         }
-        /// <summary>
-        /// Локальный сертификат
-        /// </summary>
         #endregion
 
-        #region --- Свойства для РРЦ ---
+        //#region --- Свойства для РРЦ ---
+
+        ///// <summary>
+        ///// IRP, Eur
+        ///// </summary>
+        //public Double IRP
+        //{
+        //    get; set;
+        //}
+
+        ///// <summary>
+        ///// РРЦ текущий
+        ///// </summary>
+        //public Double RRCCurrent
+        //{
+        //    get; set;
+        //}
+
+        ///// <summary>
+        ///// DIY текущий
+        ///// </summary>
+        //public Double DIYCurrent
+        //{
+        //    get; set;
+        //}
+
+        ///// <summary>
+        ///// Процент повышения РРЦ
+        ///// </summary>
+        //public Double RRCPercent
+        //{
+        //    get; set;
+        //}
+
+        ///// <summary>
+        ///// РРЦ расчетная, руб.
+        ///// </summary>
+        //public Double RRCCalculated
+        //{
+        //    get; set;
+        //}
+
+        ///// <summary>
+        ///// РРЦ финальная, руб.
+        ///// </summary>
+        //public Double RRCFinal
+        //{
+        //    get; set;
+        //}
+
+        ///// <summary>
+        ///// РРЦ, евро
+        ///// </summary>
+        //public Double RRCEuro
+        //{
+        //    get; set;
+        //}
+
+        ///// <summary>
+        ///// Индекс IRP
+        ///// </summary>
+        //public Double IRPIndex
+        //{
+        //    get; set;
+        //}
+
+        ///// <summary>
+        ///// Скидка DIY
+        ///// </summary>
+        //public Double DIYDiscount
+        //{
+        //    get; set;
+        //}
+        ///// <summary>
+        ///// DIY price list, руб. без НДС
+        ///// </summary>
+        //public Double DIY
+        //{
+        //    get; set;
+        //}
+        //#endregion
+
+        #region --- Остальные свойства ---
+        /// <summary>
+        /// Суперкатегория(ENG)
+        /// </summary>
+        public string Supercategory
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Суперкатегория
+        /// </summary>
+        public string SupercategoryEng
+        {
+            get; set;
+        }
+ 
+        public string ProductGroup
+        {
+            get; set;
+        }
 
         /// <summary>
-        /// IRP, Eur
+        /// Название продукт группы(ENG)
         /// </summary>
-        public Double IRP
+        public string ProductGroupEng
         {
             get; set;
         }
 
         /// <summary>
-        /// РРЦ текущий
+        /// SubGroup
         /// </summary>
-        public Double RRCCurrent
+        public string SubGroup
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Generic Name(long)
+        /// </summary>
+        public string GenericName
         {
             get; set;
         }
 
         /// <summary>
-        /// DIY текущий
+        /// PNS
         /// </summary>
-        public Double DIYCurrent
+        public string PNS
         {
             get; set;
         }
 
         /// <summary>
-        /// Процент повышения РРЦ
+        /// Артикул предшественника(если есть)
         /// </summary>
-        public Double RRCPercent
+        public string ArticleOld
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Название артикула(ENG)
+        /// </summary>
+
+        public string ArticleRu
         {
             get; set;
         }
 
         /// <summary>
-        /// РРЦ расчетная, руб.
+        /// Sales Start Date
         /// </summary>
-        public Double RRCCalculated
+        public Double CalendarSalesStartDate
         {
             get; set;
         }
 
         /// <summary>
-        /// РРЦ финальная, руб.
+        /// Preliminary Elimination Date
         /// </summary>
-        public Double RRCFinal
+        public Double CalendarPreliminaryEliminationDate
         {
             get; set;
         }
 
         /// <summary>
-        /// РРЦ, евро
+        /// CalendarEliminationDate
         /// </summary>
-        public Double RRCEuro
+        public Double CalendarEliminationDate
         {
             get; set;
         }
 
-        /// <summary>
-        /// Индекс IRP
-        /// </summary>
-        public Double IRPIndex
-        {
-            get; set;
-        }
-
-        /// <summary>
-        /// Скидка DIY
-        /// </summary>
-        public Double DIYDiscount
-        {
-            get; set;
-        }
-        /// <summary>
-        /// DIY price list, руб. без НДС
-        /// </summary>
-        public Double DIY
-        {
-            get; set;
-        }
         #endregion
-
-
 
         public ProductForPlanningNewYear()
         {

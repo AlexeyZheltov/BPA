@@ -48,33 +48,33 @@ namespace BPA.Model
             { "QuantityPromo11","Промо прогноз ноябрь, шт." },
             { "QuantityPromo12","Промо прогноз декабрь, шт." },
 
-            { "GSPromoYear","Промо GS за год, руб." },
-            { "GSPromo01","Промо GS январь, руб." },
-            { "GSPromo02","Промо GS февраль, руб." },
-            { "GSPromo03","Промо GS март, руб." },
-            { "GSPromo04","Промо GS апрель, руб." },
-            { "GSPromo05","Промо GS май, руб." },
-            { "GSPromo06","Промо GS июнь, руб." },
-            { "GSPromo07","Промо GS июль, руб." },
-            { "GSPromo08","Промо GS август, руб." },
-            { "GSPromo09","Промо GS сентябрь, руб." },
-            { "GSPromo10","Промо GS октябрь, руб." },
-            { "GSPromo11","Промо GS ноябрь, руб." },
-            { "GSPromo12","Промо GS декабрь, руб." },
+            //{ "GSPromoYear","Промо GS за год, руб." },
+            //{ "GSPromo01","Промо GS январь, руб." },
+            //{ "GSPromo02","Промо GS февраль, руб." },
+            //{ "GSPromo03","Промо GS март, руб." },
+            //{ "GSPromo04","Промо GS апрель, руб." },
+            //{ "GSPromo05","Промо GS май, руб." },
+            //{ "GSPromo06","Промо GS июнь, руб." },
+            //{ "GSPromo07","Промо GS июль, руб." },
+            //{ "GSPromo08","Промо GS август, руб." },
+            //{ "GSPromo09","Промо GS сентябрь, руб." },
+            //{ "GSPromo10","Промо GS октябрь, руб." },
+            //{ "GSPromo11","Промо GS ноябрь, руб." },
+            //{ "GSPromo12","Промо GS декабрь, руб." },
 
-            { "NSPromoYear","Промо NS за год, руб." },
-            { "NSPromo01","Промо NS январь, руб." },
-            { "NSPromo02","Промо NS февраль, руб." },
-            { "NSPromo03","Промо NS март, руб." },
-            { "NSPromo04","Промо NS апрель, руб." },
-            { "NSPromo05","Промо NS май, руб." },
-            { "NSPromo06","Промо NS июнь, руб." },
-            { "NSPromo07","Промо NS июль, руб." },
-            { "NSPromo08","Промо NS август, руб." },
-            { "NSPromo09","Промо NS сентябрь, руб." },
-            { "NSPromo10","Промо NS октябрь, руб." },
-            { "NSPromo11","Промо NS ноябрь, руб." },
-            { "NSPromo12","Промо NS декабрь, руб." }
+            //{ "NSPromoYear","Промо NS за год, руб." },
+            //{ "NSPromo01","Промо NS январь, руб." },
+            //{ "NSPromo02","Промо NS февраль, руб." },
+            //{ "NSPromo03","Промо NS март, руб." },
+            //{ "NSPromo04","Промо NS апрель, руб." },
+            //{ "NSPromo05","Промо NS май, руб." },
+            //{ "NSPromo06","Промо NS июнь, руб." },
+            //{ "NSPromo07","Промо NS июль, руб." },
+            //{ "NSPromo08","Промо NS август, руб." },
+            //{ "NSPromo09","Промо NS сентябрь, руб." },
+            //{ "NSPromo10","Промо NS октябрь, руб." },
+            //{ "NSPromo11","Промо NS ноябрь, руб." },
+            //{ "NSPromo12","Промо NS декабрь, руб." }
         };
 
         #endregion
@@ -400,31 +400,31 @@ namespace BPA.Model
             QuantityPromo11 = articles[10].Quantity;
             QuantityPromo12 = articles[11].Quantity;
 
-            GSPromo01 = articles[0].PriceList;
-            GSPromo02 = articles[1].PriceList;
-            GSPromo03 = articles[2].PriceList;
-            GSPromo04 = articles[3].PriceList;
-            GSPromo05 = articles[4].PriceList;
-            GSPromo06 = articles[5].PriceList;
-            GSPromo07 = articles[6].PriceList;
-            GSPromo08 = articles[7].PriceList;
-            GSPromo09 = articles[8].PriceList;
-            GSPromo10 = articles[9].PriceList;
-            GSPromo11 = articles[10].PriceList;
-            GSPromo12 = articles[11].PriceList;
+            //GSPromo01 = articles[0].PriceList;
+            //GSPromo02 = articles[1].PriceList;
+            //GSPromo03 = articles[2].PriceList;
+            //GSPromo04 = articles[3].PriceList;
+            //GSPromo05 = articles[4].PriceList;
+            //GSPromo06 = articles[5].PriceList;
+            //GSPromo07 = articles[6].PriceList;
+            //GSPromo08 = articles[7].PriceList;
+            //GSPromo09 = articles[8].PriceList;
+            //GSPromo10 = articles[9].PriceList;
+            //GSPromo11 = articles[10].PriceList;
+            //GSPromo12 = articles[11].PriceList;
 
-            NSPromo01 = GSPromo01 - articles[0].Bonus;
-            NSPromo02 = GSPromo02 - articles[1].Bonus;
-            NSPromo03 = GSPromo03 - articles[2].Bonus;
-            NSPromo04 = GSPromo04 - articles[3].Bonus;
-            NSPromo05 = GSPromo05 - articles[4].Bonus;
-            NSPromo06 = GSPromo06 - articles[5].Bonus;
-            NSPromo07 = GSPromo07 - articles[6].Bonus;
-            NSPromo08 = GSPromo08 - articles[7].Bonus;
-            NSPromo09 = GSPromo09 - articles[8].Bonus;
-            NSPromo10 = GSPromo10 - articles[9].Bonus;
-            NSPromo11 = GSPromo11 - articles[10].Bonus;
-            NSPromo12 = GSPromo12 - articles[11].Bonus;
+            //NSPromo01 = GSPromo01 - articles[0].Bonus;
+            //NSPromo02 = GSPromo02 - articles[1].Bonus;
+            //NSPromo03 = GSPromo03 - articles[2].Bonus;
+            //NSPromo04 = GSPromo04 - articles[3].Bonus;
+            //NSPromo05 = GSPromo05 - articles[4].Bonus;
+            //NSPromo06 = GSPromo06 - articles[5].Bonus;
+            //NSPromo07 = GSPromo07 - articles[6].Bonus;
+            //NSPromo08 = GSPromo08 - articles[7].Bonus;
+            //NSPromo09 = GSPromo09 - articles[8].Bonus;
+            //NSPromo10 = GSPromo10 - articles[9].Bonus;
+            //NSPromo11 = GSPromo11 - articles[10].Bonus;
+            //NSPromo12 = GSPromo12 - articles[11].Bonus;
             ///
             #endregion
         }
