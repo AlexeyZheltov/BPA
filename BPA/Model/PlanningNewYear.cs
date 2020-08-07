@@ -59,8 +59,12 @@ namespace BPA.Model
             //{ "RRCNDS2","РРЦ, руб.с НДС2"},
             //{ "IRPIndex","Индекс IRP"},
             //{ "DIYPriceList","DIY price list, руб. без НДС"},
-
+            
             //{ "PricePromo","Промо цена, руб."},
+
+            { "RRCNDS","РРЦ 2021, руб. с НДС"},
+            { "DIYPriceList","DIY цена 2021, руб. с НДС"},
+            { "STKRub","STK 2.5 2021, RUB"},
 
             //добавил новые
             { "SupercategoryEng", "Суперкатегория" },
@@ -98,13 +102,13 @@ namespace BPA.Model
         //    get; set;
         //}
 
-        ///// <summary>
-        ///// РРЦ, руб. с НДС
-        ///// </summary>
-        //public double RRCNDS
-        //{
-        //    get; set;
-        //}
+        /// <summary>
+        /// РРЦ, руб. с НДС
+        /// </summary>
+        public double RRCNDS
+        {
+            get; set;
+        }
 
         ///// <summary>
         ///// Процент изменения
@@ -114,21 +118,22 @@ namespace BPA.Model
         //    get; set;
         //}
 
-        ///// <summary>
-        ///// STK 2.5, руб.
-        ///// </summary>
-        //public double STKRub
-        //{
-        //    get; set;
-        //}
-        
-        ///// <summary>
-        ///// STK 2.5, Eur
-        ///// </summary>
-        //public double STKEur
-        //{
-        //    get; set;
-        //}
+        /// <summary>
+        /// STK 2.5, руб.
+        /// </summary>
+        public double STKRub
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// STK 2.5, Eur
+        /// </summary>
+        public double STKEur
+        {
+            get; set;
+        }
+
         ///// <summary>
         ///// IRP, Eur
         ///// </summary>
@@ -153,13 +158,13 @@ namespace BPA.Model
         //    get; set;
         //}
 
-        ///// <summary>
-        ///// DIY price list, руб. без НДС
-        ///// </summary>
-        //public double DIYPriceList
-        //{
-        //    get; set;
-        //}
+        /// <summary>
+        /// DIY price list, руб. без НДС
+        /// </summary>
+        public double DIYPriceList
+        {
+            get; set;
+        }
         ///// <summary>
         ///// Промо цена, руб.
         ///// </summary>
@@ -365,12 +370,12 @@ namespace BPA.Model
         public void SetProduct(ProductForPlanningNewYear product)
         {
             this.Article = product.Article;
-            //this.RRCNDS = product.RRCFinal; //?
+            this.RRCNDS = product.RRCFinal; //?
             ////planning.PercentageOfChange = product.RRCPercent;  //?
             //this.IRP = product.IRP;
             ////planning.RRCNDS2 = product.RRCFinal; //?
             //this.IRPIndex = product.IRPIndex;
-            //this.DIYPriceList = product.DIY;
+            this.DIYPriceList = product.DIY;
 
             this.SupercategoryEng = product.SupercategoryEng;
             this.Supercategory = product.SuperCategory;
@@ -388,15 +393,15 @@ namespace BPA.Model
         }
         public void GetSTK()
         {
-            //if (this.Article == "")
-            //    return;
+            if (this.Article == "")
+                return;
 
-            //STK sTK = new STK().GetSTK(this.Article, this.Year);
-            //if (sTK == null)
-            //    return;
+            STK sTK = new STK().GetSTK(this.Article, this.Year);
+            if (sTK == null)
+                return;
 
-            //this.STKEur = sTK.STKEur;
-            //this.STKRub = sTK.STKRub;
+            this.STKEur = sTK.STKEur;
+            this.STKRub = sTK.STKRub;
         }
 
         public void GetSheetCopy()
@@ -476,15 +481,34 @@ namespace BPA.Model
             tableTemplate.ListRows[1].Range.Copy();
             firstCell.PasteSpecial();
 
-            //убираем ссылки на старый лист. Долго "cell.Formula ="
+            //убираем ссылки на старый лист.Долго "cell.Formula ="
+
+            bool isCancel = false;
+            void CancelLocal() => isCancel = true;
+            ProcessBar pbar = new ProcessBar("Очистка данных", Table.ListRows[1].Range.Columns.Count);
+            pbar.CancelClick += CancelLocal;
+            pbar.Show();
+
             foreach (Range cell in Table.ListRows[1].Range)
             {
+                if (isCancel)
+                {
+                    pbar.Close();
+                    return;
+                }
+                pbar.TaskStart($"Готово {100 * cell.Column / Table.ListRows[1].Range.Columns.Count}%");
+
+
                 if (!cell.HasFormula) continue;
 
                 string formula = cell.Formula;
                 formula = formula.Replace(tableTemplateName, "");
                 cell.Formula = formula;
+
+
+                pbar.TaskDone(1);
             }
+            pbar.Close();
         }
 
         public void SetMaximumBonusValue()

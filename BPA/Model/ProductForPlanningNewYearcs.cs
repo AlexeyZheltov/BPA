@@ -36,11 +36,11 @@ namespace BPA.Model
             //{ "DIYCurrent","DIY текущий" },
             //{ "RRCPercent","Процент повышения РРЦ" },
             //{ "RRCCalculated","РРЦ расчетная, руб." },
-            //{ "RRCFinal","РРЦ финальная, руб." },
+            { "RRCFinal","РРЦ финальная, руб." },
             //{ "RRCEuro","РРЦ, евро" },
             //{ "IRPIndex","Индекс IRP" },
             //{ "DIYDiscount","Скидка DIY" },
-            //{ "DIY","DIY price list, руб. без НДС" },
+            { "DIY","DIY price list, руб. без НДС" },
 
             { "SuperCategory","Суперкатегория" },
             { "SupercategoryEng","Суперкатегория (ENG)"  },
@@ -129,13 +129,13 @@ namespace BPA.Model
         //    get; set;
         //}
 
-        ///// <summary>
-        ///// РРЦ финальная, руб.
-        ///// </summary>
-        //public Double RRCFinal
-        //{
-        //    get; set;
-        //}
+        /// <summary>
+        /// РРЦ финальная, руб.
+        /// </summary>
+        public Double RRCFinal
+        {
+            get; set;
+        }
 
         ///// <summary>
         ///// РРЦ, евро
@@ -160,13 +160,13 @@ namespace BPA.Model
         //{
         //    get; set;
         //}
-        ///// <summary>
-        ///// DIY price list, руб. без НДС
-        ///// </summary>
-        //public Double DIY
-        //{
-        //    get; set;
-        //}
+        /// <summary>
+        /// DIY price list, руб. без НДС
+        /// </summary>
+        public Double DIY
+        {
+            get; set;
+        }
         //#endregion
 
         #region --- Остальные свойства ---

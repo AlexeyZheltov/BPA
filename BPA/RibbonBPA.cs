@@ -595,6 +595,7 @@ namespace BPA
 
                 new PlanningNewYear(worksheet.Name).ReadColNumbers();
                 new PlanningNewYearPrognosis(new PlanningNewYear(worksheet.Name)).ReadColNumbers();
+                new PlanningNewYearPrognosis(new PlanningNewYear(worksheet.Name)).SetDelFormulaDict();
                 //new PlanningNewYearPromo(new PlanningNewYear(worksheet.Name)).ReadColNumbers();
 
                 //получаем заполненые данне
@@ -673,7 +674,7 @@ namespace BPA
                 }
                 products.Clear();
 
-                planningNewYearTmp.SetSumFormulas();
+                //planningNewYearTmp.SetSumFormulas();
             }
             catch (Exception ex)
             {
@@ -792,7 +793,7 @@ namespace BPA
                     promo.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
 
                     prognosis.Save();
-                    promo.Save();
+                    //promo.Save();
 
                     processBar.TaskDone(1);
                 }
