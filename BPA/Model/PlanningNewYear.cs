@@ -12,6 +12,8 @@ namespace BPA.Model
     /// </summary>
     class PlanningNewYear : TableBase
     {
+        private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
+
         public override string TableName => GetTableName();
         public override string SheetName => _TableWorksheetName != null ? _TableWorksheetName: templateSheetName;
         public string _TableWorksheetName;
@@ -339,6 +341,27 @@ namespace BPA.Model
 
             return true;
         }
+
+        /// <summary>
+        /// строка формул выше шапки таблицы на 1
+        /// </summary>
+        private int FormulasRow
+        {
+            get
+            {
+                if (_FormulasRow == 0)
+                {
+                    _FormulasRow = Table.HeaderRowRange.Row - 1;
+                }
+                return _FormulasRow;
+            }
+            set
+            {
+                _FormulasRow = value;
+            }
+        }
+        private int _FormulasRow = 0;
+
         public void SetProduct(ProductForPlanningNewYear product)
         {
             this.Article = product.Article;
@@ -350,7 +373,7 @@ namespace BPA.Model
             //this.DIYPriceList = product.DIY;
 
             this.SupercategoryEng = product.SupercategoryEng;
-            this.Supercategory = product.Supercategory;
+            this.Supercategory = product.SuperCategory;
             this.ProductGroup = product.ProductGroup;
             this.ProductGroupEng = product.ProductGroupEng;
             this.SubGroup = product.SubGroup;
@@ -362,7 +385,6 @@ namespace BPA.Model
             this.CalendarSalesStartDate = product.CalendarSalesStartDate;
             this.CalendarPreliminaryEliminationDate = product.CalendarPreliminaryEliminationDate;
             this.CalendarEliminationDate = product.CalendarEliminationDate;
-            this.Status = product.Status;
         }
         public void GetSTK()
         {
@@ -454,16 +476,15 @@ namespace BPA.Model
             tableTemplate.ListRows[1].Range.Copy();
             firstCell.PasteSpecial();
 
+            //убираем ссылки на старый лист. Долго "cell.Formula ="
             foreach (Range cell in Table.ListRows[1].Range)
             {
-                string formula = cell.FormulaLocal;
+                if (!cell.HasFormula) continue;
 
-                if (formula != "" && formula.Substring(0,1) == "=")
-                //formula = formula.Replace(tableTemplateName, "");
-                //cell.FormulaLocal = formula;
-                    cell.FormulaLocal = cell.FormulaLocal.Replace(tableTemplateName, "");
+                string formula = cell.Formula;
+                formula = formula.Replace(tableTemplateName, "");
+                cell.Formula = formula;
             }
-
         }
 
         public void SetMaximumBonusValue()
@@ -624,6 +645,38 @@ namespace BPA.Model
                 return newArticleQuantity;
             }
             //
+        }
+
+        /// <summary>
+        /// Задает итоговые формулы. Запускать после завершения всех сохранений
+        /// </summary>
+        public void SetSumFormulas()
+        {
+            ThisWorkbook thisWorkbook = Globals.ThisWorkbook;
+            Worksheet worksheet = thisWorkbook.Sheets[SheetName];
+            Range formulasRange = worksheet.Range[worksheet.Cells[FormulasRow, Table.ListColumns[1].Range.Column], worksheet.Cells[FormulasRow, Table.ListColumns[Table.ListColumns.Count].Range.Column]];
+
+            //включаем стиль R1C1
+            XlReferenceStyle style = Application.ReferenceStyle;
+            Application.ReferenceStyle = XlReferenceStyle.xlR1C1;
+
+            foreach (Range cell in formulasRange) 
+            {
+                if (!cell.HasFormula) continue;
+
+                string formula = cell.Formula;
+                if (!formula.Contains("SUM")) continue;
+
+                int x = 2; //разница между строкой формул и первой строкой таблицы
+                if (!formula.Contains($"R[{ x }]C")) continue; //проверяем что сумируется начиная с первой строки таблицы
+
+                formula = $"=SUMM(R[{ x }]C:R[{ x + Table.ListRows.Count - 1 }]C";
+                cell.Formula = formula;
+
+            }
+
+            //возвращаем стиль
+            Application.ReferenceStyle = style;
         }
     }
 }

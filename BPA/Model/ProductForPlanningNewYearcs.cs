@@ -28,7 +28,7 @@ namespace BPA.Model
             { "Id","№" },
             { "Article","Артикул" },
 
-            { "Status","Статус" },
+            { "Status","Актуальный статус" },
             { "Exclusive","Эксклюзив клиента или канала продажи" },
 
             //{ "IRP","IRP, Eur" },
@@ -173,7 +173,7 @@ namespace BPA.Model
         /// <summary>
         /// Суперкатегория(ENG)
         /// </summary>
-        public string Supercategory
+        public string SuperCategory
         {
             get; set;
         }
