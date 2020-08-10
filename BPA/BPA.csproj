@@ -161,6 +161,12 @@
     <Compile Include="Modules\PriceListForPlaning.cs" />
     <Compile Include="Modules\StringCalculator.cs" />
     <Compile Include="Modules\WorksheetsSettings.cs" />
+    <Compile Include="NewModel\ProductItem.cs" />
+    <Compile Include="NewModel\ProductTable.cs" />
+    <Compile Include="NewModel\RRCItem.cs" />
+    <Compile Include="NewModel\RRCTable.cs" />
+    <Compile Include="NewModel\SheetColumn.cs" />
+    <Compile Include="NewModel\TableRow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RibbonBPA.cs">
       <SubType>Component</SubType>
@@ -174,7 +180,7 @@
     <Compile Include="ThisWorkbook.Designer.cs">
       <DependentUpon>ThisWorkbook.Designer.xml</DependentUpon>
     </Compile>
-    <Compile Include="Worksheet_DataBase\WS_DB.cs" />
+    <Compile Include="NewModel\WS_DB.cs" />
     <Compile Include="Лист1.cs">
       <DependentUpon>Business planning.xlsm</DependentUpon>
     </Compile>

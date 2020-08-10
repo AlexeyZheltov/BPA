@@ -1,62 +1,81 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Excel = Microsoft.Office.Interop.Excel;
 
-namespace BPA.Worksheet_DataBase
+namespace BPA.NewModel
 {
     class WS_DB
     {
-        Dictionary<string, SheetColumn> _columns = new Dictionary<string, SheetColumn>();
+        Dictionary<string, NewModel.SheetColumn> _columns = new Dictionary<string, SheetColumn>();
         List<SheetColumn> _columns_by_number = new List<SheetColumn>();
         List<dynamic[]> _data = new List<dynamic[]>();
-        TrueExcel.Range _startCell;
-        /// <summary>
-        /// Загрузка данных с умной таблицы
-        /// </summary>
+        Excel.ListObject _table;
 
+        /// <summary>
+        /// Получить или установить значение ячейки по номеру строки и номеру столбца
+        /// </summary>
+        /// <param name="r">Номер строки</param>
+        /// <param name="c">Номер столбца</param>
+        /// <returns></returns>
         public dynamic this[int r, int c]
         {
             get => _data[r][c];
             set => _data[r][c] = value;
         }
 
+        /// <summary>
+        /// Получить или установить значение ячейки по номеру строки и имени столбца
+        /// </summary>
+        /// <param name="r">Номер строки</param>
+        /// <param name="c">Имя столбца</param>
+        /// <returns></returns>
         public dynamic this[int r, string c]
         {
             get => _data[r][_columns[c].Column];
             set => _data[r][_columns[c].Column] = value;
         }
 
-        public void Load(TrueExcel.ListObject table)
-        {
+        public TableRow this[int r] => new TableRow(_data[r], _columns);
 
+        /// <summary>
+        /// Позволяет проходить по строкам в ForEach
+        /// </summary>
+        /// <returns>строка в виде dynamic[]</returns>
+        public IEnumerator<TableRow> GetEnumerator()
+        {
+            foreach (var item in _data) yield return new TableRow(item, _columns);
+        }
+
+        /// <summary>
+        /// Загружает данные умной таблицы
+        /// </summary>
+        /// <param name="table">Объект умной таблицы</param>
+        public void Load(Excel.ListObject table)
+        {
+            _table = table;
             _columns = new Dictionary<string, SheetColumn>();
-            foreach (TrueExcel.ListColumn column in table.ListColumns)
+            foreach (Excel.ListColumn column in table.ListColumns)
             {
                 _columns.Add(column.Name,
                     new SheetColumn()
                     {
                         Column = column.Index - 1,
-                        WSColumn = column.Range.Column,
-                        HasFormula = column.Range.Cells[2, 1].HasFormula,
-                        Name = column.Name
+                        HasFormula = column.Range.Cells[2, 1].HasFormula
                     });
             }
 
-            if (table.DataBodyRange == null)
-            {
-                _startCell = table.HeaderRowRange.Cells[2, 1];
-            }
-            else
+            if (table.DataBodyRange != null)
             {
                 dynamic[,] buffer = table.DataBodyRange.Value;
                 _data = Arr2List(buffer);
-                _startCell = table.DataBodyRange.Cells[1, 1];
             }
 
             _columns_by_number = (from item in _columns
-                                  orderby item.Value.WSColumn ascending
+                                  orderby item.Value.Column ascending
                                   select item.Value).ToList();
         }
 
@@ -76,19 +95,20 @@ namespace BPA.Worksheet_DataBase
 
             return ret_value;
         }
+
         /// <summary>
         /// Отчистка умной таблицы с последующим сохранением
         /// </summary>
         public void Save()
         {
-            //dynamic[,] data_buffer = List2Arr(_data);
-            //int shift = _columns_by_number[0].WSColumn;
-            int firstColumn = 0;
+            //_table.DataBodyRange?.Clear();
+            Excel.Range _startCell = _table.HeaderRowRange.Cells[2, 1];
 
+            int firstColumn = 0;
             int lastRow = _data.Count - 1;
             var buffer = GetSolidRangeFromData(firstColumn, _data);
-            TrueExcel.Worksheet ws = _startCell.Parent;
-            TrueExcel.Range targetRange;
+            Excel.Worksheet ws = _startCell.Parent;
+            Excel.Range targetRange;
             while (buffer.LastColumn < _columns.Count)// если первый столбец формула - выход
             {
                 if (buffer.Data != null)
@@ -101,19 +121,7 @@ namespace BPA.Worksheet_DataBase
                 buffer = GetSolidRangeFromData(firstColumn, _data);
             }
         }
-        private dynamic[,] List2Arr(List<dynamic[]> data)
-        {
-            int height = data.Count;
-            int width = data[0].GetLength(0);
-            Array rv = Array.CreateInstance(typeof(object), new int[] { height, width }, new int[] { 1, 1 });
-            dynamic[,] ret_value = rv as dynamic[,]; //new dynamic[height, width];
 
-            for (int r = 0; r < height; r++)
-                for (int c = 0; c < width; c++)
-                    ret_value[r + 1, c + 1] = data[r][c];
-
-            return ret_value;
-        }
         private (int LastColumn, dynamic[,] Data) GetSolidRangeFromData(int firstColumn, List<dynamic[]> data)
         {
             if (firstColumn >= _columns.Count) return (firstColumn, null);
@@ -134,6 +142,7 @@ namespace BPA.Worksheet_DataBase
 
             return (lastColumn, buffer);
         }
+
         private int GetLastColumn(int firstColumn)
         {
             if (_columns_by_number[firstColumn].HasFormula) return -1;
@@ -147,14 +156,36 @@ namespace BPA.Worksheet_DataBase
             }
             return lastColumn;
         }
+
         /// <summary>
         /// удалит строку
         /// </summary>
         public void Delete(int row) => _data.RemoveAt(row);
+
+        /// <summary>
+        /// Колличество строк в таблице
+        /// </summary>
+        /// <returns></returns>
         public int RowCount() => _data.Count;
-        public int ColumnCount() => _data[0].GetLength(0);
-        public bool ValidateTable(IDictionary<string, string> keys) => keys.All(x => ColumnExists(x.Value));
+
+        /// <summary>
+        /// Колличество столбцов в таблице
+        /// </summary>
+        /// <returns></returns>
+        public int ColumnCount() => _columns.Count;
+
+        /// <summary>
+        /// Проверить существует ли столбец с данным именем
+        /// </summary>
+        /// <param name="col_name">Имя столбца</param>
+        /// <returns></returns>
         public bool ColumnExists(string col_name) => _columns.ContainsKey(col_name);
+
+        /// <summary>
+        /// Получить следующий ID
+        /// </summary>
+        /// <param name="id_name">Имя столбца с ID</param>
+        /// <returns></returns>
         public int NextID(string id_name)
         {
             int id_col = _columns[id_name].Column;
@@ -171,39 +202,40 @@ namespace BPA.Worksheet_DataBase
 
             return ++max;
         }
-        public int GetRow(string col_name, int id)
+
+        /// <summary>
+        /// Получить номер строки по имени столбйа и значению
+        /// </summary>
+        /// <param name="col_name">Имя столбца</param>
+        /// <param name="id">Значение</param>
+        /// <returns></returns>
+        public int GetRow(string col_name, string id)
         {
             int id_col = _columns[col_name].Column;
 
             for (int row = 0; row < _data.Count; row++)
             {
                 dynamic obj = _data[row][id_col];
-                if (int.TryParse(obj.ToString(), out int i_obj))
-                {
-                    if (i_obj == id) return row;
-                }
+                if (obj == id) return row;
             }
             return 0;
         }
+
+        /// <summary>
+        /// Узнать номер столбца таблицы по названию столбца
+        /// </summary>
+        /// <param name="col_name">Название столбца</param>
+        /// <returns></returns>
         public int GetColumnNumber(string col_name) => _columns.ContainsKey(col_name) ? _columns[col_name].Column : 0;
+
+        /// <summary>
+        /// Добавить строку
+        /// </summary>
+        /// <returns>Номер добавленной строки</returns>
         public int AddRow()
         {
             _data.Add(new dynamic[_columns.Count]);
             return _data.Count - 1;
         }
-    }
-
-    struct SheetColumn
-    {
-        /// <summary>
-        /// Номер столбца в таблице
-        /// </summary>
-        public int Column { get; set; }
-        /// <summary>
-        /// Номер столбца на листе
-        /// </summary>
-        public int WSColumn { get; set; }
-        public bool HasFormula { get; set; }
-        public string Name { get; set; }
     }
 }
