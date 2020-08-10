@@ -23,43 +23,43 @@ namespace BPA.NewModel
             set => _row["Артикул"] = value;
         }
 
-        public double? IRP
+        public double IRP
         {
             get => _row["IRP, Eur"];
             set => _row["IRP, Eur"] = value;
         }
 
-        public double? IRPIndex
+        public double IRPIndex
         {
             get => _row["Индекс IRP"];
             set => _row["Индекс IRP"] = value;
         }
 
-        public double? RRCCurrent
+        public double RRCCurrent
         {
             get => _row["РРЦ текущий"];
             set => _row["РРЦ текущий"] = value;
         }
 
-        public double? DIYCurrent
+        public double DIYCurrent
         {
             get => _row["DIY текущий"];
             set => _row["DIY текущий"] = value;
         }
 
-        public double? RRCCalculated
+        public double RRCCalculated
         {
             get => _row["РРЦ расчетная, руб."];
             set => _row["РРЦ расчетная, руб."] = value;
         }
 
-        public double? RRCFinal
+        public double RRCFinal
         {
             get => _row["РРЦ финальная, руб."];
             set => _row["РРЦ финальная, руб."] = value;
         }
 
-        public double? DIY
+        public double DIY
         {
             get => _row["DIY price list, руб. без НДС"];
             set => _row["DIY price list, руб. без НДС"] = value;

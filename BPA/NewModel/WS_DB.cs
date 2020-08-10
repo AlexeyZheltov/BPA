@@ -12,7 +12,7 @@ namespace BPA.NewModel
     {
         Dictionary<string, NewModel.SheetColumn> _columns = new Dictionary<string, SheetColumn>();
         List<SheetColumn> _columns_by_number = new List<SheetColumn>();
-        List<dynamic[]> _data = new List<dynamic[]>();
+        List<Dynamic[]> _data = new List<Dynamic[]>();
         Excel.ListObject _table;
 
         /// <summary>
@@ -21,7 +21,7 @@ namespace BPA.NewModel
         /// <param name="r">Номер строки</param>
         /// <param name="c">Номер столбца</param>
         /// <returns></returns>
-        public dynamic this[int r, int c]
+        public Dynamic this[int r, int c]
         {
             get => _data[r][c];
             set => _data[r][c] = value;
@@ -33,7 +33,7 @@ namespace BPA.NewModel
         /// <param name="r">Номер строки</param>
         /// <param name="c">Имя столбца</param>
         /// <returns></returns>
-        public dynamic this[int r, string c]
+        public Dynamic this[int r, string c]
         {
             get => _data[r][_columns[c].Column];
             set => _data[r][_columns[c].Column] = value;
@@ -44,7 +44,7 @@ namespace BPA.NewModel
         /// <summary>
         /// Позволяет проходить по строкам в ForEach
         /// </summary>
-        /// <returns>строка в виде dynamic[]</returns>
+        /// <returns>строка в виде Dynamic[]</returns>
         public IEnumerator<TableRow> GetEnumerator()
         {
             foreach (var item in _data) yield return new TableRow(item, _columns);
@@ -70,7 +70,7 @@ namespace BPA.NewModel
 
             if (table.DataBodyRange != null)
             {
-                dynamic[,] buffer = table.DataBodyRange.Value;
+                object[,] buffer = table.DataBodyRange.Value;
                 _data = Arr2List(buffer);
             }
 
@@ -79,17 +79,17 @@ namespace BPA.NewModel
                                   select item.Value).ToList();
         }
 
-        private List<dynamic[]> Arr2List(dynamic[,] data)
+        private List<Dynamic[]> Arr2List(object[,] data)
         {
-            List<dynamic[]> ret_value = new List<dynamic[]>();
+            List<Dynamic[]> ret_value = new List<Dynamic[]>();
             int arr_width = data.GetLength(1);
             for (int r = 0; r < data.GetLength(0); r++)
             {
-                dynamic[] buffer = new dynamic[arr_width];
+                Dynamic[] buffer = new Dynamic[arr_width];
                 ret_value.Add(buffer);
                 for (int c = 0; c < arr_width; c++)
                 {
-                    buffer[c] = data[r + 1, c + 1];
+                    buffer[c] = new Dynamic(data[r + 1, c + 1]);
                 }
             }
 
@@ -122,7 +122,7 @@ namespace BPA.NewModel
             }
         }
 
-        private (int LastColumn, dynamic[,] Data) GetSolidRangeFromData(int firstColumn, List<dynamic[]> data)
+        private (int LastColumn, object[,] Data) GetSolidRangeFromData(int firstColumn, List<Dynamic[]> data)
         {
             if (firstColumn >= _columns.Count) return (firstColumn, null);
             int lastColumn = GetLastColumn(firstColumn);
@@ -131,13 +131,13 @@ namespace BPA.NewModel
             int rowAmount = _data.Count;
             //Нужен массив от 1
             Array rv = Array.CreateInstance(typeof(object), new int[] { rowAmount, lastColumn - firstColumn + 1 }, new int[] { 1, 1 });
-            dynamic[,] buffer = rv as dynamic[,];
+            object[,] buffer = rv as object[,];
 
             for (int row = 0; row < rowAmount; row++)
             {
                 int buf_col = 1;
                 for (int col = firstColumn; col <= lastColumn; col++)
-                    buffer[row + 1, buf_col++] = data[row][col];
+                    buffer[row + 1, buf_col++] = data[row][col].Value;
             }
 
             return (lastColumn, buffer);
@@ -193,7 +193,7 @@ namespace BPA.NewModel
 
             for (int p = 0; p < _data.Count; p++)
             {
-                dynamic obj = _data[p][id_col];
+                Dynamic obj = _data[p][id_col];
                 if (int.TryParse(obj?.ToString() ?? "0", out int i_obj))
                 {
                     if (i_obj > max) max = i_obj;
@@ -215,7 +215,7 @@ namespace BPA.NewModel
 
             for (int row = 0; row < _data.Count; row++)
             {
-                dynamic obj = _data[row][id_col];
+                Dynamic obj = _data[row][id_col];
                 if (obj == id) return row;
             }
             return 0;
@@ -234,7 +234,7 @@ namespace BPA.NewModel
         /// <returns>Номер добавленной строки</returns>
         public int AddRow()
         {
-            _data.Add(new dynamic[_columns.Count]);
+            _data.Add(new Dynamic[_columns.Count]);
             return _data.Count - 1;
         }
     }

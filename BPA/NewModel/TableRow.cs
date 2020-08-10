@@ -9,9 +9,9 @@ namespace BPA.NewModel
     class TableRow
     {
         Dictionary<string, SheetColumn> _columns = new Dictionary<string, SheetColumn>();
-        dynamic[] _data;
+        Dynamic[] _data;
 
-        public TableRow(dynamic[] data, Dictionary<string, SheetColumn> columns)
+        public TableRow(Dynamic[] data, Dictionary<string, SheetColumn> columns)
         {
             _data = data;
             _columns = columns;
@@ -23,7 +23,7 @@ namespace BPA.NewModel
         /// <param name="r">Номер строки</param>
         /// <param name="c">Номер столбца</param>
         /// <returns></returns>
-        public dynamic this[int c]
+        public Dynamic this[int c]
         {
             get => _data[c];
             set => _data[c] = value;
@@ -35,7 +35,7 @@ namespace BPA.NewModel
         /// <param name="r">Номер строки</param>
         /// <param name="c">Имя столбца</param>
         /// <returns></returns>
-        public dynamic this[string c]
+        public Dynamic this[string c]
         {
             get => _data[_columns[c].Column];
             set => _data[_columns[c].Column] = value;

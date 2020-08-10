@@ -1,5 +1,5 @@
-﻿//#define ENABLE_TRY
-#undef ENABLE_TRY
+﻿#define ENABLE_TRY
+//#undef ENABLE_TRY
 
 using System;
 using System.Collections.Generic;
