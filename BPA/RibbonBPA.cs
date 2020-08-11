@@ -1,4 +1,7 @@
-﻿using System;
+﻿#define ENABLE_TRY
+//#undef ENABLE_TRY
+
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Linq;
@@ -14,7 +17,9 @@ using System.Diagnostics;
 using System.Text;
 using Microsoft.Office.Core;
 using SettingsBPA = BPA.Properties.Settings;
+using NM = BPA.NewModel;
 using System.Windows.Controls.Primitives;
+
 
 namespace BPA
 {
@@ -194,51 +199,57 @@ namespace BPA
 
         private void UploadPrice_Click(object sender, RibbonControlEventArgs e)
         {
-            new ProductForRRC().ReadColNumbers();
-            new RRC().ReadColNumbers();
             ProcessBar processBar = null;
-            List<ProductForRRC> products = new ProductForRRC().GetProducts();
-            processBar = new ProcessBar("Обновление цен из справочника", products.Count);
             bool isCancel = false;
             void CancelLocal() => isCancel = true;
-
+#if ENABLE_TRY
             try
             {
+#endif
                 FunctionsForExcel.SpeedOn();
 
+                NM.ProductTable products = new NM.ProductTable();
+                NM.RRCTable rrcs = new NM.RRCTable();
+
+                products.Load();
+                rrcs.Load();
+
+                processBar = new ProcessBar("Обновление цен из справочника", products.Count);
                 processBar.CancelClick += CancelLocal;
                 processBar.Show();
                 Globals.ThisWorkbook.Activate();
 
-                DateTime date = products[0].DateOfPromotion;
+                DateTime date = products.DateOfPromotion();
 
-                List<RRC> rrcs = new RRC().GetSortedRRCList();
-
-                foreach (ProductForRRC product in products)
+                foreach(NM.ProductItem product in products)
                 {
-                    if (isCancel)
-                        break;
-
+                    if (isCancel) break;
                     processBar.TaskStart($"Обрабатывается артикул {product.Article}");
-                    List<RRC> RRCArt = rrcs.FindAll(x => x.Article == product.Article && x.Date <= date).ToList();
 
-                    if (RRCArt.Count > 0)
-                    {
-                        product.UpdatePriceFromRRC(RRCArt[RRCArt .Count- 1]);
-                    }
+                    var quere = (from rrc in rrcs
+                                 where rrc.Article == product.Article && rrc.Date <= date
+                                 orderby rrc.Date descending
+                                 select rrc).ToList();
 
+                    product.UpdatePriceFromRRC(quere.Count > 0 ? quere.First() : null);
                     processBar.TaskDone(1);
                 }
+
+                products.Save();
+#if ENABLE_TRY
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
+#endif
                 FunctionsForExcel.SpeedOff();
                 processBar?.Close();
+#if ENABLE_TRY
             }
+#endif
         }
 
         private void SavePrice_Click(object sender, RibbonControlEventArgs e)
