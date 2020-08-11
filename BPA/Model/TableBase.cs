@@ -215,7 +215,7 @@ namespace BPA.Model
             }
         }
 
-        private ListRow GetRow(int id)
+        public ListRow GetRow(int id)
         {
             int index = FindIndexRow(id);
             if (index == 0) return null;

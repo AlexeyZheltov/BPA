@@ -606,7 +606,8 @@ namespace BPA
 
                 new PlanningNewYear(worksheet.Name).ReadColNumbers();
                 new PlanningNewYearPrognosis(new PlanningNewYear(worksheet.Name)).ReadColNumbers();
-                new PlanningNewYearPromo(new PlanningNewYear(worksheet.Name)).ReadColNumbers();
+                new PlanningNewYearPrognosis(new PlanningNewYear(worksheet.Name)).SetDelFormulaDict();
+                //new PlanningNewYearPromo(new PlanningNewYear(worksheet.Name)).ReadColNumbers();
 
                 //получаем заполненые данне
                 PlanningNewYear planningNewYearTmp = new PlanningNewYear().GetTmp(worksheet.Name);
@@ -672,17 +673,19 @@ namespace BPA
                     prognosis.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
                     prognosis.PriceList = priceListForPlaning.GetPrice(product.Article);
 
-                    PlanningNewYearPromo promo = new PlanningNewYearPromo(planning);
-                    promo.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
+                    //PlanningNewYearPromo promo = new PlanningNewYearPromo(planning);
+                    //promo.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
 
                     planning.Save(worksheet.Name);
                     planning.SetMaximumBonusValue();
                     prognosis.Save();
-                    promo.Save();
+                    //promo.Save();
 
                     processBar.TaskDone(1);
                 }
                 products.Clear();
+
+                //planningNewYearTmp.SetSumFormulas();
             }
             catch (Exception ex)
             {
@@ -801,7 +804,7 @@ namespace BPA
                     promo.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
 
                     prognosis.Save();
-                    promo.Save();
+                    //promo.Save();
 
                     processBar.TaskDone(1);
                 }

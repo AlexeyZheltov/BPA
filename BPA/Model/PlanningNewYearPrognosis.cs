@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using BPA.Modules;
 using Microsoft.Office.Interop.Excel;
 
@@ -32,49 +34,50 @@ namespace BPA.Model
         private readonly Dictionary<string, string> _filds = new Dictionary<string, string>
         {
             { "Id","№" },
-            { "PriceList","Price list цена, руб." },
+            //{ "PriceList","Price list цена, руб." },
+            { "PriceList","Price list цена 2021, руб." },
 
-            { "QuantityPrognosisYear","Прогноз за год, шт." },
-            { "QuantityPrognosis01","Прогноз январь, шт." },
-            { "QuantityPrognosis02","Прогноз февраль, шт." },
-            { "QuantityPrognosis03","Прогноз март, шт." },
-            { "QuantityPrognosis04","Прогноз апрель, шт." },
-            { "QuantityPrognosis05","Прогноз май, шт." },
-            { "QuantityPrognosis06","Прогноз июнь, шт." },
-            { "QuantityPrognosis07","Прогноз июль, шт." },
-            { "QuantityPrognosis08","Прогноз август, шт." },
-            { "QuantityPrognosis09","Прогноз сентябрь, шт." },
-            { "QuantityPrognosis10","Прогноз октябрь, шт." },
-            { "QuantityPrognosis11","Прогноз ноябрь, шт." },
-            { "QuantityPrognosis12","Прогноз декабрь, шт." },
+            { "QuantityPrognosisYear","ИТОГО Прогноз за год, шт." },
+            { "QuantityPrognosis01","ИТОГО Прогноз январь, шт." },
+            { "QuantityPrognosis02","ИТОГО Прогноз февраль, шт." },
+            { "QuantityPrognosis03","ИТОГО Прогноз март, шт." },
+            { "QuantityPrognosis04","ИТОГО Прогноз апрель, шт." },
+            { "QuantityPrognosis05","ИТОГО Прогноз май, шт." },
+            { "QuantityPrognosis06","ИТОГО Прогноз июнь, шт." },
+            { "QuantityPrognosis07","ИТОГО Прогноз июль, шт." },
+            { "QuantityPrognosis08","ИТОГО Прогноз август, шт." },
+            { "QuantityPrognosis09","ИТОГО Прогноз сентябрь, шт." },
+            { "QuantityPrognosis10","ИТОГО Прогноз октябрь, шт." },
+            { "QuantityPrognosis11","ИТОГО Прогноз ноябрь, шт." },
+            { "QuantityPrognosis12","ИТОГО Прогноз декабрь, шт." },
 
-            { "GSPrognosisYear","GS за год, руб." },
-            { "GSPrognosis01","GS январь, руб." },
-            { "GSPrognosis02","GS февраль, руб." },
-            { "GSPrognosis03","GS март, руб." },
-            { "GSPrognosis04","GS апрель, руб." },
-            { "GSPrognosis05","GS май, руб." },
-            { "GSPrognosis06","GS июнь, руб." },
-            { "GSPrognosis07","GS июль, руб." },
-            { "GSPrognosis08","GS август, руб." },
-            { "GSPrognosis09","GS сентябрь, руб." },
-            { "GSPrognosis10","GS октябрь, руб." },
-            { "GSPrognosis11","GS ноябрь, руб." },
-            { "GSPrognosis12","GS декабрь, руб." },
+            { "GSPrognosisYear","ИТОГО GS за год, шт." },
+            { "GSPrognosis01","ИТОГО GS январь, шт." },
+            { "GSPrognosis02","ИТОГО GS февраль, шт." },
+            { "GSPrognosis03","ИТОГО GS март, шт." },
+            { "GSPrognosis04","ИТОГО GS апрель, шт." },
+            { "GSPrognosis05","ИТОГО GS май, шт." },
+            { "GSPrognosis06","ИТОГО GS июнь, шт." },
+            { "GSPrognosis07","ИТОГО GS июль, шт." },
+            { "GSPrognosis08","ИТОГО GS август, шт." },
+            { "GSPrognosis09","ИТОГО GS сентябрь, шт." },
+            { "GSPrognosis10","ИТОГО GS октябрь, шт." },
+            { "GSPrognosis11","ИТОГО GS ноябрь, шт." },
+            { "GSPrognosis12","ИТОГО GS декабрь, шт." },
 
-            { "NSPrognosisYear","NS за год, руб." },
-            { "NSPrognosis01","NS январь, руб." },
-            { "NSPrognosis02","NS февраль, руб." },
-            { "NSPrognosis03","NS март, руб." },
-            { "NSPrognosis04","NS апрель, руб." },
-            { "NSPrognosis05","NS май, руб." },
-            { "NSPrognosis06","NS июнь, руб." },
-            { "NSPrognosis07","NS июль, руб." },
-            { "NSPrognosis08","NS август, руб." },
-            { "NSPrognosis09","NS сентябрь, руб." },
-            { "NSPrognosis10","NS октябрь, руб." },
-            { "NSPrognosis11","NS ноябрь, руб." },
-            { "NSPrognosis12","NS декабрь, шт." }
+            { "NSPrognosisYear","ИТОГО NS за год, шт." },
+            { "NSPrognosis01","ИТОГО NS январь, шт." },
+            { "NSPrognosis02","ИТОГО NS февраль, шт." },
+            { "NSPrognosis03","ИТОГО NS март, шт." },
+            { "NSPrognosis04","ИТОГО NS апрель, шт." },
+            { "NSPrognosis05","ИТОГО NS май, шт." },
+            { "NSPrognosis06","ИТОГО NS июнь, шт." },
+            { "NSPrognosis07","ИТОГО NS июль, шт." },
+            { "NSPrognosis08","ИТОГО NS август, шт." },
+            { "NSPrognosis09","ИТОГО NS сентябрь, шт." },
+            { "NSPrognosis10","ИТОГО NS октябрь, шт." },
+            { "NSPrognosis11","ИТОГО NS ноябрь, шт." },
+            { "NSPrognosis12","ИТОГО NS декабрь, шт." }
         };
 
         #endregion
@@ -430,8 +433,91 @@ namespace BPA.Model
             NSPrognosis10 = GSPrognosis10 - articles[9].Bonus;
             NSPrognosis11 = GSPrognosis11 - articles[10].Bonus;
             NSPrognosis12 = GSPrognosis12 - articles[11].Bonus;
-            ///
+            //
             #endregion
+        }
+
+        /// <summary>
+        /// Словарь столбцов в которых необходимо удалить формулы перед заполнением строки
+        /// </summary>
+        public static Dictionary<string, bool> DelFormulaDict { get; set; } = new Dictionary<string, bool>();
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="planningNewYear"></param>
+        public void SetDelFormulaDict()
+        {
+            DelFormulaDict.Clear();
+            int month = planningNewYear.CurrentDate.Month;
+
+            setIsDel("GSPrognosis01", 1);
+            setIsDel("GSPrognosis02", 2);
+            setIsDel("GSPrognosis03", 3);
+            setIsDel("GSPrognosis04", 4);
+            setIsDel("GSPrognosis05", 5);
+            setIsDel("GSPrognosis06", 6);
+            setIsDel("GSPrognosis07", 7);
+            setIsDel("GSPrognosis08", 8);
+            setIsDel("GSPrognosis09", 9);
+            setIsDel("GSPrognosis10", 10);
+            setIsDel("GSPrognosis11", 11);
+            setIsDel("GSPrognosis12", 12);
+
+            setIsDel("NSPrognosis01", 1);
+            setIsDel("NSPrognosis02", 2);
+            setIsDel("NSPrognosis03", 3);
+            setIsDel("NSPrognosis04", 4);
+            setIsDel("NSPrognosis05", 5);
+            setIsDel("NSPrognosis06", 6);
+            setIsDel("NSPrognosis07", 7);
+            setIsDel("NSPrognosis08", 8);
+            setIsDel("NSPrognosis09", 9);
+            setIsDel("NSPrognosis10", 10);
+            setIsDel("NSPrognosis11", 11);
+            setIsDel("NSPrognosis12", 12);
+
+            void setIsDel(string propName, int m)
+            {
+                bool isDel = false;
+                if (month >= m) isDel = true;
+                
+                DelFormulaDict.Add(Filds[propName], isDel);
+            }
+        }
+
+        /// <summary>
+        /// Удаление формул из необходимых столбцов. 
+        /// Применяется т.к Table.FillRow игнорирует заполнение ячеек в которых уже есть формулы
+        /// </summary>
+        public void DelFormulas()
+        {
+            try
+            {
+                foreach (KeyValuePair<string, string> item in Filds)
+                {
+                    if (!DelFormulaDict.ContainsKey(item.Value)) continue;
+                    if (DelFormulaDict[item.Value] == false) continue;
+
+                    //удаляем формулу
+                    ListRow listRow = GetRow(this.Id);
+                    int idx = Table.ListColumns[item.Value].Index;
+                    Range cell = listRow.Range[1, idx];
+                    cell.Value = "";
+
+                    //Table.ListRows[GetRow(this.Id)].Range[1, Table.ListColumns[item.Value].Index].Value = "";                    
+                }
+            }
+            catch
+            {
+                throw new ApplicationException($"Ошибка в поиске столбцов { SheetName }");
+            }
+        }
+
+        public new void Save()
+        {
+            DelFormulas();
+            base.Save();
         }
     }
 }

@@ -12,8 +12,8 @@ namespace BPA.Model
     /// </summary>
     class PlanningNewYear : TableBase
     {
-        //public override string TableName => "Планирование_новый_год";
-        //public override string SheetName => "Планирование нового года шаблон";
+        private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
+
         public override string TableName => GetTableName();
         public override string SheetName => _TableWorksheetName != null ? _TableWorksheetName: templateSheetName;
         public string _TableWorksheetName;
@@ -50,17 +50,37 @@ namespace BPA.Model
         private readonly Dictionary<string, string> _filds = new Dictionary<string, string>
         {
             { "Id","№" },
-            { "Article","Артикул"},
-            { "RRCNDS","РРЦ, руб.с НДС"},
-            { "PercentageOfChange","Процент изменения"},
-            { "STKEur","STK 2.5,  Eur"},
-            { "STKRub","STK 2.5, руб."},
-            { "IRP","IRP, Eur"},
-            { "RRCNDS2","РРЦ, руб.с НДС2"},
-            { "IRPIndex","Индекс IRP"},
-            { "DIYPriceList","DIY price list, руб. без НДС"},
+            //{ "Article","Артикул"},
+            //{ "RRCNDS","РРЦ, руб.с НДС"},
+            //{ "PercentageOfChange","Процент изменения"},
+            //{ "STKEur","STK 2.5,  Eur"},
+            //{ "STKRub","STK 2.5, руб."},
+            //{ "IRP","IRP, Eur"},
+            //{ "RRCNDS2","РРЦ, руб.с НДС2"},
+            //{ "IRPIndex","Индекс IRP"},
+            //{ "DIYPriceList","DIY price list, руб. без НДС"},
+            
+            //{ "PricePromo","Промо цена, руб."},
 
-            { "PricePromo","Промо цена, руб."},
+            { "RRCNDS","РРЦ 2021, руб. с НДС"},
+            { "DIYPriceList","DIY цена 2021, руб. с НДС"},
+            { "STKRub","STK 2.5 2021, RUB"},
+
+            //добавил новые
+            { "SupercategoryEng", "Суперкатегория" },
+            { "Supercategory", "SuperCategory" },
+            { "ProductGroup", "Product group" },
+            { "ProductGroupEng", "Product group name" },
+            { "SubGroup", "Subgroup" },
+            { "GenericName", "Generic Name (long)" },
+            { "PNS", "PNS" },
+            { "Article", "Article" },
+            { "ArticleOld", "Predessor - Local ID Gardena" },
+            { "ArticleRu", "Description RUS" },
+            { "CalendarSalesStartDate", "Sales Start Date" },
+            { "CalendarPreliminaryEliminationDate", "Preliminary Elimination Date" },
+            { "CalendarEliminationDate", "Elimination Date" },
+            { "Status", "status" }
         };
 
         #endregion
@@ -74,13 +94,13 @@ namespace BPA.Model
             get; set;
         }
 
-        /// <summary>
-        /// Артикул
-        /// </summary>
-        public string Article
-        {
-            get; set;
-        }
+        ///// <summary>
+        ///// Артикул
+        ///// </summary>
+        //public string Article
+        //{
+        //    get; set;
+        //}
 
         /// <summary>
         /// РРЦ, руб. с НДС
@@ -90,13 +110,13 @@ namespace BPA.Model
             get; set;
         }
 
-        /// <summary>
-        /// Процент изменения
-        /// </summary>
-        public double PercentageOfChange
-        {
-            get; set;
-        }
+        ///// <summary>
+        ///// Процент изменения
+        ///// </summary>
+        //public double PercentageOfChange
+        //{
+        //    get; set;
+        //}
 
         /// <summary>
         /// STK 2.5, руб.
@@ -105,7 +125,7 @@ namespace BPA.Model
         {
             get; set;
         }
-        
+
         /// <summary>
         /// STK 2.5, Eur
         /// </summary>
@@ -113,29 +133,30 @@ namespace BPA.Model
         {
             get; set;
         }
-        /// <summary>
-        /// IRP, Eur
-        /// </summary>
-        public double IRP
-        {
-            get; set;
-        }
 
-        /// <summary>
-        /// РРЦ, руб. с НДС
-        /// </summary>
-        public double RRCNDS2
-        {
-            get; set;
-        }
+        ///// <summary>
+        ///// IRP, Eur
+        ///// </summary>
+        //public double IRP
+        //{
+        //    get; set;
+        //}
 
-        /// <summary>
-        /// Индекс IRP
-        /// </summary>
-        public double IRPIndex
-        {
-            get; set;
-        }
+        ///// <summary>
+        ///// РРЦ, руб. с НДС
+        ///// </summary>
+        //public double RRCNDS2
+        //{
+        //    get; set;
+        //}
+
+        ///// <summary>
+        ///// Индекс IRP
+        ///// </summary>
+        //public double IRPIndex
+        //{
+        //    get; set;
+        //}
 
         /// <summary>
         /// DIY price list, руб. без НДС
@@ -144,14 +165,123 @@ namespace BPA.Model
         {
             get; set;
         }
+        ///// <summary>
+        ///// Промо цена, руб.
+        ///// </summary>
+        //public string PricePromo
+        //{
+        //    get; set;
+        //}
+
         /// <summary>
-        /// Промо цена, руб.
+        /// Суперкатегория
         /// </summary>
-        public string PricePromo
+        public string SupercategoryEng
         {
             get; set;
         }
 
+        /// <summary>
+        /// SuperCategory
+        /// </summary>
+        public string Supercategory
+        {
+            get; set;
+        }
+
+        ///<summary>
+        /// Product group
+        /// </summary>
+        public string ProductGroup 
+        { 
+            get; set;
+        }
+
+        /// <summary>
+        /// Product group name
+        /// </summary>
+        public string ProductGroupEng 
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Subgroup
+        /// </summary>
+        public string SubGroup
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// Generic Name (long)
+        /// </summary>
+        public string GenericName
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// PNS
+        /// </summary>
+        public string PNS
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// Article
+        /// </summary>
+        public string Article
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// Predessor - Local ID Gardena
+        /// </summary>
+        public string ArticleOld
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// Description RUS
+        /// </summary>
+        public string ArticleRu
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// Sales Start Date
+        /// </summary>
+        public Double CalendarSalesStartDate
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// Preliminary Elimination Date
+        /// </summary>
+        public Double CalendarPreliminaryEliminationDate
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// Elimination Date
+        /// </summary>
+        public Double CalendarEliminationDate
+        {
+            get; set;
+        }
+        /// <summary>
+        /// status
+        /// </summary>
+        public string Status
+        {
+            get; set;
+        }
 
         #endregion
 
@@ -216,15 +346,50 @@ namespace BPA.Model
 
             return true;
         }
+
+        /// <summary>
+        /// строка формул выше шапки таблицы на 1
+        /// </summary>
+        private int FormulasRow
+        {
+            get
+            {
+                if (_FormulasRow == 0)
+                {
+                    _FormulasRow = Table.HeaderRowRange.Row - 1;
+                }
+                return _FormulasRow;
+            }
+            set
+            {
+                _FormulasRow = value;
+            }
+        }
+        private int _FormulasRow = 0;
+
         public void SetProduct(ProductForPlanningNewYear product)
         {
             this.Article = product.Article;
             this.RRCNDS = product.RRCFinal; //?
-            //planning.PercentageOfChange = product.RRCPercent;  //?
-            this.IRP = product.IRP;
-            //planning.RRCNDS2 = product.RRCFinal; //?
-            this.IRPIndex = product.IRPIndex;
+            ////planning.PercentageOfChange = product.RRCPercent;  //?
+            //this.IRP = product.IRP;
+            ////planning.RRCNDS2 = product.RRCFinal; //?
+            //this.IRPIndex = product.IRPIndex;
             this.DIYPriceList = product.DIY;
+
+            this.SupercategoryEng = product.SupercategoryEng;
+            this.Supercategory = product.SuperCategory;
+            this.ProductGroup = product.ProductGroup;
+            this.ProductGroupEng = product.ProductGroupEng;
+            this.SubGroup = product.SubGroup;
+            this.GenericName = product.GenericName;
+            this.PNS = product.PNS;
+            this.Article = product.Article;
+            this.ArticleOld = product.ArticleOld;
+            this.ArticleRu = product.ArticleRu;
+            this.CalendarSalesStartDate = product.CalendarSalesStartDate;
+            this.CalendarPreliminaryEliminationDate = product.CalendarPreliminaryEliminationDate;
+            this.CalendarEliminationDate = product.CalendarEliminationDate;
         }
         public void GetSTK()
         {
@@ -316,16 +481,34 @@ namespace BPA.Model
             tableTemplate.ListRows[1].Range.Copy();
             firstCell.PasteSpecial();
 
+            //убираем ссылки на старый лист.Долго "cell.Formula ="
+
+            bool isCancel = false;
+            void CancelLocal() => isCancel = true;
+            ProcessBar pbar = new ProcessBar("Очистка данных", Table.ListRows[1].Range.Columns.Count);
+            pbar.CancelClick += CancelLocal;
+            pbar.Show();
+
             foreach (Range cell in Table.ListRows[1].Range)
             {
-                string formula = cell.FormulaLocal;
+                if (isCancel)
+                {
+                    pbar.Close();
+                    return;
+                }
+                pbar.TaskStart($"Готово {100 * cell.Column / Table.ListRows[1].Range.Columns.Count}%");
 
-                if (formula != "" && formula.Substring(0,1) == "=")
-                //formula = formula.Replace(tableTemplateName, "");
-                //cell.FormulaLocal = formula;
-                    cell.FormulaLocal = cell.FormulaLocal.Replace(tableTemplateName, "");
+
+                if (!cell.HasFormula) continue;
+
+                string formula = cell.Formula;
+                formula = formula.Replace(tableTemplateName, "");
+                cell.Formula = formula;
+
+
+                pbar.TaskDone(1);
             }
-
+            pbar.Close();
         }
 
         public void SetMaximumBonusValue()
@@ -486,6 +669,38 @@ namespace BPA.Model
                 return newArticleQuantity;
             }
             //
+        }
+
+        /// <summary>
+        /// Задает итоговые формулы. Запускать после завершения всех сохранений
+        /// </summary>
+        public void SetSumFormulas()
+        {
+            ThisWorkbook thisWorkbook = Globals.ThisWorkbook;
+            Worksheet worksheet = thisWorkbook.Sheets[SheetName];
+            Range formulasRange = worksheet.Range[worksheet.Cells[FormulasRow, Table.ListColumns[1].Range.Column], worksheet.Cells[FormulasRow, Table.ListColumns[Table.ListColumns.Count].Range.Column]];
+
+            //включаем стиль R1C1
+            XlReferenceStyle style = Application.ReferenceStyle;
+            Application.ReferenceStyle = XlReferenceStyle.xlR1C1;
+
+            foreach (Range cell in formulasRange) 
+            {
+                if (!cell.HasFormula) continue;
+
+                string formula = cell.Formula;
+                if (!formula.Contains("SUM")) continue;
+
+                int x = 2; //разница между строкой формул и первой строкой таблицы
+                if (!formula.Contains($"R[{ x }]C")) continue; //проверяем что сумируется начиная с первой строки таблицы
+
+                formula = $"=SUMM(R[{ x }]C:R[{ x + Table.ListRows.Count - 1 }]C";
+                cell.Formula = formula;
+
+            }
+
+            //возвращаем стиль
+            Application.ReferenceStyle = style;
         }
     }
 }
