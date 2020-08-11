@@ -1,5 +1,5 @@
-﻿#define ENABLE_TRY
-//#undef ENABLE_TRY
+﻿//#define ENABLE_TRY
+#undef ENABLE_TRY
 
 using System;
 using System.Collections.Generic;
@@ -257,48 +257,48 @@ namespace BPA
             ProcessBar processBar = null;
             bool isCancel = false;
             void CancelLocal() => isCancel = true;
-
+#if ENABLE_TRY
             try
             {
+#endif
                 FunctionsForExcel.SpeedOn();
 
-                new ProductForRRC().ReadColNumbers();
-                new RRC().ReadColNumbers();
-                List<ProductForRRC> products = new ProductForRRC().GetProducts();
-                processBar = new ProcessBar("Обновление цен из справочника", products.Count);
+                NM.ProductTable products = new NM.ProductTable();
+                NM.RRCTable rrcs = new NM.RRCTable();
 
+                products.Load();
+                rrcs.Load();
+
+                processBar = new ProcessBar("Обновление цен из справочника", products.Count);
                 processBar.CancelClick += CancelLocal;
                 processBar.Show();
                 Globals.ThisWorkbook.Activate();
 
-                DateTime date = products[0].DateOfPromotion;
+                DateTime date = products.DateOfPromotion();
+                double budget_cource = products.BudgetCourse();
 
-                List<RRC> rrcs = new RRC().GetSortedRRCList();
-
-                foreach (ProductForRRC product in products)
+                foreach(NM.ProductItem product in products)
                 {
-                    if (isCancel)
-                        break;
-
+                    if (isCancel) break;
                     processBar.TaskStart($"Обрабатывается артикул {product.Article}");
 
-                    if (date.Year > 1)
-                    {
-                        RRC rrc = rrcs.Find(x => x.Article == product.Article && x.Date == date);
+                    //NM.RRCItem rrc = rrcs.Find(x => x.Article == product.Article && x.Date == date);
 
-                        if (rrc == null)
-                        {
-                            rrc = new RRC();
-                            rrc.SetProduct(product);
-                            rrc.Save();
-                        } else
-                        {
-                            rrc.SetProduct(product);
-                            rrc.Update();
-                        }
-                    }
+                    var quere = (from i_rrc in rrcs
+                                 where i_rrc.Article == product.Article && i_rrc.Date == date
+                                 select i_rrc).ToList();
+
+                    NM.RRCItem rrc =  quere.Count > 0 ? quere.First() : rrcs.Add();
+
+                    //if (rrc == null) rrc = rrcs.Add();
+
+                    rrc.UpdateRRCFromProduct(product, date, budget_cource);
+
                     processBar.TaskDone(1);
                 }
+
+                rrcs.Save();
+#if ENABLE_TRY
             }
             catch (Exception ex)
             {
@@ -306,9 +306,12 @@ namespace BPA
             }
             finally
             {
+#endif
                 FunctionsForExcel.SpeedOff();
                 processBar?.Close();
+#if ENABLE_TRY
             }
+#endif
         }
 
         private void ClientsUpdate_Click(object sender, RibbonControlEventArgs e)
@@ -607,7 +610,7 @@ namespace BPA
 
                 new PlanningNewYear(worksheet.Name).ReadColNumbers();
                 new PlanningNewYearPrognosis(new PlanningNewYear(worksheet.Name)).ReadColNumbers();
-                new PlanningNewYearPrognosis(new PlanningNewYear(worksheet.Name)).SetDelFormulaDict();
+                //new PlanningNewYearPrognosis(new PlanningNewYear(worksheet.Name)).SetDelFormulaDict();
                 //new PlanningNewYearPromo(new PlanningNewYear(worksheet.Name)).ReadColNumbers();
 
                 //получаем заполненые данне
@@ -647,8 +650,8 @@ namespace BPA
                 if (fileBuget?.IsOpen ?? false) fileBuget.Close();
                 //
 
-                PriceListForPlaning priceListForPlaning = new PriceListForPlaning(planningNewYearTmp);
-                priceListForPlaning.Load();
+                //PriceListForPlaning priceListForPlaning = new PriceListForPlaning(planningNewYearTmp);
+                //priceListForPlaning.Load();
                 //
 
                 processBar = new ProcessBar("Обновление клиентов", products.Count);
@@ -667,12 +670,12 @@ namespace BPA
 
                     PlanningNewYear planning = planningNewYearTmp.Clone();
                     planning.SetProduct(product);
-                    planning.SetRRC();
+                    //planning.SetRRC();
                     planning.GetSTK();
 
                     PlanningNewYearPrognosis prognosis = new PlanningNewYearPrognosis(planning);
                     prognosis.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
-                    prognosis.PriceList = priceListForPlaning.GetPrice(product.Article);
+                    //prognosis.PriceList = priceListForPlaning.GetPrice(product.Article);
 
                     //PlanningNewYearPromo promo = new PlanningNewYearPromo(planning);
                     //promo.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
@@ -728,7 +731,7 @@ namespace BPA
 
                 new PlanningNewYear(worksheet.Name).ReadColNumbers();
                 new PlanningNewYearPrognosis(new PlanningNewYear(worksheet.Name)).ReadColNumbers();
-                new PlanningNewYearPrognosis(new PlanningNewYear(worksheet.Name)).SetDelFormulaDict();
+                //new PlanningNewYearPrognosis(new PlanningNewYear(worksheet.Name)).SetDelFormulaDict();
                 //new PlanningNewYearPromo(new PlanningNewYear(worksheet.Name)).ReadColNumbers();
 
 
@@ -743,7 +746,7 @@ namespace BPA
                 //List<PlanningNewYearPromo> promos = new List<PlanningNewYearPromo>();
                 
                 //planningNewYearTmp.SetLists(prognosises, promos);
-                planningNewYearTmp.SetLists(prognosises);
+                //planningNewYearTmp.SetLists(prognosises);
 
                 //получаем Desicion, Buget
                 //if (prognosises == null || promos == null || (prognosises.Count < 0 || promos.Count < 0))
@@ -775,8 +778,8 @@ namespace BPA
                 if (fileBuget?.IsOpen ?? false) fileBuget.Close();
                 //
 
-                PriceListForPlaning priceListForPlaning = new PriceListForPlaning(planningNewYearTmp);
-                priceListForPlaning.Load();
+                //PriceListForPlaning priceListForPlaning = new PriceListForPlaning(planningNewYearTmp);
+                //priceListForPlaning.Load();
                 //
 
                 //int count = prognosises.Count > promos.Count ? prognosises.Count : promos.Count;
@@ -801,7 +804,7 @@ namespace BPA
 
                     //сопоставить каждый prognosis и promo ArticleQuantities из файлов
                     prognosis.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
-                    prognosis.PriceList = priceListForPlaning.GetPrice(prognosis.planningNewYear.Article);
+                    //prognosis.PriceList = priceListForPlaning.GetPrice(prognosis.planningNewYear.Article);
                     //promo.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
 
                     prognosis.Save();

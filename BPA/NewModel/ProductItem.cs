@@ -65,14 +65,14 @@ namespace BPA.NewModel
             set => _row["DIY price list, руб. без НДС"] = value;
         }
 
-        public void UpdatePriceFromRRC(RRCItem item)
+        public void UpdatePriceFromRRC(RRCItem rrc)
         {
-            if(item != null)
+            if(rrc != null)
             {
-                RRCCurrent = item.RRCNDS;
-                DIYCurrent = item.DIY;
-                IRP = item.IRP;
-                IRPIndex = item.IRPIndex;
+                RRCCurrent = rrc.RRCNDS;
+                DIYCurrent = rrc.DIY;
+                IRP = rrc.IRP;
+                IRPIndex = rrc.IRPIndex;
             }
         }
     }
