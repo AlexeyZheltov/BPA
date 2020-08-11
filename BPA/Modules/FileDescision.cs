@@ -166,7 +166,7 @@ namespace BPA.Modules
         public void LoadForPlanning(PlanningNewYear planning)
         {
             
-            if (DateColumn == 0 || ArticleColumn == 0 || CampaignColumn ==0)
+            if (DateColumn == 0 || ArticleColumn == 0 || CampaignColumn == 0 || CustomerColumn== 0)
             {
                 throw new ApplicationException("Файл имеет неверный формат");
             }            
@@ -178,8 +178,10 @@ namespace BPA.Modules
                 ActionStart?.Invoke($"Обрабатывается строка {rowIndex}");
 
                 DateTime date = GetDateFromCell(rowIndex, DateColumn);
+                string customer = GetValueFromColumnStr(rowIndex, CustomerColumn);
 
-                if (planning.Year != date.Year)
+                //проверка на соответствие года и customer
+                if (date.Year != planning.CurrentDate.Year || planning.Clients.Find(x => x.Customer == customer) == null)
                     continue;
 
                 string article = GetValueFromColumnStr(rowIndex, ArticleColumn);

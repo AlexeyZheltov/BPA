@@ -164,5 +164,33 @@ namespace BPA.Model {
 
             return clients;
         }
+        public List<Client> GetCustomers(string customerStatus, string channelType)
+        {
+            List<Client> clients = new List<Client>();
+
+            ProcessBar processBar = new ProcessBar("Поиск клиентов", Table.ListRows.Count);
+            bool isCancel = false;
+            void Cancel() => isCancel = true;
+            processBar.CancelClick += Cancel;
+            processBar.Show(new ExcelWindows(Globals.ThisWorkbook));
+
+            foreach (Excel.ListRow row in Table.ListRows)
+            {
+                if (isCancel) return null;
+                processBar.TaskStart($"Обрабатывается строка {row.Index}");
+
+                Client client = new Client(row);
+
+                if (customerStatus == client.CustomerStatus && channelType == client.ChannelType)
+                {
+                    clients.Add(client);
+                }
+
+                processBar.TaskDone(1);
+            }
+            processBar?.Close();
+
+            return clients;
+        }
     }
 }

@@ -65,6 +65,20 @@ namespace BPA.Model
             { "RRCNDS","РРЦ 2021, руб. с НДС"},
             { "DIYPriceList","DIY цена 2021, руб. с НДС"},
             { "STKRub","STK 2.5 2021, RUB"},
+            { "RRCCUrent", "РРЦ 2020, руб. с НДС" },
+            { "RRCPlan", "РРЦ 2021, руб. с НДС" },
+
+            { "DIYCurrent", "DIY цена 2020, руб. с НДС" },
+            { "DIYPlan", "DIY цена 2021, руб. с НДС" },
+
+            //{ "IRPCurrent", "" },
+            //{ "IRPPlan", "" },
+
+            //{ "IRPIndexCurrent", "" },
+            //{ "IRPIndexPlan", "" },
+
+            //{ "RRPCurrent", "" },
+            //{ "RRPPlan", "" },
 
             //добавил новые
             { "SupercategoryEng", "Суперкатегория" },
@@ -285,6 +299,55 @@ namespace BPA.Model
 
         #endregion
 
+        #region FromRRC
+
+        public double RRCCUrent
+        {
+            get; set;
+        }
+        public double RRCPlan
+        {
+            get; set;
+        }
+
+        public double DIYCurrent
+        {
+            get; set;
+        }
+        public double DIYPlan
+        {
+            get; set;
+        }
+
+        public double IRPCurrent
+        {
+            get; set;
+        }
+        public double IRPPlan
+        {
+            get; set;
+        }
+
+        public double IRPIndexCurrent
+        {
+            get; set;
+        }
+        public double IRPIndexPlan
+        {
+            get; set;
+        }
+
+        public double RRPCurrent
+        {
+            get; set;
+        }
+        public double RRPPlan
+        {
+            get; set;
+        }
+
+        #endregion
+
         public string ChannelType;
         public string CustomerStatus;
         public int Year;
@@ -370,12 +433,6 @@ namespace BPA.Model
         public void SetProduct(ProductForPlanningNewYear product)
         {
             this.Article = product.Article;
-            this.RRCNDS = product.RRCFinal; //?
-            ////planning.PercentageOfChange = product.RRCPercent;  //?
-            //this.IRP = product.IRP;
-            ////planning.RRCNDS2 = product.RRCFinal; //?
-            //this.IRPIndex = product.IRPIndex;
-            this.DIYPriceList = product.DIY;
 
             this.SupercategoryEng = product.SupercategoryEng;
             this.Supercategory = product.SuperCategory;
@@ -391,17 +448,53 @@ namespace BPA.Model
             this.CalendarPreliminaryEliminationDate = product.CalendarPreliminaryEliminationDate;
             this.CalendarEliminationDate = product.CalendarEliminationDate;
         }
+
+        //SetRRC(List<RRC> rrcs)
+        //{
+
+        //}
+
+        public void SetRRC()
+        {
+            //как получить ррцшки? месяц
+            //проверки на нулл
+            RRC rrcPlan = new RRC().GetRRC(this.Article, this.planningDate, true);
+            RRC rrcCurrent = new RRC().GetRRC(this.Article, this.CurrentDate, true);
+
+            this.RRCCUrent = rrcCurrent.RRCNDS;
+            this.RRCPlan = rrcPlan.RRCNDS;
+
+            this.DIYCurrent = rrcCurrent.DIY;
+            this.DIYPlan = rrcPlan.DIY;
+
+            this.IRPCurrent = rrcCurrent.IRP;
+            this.IRPPlan = rrcPlan.IRP;
+
+            this.IRPIndexCurrent = rrcCurrent.IRPIndex;
+            this.IRPIndexPlan = rrcPlan.IRPIndex;
+
+            this.RRPCurrent = rrcCurrent.RRP;
+            this.RRPPlan = rrcPlan.RRP;
+        }
+
         public void GetSTK()
         {
             if (this.Article == "")
                 return;
 
-            STK sTK = new STK().GetSTK(this.Article, this.Year);
-            if (sTK == null)
-                return;
+            //как получить сткшки? месяц
+            //проверки на нулл
 
-            this.STKEur = sTK.STKEur;
-            this.STKRub = sTK.STKRub;
+            STK stkPlan = new STK().GetSTK(this.Article, this.planningDate.Year);
+            STK stkCurrent = new STK().GetSTK(this.Article, this.CurrentDate.Year);
+
+            //if (sTK == null)
+            //    return;
+
+            this.STKEurPlan = stkPlan.STKEur;
+            //this.STKRubPlan = 
+            this.STKEurCurrent = stkCurrent.STKEur;
+            //this.STKRubCurrent = 
         }
 
         public void GetSheetCopy()
@@ -453,6 +546,30 @@ namespace BPA.Model
             }
         }
 
+        public List<Client> Clients
+        {
+            get
+            {
+                if (_Clients == null)
+                {
+                    try
+                    {
+                        _Clients = new Client().GetCustomers(CustomerStatus, ChannelType);
+                    }
+                    catch
+                    {
+                        _Clients = null;
+                    }
+                }
+                return _Clients;
+            }
+            set
+            {
+                _Clients = value;
+            }
+        }
+        private List<Client> _Clients;
+
         public void Save(string worksheetName)
         {
             _TableWorksheetName = worksheetName;
@@ -464,51 +581,6 @@ namespace BPA.Model
             _TableWorksheetName = worksheetName;
 
             ClearTable();
-
-            CopyTemplateFirstRow();
-        }
-
-        private void CopyTemplateFirstRow()
-        {
-            ThisWorkbook workbook = Globals.ThisWorkbook;
-            Worksheet worksheet = workbook.Sheets[templateSheetName];
-            ListObject tableTemplate = worksheet.ListObjects[1];
-            string tableTemplateName = tableTemplate.Name;
-
-            Table.ListRows.AddEx();
-            Range firstCell = Table.ListRows[1].Range[1];
-
-            tableTemplate.ListRows[1].Range.Copy();
-            firstCell.PasteSpecial();
-
-            //убираем ссылки на старый лист.Долго "cell.Formula ="
-
-            bool isCancel = false;
-            void CancelLocal() => isCancel = true;
-            ProcessBar pbar = new ProcessBar("Очистка данных", Table.ListRows[1].Range.Columns.Count);
-            pbar.CancelClick += CancelLocal;
-            pbar.Show();
-
-            foreach (Range cell in Table.ListRows[1].Range)
-            {
-                if (isCancel)
-                {
-                    pbar.Close();
-                    return;
-                }
-                pbar.TaskStart($"Готово {100 * cell.Column / Table.ListRows[1].Range.Columns.Count}%");
-
-
-                if (!cell.HasFormula) continue;
-
-                string formula = cell.Formula;
-                formula = formula.Replace(tableTemplateName, "");
-                cell.Formula = formula;
-
-
-                pbar.TaskDone(1);
-            }
-            pbar.Close();
         }
 
         public void SetMaximumBonusValue()
@@ -546,6 +618,32 @@ namespace BPA.Model
 
                 prognosises.Add(new PlanningNewYearPrognosis(planning));
                 promos.Add(new PlanningNewYearPromo(planning));
+                processBar.TaskDone(1);
+            }
+            processBar.Close();
+            processBar = null;
+        }
+
+        public void SetLists(List<PlanningNewYearPrognosis> prognosises)
+        {
+            List<PlanningNewYear> plannings = GetList();
+            if (plannings == null)
+                return;
+
+            ProcessBar processBar = null;
+            processBar = new ProcessBar($"Сбор данных для сохранения { SheetName } ", Table.ListRows.Count);
+            bool isCancel = false;
+            void CancelLocal() => isCancel = true;
+            processBar.CancelClick += CancelLocal;
+            processBar.Show();
+
+            foreach (PlanningNewYear planning in plannings)
+            {
+                if (isCancel)
+                    break;
+                processBar.TaskStart($"Обрабатывается артикул { planning.Article }");
+
+                prognosises.Add(new PlanningNewYearPrognosis(planning));
                 processBar.TaskDone(1);
             }
             processBar.Close();
@@ -669,38 +767,6 @@ namespace BPA.Model
                 return newArticleQuantity;
             }
             //
-        }
-
-        /// <summary>
-        /// Задает итоговые формулы. Запускать после завершения всех сохранений
-        /// </summary>
-        public void SetSumFormulas()
-        {
-            ThisWorkbook thisWorkbook = Globals.ThisWorkbook;
-            Worksheet worksheet = thisWorkbook.Sheets[SheetName];
-            Range formulasRange = worksheet.Range[worksheet.Cells[FormulasRow, Table.ListColumns[1].Range.Column], worksheet.Cells[FormulasRow, Table.ListColumns[Table.ListColumns.Count].Range.Column]];
-
-            //включаем стиль R1C1
-            XlReferenceStyle style = Application.ReferenceStyle;
-            Application.ReferenceStyle = XlReferenceStyle.xlR1C1;
-
-            foreach (Range cell in formulasRange) 
-            {
-                if (!cell.HasFormula) continue;
-
-                string formula = cell.Formula;
-                if (!formula.Contains("SUM")) continue;
-
-                int x = 2; //разница между строкой формул и первой строкой таблицы
-                if (!formula.Contains($"R[{ x }]C")) continue; //проверяем что сумируется начиная с первой строки таблицы
-
-                formula = $"=SUMM(R[{ x }]C:R[{ x + Table.ListRows.Count - 1 }]C";
-                cell.Formula = formula;
-
-            }
-
-            //возвращаем стиль
-            Application.ReferenceStyle = style;
         }
     }
 }
