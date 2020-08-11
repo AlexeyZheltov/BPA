@@ -491,9 +491,9 @@ namespace BPA.Model
             //if (sTK == null)
             //    return;
 
-            this.STKEurPlan = stkPlan.STKEur;
+            //this.STKEurPlan = stkPlan.STKEur;
             //this.STKRubPlan = 
-            this.STKEurCurrent = stkCurrent.STKEur;
+            //this.STKEurCurrent = stkCurrent.STKEur;
             //this.STKRubCurrent = 
         }
 
