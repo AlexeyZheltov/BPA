@@ -282,15 +282,9 @@ namespace BPA
                     if (isCancel) break;
                     processBar.TaskStart($"Обрабатывается артикул {product.Article}");
 
-                    //NM.RRCItem rrc = rrcs.Find(x => x.Article == product.Article && x.Date == date);
+                    NM.RRCItem rrc = rrcs.Find(x => x.Article == product.Article && x.Date == date);
 
-                    var quere = (from i_rrc in rrcs
-                                 where i_rrc.Article == product.Article && i_rrc.Date == date
-                                 select i_rrc).ToList();
-
-                    NM.RRCItem rrc =  quere.Count > 0 ? quere.First() : rrcs.Add();
-
-                    //if (rrc == null) rrc = rrcs.Add();
+                    if (rrc == null) rrc = rrcs.Add();
 
                     rrc.UpdateRRCFromProduct(product, date, budget_cource);
 

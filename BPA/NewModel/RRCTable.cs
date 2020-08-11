@@ -26,7 +26,7 @@ namespace BPA.NewModel
 
         public RRCItem Find(Predicate<RRCItem> predicate)
         {
-            foreach(RRCItem rrc in this)
+            foreach (RRCItem rrc in this)
                 if (predicate(rrc)) return rrc;
 
             return null;
