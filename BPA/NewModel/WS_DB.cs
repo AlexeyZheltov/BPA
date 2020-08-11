@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -8,7 +9,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace BPA.NewModel
 {
-    class WS_DB
+    class WS_DB : IEnumerable<TableRow>
     {
         Dictionary<string, NewModel.SheetColumn> _columns = new Dictionary<string, SheetColumn>();
         List<SheetColumn> _columns_by_number = new List<SheetColumn>();
@@ -49,6 +50,8 @@ namespace BPA.NewModel
         {
             foreach (var item in _data) yield return new TableRow(item, _columns);
         }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         /// <summary>
         /// Загружает данные умной таблицы
