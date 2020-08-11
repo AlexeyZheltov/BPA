@@ -12,8 +12,8 @@ namespace BPA.Model
     /// </summary>
     class PlanningNewYear : TableBase
     {
-        //public override string TableName => "Планирование_новый_год";
-        //public override string SheetName => "Планирование нового года шаблон";
+        private readonly Microsoft.Office.Interop.Excel.Application Application = Globals.ThisWorkbook.Application;
+
         public override string TableName => GetTableName();
         public override string SheetName => _TableWorksheetName != null ? _TableWorksheetName: templateSheetName;
         public string _TableWorksheetName;
@@ -50,17 +50,51 @@ namespace BPA.Model
         private readonly Dictionary<string, string> _filds = new Dictionary<string, string>
         {
             { "Id","№" },
-            { "Article","Артикул"},
-            { "RRCNDS","РРЦ, руб.с НДС"},
-            { "PercentageOfChange","Процент изменения"},
-            { "STKEur","STK 2.5,  Eur"},
-            { "STKRub","STK 2.5, руб."},
-            { "IRP","IRP, Eur"},
-            { "RRCNDS2","РРЦ, руб.с НДС2"},
-            { "IRPIndex","Индекс IRP"},
-            { "DIYPriceList","DIY price list, руб. без НДС"},
+            //{ "Article","Артикул"},
+            //{ "RRCNDS","РРЦ, руб.с НДС"},
+            //{ "PercentageOfChange","Процент изменения"},
+            //{ "STKEur","STK 2.5,  Eur"},
+            //{ "STKRub","STK 2.5, руб."},
+            //{ "IRP","IRP, Eur"},
+            //{ "RRCNDS2","РРЦ, руб.с НДС2"},
+            //{ "IRPIndex","Индекс IRP"},
+            //{ "DIYPriceList","DIY price list, руб. без НДС"},
+            
+            //{ "PricePromo","Промо цена, руб."},
 
-            { "PricePromo","Промо цена, руб."},
+            { "RRCNDS","РРЦ 2021, руб. с НДС"},
+            { "DIYPriceList","DIY цена 2021, руб. с НДС"},
+            { "STKRub","STK 2.5 2021, RUB"},
+            { "RRCCUrent", "РРЦ 2020, руб. с НДС" },
+            { "RRCPlan", "РРЦ 2021, руб. с НДС" },
+
+            { "DIYCurrent", "DIY цена 2020, руб. с НДС" },
+            { "DIYPlan", "DIY цена 2021, руб. с НДС" },
+
+            //{ "IRPCurrent", "" },
+            //{ "IRPPlan", "" },
+
+            //{ "IRPIndexCurrent", "" },
+            //{ "IRPIndexPlan", "" },
+
+            //{ "RRPCurrent", "" },
+            //{ "RRPPlan", "" },
+
+            //добавил новые
+            { "SupercategoryEng", "Суперкатегория" },
+            { "Supercategory", "SuperCategory" },
+            { "ProductGroup", "Product group" },
+            { "ProductGroupEng", "Product group name" },
+            { "SubGroup", "Subgroup" },
+            { "GenericName", "Generic Name (long)" },
+            { "PNS", "PNS" },
+            { "Article", "Article" },
+            { "ArticleOld", "Predessor - Local ID Gardena" },
+            { "ArticleRu", "Description RUS" },
+            { "CalendarSalesStartDate", "Sales Start Date" },
+            { "CalendarPreliminaryEliminationDate", "Preliminary Elimination Date" },
+            { "CalendarEliminationDate", "Elimination Date" },
+            { "Status", "status" }
         };
 
         #endregion
@@ -74,13 +108,13 @@ namespace BPA.Model
             get; set;
         }
 
-        /// <summary>
-        /// Артикул
-        /// </summary>
-        public string Article
-        {
-            get; set;
-        }
+        ///// <summary>
+        ///// Артикул
+        ///// </summary>
+        //public string Article
+        //{
+        //    get; set;
+        //}
 
         /// <summary>
         /// РРЦ, руб. с НДС
@@ -90,13 +124,13 @@ namespace BPA.Model
             get; set;
         }
 
-        /// <summary>
-        /// Процент изменения
-        /// </summary>
-        public double PercentageOfChange
-        {
-            get; set;
-        }
+        ///// <summary>
+        ///// Процент изменения
+        ///// </summary>
+        //public double PercentageOfChange
+        //{
+        //    get; set;
+        //}
 
         /// <summary>
         /// STK 2.5, руб.
@@ -105,7 +139,7 @@ namespace BPA.Model
         {
             get; set;
         }
-        
+
         /// <summary>
         /// STK 2.5, Eur
         /// </summary>
@@ -113,29 +147,30 @@ namespace BPA.Model
         {
             get; set;
         }
-        /// <summary>
-        /// IRP, Eur
-        /// </summary>
-        public double IRP
-        {
-            get; set;
-        }
 
-        /// <summary>
-        /// РРЦ, руб. с НДС
-        /// </summary>
-        public double RRCNDS2
-        {
-            get; set;
-        }
+        ///// <summary>
+        ///// IRP, Eur
+        ///// </summary>
+        //public double IRP
+        //{
+        //    get; set;
+        //}
 
-        /// <summary>
-        /// Индекс IRP
-        /// </summary>
-        public double IRPIndex
-        {
-            get; set;
-        }
+        ///// <summary>
+        ///// РРЦ, руб. с НДС
+        ///// </summary>
+        //public double RRCNDS2
+        //{
+        //    get; set;
+        //}
+
+        ///// <summary>
+        ///// Индекс IRP
+        ///// </summary>
+        //public double IRPIndex
+        //{
+        //    get; set;
+        //}
 
         /// <summary>
         /// DIY price list, руб. без НДС
@@ -144,14 +179,172 @@ namespace BPA.Model
         {
             get; set;
         }
+        ///// <summary>
+        ///// Промо цена, руб.
+        ///// </summary>
+        //public string PricePromo
+        //{
+        //    get; set;
+        //}
+
         /// <summary>
-        /// Промо цена, руб.
+        /// Суперкатегория
         /// </summary>
-        public string PricePromo
+        public string SupercategoryEng
         {
             get; set;
         }
 
+        /// <summary>
+        /// SuperCategory
+        /// </summary>
+        public string Supercategory
+        {
+            get; set;
+        }
+
+        ///<summary>
+        /// Product group
+        /// </summary>
+        public string ProductGroup 
+        { 
+            get; set;
+        }
+
+        /// <summary>
+        /// Product group name
+        /// </summary>
+        public string ProductGroupEng 
+        {
+            get; set;
+        }
+        /// <summary>
+        /// Subgroup
+        /// </summary>
+        public string SubGroup
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// Generic Name (long)
+        /// </summary>
+        public string GenericName
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// PNS
+        /// </summary>
+        public string PNS
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// Article
+        /// </summary>
+        public string Article
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// Predessor - Local ID Gardena
+        /// </summary>
+        public string ArticleOld
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// Description RUS
+        /// </summary>
+        public string ArticleRu
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// Sales Start Date
+        /// </summary>
+        public Double CalendarSalesStartDate
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// Preliminary Elimination Date
+        /// </summary>
+        public Double CalendarPreliminaryEliminationDate
+        {
+            get; set;
+        }
+
+        /// <summary>
+        /// Elimination Date
+        /// </summary>
+        public Double CalendarEliminationDate
+        {
+            get; set;
+        }
+        /// <summary>
+        /// status
+        /// </summary>
+        public string Status
+        {
+            get; set;
+        }
+
+        #endregion
+
+        #region FromRRC
+
+        public double RRCCUrent
+        {
+            get; set;
+        }
+        public double RRCPlan
+        {
+            get; set;
+        }
+
+        public double DIYCurrent
+        {
+            get; set;
+        }
+        public double DIYPlan
+        {
+            get; set;
+        }
+
+        public double IRPCurrent
+        {
+            get; set;
+        }
+        public double IRPPlan
+        {
+            get; set;
+        }
+
+        public double IRPIndexCurrent
+        {
+            get; set;
+        }
+        public double IRPIndexPlan
+        {
+            get; set;
+        }
+
+        public double RRPCurrent
+        {
+            get; set;
+        }
+        public double RRPPlan
+        {
+            get; set;
+        }
 
         #endregion
 
@@ -216,27 +409,92 @@ namespace BPA.Model
 
             return true;
         }
+
+        /// <summary>
+        /// строка формул выше шапки таблицы на 1
+        /// </summary>
+        private int FormulasRow
+        {
+            get
+            {
+                if (_FormulasRow == 0)
+                {
+                    _FormulasRow = Table.HeaderRowRange.Row - 1;
+                }
+                return _FormulasRow;
+            }
+            set
+            {
+                _FormulasRow = value;
+            }
+        }
+        private int _FormulasRow = 0;
+
         public void SetProduct(ProductForPlanningNewYear product)
         {
             this.Article = product.Article;
-            this.RRCNDS = product.RRCFinal; //?
-            //planning.PercentageOfChange = product.RRCPercent;  //?
-            this.IRP = product.IRP;
-            //planning.RRCNDS2 = product.RRCFinal; //?
-            this.IRPIndex = product.IRPIndex;
-            this.DIYPriceList = product.DIY;
+
+            this.SupercategoryEng = product.SupercategoryEng;
+            this.Supercategory = product.SuperCategory;
+            this.ProductGroup = product.ProductGroup;
+            this.ProductGroupEng = product.ProductGroupEng;
+            this.SubGroup = product.SubGroup;
+            this.GenericName = product.GenericName;
+            this.PNS = product.PNS;
+            this.Article = product.Article;
+            this.ArticleOld = product.ArticleOld;
+            this.ArticleRu = product.ArticleRu;
+            this.CalendarSalesStartDate = product.CalendarSalesStartDate;
+            this.CalendarPreliminaryEliminationDate = product.CalendarPreliminaryEliminationDate;
+            this.CalendarEliminationDate = product.CalendarEliminationDate;
         }
+
+        //SetRRC(List<RRC> rrcs)
+        //{
+
+        //}
+
+        public void SetRRC()
+        {
+            //как получить ррцшки? месяц
+            //проверки на нулл
+            RRC rrcPlan = new RRC().GetRRC(this.Article, this.planningDate, true);
+            RRC rrcCurrent = new RRC().GetRRC(this.Article, this.CurrentDate, true);
+
+            this.RRCCUrent = rrcCurrent.RRCNDS;
+            this.RRCPlan = rrcPlan.RRCNDS;
+
+            this.DIYCurrent = rrcCurrent.DIY;
+            this.DIYPlan = rrcPlan.DIY;
+
+            this.IRPCurrent = rrcCurrent.IRP;
+            this.IRPPlan = rrcPlan.IRP;
+
+            this.IRPIndexCurrent = rrcCurrent.IRPIndex;
+            this.IRPIndexPlan = rrcPlan.IRPIndex;
+
+            this.RRPCurrent = rrcCurrent.RRP;
+            this.RRPPlan = rrcPlan.RRP;
+        }
+
         public void GetSTK()
         {
             if (this.Article == "")
                 return;
 
-            STK sTK = new STK().GetSTK(this.Article, this.Year);
-            if (sTK == null)
-                return;
+            //как получить сткшки? месяц
+            //проверки на нулл
 
-            this.STKEur = sTK.STKEur;
-            this.STKRub = sTK.STKRub;
+            STK stkPlan = new STK().GetSTK(this.Article, this.planningDate.Year);
+            STK stkCurrent = new STK().GetSTK(this.Article, this.CurrentDate.Year);
+
+            //if (sTK == null)
+            //    return;
+
+            //this.STKEurPlan = stkPlan.STKEur;
+            //this.STKRubPlan = 
+            //this.STKEurCurrent = stkCurrent.STKEur;
+            //this.STKRubCurrent = 
         }
 
         public void GetSheetCopy()
@@ -288,6 +546,30 @@ namespace BPA.Model
             }
         }
 
+        public List<Client> Clients
+        {
+            get
+            {
+                if (_Clients == null)
+                {
+                    try
+                    {
+                        _Clients = new Client().GetCustomers(CustomerStatus, ChannelType);
+                    }
+                    catch
+                    {
+                        _Clients = null;
+                    }
+                }
+                return _Clients;
+            }
+            set
+            {
+                _Clients = value;
+            }
+        }
+        private List<Client> _Clients;
+
         public void Save(string worksheetName)
         {
             _TableWorksheetName = worksheetName;
@@ -299,33 +581,6 @@ namespace BPA.Model
             _TableWorksheetName = worksheetName;
 
             ClearTable();
-
-            CopyTemplateFirstRow();
-        }
-
-        private void CopyTemplateFirstRow()
-        {
-            ThisWorkbook workbook = Globals.ThisWorkbook;
-            Worksheet worksheet = workbook.Sheets[templateSheetName];
-            ListObject tableTemplate = worksheet.ListObjects[1];
-            string tableTemplateName = tableTemplate.Name;
-
-            Table.ListRows.AddEx();
-            Range firstCell = Table.ListRows[1].Range[1];
-
-            tableTemplate.ListRows[1].Range.Copy();
-            firstCell.PasteSpecial();
-
-            foreach (Range cell in Table.ListRows[1].Range)
-            {
-                string formula = cell.FormulaLocal;
-
-                if (formula != "" && formula.Substring(0,1) == "=")
-                //formula = formula.Replace(tableTemplateName, "");
-                //cell.FormulaLocal = formula;
-                    cell.FormulaLocal = cell.FormulaLocal.Replace(tableTemplateName, "");
-            }
-
         }
 
         public void SetMaximumBonusValue()
@@ -363,6 +618,32 @@ namespace BPA.Model
 
                 prognosises.Add(new PlanningNewYearPrognosis(planning));
                 promos.Add(new PlanningNewYearPromo(planning));
+                processBar.TaskDone(1);
+            }
+            processBar.Close();
+            processBar = null;
+        }
+
+        public void SetLists(List<PlanningNewYearPrognosis> prognosises)
+        {
+            List<PlanningNewYear> plannings = GetList();
+            if (plannings == null)
+                return;
+
+            ProcessBar processBar = null;
+            processBar = new ProcessBar($"Сбор данных для сохранения { SheetName } ", Table.ListRows.Count);
+            bool isCancel = false;
+            void CancelLocal() => isCancel = true;
+            processBar.CancelClick += CancelLocal;
+            processBar.Show();
+
+            foreach (PlanningNewYear planning in plannings)
+            {
+                if (isCancel)
+                    break;
+                processBar.TaskStart($"Обрабатывается артикул { planning.Article }");
+
+                prognosises.Add(new PlanningNewYearPrognosis(planning));
                 processBar.TaskDone(1);
             }
             processBar.Close();

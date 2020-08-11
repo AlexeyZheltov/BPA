@@ -17,12 +17,15 @@ namespace BPA.Modules
         FilePriceMT filePriceMT = null;
         bool isLoaded = false;
 
-        public PriceListForPlaning(Client client, DateTime date)
+        public PriceListForPlaning(PlanningNewYear planningNewYear)
         {
-            if (client is Client cl && date is DateTime dt)
+            if (planningNewYear.Clients != null && planningNewYear.Clients.Count > 0)
             {
-                currentClient = cl;
-                currentDate = dt;
+                if (planningNewYear.Clients[0] is Client cl && planningNewYear.CurrentDate is DateTime dt)
+                {
+                    currentClient = cl;
+                    currentDate = dt;
+                } else throw new ArgumentException();
             }
             else throw new ArgumentException();
         }

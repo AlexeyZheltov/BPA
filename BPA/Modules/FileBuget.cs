@@ -59,6 +59,16 @@ namespace BPA.Modules
             }
         }
         private int _PriceListColumn = 0;
+
+        public int CustomerBugetColumn
+        {
+            get
+            {
+                if (_CustomerBugetColumn == 0) _CustomerBugetColumn = FindColumn("Customer");
+                return _CustomerBugetColumn;
+            }
+        }
+        private int _CustomerBugetColumn = 0;
         #endregion
 
         public FileBuget()
@@ -112,7 +122,10 @@ namespace BPA.Modules
                 ActionStart?.Invoke($"Обрабатывается строка {rowIndex}");
 
                 DateTime date = GetDateFromCell(rowIndex, DateColumn);
-                if (planning.Year != date.Year)
+                string customerBuget = GetValueFromColumnStr(rowIndex, CustomerBugetColumn); ;
+
+                //проверка на соответствие года и customer
+                if (date.Year != planning.CurrentDate.Year || planning.Clients.Find(x => x.CustomerBudget == customerBuget) == null)
                     continue;
 
                 string article = GetValueFromColumnStr(rowIndex, ArticleColumn);
