@@ -216,42 +216,6 @@ namespace BPA.NewModel
             }
         }
 
-        public void UpdateFromCalendar(FileCalendar.ProductFromCalendar productFromCalendar)
-        {
-            CalendarSalesStartDate = productFromCalendar.CalendarSalesStartDate;
-            CalendarPreliminaryEliminationDate = productFromCalendar.CalendarPreliminaryEliminationDate;
-            CalendarEliminationDate = productFromCalendar.CalendarEliminationDate;
-
-            CalendarToBeSoldIn = productFromCalendar.CalendarToBeSoldIn;
-            CalendarGTIN = productFromCalendar.CalendarGTIN;
-            CalendarCurrentProducingFactoryEntityReference = productFromCalendar.CalendarCurrentProducingFactoryEntityReference;
-            CalendarCountryOfOrigin = productFromCalendar.CalendarCountryOfOrigin;
-            CalendarUnitOfMeasure = productFromCalendar.CalendarUnitOfMeasure;
-            CalendarQuantityInMasterPack = productFromCalendar.CalendarQuantityInMasterPack;
-            CalendarArticleGrossWeightPreliminary = productFromCalendar.CalendarArticleGrossWeightPreliminary;
-            CalendarArticleGrossWeight = productFromCalendar.CalendarArticleGrossWeight;
-            CalendarArticleNetWeightPreliminary = productFromCalendar.CalendarArticleNetWeightPreliminary;
-            CalendarArticleNetWeight = productFromCalendar.CalendarArticleNetWeight;
-            CalendarPackagingLength = productFromCalendar.CalendarPackagingLength;
-            CalendarPackagingHeight = productFromCalendar.CalendarPackagingHeight;
-            CalendarPackagingWidth = productFromCalendar.CalendarPackagingWidth;
-            CalendarPackagingVolume = productFromCalendar.CalendarPackagingVolume;
-            CalendarProductSizeHeight = productFromCalendar.CalendarProductSizeHeight;
-            CalendarProductSizeWidth = productFromCalendar.CalendarProductSizeWidth;
-            CalendarProductSizeLength = productFromCalendar.CalendarProductSizeLength;
-            CalendarUnitsPerPallet = productFromCalendar.CalendarUnitsPerPallet;
-
-            Article = productFromCalendar.LocalIDGardena;
-
-            Model = productFromCalendar.Model;
-            SubGroup = productFromCalendar.SubGroup;
-            
-            PNS = productFromCalendar.PNS;
-
-            IRP = productFromCalendar.IRP;
-
-            CalendarName = productFromCalendar.CalendarName;
-        }
 
         public void MarkColumn(String col_name)
         {

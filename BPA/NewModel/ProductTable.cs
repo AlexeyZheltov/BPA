@@ -1,5 +1,4 @@
 ﻿using BPA.Modules;
-using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -106,13 +105,13 @@ namespace BPA.NewModel
         {
             _table.Sort.SortFields.Clear();
             _table.Sort.SortFields.Add(Key: _table.ListColumns[col_name].Range,
-                                        XlSortOn.xlSortOnValues,
-                                        XlSortOrder.xlAscending,
-                                        XlSortDataOption.xlSortNormal);
-            _table.Sort.Header = XlYesNoGuess.xlYes;
+                                        Excel.XlSortOn.xlSortOnValues,
+                                        Excel.XlSortOrder.xlAscending,
+                                        Excel.XlSortDataOption.xlSortNormal);
+            _table.Sort.Header = Excel.XlYesNoGuess.xlYes;
             _table.Sort.MatchCase = false;
-            _table.Sort.Orientation = XlSortOrientation.xlSortColumns;
-            _table.Sort.SortMethod = XlSortMethod.xlPinYin;
+            _table.Sort.Orientation = Excel.XlSortOrientation.xlSortColumns;
+            _table.Sort.SortMethod = Excel.XlSortMethod.xlPinYin;
             _table.Sort.Apply();
         }
 
