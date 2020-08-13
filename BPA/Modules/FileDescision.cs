@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using SettingsBPA = BPA.Properties.Settings;
+using NM = BPA.NewModel;
 using BPA.Forms;
 
 namespace BPA.Modules
@@ -127,9 +128,9 @@ namespace BPA.Modules
 
         public List<ArticleQuantity> ArticleQuantities = new List<ArticleQuantity>();
         
-        public List<Client> LoadClients()
+        public List<NM.ClientItem.DataFromDescision> LoadClients()
         {
-            List<Client> buffer = new List<Client>();
+            List<NM.ClientItem.DataFromDescision> buffer = new List<NM.ClientItem.DataFromDescision>();
 
             if (CustomerColumn == 0 || GardenaChannelColumn == 0)
             {
@@ -148,11 +149,16 @@ namespace BPA.Modules
                 {
                     string gardenaChannel = GetValueFromColumnStr(rowIndex, GardenaChannelColumn);
 
-                    if (!buffer.Exists(x => x.Customer == customer)) buffer.Add(new Client()
+                    if (!buffer.Exists(x => x.Customer == customer)) buffer.Add(new NM.ClientItem.DataFromDescision() 
                     {
                         Customer = customer,
                         GardenaChannel = gardenaChannel
                     });
+                    //if (!buffer.Exists(x => x.Customer == customer)) buffer.Add(new Client()
+                    //{
+                    //    Customer = customer,
+                    //    GardenaChannel = gardenaChannel
+                    //});
                 }
                 ActionDone?.Invoke(1);
             }

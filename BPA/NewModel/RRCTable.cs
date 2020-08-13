@@ -28,7 +28,7 @@ namespace BPA.NewModel
         {
             foreach (RRCItem rrc in this)
                 if (predicate(rrc)) return rrc;
-
+            
             return null;
         }
 

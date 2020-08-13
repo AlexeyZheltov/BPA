@@ -1,0 +1,78 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Excel = Microsoft.Office.Interop.Excel;
+
+namespace BPA.NewModel
+{
+    class ClientTable : IEnumerable<ClientItem>
+    {
+        public const string SHEET = "Клиенты";
+        const string TABLE = "Клиенты";
+
+        WS_DB db = new WS_DB();
+        Excel.ListObject _table = null;
+
+        public static void SortExcelTable(string sortFildName)
+        {
+            Excel.Workbook wb = Globals.ThisWorkbook.InnerObject;
+            Excel.Worksheet ws = wb.Sheets[SHEET];
+            Excel.ListObject table = ws.ListObjects[TABLE];
+
+            table.Sort.SortFields.Clear();
+            table.Sort.SortFields.Add(Key: table.ListColumns[sortFildName].Range,
+                                        Excel.XlSortOn.xlSortOnValues,
+                                        Excel.XlSortOrder.xlAscending,
+                                        Excel.XlSortDataOption.xlSortNormal);
+            table.Sort.Header = Excel.XlYesNoGuess.xlYes;
+            table.Sort.MatchCase = false;
+            table.Sort.Orientation = Excel.XlSortOrientation.xlSortColumns;
+            table.Sort.SortMethod = Excel.XlSortMethod.xlPinYin;
+            table.Sort.Apply();
+        }
+
+        public ClientTable()
+        {
+            Excel.Workbook wb = Globals.ThisWorkbook.InnerObject;
+            Excel.Worksheet ws = wb.Sheets[SHEET];
+            _table = ws.ListObjects[TABLE];
+        }
+
+        public bool Contains(ClientItem.DataFromDescision value)
+        {
+            foreach (var item in this)
+                if (item.Customer == value.Customer) return true;
+
+            return false;
+        }
+
+        public ClientItem Add()
+        {
+            int row = db.AddRow();
+            ClientItem item = new ClientItem(db[row]);
+            item.Id = db.NextID("№");
+            return item;
+        }
+
+        public IEnumerator<ClientItem> GetEnumerator()
+        {
+            foreach (TableRow item in db) yield return new ClientItem(item);
+        }
+
+        public int Load()
+        {
+            db.Load(_table);
+            return db.RowCount();
+        }
+
+        public void Save() => db.Save();
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+    }
+}

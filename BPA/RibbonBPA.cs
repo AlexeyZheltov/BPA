@@ -19,7 +19,8 @@ using Microsoft.Office.Core;
 using SettingsBPA = BPA.Properties.Settings;
 using NM = BPA.NewModel;
 using System.Windows.Controls.Primitives;
-
+using ClientFromDescision = BPA.NewModel.ClientItem.DataFromDescision;
+using BPA.NewModel;
 
 namespace BPA
 {
@@ -316,22 +317,29 @@ namespace BPA
 
             try
             {
-                new Client().ReadColNumbers();
-
+                NM.ClientTable clients = new NM.ClientTable();
+                
                 fileDescision = new FileDescision();
                 if (!fileDescision.IsOpen) 
                     return;
                 fileDescision.SetProcessBarForLoad(ref processBar);
-                List<Client> clientsFromDecision = fileDescision.LoadClients();
+
+                List<ClientFromDescision> clientsFromDecision = fileDescision.LoadClients();
+                
                 processBar.Close();
                 if (fileDescision?.IsOpen ?? false) fileDescision.Close();
 
                 //Загрузить данные из листа клиентов
-                List<Client> clients = Client.GetAllClients();
-                if (clients == null) return;
+                if (clients.Load() == 0) return;
 
                 //Получить разницу
-                List<Client> newClients = clientsFromDecision.Except(clients, new Client.ComparerCustomer()).ToList();
+
+                //List<ClientFromDescision> newClients = new List<ClientFromDescision>();
+
+                var newClients = (from c in clientsFromDecision
+                                  where !clients.Contains(c)
+                                  select c).ToList();
+
                 if(newClients.Count == 0)
                 {
                     MessageBox.Show("В файле Decision не обнаружено новых клиентов", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -348,17 +356,22 @@ namespace BPA
                 processBar.CancelClick += Cancel;
                 processBar.Show(new ExcelWindows(Globals.ThisWorkbook));
 
-                foreach (Client client in newClients)
+                foreach (var item in newClients)
                 {
                     if (isCancel) return;
-                    processBar.TaskStart($"Сохраняется клиент {client.Customer}");
-                    client.Save();
+                    processBar.TaskStart($"Сохраняется клиент {item.Customer}");
+
+                    NM.ClientItem client = clients.Add();
+                    client.Customer = item.Customer;
+                    client.GardenaChannel = item.GardenaChannel;
+
                     processBar.TaskDone(1);
                 }
 
-                Client ClientForSort = newClients.First();
-                ClientForSort.Sort("Id");
-                Excel.Worksheet ws = Globals.ThisWorkbook.Sheets[ClientForSort.SheetName];
+                clients.Save();
+
+                ClientTable.SortExcelTable("№");
+                Excel.Worksheet ws = Globals.ThisWorkbook.Sheets[ClientTable.SHEET];
                 ws.Activate();
             }
             catch (Exception ex)

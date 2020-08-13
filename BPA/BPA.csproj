@@ -161,7 +161,10 @@
     <Compile Include="Modules\PriceListForPlaning.cs" />
     <Compile Include="Modules\StringCalculator.cs" />
     <Compile Include="Modules\WorksheetsSettings.cs" />
+    <Compile Include="NewModel\ClientItem.cs" />
+    <Compile Include="NewModel\ClientTable.cs" />
     <Compile Include="NewModel\Dynamic.cs" />
+    <Compile Include="NewModel\IClientItemCompare.cs" />
     <Compile Include="NewModel\ProductItem.cs" />
     <Compile Include="NewModel\ProductTable.cs" />
     <Compile Include="NewModel\RRCItem.cs" />
@@ -248,7 +251,7 @@
     </ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>A39B55A4E01FFC62DFADAFD4C2F39222553AD3A9</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>6D619523655754037C1CCD67A496884B9B77C51D</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>

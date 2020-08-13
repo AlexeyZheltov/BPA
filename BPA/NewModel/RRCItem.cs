@@ -10,7 +10,6 @@ namespace BPA.NewModel
     {
         TableRow _row;
         public RRCItem(TableRow row) => _row = row;
-
         public int Id
         {
             get => _row["№"];
