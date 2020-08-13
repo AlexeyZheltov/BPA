@@ -58,5 +58,19 @@ namespace BPA.NewModel
             get => _row["Дата принятия"];
             set => _row["Дата принятия"] = value;
         }
+         
+        public void UpdateRRCFromProduct(ProductItem product, DateTime dateOfPromotion, double budgetCourse)
+        {
+            if (product != null)
+            {
+                Date = dateOfPromotion;
+                RRCNDS = product.RRCFinal;
+                DIY = product.DIY;
+                Article = product.Article;
+                IRP = product.IRP;
+                IRPIndex = product.IRPIndex;
+                RRP = RRCNDS / budgetCourse;
+            }
+        }
     }
 }

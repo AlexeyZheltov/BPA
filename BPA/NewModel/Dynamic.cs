@@ -17,6 +17,7 @@ namespace BPA.NewModel
 
         public static implicit operator int(Dynamic value)
         {
+            if (value == null) return default;
             try
             {
                 return Convert.ToInt32(value.Value);
@@ -29,6 +30,7 @@ namespace BPA.NewModel
 
         public static implicit operator double(Dynamic value)
         {
+            if (value == null) return default;
             try
             {
                 return Convert.ToDouble(value.Value);
@@ -41,6 +43,7 @@ namespace BPA.NewModel
 
         public static implicit operator string(Dynamic value)
         {
+            if (value == null) return default;
             try
             {
                 return Convert.ToString(value.Value);
@@ -53,6 +56,7 @@ namespace BPA.NewModel
 
         public static implicit operator DateTime(Dynamic value)
         {
+            if (value == null) return default;
             try
             {
                 return Convert.ToDateTime(value.Value);

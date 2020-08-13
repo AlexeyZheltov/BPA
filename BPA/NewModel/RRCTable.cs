@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.Tools.Applications.Runtime;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,22 @@ namespace BPA.NewModel
             Excel.Workbook wb = Globals.ThisWorkbook.InnerObject;
             Excel.Worksheet ws = wb.Sheets[SHEET];
             _table = ws.ListObjects[TABLE];
+        }
+
+        public RRCItem Find(Predicate<RRCItem> predicate)
+        {
+            foreach (RRCItem rrc in this)
+                if (predicate(rrc)) return rrc;
+
+            return null;
+        }
+
+        public RRCItem Add()
+        {
+            int row = db.AddRow();
+            RRCItem item = new RRCItem(db[row]);
+            item.Id = db.NextID("№");
+            return item;
         }
 
         public IEnumerator<RRCItem> GetEnumerator()

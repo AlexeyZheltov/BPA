@@ -59,6 +59,25 @@ namespace BPA.NewModel
             }
         }
 
+        public double BudgetCourse()
+        {
+            string Label = "Бюджетный курс";
+
+            try
+            {
+                Excel.Worksheet ws = _table.Parent;
+                int i_row = _table.HeaderRowRange.Row - 1;
+                Excel.Range rng = ws.Rows[i_row];
+                rng = rng.Find(Label, LookAt: Excel.XlLookAt.xlWhole);
+                rng = rng.Offset[0, 1];
+                return double.Parse(rng.Text);
+            }
+            catch
+            {
+                return default;
+            }
+        }
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();

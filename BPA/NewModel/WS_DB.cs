@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -8,12 +9,13 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace BPA.NewModel
 {
-    class WS_DB
+    class WS_DB : IEnumerable<TableRow>
     {
         Dictionary<string, NewModel.SheetColumn> _columns = new Dictionary<string, SheetColumn>();
         List<SheetColumn> _columns_by_number = new List<SheetColumn>();
         List<Dynamic[]> _data = new List<Dynamic[]>();
         Excel.ListObject _table;
+        int _last_id = 0;
 
         /// <summary>
         /// Получить или установить значение ячейки по номеру строки и номеру столбца
@@ -49,6 +51,8 @@ namespace BPA.NewModel
         {
             foreach (var item in _data) yield return new TableRow(item, _columns);
         }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         /// <summary>
         /// Загружает данные умной таблицы
@@ -188,16 +192,15 @@ namespace BPA.NewModel
         /// <returns></returns>
         public int NextID(string id_name)
         {
+            if (_last_id > 0) return ++_last_id;
+
             int id_col = _columns[id_name].Column;
             int max = 0;
 
             for (int p = 0; p < _data.Count; p++)
             {
                 Dynamic obj = _data[p][id_col];
-                if (int.TryParse(obj?.ToString() ?? "0", out int i_obj))
-                {
-                    if (i_obj > max) max = i_obj;
-                }
+                if (obj > max) max = obj;
             }
 
             return ++max;
