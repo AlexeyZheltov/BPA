@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BPA.Modules;
+using Microsoft.Office.Interop.Excel;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,6 +62,46 @@ namespace BPA.NewModel
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public ProductItem Find(Predicate<ProductItem> predicate)
+        {
+            foreach (ProductItem product in this)
+                if (predicate(product)) return product;
+            return null;
+        }
+
+        public ProductItem Add() 
+        {
+            int row = db.AddRow();
+            ProductItem item = new ProductItem(db[row]);
+            item.Id = db.NextID("№");
+            return item;
+        }
+        
+        /// <summary>
+        /// Сортировка умной таблицы по имени столбца
+        /// </summary>
+        /// <param name="col_name"></param>
+        public void Sort(string col_name)
+        {
+            _table.Sort.SortFields.Clear();
+            _table.Sort.SortFields.Add(Key: _table.ListColumns[col_name].Range,
+                                        XlSortOn.xlSortOnValues,
+                                        XlSortOrder.xlAscending,
+                                        XlSortDataOption.xlSortNormal);
+            _table.Sort.Header = XlYesNoGuess.xlYes;
+            _table.Sort.MatchCase = false;
+            _table.Sort.Orientation = XlSortOrientation.xlSortColumns;
+            _table.Sort.SortMethod = XlSortMethod.xlPinYin;
+            _table.Sort.Apply();
+        }
+
+        public bool IsActiceCellInRange(Excel.Range cell)
+        {
+            if (cell.Row < _table.DataBodyRange[1, 1].Row || cell.Row > _table.DataBodyRange[_table.ListRows.Count, 1])
+                return false;
+            return true;
         }
     }
 }
