@@ -164,6 +164,8 @@
     <Compile Include="NewModel\ClientItem.cs" />
     <Compile Include="NewModel\ClientTable.cs" />
     <Compile Include="NewModel\Dynamic.cs" />
+    <Compile Include="NewModel\FinalPriceItem.cs" />
+    <Compile Include="NewModel\FinalPriceTable.cs" />
     <Compile Include="NewModel\IClientItemCompare.cs" />
     <Compile Include="NewModel\ProductItem.cs" />
     <Compile Include="NewModel\ProductTable.cs" />
