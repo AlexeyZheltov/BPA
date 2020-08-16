@@ -5,6 +5,8 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 using System.Windows.Media.Animation;
+using System.Windows.Documents;
+using System.Collections.Generic;
 
 namespace BPA.Modules
 {
@@ -339,13 +341,51 @@ namespace BPA.Modules
         private int _UnitsPerPalletColumn = 0;
         #endregion
 
+        public List<ProductFromCalendar> ProductsFromCalendar = new List<ProductFromCalendar>();
+        public struct ProductFromCalendar 
+        {
+            public double CalendarSalesStartDate { get; set; } // GetDoubleDateFromCell(rowIndex, SalesStartDateColumn);
+            public double CalendarPreliminaryEliminationDate { get; set;} // GetDoubleDateFromCell(rowIndex, PreliminaryEliminationDateColumn);
+            public double CalendarEliminationDate { get; set;} // GetDoubleDateFromCell(rowIndex, EliminationDateColumn);
+            public string CalendarToBeSoldIn { get; set;} // GetValueFromColumnStr(rowIndex, ToBeSoldInColumn);
+            public string CalendarGTIN { get; set;} // GetValueFromColumnStr(rowIndex, GTIN13Column);
+            public string CalendarCurrentProducingFactoryEntityReference { get; set;} // GetValueFromColumnStr(rowIndex, CurrentProducingFactoryColumn);
+            public string CalendarCountryOfOrigin { get; set;} // GetValueFromColumnStr(rowIndex, CountryOfOriginColumn);
+            public string CalendarUnitOfMeasure { get; set;} // GetValueFromColumnStr(rowIndex, UnitOfMeasureColumn);
+            public string CalendarQuantityInMasterPack { get; set;} // GetValueFromColumnStr(rowIndex, QuantityInMasterPackColumn);
+            public string CalendarArticleGrossWeightPreliminary { get; set;} // GetValueFromColumnStr(rowIndex, ArticleGrossWeightPreliminaryColumn);
+            public string CalendarArticleGrossWeight { get; set;} // GetValueFromColumnStr(rowIndex, ArticleGrossWeightColumn);
+            public string CalendarArticleNetWeightPreliminary { get; set;} // GetValueFromColumnStr(rowIndex, ArticleNetWeightPreliminaryColumn);
+            public string CalendarArticleNetWeight { get; set;} // GetValueFromColumnStr(rowIndex, ArticleNetWeightColumn);
+            public string CalendarPackagingLength { get; set;} // GetValueFromColumnStr(rowIndex, PackagingLengthColumn);
+            public string CalendarPackagingHeight { get; set;} // GetValueFromColumnStr(rowIndex, PackagingHeightColumn);
+            public string CalendarPackagingWidth { get; set;} // GetValueFromColumnStr(rowIndex, PackagingWidthColumn);
+            public string CalendarPackagingVolume { get; set;} // GetValueFromColumnStr(rowIndex, PackagingVolumeColumn);
+            public string CalendarProductSizeHeight { get; set;} // GetValueFromColumnStr(rowIndex, ProductSizeHeightColumn);
+            public string CalendarProductSizeWidth { get; set;} // GetValueFromColumnStr(rowIndex, ProductSizeWidthColumn);
+            public string CalendarProductSizeLength { get; set;} // GetValueFromColumnStr(rowIndex, ProductSizeLengthColumn);
+            public string CalendarUnitsPerPallet { get; set;} // GetValueFromColumnStr(rowIndex, UnitsPerPalletColumn);
+
+            public string LocalIDGardena { get; set;} // GetValueFromColumnStr(rowIndex, LocalIDGardenaColumn);
+
+            //product.GenericName = GetValueFromColumn(row, GenericNameColumn);
+            public string Model { get; set;} // GetValueFromColumnStr(rowIndex, ModelColumn);
+            public string SubGroup { get; set;} // GetValueFromColumnStr(rowIndex, SubgroupColumn);
+            //product.ProductGroup = GetValueFromColumn(row, ProductGroupColumn);
+            public string PNS { get; set;} // GetValueFromColumnStr(rowIndex, IdColumn);
+
+            public double IRP { get; set;} // GetValueFromColumnDbl(rowIndex, IRPRRPColumn);
+
+            public string CalendarName { get; set; }
+            public string CalendarPath { get; set; }
+        }
         public FileCalendar()
         {
             BPASettings settings = new BPASettings();
             
             if (settings.GetProductCalendarPath(out string path))
             {
-                FileName = path;
+                FileAddress = path;
                 FileSheetName = "";
                 FileHeaderRow = fileHeaderRow;
 
@@ -364,7 +404,7 @@ namespace BPA.Modules
             {
                 throw new FileNotFoundException($"Файл {filename} не найден");
             }
-            FileName = filename;
+            FileAddress = filename;
             IsOpen = true;
             FileHeaderRow = fileHeaderRow;
 
@@ -374,38 +414,38 @@ namespace BPA.Modules
         public FileCalendar(Workbook workbook)
         {
             Workbook = workbook;
-            FileName = workbook.Path;
             IsOpen = true;
             FileHeaderRow = fileHeaderRow;
 
             SetFileData();
         }
 
-        public void LoadCalendar()
-        {
-            if (Workbook == null) return;
+        //public void LoadCalendar()
+        //{
+        //    if (Workbook == null) return;
 
-            if (!ReadCalendarLoad())
-            {
-                MessageBox.Show("Значимых записей не найдено", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
+        //    if (!ReadCalendarLoad())
+        //    {
+        //        MessageBox.Show("Значимых записей не найдено", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //        return;
+        //    }
 
-            ProductCalendar productCalendar = new ProductCalendar
-            {
-                Name = Workbook.Name,
-                Path = FileName
-            };
-            productCalendar.Save();
+        //    ProductCalendar productCalendar = new ProductCalendar
+        //    {
+        //        Name = Workbook.Name,
+        //        Path = FileName
+        //    };
+        //    productCalendar.Save();
 
-            IsCancel = true;
-        }
+        //    IsCancel = true;
+        //}
 
         //перенести часть функционала в Product
         /// <summary>
         /// загрузка календаря
         /// </summary>
-        private bool ReadCalendarLoad()
+        public bool LoadProductsFromCalendar()
+        //private bool ReadCalendarLoad()
         {
             Product product = null;
 
@@ -421,8 +461,7 @@ namespace BPA.Modules
                     continue;
                 }
 
-                int temp = ToBeSoldInColumn;
-                if (temp == 0)
+                if (ToBeSoldInColumn == 0)
                 {
                     Close();
                     throw new ApplicationException("Файл имеет неверный формат");
@@ -452,32 +491,66 @@ namespace BPA.Modules
                     return false;
                 }
 
-                string localIDGardena = GetValueFromColumnStr(rowIndex, LocalIDGardenaColumn);
-
-                product = new Product().GetProduct(localIDGardena);
-
-                if (product != null)
+                ProductsFromCalendar.Add(new ProductFromCalendar
                 {
-                    product = CreateProduct(rowIndex, product);
-                    product.Calendar = Workbook.Name;
-                    product.Update();
-                    product.Mark("Article");
-                    product.Mark("PNS");
-                    product.Mark("Calendar");
-                }
-                else
-                {
-                    product = CreateProduct(rowIndex, new Product());
-                    product.Calendar = Workbook.Name;
-                    product.Save();
-                    product.Mark("Calendar");
-                }
+                    LocalIDGardena = GetValueFromColumnStr(rowIndex, LocalIDGardenaColumn),
+                    CalendarSalesStartDate = GetDoubleDateFromCell(rowIndex, SalesStartDateColumn),
+                    CalendarPreliminaryEliminationDate = GetDoubleDateFromCell(rowIndex, PreliminaryEliminationDateColumn),
+                    CalendarEliminationDate = GetDoubleDateFromCell(rowIndex, EliminationDateColumn),
+
+                    CalendarToBeSoldIn = GetValueFromColumnStr(rowIndex, ToBeSoldInColumn),
+                    CalendarGTIN = GetValueFromColumnStr(rowIndex, GTIN13Column),
+                    CalendarCurrentProducingFactoryEntityReference = GetValueFromColumnStr(rowIndex, CurrentProducingFactoryColumn),
+                    CalendarCountryOfOrigin = GetValueFromColumnStr(rowIndex, CountryOfOriginColumn),
+                    CalendarUnitOfMeasure = GetValueFromColumnStr(rowIndex, UnitOfMeasureColumn),
+                    CalendarQuantityInMasterPack = GetValueFromColumnStr(rowIndex, QuantityInMasterPackColumn),
+                    CalendarArticleGrossWeightPreliminary = GetValueFromColumnStr(rowIndex, ArticleGrossWeightPreliminaryColumn),
+                    CalendarArticleGrossWeight = GetValueFromColumnStr(rowIndex, ArticleGrossWeightColumn),
+                    CalendarArticleNetWeightPreliminary = GetValueFromColumnStr(rowIndex, ArticleNetWeightPreliminaryColumn),
+                    CalendarArticleNetWeight = GetValueFromColumnStr(rowIndex, ArticleNetWeightColumn),
+                    CalendarPackagingLength = GetValueFromColumnStr(rowIndex, PackagingLengthColumn),
+                    CalendarPackagingHeight = GetValueFromColumnStr(rowIndex, PackagingHeightColumn),
+                    CalendarPackagingWidth = GetValueFromColumnStr(rowIndex, PackagingWidthColumn),
+                    CalendarPackagingVolume = GetValueFromColumnStr(rowIndex, PackagingVolumeColumn),
+                    CalendarProductSizeHeight = GetValueFromColumnStr(rowIndex, ProductSizeHeightColumn),
+                    CalendarProductSizeWidth = GetValueFromColumnStr(rowIndex, ProductSizeWidthColumn),
+                    CalendarProductSizeLength = GetValueFromColumnStr(rowIndex, ProductSizeLengthColumn),
+                    CalendarUnitsPerPallet = GetValueFromColumnStr(rowIndex, UnitsPerPalletColumn),
+
+                    Model = GetValueFromColumnStr(rowIndex, ModelColumn),
+                    SubGroup = GetValueFromColumnStr(rowIndex, SubgroupColumn),
+                    PNS = GetValueFromColumnStr(rowIndex, IdColumn),
+
+                    IRP = GetValueFromColumnDbl(rowIndex, IRPRRPColumn),
+
+                    CalendarName = this.Workbook.Name,
+                    CalendarPath = this.Workbook.Path
+                });;
+
+                //product = new Product().GetProduct(localIDGardena);
+
+                //if (product != null)
+                //{
+                //    product = CreateProduct(rowIndex, product);
+                //    product.Calendar = Workbook.Name;
+                //    product.Update();
+                //    product.Mark("Article");
+                //    product.Mark("PNS");
+                //    product.Mark("Calendar");
+                //}
+                //else
+                //{
+                //    product = CreateProduct(rowIndex, new Product());
+                //    product.Calendar = Workbook.Name;
+                //    product.Save();
+                //    product.Mark("Calendar");
+                //}
 
                 ActionDone?.Invoke(1);
             }
             if (product == null) return false;
-            product.Sort("Id");
-            product.Sort("ProductGroup");
+            //product.Sort("Id");
+            //product.Sort("ProductGroup");
             return true;
         }
 

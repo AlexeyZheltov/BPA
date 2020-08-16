@@ -77,7 +77,7 @@ namespace BPA.Modules
 
             if (settings.GetBudgetPath(out string path))
             {
-                FileName = path;
+                FileAddress = path;
                 FileHeaderRow = 2;
                 FileSheetName = SettingsBPA.Default.SHEET_NAME_FILE_BUGET;
                 
@@ -96,7 +96,7 @@ namespace BPA.Modules
             {
                 throw new FileNotFoundException($"Файл {filename} не найден");
             }
-            FileName = filename;
+            FileAddress = filename;
         }
 
         public FileBuget(Excel.Workbook workbook)
