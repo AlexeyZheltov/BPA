@@ -146,7 +146,8 @@ namespace BPA.Modules
         {
             get
             {
-                if (_LastColumn == 0) _LastColumn = worksheet.Cells[FileHeaderRow, worksheet.UsedRange.Columns.Count].Column;
+                if (_LastColumn == 0) _LastColumn = worksheet.Cells[FileHeaderRow, worksheet.Columns.Count].End[Microsoft.Office.Interop.Excel.XlDirection.xlToLeft].Column;
+                    //_LastColumn = worksheet.Cells[FileHeaderRow, worksheet.UsedRange.Columns.Count].Column;
                 return _LastColumn;
             }
         }
@@ -158,9 +159,8 @@ namespace BPA.Modules
         public void SetFileData()
         {
             FileArray = worksheet.Range[worksheet.Cells[FileHeaderRow, 1], worksheet.Cells[LastRow, LastColumn]].Value;
-            //ArrRrows = FileArray.GetUpperBound(0) + 1;
             ArrRrows = FileArray.GetUpperBound(0);
-            ArrColumns = FileArray.Length / ArrRrows;
+            ArrColumns = FileArray.GetLength(1);
         }
 
         public FileBase() { }
@@ -262,9 +262,7 @@ namespace BPA.Modules
         public string GetValueFromColumnStr(int rw, int col)
         {
             object obj = FileArray[rw, col];
-            //return obj.ToString();
             return obj is null ? null : obj.ToString();
-            //return obj is string ? Convert.ToString(obj) : "";
         }
         public double GetValueFromColumnDbl(int rw, int col)
         {
