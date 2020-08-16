@@ -162,6 +162,8 @@
     <Compile Include="Modules\StringCalculator.cs" />
     <Compile Include="Modules\WorksheetsSettings.cs" />
     <Compile Include="NewModel\Dynamic.cs" />
+    <Compile Include="NewModel\ProductCalendarItem.cs" />
+    <Compile Include="NewModel\ProductCalendarTable.cs" />
     <Compile Include="NewModel\ProductItem.cs" />
     <Compile Include="NewModel\ProductTable.cs" />
     <Compile Include="NewModel\RRCItem.cs" />
