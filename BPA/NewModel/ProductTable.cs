@@ -97,11 +97,19 @@ namespace BPA.NewModel
             _table.Sort.Apply();
         }
 
-        public bool IsActiceCellInRange(Excel.Range cell)
+        public int GetId(int excelrow)
         {
-            if (cell.Row < _table.DataBodyRange[1, 1].Row || cell.Row > _table.DataBodyRange[_table.ListRows.Count, 1])
-                return false;
-            return true;
+            Excel.Range rng = _table.DataBodyRange;
+            if (excelrow < rng[1].Row || excelrow > rng[rng.Cells.Count].Row)
+                return 0;
+
+            ListRow listRow = _table.ListRows[excelrow - rng.Row + 1];
+
+            object val = listRow.Range[1, _table.ListColumns["№"].Index].Value;
+            
+            if (val.ToString().All(char.IsNumber))
+                return Convert.ToInt32(val);
+            return 0;
         }
     }
 }
