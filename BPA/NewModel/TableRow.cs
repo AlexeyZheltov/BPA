@@ -40,5 +40,7 @@ namespace BPA.NewModel
             get => _data[_columns[c].Column];
             set => _data[_columns[c].Column] = value;
         }
+
+        public bool ColumnExsists(string col_name) => _columns.ContainsKey(col_name);
     }
 }
