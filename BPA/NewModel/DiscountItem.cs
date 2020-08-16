@@ -69,5 +69,78 @@ namespace BPA.NewModel
         }
         #endregion
 
+        public void NormaliseAllFormulas()
+        {
+            IrrigationEquipments = FormulaNormalize(IrrigationEquipments);
+            Electricians = FormulaNormalize(Electricians);
+            Lawnmowers = FormulaNormalize(Lawnmowers);
+            Pumps = FormulaNormalize(Pumps);
+            CuttingTools = FormulaNormalize(CuttingTools);
+            WinterTools = FormulaNormalize(WinterTools);
+        }
+
+        string FormulaNormalize(string value, bool RemoveMarks = false)
+        {
+            //оставить только [метка], а вне ее только [1-9], +, - , *, /, (), %, =
+            StringBuilder builder = new StringBuilder();
+            bool isMark = false;
+
+            value = value.ToLower();
+            foreach (char ch in value.ToCharArray())
+            {
+                if (ch == '[' & !RemoveMarks) isMark = true;
+                else if (ch == ']' & isMark)
+                {
+                    builder.Append(ch);
+                    isMark = false;
+                }
+
+                if (!isMark)
+                {
+                    if (Char.IsDigit(ch)) builder.Append(ch);
+                    else
+                    {
+                        switch (ch)
+                        {
+                            case '+':
+                            case '-':
+                            case '*':
+                            case '/':
+                            case '(':
+                            case ')':
+                            case '%':
+                            case '=':
+                                builder.Append(ch);
+                                break;
+                            case ',':
+                            case '.':
+                                builder.Append('.');
+                                break;
+                        }
+                    }
+
+                }
+                else builder.Append(ch);
+            }
+
+            string temp = System.Text.RegularExpressions.Regex.Replace(builder.ToString(), @"\s+", " ");
+            return temp;
+        }
+
+        public bool NeedFilePriceMT()
+        {
+            return IrrigationEquipments.Contains("[pricelist mt]") ||
+                    Electricians.Contains("[pricelist mt]") ||
+                    Lawnmowers.Contains("[pricelist mt]") ||
+                    Pumps.Contains("[pricelist mt]") ||
+                    CuttingTools.Contains("[pricelist mt]") ||
+                    WinterTools.Contains("[pricelist mt]");
+        }
+
+        public string GetFormulaByName(string name)
+        {
+            if (_row.ColumnExsists(name)) return _row[name];
+            else return "";
+        }
     }
 }

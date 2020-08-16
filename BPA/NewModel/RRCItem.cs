@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -66,6 +67,13 @@ namespace BPA.NewModel
                 IRPIndex = product.IRPIndex;
                 RRP = RRCNDS / budgetCourse;
             }
+        }
+
+        public class RRCItemComparerForPrice : IEqualityComparer<RRCItem>
+        {
+            public bool Equals(RRCItem x, RRCItem y) => x.Article == y.Article;
+
+            public int GetHashCode(RRCItem obj) => obj.Article.GetHashCode();
         }
     }
 }

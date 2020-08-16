@@ -13,7 +13,7 @@ namespace BPA.NewModel
         const string SHEET = "РРЦ";
         const string TABLE = "РРЦ";
 
-        WS_DB db = new WS_DB();
+        WS_DB _db = new WS_DB();
         Excel.ListObject _table = null;
 
         public DiscountTable()
@@ -33,28 +33,56 @@ namespace BPA.NewModel
 
         public DiscountItem Add()
         {
-            int row = db.AddRow();
-            DiscountItem item = new DiscountItem(db[row]);
-            item.Id = db.NextID("№");
+            int row = _db.AddRow();
+            DiscountItem item = new DiscountItem(_db[row]);
+            item.Id = _db.NextID("№");
             return item;
         }
 
         public IEnumerator<DiscountItem> GetEnumerator()
         {
-            foreach (TableRow item in db) yield return new DiscountItem(item);
+            foreach (TableRow item in _db) yield return new DiscountItem(item);
         }
 
         public int Load()
         {
-            db.Load(_table);
-            return db.RowCount();
+            _db.Load(_table);
+            return _db.RowCount();
         }
 
-        public void Save() => db.Save();
+        public void Save() => _db.Save();
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public DiscountItem GetCurrentDiscount(ClientItem client, DateTime date)
+        {
+            if (_db.RowCount() == 0) return null;
+
+            var quere = (from d in
+                             from item in _db
+                             select new DiscountItem(item)
+                         where d.ChannelType == client.ChannelType
+                                 && d.CustomerStatus == client.CustomerStatus
+                                 && d.Period <= date
+                         orderby d.Period descending
+                         select d).ToList();
+
+            if (quere.Count == 0)
+            {
+                //MessageBox.Show($"Клиенту {client.Customer} нет соответствий на листе \"Скидки\"", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //Debug.Print($"Клиенту {client.Customer} нет соответствий на листе \"Скидки\"", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return null;
+            }
+            DiscountItem currentDiscount = quere[0];
+
+            //проверить формулы
+            //Убрать пробелы и лишние знаки
+            currentDiscount.NormaliseAllFormulas();
+
+            return currentDiscount;
         }
     }
 }

@@ -31,10 +31,10 @@ namespace BPA.NewModel
             return null;
         }
 
-        public RRCItem Add()
+        public FinalPriceItem Add()
         {
             int row = db.AddRow();
-            RRCItem item = new RRCItem(db[row]);
+            FinalPriceItem item = new FinalPriceItem(db[row]);
             item.Id = db.NextID("№");
             return item;
         }

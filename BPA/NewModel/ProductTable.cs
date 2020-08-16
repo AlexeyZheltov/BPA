@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using System.Text;
 using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -14,7 +15,7 @@ namespace BPA.NewModel
         const string SHEET = "Товары";
         const string TABLE = "Товары";
 
-        WS_DB db = new WS_DB();
+        WS_DB _db = new WS_DB();
         Excel.ListObject _table = null;
 
         public ProductTable()
@@ -26,18 +27,18 @@ namespace BPA.NewModel
 
         public IEnumerator<ProductItem> GetEnumerator()
         {
-            foreach (TableRow item in db) yield return new ProductItem(item);
+            foreach (TableRow item in _db) yield return new ProductItem(item);
         }
 
         public int Load()
         {
-            db.Load(_table);
-            return db.RowCount();
+            _db.Load(_table);
+            return _db.RowCount();
         }
 
-        public void Save() => db.Save();
+        public void Save() => _db.Save();
 
-        public int Count => db.RowCount();
+        public int Count => _db.RowCount();
 
         public DateTime DateOfPromotion()
         {
@@ -91,9 +92,9 @@ namespace BPA.NewModel
 
         public ProductItem Add() 
         {
-            int row = db.AddRow();
-            ProductItem item = new ProductItem(db[row]);
-            item.Id = db.NextID("№");
+            int row = _db.AddRow();
+            ProductItem item = new ProductItem(_db[row]);
+            item.Id = _db.NextID("№");
             return item;
         }
         
@@ -120,6 +121,54 @@ namespace BPA.NewModel
             if (cell.Row < _table.DataBodyRange[1, 1].Row || cell.Row > _table.DataBodyRange[_table.ListRows.Count, 1])
                 return false;
             return true;
+        }
+
+        public List<ProductItem> GetProductForClient(ClientItem client, List<string> exclusives)
+        {
+            if (_db.RowCount() == 0) return null;
+
+
+            List<ProductItem> prod_list = (from pl in
+                                               from item in _db
+                                               select new ProductItem(item)
+                                           where pl.Status.ToLower() != "выведено из ассортимента текущего года"
+                                                 && pl.Status.ToLower() != "выведено из глобального ассортимента"
+                                           select pl).ToList();
+
+            List<ProductItem> actualProducts = new List<ProductItem>();
+            foreach (ProductItem product in prod_list)
+            {
+                if (exclusives.Contains(product.Exclusive.ToLower()))
+                {
+                    if (product.Exclusive.ToLower() == client.CustomerStatus.ToLower())
+                        actualProducts.Add(product);
+                }
+                else
+                {
+                    switch (product.Exclusive.ToLower())
+                    {
+                        case "diy канал":
+                            if (client.ChannelType.ToLower() == "diy")
+                                actualProducts.Add(product);
+                            break;
+                        case "online":
+                            if (client.ChannelType.ToLower() == "online")
+                                actualProducts.Add(product);
+                            break;
+                        case "dealer":
+                        case "regional": //DEALERS&REGIONAL DISTR
+                            if (client.ChannelType.ToLower() == "dealer&regional distr")
+                                actualProducts.Add(product);
+                            break;
+                        default:
+                            actualProducts.Add(product);
+                            break;
+                    }
+                }
+            }
+
+            if (actualProducts.Count == 0) MessageBox.Show("Данному клиенту не соотвествует ни один акртикул", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return actualProducts;
         }
     }
 }

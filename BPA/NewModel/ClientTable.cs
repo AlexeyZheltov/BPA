@@ -49,6 +49,8 @@ namespace BPA.NewModel
             return false;
         }
 
+        public ClientItem this[int row] => new ClientItem(db[row]);
+
         public ClientItem Add()
         {
             int row = db.AddRow();
@@ -56,6 +58,8 @@ namespace BPA.NewModel
             item.Id = db.NextID("№");
             return item;
         }
+
+        public int Count() => db.RowCount();
 
         public IEnumerator<ClientItem> GetEnumerator()
         {
@@ -66,6 +70,25 @@ namespace BPA.NewModel
         {
             db.Load(_table);
             return db.RowCount();
+        }
+
+        public int GetCurrentClientID()
+        {
+            Excel.Workbook wb = Globals.ThisWorkbook.InnerObject;
+            Excel.Worksheet ws = wb.Sheets[SHEET];
+            Excel.ListObject table = ws.ListObjects[TABLE];
+
+            Excel.Range rng = Globals.ThisWorkbook.Application.ActiveCell;
+            if (rng.Worksheet.Name == ws.Name)
+            {
+                int row = rng.Row - table.DataBodyRange.Row + 1;
+                int column = table.ListColumns["№"].DataBodyRange.Column;
+
+                if (int.TryParse(ws.Cells[row, column].Value, out int Id))
+                    return Id;
+            }
+
+            return 0;
         }
 
         public void Save() => db.Save();
