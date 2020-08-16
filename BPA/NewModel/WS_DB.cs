@@ -137,7 +137,11 @@ namespace BPA.NewModel
             {
                 int buf_col = 1;
                 for (int col = firstColumn; col <= lastColumn; col++)
-                    buffer[row + 1, buf_col++] = data[row][col].Value;
+                {   
+                    if (data[row][col] != null)
+                        buffer[row + 1, buf_col] = data[row][col].Value;
+                    buf_col++;
+                }   
             }
 
             return (lastColumn, buffer);
