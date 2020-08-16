@@ -19,13 +19,13 @@ using Microsoft.Office.Core;
 using SettingsBPA = BPA.Properties.Settings;
 using NM = BPA.NewModel;
 using System.Windows.Controls.Primitives;
-
+using System.Reflection.Emit;
+using BPA.NewModel;
 
 namespace BPA
 {
     public partial class RibbonBPA
     {
-
         private void RibbonBPA_Load(object sender, RibbonUIEventArgs e)
         {
 
@@ -38,27 +38,81 @@ namespace BPA
         {
             FileCalendar fileCalendar = null;
             ProcessBar processBar = null;
+            bool isCancel = false;
+            void CancelLocal() => isCancel = true;
 
             try
             {
-                fileCalendar = new FileCalendar();
-                if (!fileCalendar.IsOpen) return;
-
-                new Product().ReadColNumbers();
-                new ProductCalendar().ReadColNumbers();
-
                 FunctionsForExcel.SpeedOn();
-                Globals.ThisWorkbook.Activate();
 
+                NM.ProductTable products = new NM.ProductTable();
+                NM.ProductCalendarTable productCalendars = new NM.ProductCalendarTable();
+                products.Load();
+                productCalendars.Load();
+
+                Globals.ThisWorkbook.Activate();
+                
+                //Загрузка календаря
                 fileCalendar = new FileCalendar();
                 if (!fileCalendar.IsOpen)
                     return;
                 fileCalendar.SetProcessBarForLoad(ref processBar);
-                fileCalendar.LoadCalendar();
+                fileCalendar.LoadProductsFromCalendar();
                 fileCalendar.Close();
                 processBar?.Close();
                 if (fileCalendar?.IsOpen ?? false) fileCalendar.Close();
+                //
 
+                if (fileCalendar.ProductsFromCalendar == null)
+                {
+                    MessageBox.Show("Значимых записей не найдено", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                processBar = new ProcessBar("Обновление цен из справочника", products.Count);
+                processBar.CancelClick += CancelLocal;
+                processBar.Show();
+
+                //Обновление списка продуктов
+                foreach(FileCalendar.ProductFromCalendar productFromCalendar in fileCalendar.ProductsFromCalendar) 
+                {
+                    if (isCancel) break;
+
+                    ProductItem product = products.Find(x=>x.Article == productFromCalendar.LocalIDGardena);
+
+                    if (product == null) 
+                        product = products.Add();
+
+                    product.UpdateFromCalendar(productFromCalendar);
+                }
+
+
+                //Нужгно добавить маркировку выше
+                //if (product != null)
+                //{
+                //    product.Mark("Article");
+                //    product.Mark("PNS");
+                //    product.Mark("Calendar");
+                //}
+                //else
+                //{
+                //    product.Mark("Calendar");
+                //}
+
+                //Обновление Справочника календарей
+                ProductCalendarItem productCalendar = productCalendars.Find(x => x.Name == fileCalendar.FileName);
+
+                if (productCalendar == null)
+                    productCalendar = productCalendars.Add();
+
+                productCalendar.UpdateFromCalendar(fileCalendar);
+
+
+                products.Save();
+                products.Sort("Продукт группа");
+                productCalendars.Save();
+
+                isCancel = true;
             }
             catch (Exception ex)
             {
@@ -68,6 +122,7 @@ namespace BPA
             {
                 FunctionsForExcel.SpeedOff();
                 if (fileCalendar?.IsOpen ?? false) fileCalendar.Close();
+                processBar?.Close();
             }
         }
 
@@ -88,27 +143,61 @@ namespace BPA
                 )
                 == DialogResult.No) return;
 
-            new Product().ReadColNumbers();
-            new ProductCalendar().ReadColNumbers();
+            FileCalendar fileCalendar = null;
             ProcessBar processBar = null;
-            List<ProductCalendar> calendars = new ProductCalendar().GetProductCalendars();
-            processBar = new ProcessBar("Обновление продуктовых календарей", calendars.Count);
+            bool isCancel = false;
+            void CancelLocal() => isCancel = true;
+
+            //List<ProductCalendar> calendars = new ProductCalendar().GetProductCalendars();
             try
             {
                 FunctionsForExcel.SpeedOn();
-                
-                List<Product> products = new Product().GetProducts();
 
+                NM.ProductTable products = new NM.ProductTable();
+                NM.ProductCalendarTable productCalendars = new NM.ProductCalendarTable();
+                products.Load();
+                productCalendars.Load();
+
+                processBar = new ProcessBar("Обновление продуктовых календарей", productCalendars.Count);
+                processBar.CancelClick += CancelLocal;
                 processBar.Show();
+
                 Globals.ThisWorkbook.Activate();
-                foreach (ProductCalendar calendar in calendars)
+
+                foreach (ProductCalendarItem productCalendar in productCalendars)
                 {
-                    if (processBar.IsCancel) break;
-                    processBar.TaskStart($"Обрабатывается календарь {calendar.Name}");
+
+                    if (isCancel) break;
+                    //Если нет календаря, просто пропускаем?
+                    if (!File.Exists(productCalendar.Path)) continue;
+                    fileCalendar = new FileCalendar(productCalendar.Path);
+                    if (!fileCalendar.IsOpen)
+                        return;
+
+                    ProcessBar pbForFileCalendar = null;
+                    fileCalendar.SetProcessBarForLoad(ref pbForFileCalendar);
+                    fileCalendar.LoadProductsFromCalendar();
+                    fileCalendar.Close();
+                    pbForFileCalendar?.Close();
+                    if (fileCalendar?.IsOpen ?? false) fileCalendar.Close();
+
+                    processBar.TaskStart($"Обрабатывается календарь {productCalendar.Name}");
                     
                     try
                     {
-                        calendar.UpdateProducts(products, processBar);
+                        List<FileCalendar.ProductFromCalendar> productsFromCalendar = fileCalendar.ProductsFromCalendar;
+
+                        foreach(ProductItem product in products)
+                        {
+                            //здесь добавить суббар
+                            if (product.CalendarName != productCalendar.Name) continue;
+
+                            FileCalendar.ProductFromCalendar productFromCalendar = productsFromCalendar.Find(x => x.LocalIDGardena == product.Article);
+
+                            //проверить на нулл
+                            //if (productFromCalendar == null) continue;
+                            product.UpdateFromCalendar(productFromCalendar);
+                        }
                     }
                     catch(FileNotFoundException)
                     {
@@ -172,18 +261,41 @@ namespace BPA
         private void UpdateProduct_Click(object sender, RibbonControlEventArgs e)
         {
             FileCalendar fileCalendar = null;
+            ProcessBar processBar = null;
+
             try
             {
                 FunctionsForExcel.SpeedOn();
-                new Product().ReadColNumbers();
-                new ProductCalendar().ReadColNumbers();
 
-                Product product = new Product().GetPoductActive();
-                ProductCalendar calendar = new ProductCalendar(product.Calendar);
+                NM.ProductTable products = new NM.ProductTable();
+                NM.ProductCalendarTable productCalendars = new NM.ProductCalendarTable();
+                products.Load();
+                productCalendars.Load();
+
+                Excel.Range activeCell = Globals.ThisWorkbook.Application.ActiveCell;
+                int activeId = products.GetId(activeCell.Row);
+                if (activeId == 0)
+                {
+                    throw new ApplicationException("Выберите товар");
+                }
+
+                ProductItem product = products.Find(x => x.Id == activeId);
+                ProductCalendarItem calendar = productCalendars.Find(x=>x.Name == product.CalendarName);
+                
+                if (calendar == null)
+                {
+                    throw new ApplicationException($"Файл { product.CalendarName } не найден") ;
+                }
                 fileCalendar = new FileCalendar(calendar.Path);
+                fileCalendar.SetProcessBarForLoad(ref processBar);
+                fileCalendar.LoadProductsFromCalendar();
+                processBar?.Close();
+
                 if (fileCalendar != null)
                 {
-                    product.SetFromCalendar(fileCalendar.Workbook);
+                    FileCalendar.ProductFromCalendar productFromCalendar = fileCalendar.ProductsFromCalendar.Find(x=>x.LocalIDGardena == product.Article);
+                    //if (productFromCalendar != null)
+                        product.UpdateFromCalendar(productFromCalendar);
                 }
             }
             catch (Exception ex)
