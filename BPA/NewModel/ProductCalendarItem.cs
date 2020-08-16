@@ -35,8 +35,8 @@ namespace BPA.NewModel
 
         public void UpdateFromCalendar(FileCalendar fileCalendar) 
         {
-            Name = fileCalendar.Workbook.Name;
-            Path = fileCalendar.Workbook.Path;
+            Name = fileCalendar.FileName;
+            Path = fileCalendar.FileAddress;
         }
 
         public void UpdateProductsFromCalendar(List<FileCalendar.ProductFromCalendar> productsFrom)

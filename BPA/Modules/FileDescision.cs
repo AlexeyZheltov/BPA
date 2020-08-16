@@ -98,7 +98,7 @@ namespace BPA.Modules
 
             if (settings.GetDecisionPath(out string path))
             {
-                FileName = path;
+                FileAddress = path;
                 FileHeaderRow = 1;
                 FileSheetName = SettingsBPA.Default.SHEET_NAME_FILE_DECISION;
                 
@@ -117,7 +117,7 @@ namespace BPA.Modules
             {
                 throw new FileNotFoundException($"Файл {filename} не найден");
             }
-            FileName = filename;
+            FileAddress = filename;
         }
 
         public FileDescision(Excel.Workbook workbook)
