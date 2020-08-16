@@ -345,7 +345,7 @@ namespace BPA.Modules
             
             if (settings.GetProductCalendarPath(out string path))
             {
-                FileName = path;
+                FileAddress = path;
                 FileSheetName = "";
                 FileHeaderRow = fileHeaderRow;
 
@@ -364,7 +364,7 @@ namespace BPA.Modules
             {
                 throw new FileNotFoundException($"Файл {filename} не найден");
             }
-            FileName = filename;
+            FileAddress = filename;
             IsOpen = true;
             FileHeaderRow = fileHeaderRow;
 
@@ -374,32 +374,31 @@ namespace BPA.Modules
         public FileCalendar(Workbook workbook)
         {
             Workbook = workbook;
-            FileName = workbook.Path;
             IsOpen = true;
             FileHeaderRow = fileHeaderRow;
 
             SetFileData();
         }
 
-        public void LoadCalendar()
-        {
-            if (Workbook == null) return;
+        //public void LoadCalendar()
+        //{
+        //    if (Workbook == null) return;
 
-            if (!ReadCalendarLoad())
-            {
-                MessageBox.Show("Значимых записей не найдено", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
+        //    if (!ReadCalendarLoad())
+        //    {
+        //        MessageBox.Show("Значимых записей не найдено", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //        return;
+        //    }
 
-            ProductCalendar productCalendar = new ProductCalendar
-            {
-                Name = Workbook.Name,
-                Path = FileName
-            };
-            productCalendar.Save();
+        //    ProductCalendar productCalendar = new ProductCalendar
+        //    {
+        //        Name = Workbook.Name,
+        //        Path = FileName
+        //    };
+        //    productCalendar.Save();
 
-            IsCancel = true;
-        }
+        //    IsCancel = true;
+        //}
 
         //перенести часть функционала в Product
         /// <summary>

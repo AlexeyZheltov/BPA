@@ -9,7 +9,6 @@ namespace BPA.Modules
     class FileBase
     {
         public readonly Excel.Application Application = Globals.ThisWorkbook.Application;
-        protected string FileName = "";
         protected string FileSheetName = "";
         protected int FileHeaderRow = 1;
 
@@ -37,6 +36,54 @@ namespace BPA.Modules
 
         public bool IsOpen { get; set; } = false;
 
+        public string FileAddress
+        {
+            get
+            {
+                if (_FileAddress == null)
+                {
+                    try
+                    {
+                        _FileAddress = Workbook.Name;
+                    }
+                    catch
+                    {
+                        _FileAddress = null;
+                    }
+                }
+                return _FileAddress;
+            }
+            set
+            {
+                _FileAddress = value;
+            }
+        }
+        private string _FileAddress;
+
+        public string FileName
+        {
+            get
+            {
+                if (_FileName == null)
+                {
+                    try
+                    {
+                        _FileName = Workbook.Name;
+                    }
+                    catch
+                    {
+                        _FileName = null;
+                    }
+                }
+                return _FileName;
+            }
+            set
+            {
+                _FileName = value;
+            }
+        }
+        private string _FileName;
+
         public Excel.Workbook Workbook
         {
             get
@@ -45,7 +92,7 @@ namespace BPA.Modules
                 {
                     try
                     {
-                        _Workbook = Application.Workbooks.Open(FileName);
+                        _Workbook = Application.Workbooks.Open(FileAddress);
                     }
                     catch
                     {
