@@ -10,8 +10,8 @@ namespace BPA.NewModel
 {
     class DiscountTable : IEnumerable<DiscountItem>
     {
-        const string SHEET = "РРЦ";
-        const string TABLE = "РРЦ";
+        const string SHEET = "Скидки";
+        const string TABLE = "Скидки";
 
         WS_DB _db = new WS_DB();
         Excel.ListObject _table = null;
@@ -62,8 +62,8 @@ namespace BPA.NewModel
             if (_db.RowCount() == 0) return null;
 
             var quere = (from d in
-                             from item in _db
-                             select new DiscountItem(item)
+                             (from item in _db
+                             select new DiscountItem(item))
                          where d.ChannelType == client.ChannelType
                                  && d.CustomerStatus == client.CustomerStatus
                                  && d.Period <= date

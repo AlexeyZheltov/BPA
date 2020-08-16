@@ -413,7 +413,8 @@ namespace BPA.Modules
 
         public FileCalendar(Workbook workbook)
         {
-            Workbook = workbook;
+            //Workbook = workbook;
+            FileAddress = Workbook.Path;
             IsOpen = true;
             FileHeaderRow = fileHeaderRow;
 

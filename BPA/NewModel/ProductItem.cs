@@ -283,6 +283,44 @@ namespace BPA.NewModel
             }
         }
 
+        public void UpdateFromCalendar(FileCalendar.ProductFromCalendar productFromCalendar)
+        {
+            double ToDbl(string str) => double.TryParse(str, out double res) ? res : default;
+
+            CalendarSalesStartDate = productFromCalendar.CalendarSalesStartDate;
+            CalendarPreliminaryEliminationDate = productFromCalendar.CalendarPreliminaryEliminationDate;
+            CalendarEliminationDate = productFromCalendar.CalendarEliminationDate;
+
+            CalendarToBeSoldIn = productFromCalendar.CalendarToBeSoldIn;
+            CalendarGTIN = productFromCalendar.CalendarGTIN;
+            CalendarCurrentProducingFactoryEntityReference = productFromCalendar.CalendarCurrentProducingFactoryEntityReference;
+            CalendarCountryOfOrigin = productFromCalendar.CalendarCountryOfOrigin;
+            CalendarUnitOfMeasure = productFromCalendar.CalendarUnitOfMeasure;
+            CalendarQuantityInMasterPack = productFromCalendar.CalendarQuantityInMasterPack;
+            CalendarArticleGrossWeightPreliminary = ToDbl(productFromCalendar.CalendarArticleGrossWeightPreliminary);
+            CalendarArticleGrossWeight = ToDbl(productFromCalendar.CalendarArticleGrossWeight);
+            CalendarArticleNetWeightPreliminary = ToDbl(productFromCalendar.CalendarArticleNetWeightPreliminary);
+            CalendarArticleNetWeight = ToDbl(productFromCalendar.CalendarArticleNetWeight);
+            CalendarPackagingLength = ToDbl(productFromCalendar.CalendarPackagingLength);
+            CalendarPackagingHeight = ToDbl(productFromCalendar.CalendarPackagingHeight);
+            CalendarPackagingWidth = ToDbl(productFromCalendar.CalendarPackagingWidth);
+            CalendarPackagingVolume = ToDbl(productFromCalendar.CalendarPackagingVolume);
+            CalendarProductSizeHeight = ToDbl(productFromCalendar.CalendarProductSizeHeight);
+            CalendarProductSizeWidth = ToDbl(productFromCalendar.CalendarProductSizeWidth);
+            CalendarProductSizeLength = ToDbl(productFromCalendar.CalendarProductSizeLength);
+            CalendarUnitsPerPallet = ToDbl(productFromCalendar.CalendarUnitsPerPallet);
+
+            Article = productFromCalendar.LocalIDGardena;
+
+            Model = productFromCalendar.Model;
+            SubGroup = productFromCalendar.SubGroup;
+
+            PNS = productFromCalendar.PNS;
+
+            IRP = productFromCalendar.IRP;
+
+            Calendar = productFromCalendar.CalendarName;
+        }
 
         public void MarkColumn(String col_name)
         {

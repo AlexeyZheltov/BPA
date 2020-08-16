@@ -36,30 +36,7 @@ namespace BPA.Modules
 
         public bool IsOpen { get; set; } = false;
 
-        public string FileAddress
-        {
-            get
-            {
-                if (_FileAddress == null)
-                {
-                    try
-                    {
-                        _FileAddress = Workbook.Name;
-                    }
-                    catch
-                    {
-                        _FileAddress = null;
-                    }
-                }
-                return _FileAddress;
-            }
-            set
-            {
-                _FileAddress = value;
-            }
-        }
-        private string _FileAddress;
-
+        public string FileAddress = "";
         public string FileName
         {
             get
@@ -161,6 +138,7 @@ namespace BPA.Modules
             FileArray = worksheet.Range[worksheet.Cells[FileHeaderRow, 1], worksheet.Cells[LastRow, LastColumn]].Value;
             ArrRrows = FileArray.GetUpperBound(0);
             ArrColumns = FileArray.GetLength(1);
+            //Close();
         }
 
         public FileBase() { }
@@ -264,7 +242,7 @@ namespace BPA.Modules
             object obj = FileArray[rw, col];
             //return obj.ToString();
             //return obj is null ? null : obj.ToString();
-            return obj?.ToString();
+            return obj?.ToString() ?? "";
             //return obj is string ? Convert.ToString(obj) : "";
         }
         public double GetValueFromColumnDbl(int rw, int col)

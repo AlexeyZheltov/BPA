@@ -1,5 +1,5 @@
-﻿//#define ENABLE_TRY
-#undef ENABLE_TRY
+﻿#define ENABLE_TRY
+//#undef ENABLE_TRY
 
 using System;
 using System.Collections.Generic;
@@ -40,9 +40,10 @@ namespace BPA
             ProcessBar processBar = null;
             bool isCancel = false;
             void CancelLocal() => isCancel = true;
-
+#if ENABLE_TRY
             try
             {
+#endif
                 FunctionsForExcel.SpeedOn();
 
                 NM.ProductTable products = new NM.ProductTable();
@@ -113,6 +114,7 @@ namespace BPA
                 productCalendars.Save();
 
                 isCancel = true;
+#if ENABLE_TRY
             }
             catch (Exception ex)
             {
@@ -120,10 +122,13 @@ namespace BPA
             }
             finally
             {
+#endif
                 FunctionsForExcel.SpeedOff();
                 if (fileCalendar?.IsOpen ?? false) fileCalendar.Close();
                 processBar?.Close();
+#if ENABLE_TRY
             }
+#endif
         }
 
         /// <summary>
@@ -190,7 +195,7 @@ namespace BPA
                         foreach(ProductItem product in products)
                         {
                             //здесь добавить суббар
-                            if (product.CalendarName != productCalendar.Name) continue;
+                            if (product.Calendar != productCalendar.Name) continue;
 
                             FileCalendar.ProductFromCalendar productFromCalendar = productsFromCalendar.Find(x => x.LocalIDGardena == product.Article);
 
@@ -280,11 +285,11 @@ namespace BPA
                 }
 
                 ProductItem product = products.Find(x => x.Id == activeId);
-                ProductCalendarItem calendar = productCalendars.Find(x=>x.Name == product.CalendarName);
+                ProductCalendarItem calendar = productCalendars.Find(x=>x.Name == product.Calendar);
                 
                 if (calendar == null)
                 {
-                    throw new ApplicationException($"Файл { product.CalendarName } не найден") ;
+                    throw new ApplicationException($"Файл { product.Calendar } не найден") ;
                 }
                 fileCalendar = new FileCalendar(calendar.Path);
                 fileCalendar.SetProcessBarForLoad(ref processBar);
@@ -520,9 +525,10 @@ namespace BPA
             bool isCancel = false;
             void Cancel() => isCancel = true;
             List<NM.ClientItem> priceClients = new List<NM.ClientItem>();
-
+#if ENABLE_TRY
             try
             {
+#endif
                 NM.FinalPriceTable finalPrices = new NM.FinalPriceTable();
                 NM.ExclusiveMagTable exclusives = new NM.ExclusiveMagTable();
                 NM.ClientTable clients = new NM.ClientTable();
@@ -531,11 +537,11 @@ namespace BPA
                 NM.DiscountTable discounts = new NM.DiscountTable();
 
                 FunctionsForExcel.SpeedOn();
-
+                clients.Load();
                 if (All)
                 {
                     //загрузить всех подопытных
-                    clients.Load();
+                    
                     processBar = new ProcessBar($"Загрузка списка клиентов", clients.Count());
                     processBar.CancelClick += Cancel;
                     processBar.Show();
@@ -564,7 +570,9 @@ namespace BPA
                         MessageBox.Show("Выберите клиента на листе \"Клиенты\"", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
-                    priceClients.Add(clients[currents_id]);
+                    NM.ClientItem clientItem = clients.GetById(currents_id);
+                    if (clientItem != null) priceClients.Add(clientItem); //need getByID
+                    else return;
                 }
 
                 clients = null;
@@ -608,9 +616,12 @@ namespace BPA
                         filePriceMT.SetProcessBarForLoad(ref processBar); //зачем тут ref?
                         filePriceMT.Load(currentDate, currentClient.Mag);
                         processBar.Close();
-                        if (filePriceMT?.IsOpen ?? false) filePriceMT.Close();
-
-                        if (!All) processBar.Close(); ///else not close???
+                        
+                        if (!All)
+                        {
+                            if (filePriceMT?.IsOpen ?? false) filePriceMT.Close();
+                            //processBar.Close(); ///else not close???
+                        }
                     }
                     
                     //Загрузка списка артикулов, какие из них актуальные?
@@ -623,6 +634,7 @@ namespace BPA
 
                     processBar = new ProcessBar($"Создание прайс-листа для {currentClient.Customer}", products.Count);
                     processBar.CancelClick += Cancel;
+                    processBar.Show();
                     foreach (NM.ProductItem product in clients_products)
                     {
                         if (isCancel) return;
@@ -634,17 +646,19 @@ namespace BPA
                             return;
                         }
                         string formula = currentDiscount.GetFormulaByName(product.Category);
+#if ENABLE_TRY
                         try
                         {
+#endif
                             //Найти метку или метки. [Pricelist MT]  [DIY Pricelist] [РРЦ] и заменить
                             while (formula.Contains("[pricelist mt]"))
                                 formula = formula.Replace("[pricelist mt]", filePriceMT.GetPrice(product.Article).ToString());
 
                             while (formula.Contains("[diy price list]"))
-                                formula = formula.Replace("[diy price list]", actualRRC.Find(x => x.Article == product.Article).DIY.ToString());
+                                formula = formula.Replace("[diy price list]", actualRRC.Find(x => x.Article == product.Article)?.DIY.ToString() ?? "0");
 
                             while (formula.Contains("[ррц]"))
-                                formula = formula.Replace("[ррц]", actualRRC.Find(x => x.Article == product.Article).RRCNDS.ToString());
+                                formula = formula.Replace("[ррц]", actualRRC.Find(x => x.Article == product.Article)?.RRCNDS.ToString() ?? "0");
 
                             if (Parsing.Calculation(formula) is double result)
                             {
@@ -657,12 +671,14 @@ namespace BPA
                                 MessageBox.Show($"В одной из формул для {currentClient.Customer} содержится ошибка", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 return;
                             }
+#if ENABLE_TRY
                         }
                         catch
                         {
                             MessageBox.Show($"{currentClient.Customer} не найден на листе { RRCTable.SHEET }", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
                         }
+#endif
                         processBar.TaskDone(1);
                     }
                     processBar.Close();
@@ -683,6 +699,7 @@ namespace BPA
                 Excel.Worksheet ws = Globals.ThisWorkbook.Sheets[new FinalPriceList().SheetName];
                 ws.Activate();
                 MessageBox.Show("Создание прайс-листа завершено", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+#if ENABLE_TRY
             }
             catch (Exception ex)
             {
@@ -690,10 +707,13 @@ namespace BPA
             }
             finally
             {
+#endif
                 if (filePriceMT?.IsOpen ?? false) filePriceMT.Close();
                 processBar?.Close();
                 FunctionsForExcel.SpeedOff();
+#if ENABLE_TRY
             }
+#endif
         }
 
         /// <summary>

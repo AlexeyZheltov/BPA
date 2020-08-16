@@ -35,7 +35,7 @@ namespace BPA.NewModel
         {
             int row = db.AddRow();
             FinalPriceItem item = new FinalPriceItem(db[row]);
-            item.Id = db.NextID("№");
+            item.Id = db.NextID("Id");
             return item;
         }
 

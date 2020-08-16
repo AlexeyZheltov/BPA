@@ -122,7 +122,7 @@ namespace BPA.NewModel
             if (excelrow < rng[1].Row || excelrow > rng[rng.Cells.Count].Row)
                 return 0;
 
-            ListRow listRow = _table.ListRows[excelrow - rng.Row + 1];
+            Excel.ListRow listRow = _table.ListRows[excelrow - rng.Row + 1];
 
             object val = listRow.Range[1, _table.ListColumns["№"].Index].Value;
             

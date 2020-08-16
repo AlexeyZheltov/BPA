@@ -101,7 +101,11 @@ namespace BPA.Modules
 
         public FileBuget(Excel.Workbook workbook)
         {
-            Workbook = workbook;
+            //Workbook = workbook;
+            FileAddress = Workbook.Path;
+            IsOpen = true;
+            
+            SetFileData();
         }
 
         public List<ArticleQuantity> ArticleQuantities = new List<ArticleQuantity>();

@@ -15,8 +15,8 @@ namespace BPA.NewModel
         #region Свойства таблицы
         public int Id
         {
-            get => _row["№"];
-            set => _row["№"] = value;
+            get => _row["Id"];
+            set => _row["Id"] = value;
         }
         public string Category
         {

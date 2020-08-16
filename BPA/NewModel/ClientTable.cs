@@ -51,6 +51,17 @@ namespace BPA.NewModel
 
         public ClientItem this[int row] => new ClientItem(db[row]);
 
+        public ClientItem GetById(int id)
+        {
+            var quere = (from item in
+                             from db_item in db
+                             select new ClientItem(db_item)
+                         where item.Id == id
+                         select item).ToList();
+            if (quere.Count > 0) return quere[0];
+            else return null;
+        }
+
         public ClientItem Add()
         {
             int row = db.AddRow();
@@ -81,7 +92,7 @@ namespace BPA.NewModel
             Excel.Range rng = Globals.ThisWorkbook.Application.ActiveCell;
             if (rng.Worksheet.Name == ws.Name)
             {
-                int row = rng.Row - table.DataBodyRange.Row + 1;
+                int row = rng.Row;
                 int column = table.ListColumns["№"].DataBodyRange.Column;
 
                 if (int.TryParse(ws.Cells[row, column].Value, out int Id))
