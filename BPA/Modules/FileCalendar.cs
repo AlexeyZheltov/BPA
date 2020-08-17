@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Windows.Media.Animation;
 using System.Windows.Documents;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 
 namespace BPA.Modules
 {
@@ -344,40 +345,77 @@ namespace BPA.Modules
         public List<ProductFromCalendar> ProductsFromCalendar = new List<ProductFromCalendar>();
         public struct ProductFromCalendar 
         {
-            public double CalendarSalesStartDate { get; set; } // GetDoubleDateFromCell(rowIndex, SalesStartDateColumn);
-            public double CalendarPreliminaryEliminationDate { get; set;} // GetDoubleDateFromCell(rowIndex, PreliminaryEliminationDateColumn);
-            public double CalendarEliminationDate { get; set;} // GetDoubleDateFromCell(rowIndex, EliminationDateColumn);
-            public string CalendarToBeSoldIn { get; set;} // GetValueFromColumnStr(rowIndex, ToBeSoldInColumn);
-            public string CalendarGTIN { get; set;} // GetValueFromColumnStr(rowIndex, GTIN13Column);
-            public string CalendarCurrentProducingFactoryEntityReference { get; set;} // GetValueFromColumnStr(rowIndex, CurrentProducingFactoryColumn);
-            public string CalendarCountryOfOrigin { get; set;} // GetValueFromColumnStr(rowIndex, CountryOfOriginColumn);
-            public string CalendarUnitOfMeasure { get; set;} // GetValueFromColumnStr(rowIndex, UnitOfMeasureColumn);
-            public string CalendarQuantityInMasterPack { get; set;} // GetValueFromColumnStr(rowIndex, QuantityInMasterPackColumn);
-            public string CalendarArticleGrossWeightPreliminary { get; set;} // GetValueFromColumnStr(rowIndex, ArticleGrossWeightPreliminaryColumn);
-            public string CalendarArticleGrossWeight { get; set;} // GetValueFromColumnStr(rowIndex, ArticleGrossWeightColumn);
-            public string CalendarArticleNetWeightPreliminary { get; set;} // GetValueFromColumnStr(rowIndex, ArticleNetWeightPreliminaryColumn);
-            public string CalendarArticleNetWeight { get; set;} // GetValueFromColumnStr(rowIndex, ArticleNetWeightColumn);
-            public string CalendarPackagingLength { get; set;} // GetValueFromColumnStr(rowIndex, PackagingLengthColumn);
-            public string CalendarPackagingHeight { get; set;} // GetValueFromColumnStr(rowIndex, PackagingHeightColumn);
-            public string CalendarPackagingWidth { get; set;} // GetValueFromColumnStr(rowIndex, PackagingWidthColumn);
-            public string CalendarPackagingVolume { get; set;} // GetValueFromColumnStr(rowIndex, PackagingVolumeColumn);
-            public string CalendarProductSizeHeight { get; set;} // GetValueFromColumnStr(rowIndex, ProductSizeHeightColumn);
-            public string CalendarProductSizeWidth { get; set;} // GetValueFromColumnStr(rowIndex, ProductSizeWidthColumn);
-            public string CalendarProductSizeLength { get; set;} // GetValueFromColumnStr(rowIndex, ProductSizeLengthColumn);
-            public string CalendarUnitsPerPallet { get; set;} // GetValueFromColumnStr(rowIndex, UnitsPerPalletColumn);
+            public double CalendarSalesStartDate { get; set; }
+            public double CalendarPreliminaryEliminationDate { get; set;}
+            public double CalendarEliminationDate { get; set;}
+            public string CalendarToBeSoldIn { get; set;}
+            public string CalendarGTIN { get; set;}
+            public string CalendarCurrentProducingFactoryEntityReference { get; set;}
+            public string CalendarCountryOfOrigin { get; set;}
+            public string CalendarUnitOfMeasure { get; set;}
+            public string CalendarQuantityInMasterPack { get; set;}
+            public string CalendarArticleGrossWeightPreliminary { get; set;}
+            public string CalendarArticleGrossWeight { get; set;}
+            public string CalendarArticleNetWeightPreliminary { get; set;}
+            public string CalendarArticleNetWeight { get; set;}
+            public string CalendarPackagingLength { get; set;}
+            public string CalendarPackagingHeight { get; set;}
+            public string CalendarPackagingWidth { get; set;}
+            public string CalendarPackagingVolume { get; set;}
+            public string CalendarProductSizeHeight { get; set;}
+            public string CalendarProductSizeWidth { get; set;}
+            public string CalendarProductSizeLength { get; set;}
+            public string CalendarUnitsPerPallet { get; set;}
 
-            public string LocalIDGardena { get; set;} // GetValueFromColumnStr(rowIndex, LocalIDGardenaColumn);
+            public string LocalIDGardena { get; set;}
+            
+            public string Model { get; set;}
+            public string SubGroup { get; set;}            
+            public string PNS { get; set;}
 
-            //product.GenericName = GetValueFromColumn(row, GenericNameColumn);
-            public string Model { get; set;} // GetValueFromColumnStr(rowIndex, ModelColumn);
-            public string SubGroup { get; set;} // GetValueFromColumnStr(rowIndex, SubgroupColumn);
-            //product.ProductGroup = GetValueFromColumn(row, ProductGroupColumn);
-            public string PNS { get; set;} // GetValueFromColumnStr(rowIndex, IdColumn);
-
-            public double IRP { get; set;} // GetValueFromColumnDbl(rowIndex, IRPRRPColumn);
+            public double IRP { get; set;}
 
             public string CalendarName { get; set; }
             public string CalendarPath { get; set; }
+        }
+
+        private void AddToList(int rowIndex)
+        {
+            ProductsFromCalendar.Add(new ProductFromCalendar
+            {
+                LocalIDGardena = GetValueFromColumnStr(rowIndex, LocalIDGardenaColumn),
+                CalendarSalesStartDate = GetDoubleDateFromCell(rowIndex, SalesStartDateColumn),
+                CalendarPreliminaryEliminationDate = GetDoubleDateFromCell(rowIndex, PreliminaryEliminationDateColumn),
+                CalendarEliminationDate = GetDoubleDateFromCell(rowIndex, EliminationDateColumn),
+
+                CalendarToBeSoldIn = GetValueFromColumnStr(rowIndex, ToBeSoldInColumn),
+                CalendarGTIN = GetValueFromColumnStr(rowIndex, GTIN13Column),
+                CalendarCurrentProducingFactoryEntityReference = GetValueFromColumnStr(rowIndex, CurrentProducingFactoryColumn),
+                CalendarCountryOfOrigin = GetValueFromColumnStr(rowIndex, CountryOfOriginColumn),
+                CalendarUnitOfMeasure = GetValueFromColumnStr(rowIndex, UnitOfMeasureColumn),
+                CalendarQuantityInMasterPack = GetValueFromColumnStr(rowIndex, QuantityInMasterPackColumn),
+                CalendarArticleGrossWeightPreliminary = GetValueFromColumnStr(rowIndex, ArticleGrossWeightPreliminaryColumn),
+                CalendarArticleGrossWeight = GetValueFromColumnStr(rowIndex, ArticleGrossWeightColumn),
+                CalendarArticleNetWeightPreliminary = GetValueFromColumnStr(rowIndex, ArticleNetWeightPreliminaryColumn),
+                CalendarArticleNetWeight = GetValueFromColumnStr(rowIndex, ArticleNetWeightColumn),
+                CalendarPackagingLength = GetValueFromColumnStr(rowIndex, PackagingLengthColumn),
+                CalendarPackagingHeight = GetValueFromColumnStr(rowIndex, PackagingHeightColumn),
+                CalendarPackagingWidth = GetValueFromColumnStr(rowIndex, PackagingWidthColumn),
+                CalendarPackagingVolume = GetValueFromColumnStr(rowIndex, PackagingVolumeColumn),
+                CalendarProductSizeHeight = GetValueFromColumnStr(rowIndex, ProductSizeHeightColumn),
+                CalendarProductSizeWidth = GetValueFromColumnStr(rowIndex, ProductSizeWidthColumn),
+                CalendarProductSizeLength = GetValueFromColumnStr(rowIndex, ProductSizeLengthColumn),
+                CalendarUnitsPerPallet = GetValueFromColumnStr(rowIndex, UnitsPerPalletColumn),
+
+                Model = GetValueFromColumnStr(rowIndex, ModelColumn),
+                SubGroup = GetValueFromColumnStr(rowIndex, SubgroupColumn),
+                PNS = GetValueFromColumnStr(rowIndex, IdColumn),
+
+                IRP = GetValueFromColumnDbl(rowIndex, IRPRRPColumn),
+
+                CalendarName = this.Workbook.Name,
+                CalendarPath = this.Workbook.Path
+            });
         }
         public FileCalendar()
         {
@@ -390,7 +428,6 @@ namespace BPA.Modules
                 FileHeaderRow = fileHeaderRow;
 
                 IsOpen = true;
-                SetFileData();
             }
             else
             {
@@ -407,8 +444,6 @@ namespace BPA.Modules
             FileAddress = filename;
             IsOpen = true;
             FileHeaderRow = fileHeaderRow;
-
-            SetFileData();
         }
 
         public FileCalendar(Workbook workbook)
@@ -417,43 +452,19 @@ namespace BPA.Modules
             FileAddress = Workbook.Path;
             IsOpen = true;
             FileHeaderRow = fileHeaderRow;
-
-            SetFileData();
         }
 
-        //public void LoadCalendar()
-        //{
-        //    if (Workbook == null) return;
-
-        //    if (!ReadCalendarLoad())
-        //    {
-        //        MessageBox.Show("Значимых записей не найдено", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        //        return;
-        //    }
-
-        //    ProductCalendar productCalendar = new ProductCalendar
-        //    {
-        //        Name = Workbook.Name,
-        //        Path = FileName
-        //    };
-        //    productCalendar.Save();
-
-        //    IsCancel = true;
-        //}
-
-        //перенести часть функционала в Product
         /// <summary>
         /// загрузка календаря
         /// </summary>
-        public bool LoadProductsFromCalendar()
-        //private bool ReadCalendarLoad()
+        public void LoadProductsFromCalendar()
         {
             Product product = null;
 
             for (int rowIndex = 2; rowIndex < ArrRrows; rowIndex++)
             {
 
-                if (IsCancel) return false;
+                if (IsCancel) return;
                 ActionStart?.Invoke($"Обрабатывается строка {rowIndex}");
 
                 if (GetValueFromColumnStr(rowIndex, 1) == "")
@@ -492,69 +503,15 @@ namespace BPA.Modules
                     return false;
                 }
 
-                ProductsFromCalendar.Add(new ProductFromCalendar
-                {
-                    LocalIDGardena = GetValueFromColumnStr(rowIndex, LocalIDGardenaColumn),
-                    CalendarSalesStartDate = GetDoubleDateFromCell(rowIndex, SalesStartDateColumn),
-                    CalendarPreliminaryEliminationDate = GetDoubleDateFromCell(rowIndex, PreliminaryEliminationDateColumn),
-                    CalendarEliminationDate = GetDoubleDateFromCell(rowIndex, EliminationDateColumn),
-
-                    CalendarToBeSoldIn = GetValueFromColumnStr(rowIndex, ToBeSoldInColumn),
-                    CalendarGTIN = GetValueFromColumnStr(rowIndex, GTIN13Column),
-                    CalendarCurrentProducingFactoryEntityReference = GetValueFromColumnStr(rowIndex, CurrentProducingFactoryColumn),
-                    CalendarCountryOfOrigin = GetValueFromColumnStr(rowIndex, CountryOfOriginColumn),
-                    CalendarUnitOfMeasure = GetValueFromColumnStr(rowIndex, UnitOfMeasureColumn),
-                    CalendarQuantityInMasterPack = GetValueFromColumnStr(rowIndex, QuantityInMasterPackColumn),
-                    CalendarArticleGrossWeightPreliminary = GetValueFromColumnStr(rowIndex, ArticleGrossWeightPreliminaryColumn),
-                    CalendarArticleGrossWeight = GetValueFromColumnStr(rowIndex, ArticleGrossWeightColumn),
-                    CalendarArticleNetWeightPreliminary = GetValueFromColumnStr(rowIndex, ArticleNetWeightPreliminaryColumn),
-                    CalendarArticleNetWeight = GetValueFromColumnStr(rowIndex, ArticleNetWeightColumn),
-                    CalendarPackagingLength = GetValueFromColumnStr(rowIndex, PackagingLengthColumn),
-                    CalendarPackagingHeight = GetValueFromColumnStr(rowIndex, PackagingHeightColumn),
-                    CalendarPackagingWidth = GetValueFromColumnStr(rowIndex, PackagingWidthColumn),
-                    CalendarPackagingVolume = GetValueFromColumnStr(rowIndex, PackagingVolumeColumn),
-                    CalendarProductSizeHeight = GetValueFromColumnStr(rowIndex, ProductSizeHeightColumn),
-                    CalendarProductSizeWidth = GetValueFromColumnStr(rowIndex, ProductSizeWidthColumn),
-                    CalendarProductSizeLength = GetValueFromColumnStr(rowIndex, ProductSizeLengthColumn),
-                    CalendarUnitsPerPallet = GetValueFromColumnStr(rowIndex, UnitsPerPalletColumn),
-
-                    Model = GetValueFromColumnStr(rowIndex, ModelColumn),
-                    SubGroup = GetValueFromColumnStr(rowIndex, SubgroupColumn),
-                    PNS = GetValueFromColumnStr(rowIndex, IdColumn),
-
-                    IRP = GetValueFromColumnDbl(rowIndex, IRPRRPColumn),
-
-                    CalendarName = this.Workbook.Name,
-                    CalendarPath = this.Workbook.Path
-                });;
-
-                //product = new Product().GetProduct(localIDGardena);
-
-                //if (product != null)
-                //{
-                //    product = CreateProduct(rowIndex, product);
-                //    product.Calendar = Workbook.Name;
-                //    product.Update();
-                //    product.Mark("Article");
-                //    product.Mark("PNS");
-                //    product.Mark("Calendar");
-                //}
-                //else
-                //{
-                //    product = CreateProduct(rowIndex, new Product());
-                //    product.Calendar = Workbook.Name;
-                //    product.Save();
-                //    product.Mark("Calendar");
-                //}
+                AddToList(rowIndex);
 
                 ActionDone?.Invoke(1);
             }
-            if (product == null) return false;
-            //product.Sort("Id");
-            //product.Sort("ProductGroup");
-            return true;
+            if (product == null) return;
+            return;
         }
 
+        //к удалению
         public Product GetProduct(string articul)
         {
             int rowIndex = FindRow(articul, LocalIDGardenaColumn);
@@ -563,6 +520,7 @@ namespace BPA.Modules
             return CreateProduct(rowIndex, new Product());
         }
 
+        //к удалению
         /// <summary>
         /// получение данных из календаря
         /// </summary>
@@ -604,6 +562,26 @@ namespace BPA.Modules
             product.IRP = GetValueFromColumnDbl(rowIndex, IRPRRPColumn);
 
             return product;
+        }
+
+        /// <summary>
+        /// поиск артикула на листе без загрузки массива данных
+        /// </summary>
+        /// <param name="article"></param>
+        public void GetArticle(string article)
+        {
+            //костыль
+            SetFileData(fileHeaderRow);
+            object[,] articles = worksheet.Range[worksheet.Cells[1, LocalIDGardenaColumn], worksheet.Cells[LastRow, LocalIDGardenaColumn]].Value;
+            for (int rowInExcel = 1; rowInExcel <= articles.GetLength(0); rowInExcel++)
+            {
+                if (articles[rowInExcel, 1] == null || articles[rowInExcel, 1].ToString() != article)
+                    continue;
+                
+                SetFileData(rowInExcel);
+                AddToList(1);
+                return;
+            }
         }
     }
 }

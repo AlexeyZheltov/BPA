@@ -133,12 +133,25 @@ namespace BPA.Modules
         public object[,] FileArray;
         public int ArrRrows;
         public int ArrColumns;
+        /// <summary>
+        /// Загрузка массива данных
+        /// </summary>
         public void SetFileData()
         {
             FileArray = worksheet.Range[worksheet.Cells[FileHeaderRow, 1], worksheet.Cells[LastRow, LastColumn]].Value;
             ArrRrows = FileArray.GetUpperBound(0);
             ArrColumns = FileArray.GetLength(1);
-            //Close();
+        }
+        
+        /// <summary>
+        /// Загрузка массивы данных с одной строки
+        /// </summary>
+        /// <param name="row"></param>
+        public void SetFileData(int row)
+        {
+            FileArray = worksheet.Range[worksheet.Cells[row, 1], worksheet.Cells[row, LastColumn]].Value;
+            ArrRrows = FileArray.GetUpperBound(0);
+            ArrColumns = FileArray.GetLength(1);
         }
 
         public FileBase() { }
