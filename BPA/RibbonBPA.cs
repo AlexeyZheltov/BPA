@@ -203,11 +203,11 @@ namespace BPA
                             //здесь добавить суббар
                             if (product.Calendar != productCalendar.Name) continue;
 
-                            FileCalendar.ProductFromCalendar productFromCalendar = productsFromCalendar.Find(x => x.LocalIDGardena == product.Article);
+                            FileCalendar.ProductFromCalendar? productFromCalendar = productsFromCalendar.Find(x => x.LocalIDGardena == product.Article);
 
                             //проверить на нулл
-                            //if (productFromCalendar == null) continue;
-                            product.UpdateFromCalendar(productFromCalendar);
+                            if (productFromCalendar == null) continue;
+                            product.UpdateFromCalendar((FileCalendar.ProductFromCalendar)productFromCalendar);
                         }
                     }
                     catch(FileNotFoundException)
@@ -300,19 +300,19 @@ namespace BPA
                     throw new ApplicationException($"Файл { product.Calendar } не найден") ;
                 }
                 fileCalendar = new FileCalendar(calendar.Path);
-                //fileCalendar.SetFileData();
-                //fileCalendar.LoadProductsFromCalendar();
-                fileCalendar.GetArticle(product.Article);
+                fileCalendar.SetFileData();
+                fileCalendar.LoadProductsFromCalendar();
+                //fileCalendar.GetArticle(product.Article);
                 fileCalendar.SetProcessBarForLoad(ref processBar);
                 fileCalendar.Close();
                 processBar?.Close();
 
                 if (fileCalendar != null)
                 {
-                    FileCalendar.ProductFromCalendar productFromCalendar = fileCalendar.ProductsFromCalendar.Find(x=>x.LocalIDGardena == product.Article);
-                    //if (productFromCalendar != null)
-                        product.UpdateFromCalendar(productFromCalendar);
+                    FileCalendar.ProductFromCalendar? productFromCalendar = fileCalendar.ProductsFromCalendar.Find(x=>x.LocalIDGardena == product.Article);
+                        product.UpdateFromCalendar((FileCalendar.ProductFromCalendar)productFromCalendar);
                 }
+                products.Save();
             }
             catch (Exception ex)
             {

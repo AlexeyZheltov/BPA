@@ -277,7 +277,7 @@ namespace BPA.NewModel
             get => _row["ИТОГО NS ноябрь, шт."];
             set => _row ["ИТОГО NS ноябрь, шт."] = value;
         }
-        public string NSPrognosis11
+        public string NSPrognosis12
         {
             get => _row["ИТОГО NS декабрь, шт."];
             set => _row["ИТОГО NS декабрь, шт."] = value;
