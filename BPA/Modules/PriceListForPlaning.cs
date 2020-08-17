@@ -50,6 +50,7 @@ namespace BPA.Modules
                 if (!filePriceMT.IsOpen)
                     return;
                 filePriceMT.SetProcessBarForLoad(ref processBar);
+                filePriceMT.SetFileData();
                 filePriceMT.Load(currentDate);
                 processBar.Close();
                 if (!filePriceMT.IsOpen) throw new ApplicationException("Не удалось загрузить File PriceListMT");

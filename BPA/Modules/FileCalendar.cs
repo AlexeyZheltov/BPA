@@ -390,7 +390,6 @@ namespace BPA.Modules
                 FileHeaderRow = fileHeaderRow;
 
                 IsOpen = true;
-                SetFileData();
             }
             else
             {
@@ -407,8 +406,6 @@ namespace BPA.Modules
             FileAddress = filename;
             IsOpen = true;
             FileHeaderRow = fileHeaderRow;
-
-            SetFileData();
         }
 
         public FileCalendar(Workbook workbook)
@@ -417,43 +414,19 @@ namespace BPA.Modules
             FileAddress = Workbook.Path;
             IsOpen = true;
             FileHeaderRow = fileHeaderRow;
-
-            SetFileData();
         }
 
-        //public void LoadCalendar()
-        //{
-        //    if (Workbook == null) return;
-
-        //    if (!ReadCalendarLoad())
-        //    {
-        //        MessageBox.Show("Значимых записей не найдено", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        //        return;
-        //    }
-
-        //    ProductCalendar productCalendar = new ProductCalendar
-        //    {
-        //        Name = Workbook.Name,
-        //        Path = FileName
-        //    };
-        //    productCalendar.Save();
-
-        //    IsCancel = true;
-        //}
-
-        //перенести часть функционала в Product
         /// <summary>
         /// загрузка календаря
         /// </summary>
-        public bool LoadProductsFromCalendar()
-        //private bool ReadCalendarLoad()
+        public void LoadProductsFromCalendar()
         {
             Product product = null;
 
             for (int rowIndex = 2; rowIndex < ArrRrows; rowIndex++)
             {
 
-                if (IsCancel) return false;
+                if (IsCancel) return;
                 ActionStart?.Invoke($"Обрабатывается строка {rowIndex}");
 
                 if (GetValueFromColumnStr(rowIndex, 1) == "")

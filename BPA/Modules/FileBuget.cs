@@ -82,7 +82,6 @@ namespace BPA.Modules
                 FileSheetName = SettingsBPA.Default.SHEET_NAME_FILE_BUGET;
                 
                 IsOpen = true;
-                SetFileData();
             }
             else
             {
@@ -104,8 +103,6 @@ namespace BPA.Modules
             //Workbook = workbook;
             FileAddress = Workbook.Path;
             IsOpen = true;
-            
-            SetFileData();
         }
 
         public List<ArticleQuantity> ArticleQuantities = new List<ArticleQuantity>();

@@ -154,7 +154,6 @@ namespace BPA.Modules
                 FileHeaderRow = 1;
 
                 IsOpen = true;
-                SetFileData();
             }
             else
             {
@@ -176,7 +175,6 @@ namespace BPA.Modules
             //Workbook = workbook;
             FileAddress = Workbook.Path;
             IsOpen = true;
-            SetFileData();
         }
 
         public List<Client> clients = new List<Client>();

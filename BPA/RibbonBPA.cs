@@ -57,6 +57,7 @@ namespace BPA
                 fileCalendar = new FileCalendar();
                 if (!fileCalendar.IsOpen)
                     return;
+                fileCalendar.SetFileData();
                 fileCalendar.SetProcessBarForLoad(ref processBar);
                 fileCalendar.LoadProductsFromCalendar();
                 fileCalendar.Close();
@@ -180,6 +181,7 @@ namespace BPA
                         return;
 
                     ProcessBar pbForFileCalendar = null;
+                    fileCalendar.SetFileData();
                     fileCalendar.SetProcessBarForLoad(ref pbForFileCalendar);
                     fileCalendar.LoadProductsFromCalendar();
                     fileCalendar.Close();
@@ -292,8 +294,11 @@ namespace BPA
                     throw new ApplicationException($"Файл { product.Calendar } не найден") ;
                 }
                 fileCalendar = new FileCalendar(calendar.Path);
+                //fileCalendar.SetFileData();
+                //fileCalendar.LoadProductsFromCalendar();
+                fileCalendar.GetArticle(product.Article);
                 fileCalendar.SetProcessBarForLoad(ref processBar);
-                fileCalendar.LoadProductsFromCalendar();
+                fileCalendar.Close();
                 processBar?.Close();
 
                 if (fileCalendar != null)
@@ -438,8 +443,8 @@ namespace BPA
                 fileDescision = new FileDescision();
                 if (!fileDescision.IsOpen) 
                     return;
+                fileDescision.SetFileData();
                 fileDescision.SetProcessBarForLoad(ref processBar);
-
                 List<ClientFromDescision> clientsFromDecision = fileDescision.LoadClients();
                 
                 processBar.Close();
@@ -613,6 +618,7 @@ namespace BPA
                         filePriceMT = new FilePriceMT();
                         if (!filePriceMT.IsOpen)
                             return;
+                        filePriceMT.SetFileData();
                         filePriceMT.SetProcessBarForLoad(ref processBar); //зачем тут ref?
                         filePriceMT.Load(currentDate, currentClient.Mag);
                         processBar.Close();
@@ -788,6 +794,7 @@ namespace BPA
                 fileDescision = new FileDescision();
                 if (!fileDescision.IsOpen)
                     return;
+                fileDescision.SetFileData();
                 fileDescision.SetProcessBarForLoad(ref processBar);
                 fileDescision.LoadForPlanning(planningNewYearTmp);
                 processBar.Close();
@@ -799,6 +806,7 @@ namespace BPA
                 fileBuget = new FileBuget();
                 if (!fileBuget.IsOpen)
                     return;
+                fileBuget.SetFileData();
                 fileBuget.SetProcessBarForLoad(ref processBar);
                 fileBuget.LoadForPlanning(planningNewYearTmp);
                 processBar.Close();
@@ -914,6 +922,7 @@ namespace BPA
                 //получаем Desicion
                 processBar = null;
                 fileDescision = new FileDescision();
+                fileDescision.SetFileData();
                 fileDescision.SetProcessBarForLoad(ref processBar);
                 if (!fileDescision.IsOpen)
                     return;
@@ -925,6 +934,7 @@ namespace BPA
                 //получаем Buget
                 processBar = null;
                 fileBuget= new FileBuget();
+                fileBuget.SetFileData();
                 fileBuget.SetProcessBarForLoad(ref processBar);
                 if (!fileBuget.IsOpen)
                     return;
