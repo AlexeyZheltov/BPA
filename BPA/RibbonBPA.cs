@@ -300,9 +300,9 @@ namespace BPA
                     throw new ApplicationException($"Файл { product.Calendar } не найден") ;
                 }
                 fileCalendar = new FileCalendar(calendar.Path);
-                //fileCalendar.SetFileData();
-                //fileCalendar.LoadProductsFromCalendar();
-                fileCalendar.GetArticle(product.Article);
+                fileCalendar.SetFileData();
+                fileCalendar.LoadProductsFromCalendar();
+                //fileCalendar.GetArticle(product.Article);
                 fileCalendar.SetProcessBarForLoad(ref processBar);
                 fileCalendar.Close();
                 processBar?.Close();
