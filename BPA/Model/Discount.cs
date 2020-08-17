@@ -27,7 +27,7 @@ namespace BPA.Model {
         private readonly Dictionary<string, string> _filds = new Dictionary<string, string>
         {
             { "Id", "№" },
-            { "ChannelType", "" },
+            { "ChannelType", "Channel type" },
             { "CustomerStatus", "Customer status" },
             { "Period", "Период" },
             { "IrrigationEquipments", "Оборудование для полива" },
