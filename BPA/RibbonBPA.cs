@@ -213,6 +213,8 @@ namespace BPA
                     }
                     processBar.TaskDone(1);
                 }
+
+                products.Save();
                 MessageBox.Show("Обновление календарей завершено", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
