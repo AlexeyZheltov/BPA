@@ -312,6 +312,7 @@ namespace BPA
                     FileCalendar.ProductFromCalendar? productFromCalendar = fileCalendar.ProductsFromCalendar.Find(x=>x.LocalIDGardena == product.Article);
                         product.UpdateFromCalendar((FileCalendar.ProductFromCalendar)productFromCalendar);
                 }
+                products.Save();
             }
             catch (Exception ex)
             {
