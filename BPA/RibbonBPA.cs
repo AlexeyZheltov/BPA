@@ -176,7 +176,12 @@ namespace BPA
 
                     if (isCancel) break;
                     //Если нет календаря, просто пропускаем?
-                    if (!File.Exists(productCalendar.Path)) continue;
+                    processBar.TaskStart($"Обрабатывается календарь {productCalendar.Name}");
+                    if (!File.Exists(productCalendar.Path))
+                    {
+                        processBar.TaskDone(1);
+                        continue;
+                    }
                     fileCalendar = new FileCalendar(productCalendar.Path);
                     if (!fileCalendar.IsOpen)
                         return;
@@ -189,8 +194,6 @@ namespace BPA
                     pbForFileCalendar?.Close();
                     if (fileCalendar?.IsOpen ?? false) fileCalendar.Close();
 
-                    processBar.TaskStart($"Обрабатывается календарь {productCalendar.Name}");
-                    
                     try
                     {
                         List<FileCalendar.ProductFromCalendar> productsFromCalendar = fileCalendar.ProductsFromCalendar;
@@ -226,7 +229,6 @@ namespace BPA
                 FunctionsForExcel.SpeedOff();
                 if (processBar != null)
                 {
-                    processBar.SubBar?.Close();
                     processBar?.Close();
                 }
             }
@@ -319,6 +321,9 @@ namespace BPA
             finally
             {
                 if (fileCalendar?.IsOpen ?? false) fileCalendar.Close();
+                if (processBar != null)
+                    processBar?.Close();
+
                 FunctionsForExcel.SpeedOff();
             }
         }
