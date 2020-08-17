@@ -78,37 +78,37 @@ namespace BPA.NewModel
             get => _row["кол-во в мастер-паке"];
             set => _row["кол-во в мастер-паке"] = value;
         }
-        public double ArticleGrossWeight
+        public string ArticleGrossWeight
         {
             get => _row["Вес гросс штуки, финальный"];
             set => _row["Вес гросс штуки, финальный"] = value;
         }
-        public double ArticleNetWeight
+        public string ArticleNetWeight
         {
             get => _row["Вес нетто штуки, финальный"];
             set => _row["Вес нетто штуки, финальный"] = value;
         }
-        public double PackagingLength
+        public string PackagingLength
         {
             get => _row["Длина упаковки"];
             set => _row["Длина упаковки"] = value;
         }
-        public double PackagingWidth
+        public string PackagingWidth
         {
             get => _row["Ширина упаковки"];
             set => _row["Ширина упаковки"] = value;
         }
-        public double PackagingHeight
+        public string PackagingHeight
         {
             get => _row["Высота упаковки"];
             set => _row["Высота упаковки"] = value;
         }
-        public double PackagingVolume
+        public string PackagingVolume
         {
             get => _row["Объем упаковки"];
             set => _row["Объем упаковки"] = value;
         }
-        public double UnitsPerPallet
+        public string UnitsPerPallet
         {
             get => _row["Кол-во штук на паллете"];
             set => _row["Кол-во штук на паллете"] = value;

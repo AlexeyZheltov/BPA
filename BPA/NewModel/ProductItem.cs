@@ -144,62 +144,62 @@ namespace BPA.NewModel
             get => _row["Quantity in Master pack"];
             set => _row["Quantity in Master pack"] = value;
         }
-        public double CalendarArticleGrossWeightPreliminary
+        public string CalendarArticleGrossWeightPreliminary
         {
             get => _row["Article gross weight, preliminary"];
             set => _row["Article gross weight, preliminary"] = value;
         }
-        public double CalendarArticleGrossWeight
+        public string CalendarArticleGrossWeight
         {
             get => _row["Article gross weight"];
             set => _row["Article gross weight"] = value;
         }
-        public double CalendarArticleNetWeightPreliminary
+        public string CalendarArticleNetWeightPreliminary
         {
             get => _row["Article net weight, preliminary"];
             set => _row["Article net weight, preliminary"] = value;
         }
-        public double CalendarArticleNetWeight
+        public string CalendarArticleNetWeight
         {
             get => _row["Article net weight"];
             set => _row["Article net weight"] = value;
         }
-        public double CalendarPackagingLength
+        public string CalendarPackagingLength
         {
             get => _row["Packaging length"];
             set => _row["Packaging length"] = value;
         }
-        public double CalendarPackagingWidth
+        public string CalendarPackagingWidth
         {
             get => _row["Packaging width"];
             set => _row["Packaging width"] = value;
         }
-        public double CalendarPackagingHeight
+        public string CalendarPackagingHeight
         {
             get => _row["Packaging height"];
             set => _row["Packaging height"] = value;
         }
-        public double CalendarPackagingVolume
+        public string CalendarPackagingVolume
         {
             get => _row["Packaging volume"];
             set => _row["Packaging volume"] = value;
         }
-        public double CalendarProductSizeLength
+        public string CalendarProductSizeLength
         {
             get => _row["Product size height"];
             set => _row["Product size height"] = value;
         }
-        public double CalendarProductSizeHeight
+        public string CalendarProductSizeHeight
         {
             get => _row["Product size length"];
             set => _row["Product size length"] = value;
         }
-        public double CalendarProductSizeWidth
+        public string CalendarProductSizeWidth
         {
             get => _row["Product size width"];
             set => _row["Product size width"] = value;
         }
-        public double CalendarUnitsPerPallet
+        public string CalendarUnitsPerPallet
         {
             get => _row["Units Per Pallet"];
             set => _row["Units Per Pallet"] = value;
@@ -285,8 +285,6 @@ namespace BPA.NewModel
 
         public void UpdateFromCalendar(FileCalendar.ProductFromCalendar productFromCalendar)
         {
-            double ToDbl(string str) => double.TryParse(str, out double res) ? res : default;
-
             CalendarSalesStartDate = productFromCalendar.CalendarSalesStartDate;
             CalendarPreliminaryEliminationDate = productFromCalendar.CalendarPreliminaryEliminationDate;
             CalendarEliminationDate = productFromCalendar.CalendarEliminationDate;
@@ -297,18 +295,18 @@ namespace BPA.NewModel
             CalendarCountryOfOrigin = productFromCalendar.CalendarCountryOfOrigin;
             CalendarUnitOfMeasure = productFromCalendar.CalendarUnitOfMeasure;
             CalendarQuantityInMasterPack = productFromCalendar.CalendarQuantityInMasterPack;
-            CalendarArticleGrossWeightPreliminary = ToDbl(productFromCalendar.CalendarArticleGrossWeightPreliminary);
-            CalendarArticleGrossWeight = ToDbl(productFromCalendar.CalendarArticleGrossWeight);
-            CalendarArticleNetWeightPreliminary = ToDbl(productFromCalendar.CalendarArticleNetWeightPreliminary);
-            CalendarArticleNetWeight = ToDbl(productFromCalendar.CalendarArticleNetWeight);
-            CalendarPackagingLength = ToDbl(productFromCalendar.CalendarPackagingLength);
-            CalendarPackagingHeight = ToDbl(productFromCalendar.CalendarPackagingHeight);
-            CalendarPackagingWidth = ToDbl(productFromCalendar.CalendarPackagingWidth);
-            CalendarPackagingVolume = ToDbl(productFromCalendar.CalendarPackagingVolume);
-            CalendarProductSizeHeight = ToDbl(productFromCalendar.CalendarProductSizeHeight);
-            CalendarProductSizeWidth = ToDbl(productFromCalendar.CalendarProductSizeWidth);
-            CalendarProductSizeLength = ToDbl(productFromCalendar.CalendarProductSizeLength);
-            CalendarUnitsPerPallet = ToDbl(productFromCalendar.CalendarUnitsPerPallet);
+            CalendarArticleGrossWeightPreliminary = productFromCalendar.CalendarArticleGrossWeightPreliminary;
+            CalendarArticleGrossWeight = productFromCalendar.CalendarArticleGrossWeight;
+            CalendarArticleNetWeightPreliminary = productFromCalendar.CalendarArticleNetWeightPreliminary;
+            CalendarArticleNetWeight = productFromCalendar.CalendarArticleNetWeight;
+            CalendarPackagingLength = productFromCalendar.CalendarPackagingLength;
+            CalendarPackagingHeight = productFromCalendar.CalendarPackagingHeight;
+            CalendarPackagingWidth = productFromCalendar.CalendarPackagingWidth;
+            CalendarPackagingVolume = productFromCalendar.CalendarPackagingVolume;
+            CalendarProductSizeHeight = productFromCalendar.CalendarProductSizeHeight;
+            CalendarProductSizeWidth = productFromCalendar.CalendarProductSizeWidth;
+            CalendarProductSizeLength = productFromCalendar.CalendarProductSizeLength;
+            CalendarUnitsPerPallet = productFromCalendar.CalendarUnitsPerPallet;
 
             Article = productFromCalendar.LocalIDGardena;
 
