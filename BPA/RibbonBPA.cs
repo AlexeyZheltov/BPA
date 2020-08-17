@@ -115,6 +115,7 @@ namespace BPA
                 productCalendars.Save();
 
                 isCancel = true;
+                MessageBox.Show("Загрузка календаря завершена", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
 #if ENABLE_TRY
             }
             catch (Exception ex)
@@ -212,6 +213,7 @@ namespace BPA
                     }
                     processBar.TaskDone(1);
                 }
+                MessageBox.Show("Обновление календарей завершено", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
