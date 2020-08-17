@@ -578,5 +578,25 @@ namespace BPA.Modules
 
             return product;
         }
+
+        /// <summary>
+        /// поиск артикула на листе без загрузки массива данных
+        /// </summary>
+        /// <param name="article"></param>
+        public void GetArticle(string article)
+        {
+            //костыль
+            SetFileData(fileHeaderRow);
+            object[,] articles = worksheet.Range[worksheet.Cells[1, LocalIDGardenaColumn], worksheet.Cells[LastRow, LocalIDGardenaColumn]].Value;
+            for (int rowInExcel = 1; rowInExcel <= articles.GetLength(0); rowInExcel++)
+            {
+                if (articles[rowInExcel, 1] == null || articles[rowInExcel, 1].ToString() != article)
+                    continue;
+                
+                SetFileData(rowInExcel);
+                AddToList(1);
+                return;
+            }
+        }
     }
 }
