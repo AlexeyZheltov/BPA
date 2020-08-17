@@ -203,11 +203,11 @@ namespace BPA
                             //здесь добавить суббар
                             if (product.Calendar != productCalendar.Name) continue;
 
-                            FileCalendar.ProductFromCalendar productFromCalendar = productsFromCalendar.Find(x => x.LocalIDGardena == product.Article);
+                            FileCalendar.ProductFromCalendar? productFromCalendar = productsFromCalendar.Find(x => x.LocalIDGardena == product.Article);
 
                             //проверить на нулл
-                            //if (productFromCalendar == null) continue;
-                            product.UpdateFromCalendar(productFromCalendar);
+                            if (productFromCalendar == null) continue;
+                            product.UpdateFromCalendar((FileCalendar.ProductFromCalendar)productFromCalendar);
                         }
                     }
                     catch(FileNotFoundException)
@@ -309,9 +309,8 @@ namespace BPA
 
                 if (fileCalendar != null)
                 {
-                    FileCalendar.ProductFromCalendar productFromCalendar = fileCalendar.ProductsFromCalendar.Find(x=>x.LocalIDGardena == product.Article);
-                    //if (productFromCalendar != null)
-                        product.UpdateFromCalendar(productFromCalendar);
+                    FileCalendar.ProductFromCalendar? productFromCalendar = fileCalendar.ProductsFromCalendar.Find(x=>x.LocalIDGardena == product.Article);
+                        product.UpdateFromCalendar((FileCalendar.ProductFromCalendar)productFromCalendar);
                 }
             }
             catch (Exception ex)
