@@ -148,7 +148,8 @@ namespace BPA.Modules
 
             if (settings.GetPriceListMT(out string path))
             {
-                FileName = path;
+                //FileName = path;
+                FileAddress = path;
                 FileSheetName = SettingsBPA.Default.SHEET_NAME_FILE_PRICELISTMT;
                 FileHeaderRow = 1;
 
@@ -172,7 +173,10 @@ namespace BPA.Modules
 
         public FilePriceMT(Workbook workbook)
         {
-            Workbook = workbook;
+            //Workbook = workbook;
+            FileAddress = Workbook.Path;
+            IsOpen = true;
+            SetFileData();
         }
 
         public List<Client> clients = new List<Client>();

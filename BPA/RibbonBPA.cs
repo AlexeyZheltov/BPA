@@ -1,4 +1,7 @@
-﻿using System;
+﻿#define ENABLE_TRY
+//#undef ENABLE_TRY
+
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Linq;
@@ -14,12 +17,15 @@ using System.Diagnostics;
 using System.Text;
 using Microsoft.Office.Core;
 using SettingsBPA = BPA.Properties.Settings;
+using NM = BPA.NewModel;
+using System.Windows.Controls.Primitives;
+using ClientFromDescision = BPA.NewModel.ClientItem.DataFromDescision;
+using BPA.NewModel;
 
 namespace BPA
 {
     public partial class RibbonBPA
     {
-
         private void RibbonBPA_Load(object sender, RibbonUIEventArgs e)
         {
 
@@ -32,27 +38,83 @@ namespace BPA
         {
             FileCalendar fileCalendar = null;
             ProcessBar processBar = null;
-
+            bool isCancel = false;
+            void CancelLocal() => isCancel = true;
+#if ENABLE_TRY
             try
             {
-                fileCalendar = new FileCalendar();
-                if (!fileCalendar.IsOpen) return;
-
-                new Product().ReadColNumbers();
-                new ProductCalendar().ReadColNumbers();
-
+#endif
                 FunctionsForExcel.SpeedOn();
-                Globals.ThisWorkbook.Activate();
 
+                NM.ProductTable products = new NM.ProductTable();
+                NM.ProductCalendarTable productCalendars = new NM.ProductCalendarTable();
+                products.Load();
+                productCalendars.Load();
+
+                Globals.ThisWorkbook.Activate();
+                
+                //Загрузка календаря
                 fileCalendar = new FileCalendar();
                 if (!fileCalendar.IsOpen)
                     return;
                 fileCalendar.SetProcessBarForLoad(ref processBar);
-                fileCalendar.LoadCalendar();
+                fileCalendar.LoadProductsFromCalendar();
                 fileCalendar.Close();
                 processBar?.Close();
                 if (fileCalendar?.IsOpen ?? false) fileCalendar.Close();
+                //
 
+                if (fileCalendar.ProductsFromCalendar == null)
+                {
+                    MessageBox.Show("Значимых записей не найдено", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                processBar = new ProcessBar("Обновление цен из справочника", products.Count);
+                processBar.CancelClick += CancelLocal;
+                processBar.Show();
+
+                //Обновление списка продуктов
+                foreach(FileCalendar.ProductFromCalendar productFromCalendar in fileCalendar.ProductsFromCalendar) 
+                {
+                    if (isCancel) break;
+
+                    ProductItem product = products.Find(x=>x.Article == productFromCalendar.LocalIDGardena);
+
+                    if (product == null) 
+                        product = products.Add();
+
+                    product.UpdateFromCalendar(productFromCalendar);
+                }
+
+
+                //Нужгно добавить маркировку выше
+                //if (product != null)
+                //{
+                //    product.Mark("Article");
+                //    product.Mark("PNS");
+                //    product.Mark("Calendar");
+                //}
+                //else
+                //{
+                //    product.Mark("Calendar");
+                //}
+
+                //Обновление Справочника календарей
+                ProductCalendarItem productCalendar = productCalendars.Find(x => x.Name == fileCalendar.FileName);
+
+                if (productCalendar == null)
+                    productCalendar = productCalendars.Add();
+
+                productCalendar.UpdateFromCalendar(fileCalendar);
+
+
+                products.Save();
+                products.Sort("Продукт группа");
+                productCalendars.Save();
+
+                isCancel = true;
+#if ENABLE_TRY
             }
             catch (Exception ex)
             {
@@ -60,9 +122,13 @@ namespace BPA
             }
             finally
             {
+#endif
                 FunctionsForExcel.SpeedOff();
                 if (fileCalendar?.IsOpen ?? false) fileCalendar.Close();
+                processBar?.Close();
+#if ENABLE_TRY
             }
+#endif
         }
 
         /// <summary>
@@ -82,27 +148,61 @@ namespace BPA
                 )
                 == DialogResult.No) return;
 
-            new Product().ReadColNumbers();
-            new ProductCalendar().ReadColNumbers();
+            FileCalendar fileCalendar = null;
             ProcessBar processBar = null;
-            List<ProductCalendar> calendars = new ProductCalendar().GetProductCalendars();
-            processBar = new ProcessBar("Обновление продуктовых календарей", calendars.Count);
+            bool isCancel = false;
+            void CancelLocal() => isCancel = true;
+
+            //List<ProductCalendar> calendars = new ProductCalendar().GetProductCalendars();
             try
             {
                 FunctionsForExcel.SpeedOn();
-                
-                List<Product> products = new Product().GetProducts();
 
+                NM.ProductTable products = new NM.ProductTable();
+                NM.ProductCalendarTable productCalendars = new NM.ProductCalendarTable();
+                products.Load();
+                productCalendars.Load();
+
+                processBar = new ProcessBar("Обновление продуктовых календарей", productCalendars.Count);
+                processBar.CancelClick += CancelLocal;
                 processBar.Show();
+
                 Globals.ThisWorkbook.Activate();
-                foreach (ProductCalendar calendar in calendars)
+
+                foreach (ProductCalendarItem productCalendar in productCalendars)
                 {
-                    if (processBar.IsCancel) break;
-                    processBar.TaskStart($"Обрабатывается календарь {calendar.Name}");
+
+                    if (isCancel) break;
+                    //Если нет календаря, просто пропускаем?
+                    if (!File.Exists(productCalendar.Path)) continue;
+                    fileCalendar = new FileCalendar(productCalendar.Path);
+                    if (!fileCalendar.IsOpen)
+                        return;
+
+                    ProcessBar pbForFileCalendar = null;
+                    fileCalendar.SetProcessBarForLoad(ref pbForFileCalendar);
+                    fileCalendar.LoadProductsFromCalendar();
+                    fileCalendar.Close();
+                    pbForFileCalendar?.Close();
+                    if (fileCalendar?.IsOpen ?? false) fileCalendar.Close();
+
+                    processBar.TaskStart($"Обрабатывается календарь {productCalendar.Name}");
                     
                     try
                     {
-                        calendar.UpdateProducts(products, processBar);
+                        List<FileCalendar.ProductFromCalendar> productsFromCalendar = fileCalendar.ProductsFromCalendar;
+
+                        foreach(ProductItem product in products)
+                        {
+                            //здесь добавить суббар
+                            if (product.Calendar != productCalendar.Name) continue;
+
+                            FileCalendar.ProductFromCalendar productFromCalendar = productsFromCalendar.Find(x => x.LocalIDGardena == product.Article);
+
+                            //проверить на нулл
+                            //if (productFromCalendar == null) continue;
+                            product.UpdateFromCalendar(productFromCalendar);
+                        }
                     }
                     catch(FileNotFoundException)
                     {
@@ -166,18 +266,41 @@ namespace BPA
         private void UpdateProduct_Click(object sender, RibbonControlEventArgs e)
         {
             FileCalendar fileCalendar = null;
+            ProcessBar processBar = null;
+
             try
             {
                 FunctionsForExcel.SpeedOn();
-                new Product().ReadColNumbers();
-                new ProductCalendar().ReadColNumbers();
 
-                Product product = new Product().GetPoductActive();
-                ProductCalendar calendar = new ProductCalendar(product.Calendar);
+                NM.ProductTable products = new NM.ProductTable();
+                NM.ProductCalendarTable productCalendars = new NM.ProductCalendarTable();
+                products.Load();
+                productCalendars.Load();
+
+                Excel.Range activeCell = Globals.ThisWorkbook.Application.ActiveCell;
+                int activeId = products.GetId(activeCell.Row);
+                if (activeId == 0)
+                {
+                    throw new ApplicationException("Выберите товар");
+                }
+
+                ProductItem product = products.Find(x => x.Id == activeId);
+                ProductCalendarItem calendar = productCalendars.Find(x=>x.Name == product.Calendar);
+                
+                if (calendar == null)
+                {
+                    throw new ApplicationException($"Файл { product.Calendar } не найден") ;
+                }
                 fileCalendar = new FileCalendar(calendar.Path);
+                fileCalendar.SetProcessBarForLoad(ref processBar);
+                fileCalendar.LoadProductsFromCalendar();
+                processBar?.Close();
+
                 if (fileCalendar != null)
                 {
-                    product.SetFromCalendar(fileCalendar.Workbook);
+                    FileCalendar.ProductFromCalendar productFromCalendar = fileCalendar.ProductsFromCalendar.Find(x=>x.LocalIDGardena == product.Article);
+                    //if (productFromCalendar != null)
+                        product.UpdateFromCalendar(productFromCalendar);
                 }
             }
             catch (Exception ex)
@@ -193,51 +316,57 @@ namespace BPA
 
         private void UploadPrice_Click(object sender, RibbonControlEventArgs e)
         {
-            new ProductForRRC().ReadColNumbers();
-            new RRC().ReadColNumbers();
             ProcessBar processBar = null;
-            List<ProductForRRC> products = new ProductForRRC().GetProducts();
-            processBar = new ProcessBar("Обновление цен из справочника", products.Count);
             bool isCancel = false;
             void CancelLocal() => isCancel = true;
-
+#if ENABLE_TRY
             try
             {
+#endif
                 FunctionsForExcel.SpeedOn();
 
+                NM.ProductTable products = new NM.ProductTable();
+                NM.RRCTable rrcs = new NM.RRCTable();
+
+                products.Load();
+                rrcs.Load();
+
+                processBar = new ProcessBar("Обновление цен из справочника", products.Count);
                 processBar.CancelClick += CancelLocal;
                 processBar.Show();
                 Globals.ThisWorkbook.Activate();
 
-                DateTime date = products[0].DateOfPromotion;
+                DateTime date = products.DateOfPromotion();
 
-                List<RRC> rrcs = new RRC().GetSortedRRCList();
-
-                foreach (ProductForRRC product in products)
+                foreach(NM.ProductItem product in products)
                 {
-                    if (isCancel)
-                        break;
-
+                    if (isCancel) break;
                     processBar.TaskStart($"Обрабатывается артикул {product.Article}");
-                    List<RRC> RRCArt = rrcs.FindAll(x => x.Article == product.Article && x.Date <= date).ToList();
 
-                    if (RRCArt.Count > 0)
-                    {
-                        product.UpdatePriceFromRRC(RRCArt[RRCArt .Count- 1]);
-                    }
+                    var quere = (from rrc in rrcs
+                                 where rrc.Article == product.Article && rrc.Date <= date
+                                 orderby rrc.Date descending
+                                 select rrc).ToList();
 
+                    product.UpdatePriceFromRRC(quere.Count > 0 ? quere.First() : null);
                     processBar.TaskDone(1);
                 }
+
+                products.Save();
+#if ENABLE_TRY
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
+#endif
                 FunctionsForExcel.SpeedOff();
                 processBar?.Close();
+#if ENABLE_TRY
             }
+#endif
         }
 
         private void SavePrice_Click(object sender, RibbonControlEventArgs e)
@@ -245,48 +374,42 @@ namespace BPA
             ProcessBar processBar = null;
             bool isCancel = false;
             void CancelLocal() => isCancel = true;
-
+#if ENABLE_TRY
             try
             {
+#endif
                 FunctionsForExcel.SpeedOn();
 
-                new ProductForRRC().ReadColNumbers();
-                new RRC().ReadColNumbers();
-                List<ProductForRRC> products = new ProductForRRC().GetProducts();
-                processBar = new ProcessBar("Обновление цен из справочника", products.Count);
+                NM.ProductTable products = new NM.ProductTable();
+                NM.RRCTable rrcs = new NM.RRCTable();
 
+                products.Load();
+                rrcs.Load();
+
+                processBar = new ProcessBar("Обновление цен из справочника", products.Count);
                 processBar.CancelClick += CancelLocal;
                 processBar.Show();
                 Globals.ThisWorkbook.Activate();
 
-                DateTime date = products[0].DateOfPromotion;
+                DateTime date = products.DateOfPromotion();
+                double budget_cource = products.BudgetCourse();
 
-                List<RRC> rrcs = new RRC().GetSortedRRCList();
-
-                foreach (ProductForRRC product in products)
+                foreach(NM.ProductItem product in products)
                 {
-                    if (isCancel)
-                        break;
-
+                    if (isCancel) break;
                     processBar.TaskStart($"Обрабатывается артикул {product.Article}");
 
-                    if (date.Year > 1)
-                    {
-                        RRC rrc = rrcs.Find(x => x.Article == product.Article && x.Date == date);
+                    NM.RRCItem rrc = rrcs.Find(x => x.Article == product.Article && x.Date == date);
 
-                        if (rrc == null)
-                        {
-                            rrc = new RRC();
-                            rrc.SetProduct(product);
-                            rrc.Save();
-                        } else
-                        {
-                            rrc.SetProduct(product);
-                            rrc.Update();
-                        }
-                    }
+                    if (rrc == null) rrc = rrcs.Add();
+
+                    rrc.UpdateRRCFromProduct(product, date, budget_cource);
+
                     processBar.TaskDone(1);
                 }
+
+                rrcs.Save();
+#if ENABLE_TRY
             }
             catch (Exception ex)
             {
@@ -294,9 +417,12 @@ namespace BPA
             }
             finally
             {
+#endif
                 FunctionsForExcel.SpeedOff();
                 processBar?.Close();
+#if ENABLE_TRY
             }
+#endif
         }
 
         private void ClientsUpdate_Click(object sender, RibbonControlEventArgs e)
@@ -307,22 +433,29 @@ namespace BPA
 
             try
             {
-                new Client().ReadColNumbers();
-
+                NM.ClientTable clients = new NM.ClientTable();
+                
                 fileDescision = new FileDescision();
                 if (!fileDescision.IsOpen) 
                     return;
                 fileDescision.SetProcessBarForLoad(ref processBar);
-                List<Client> clientsFromDecision = fileDescision.LoadClients();
+
+                List<ClientFromDescision> clientsFromDecision = fileDescision.LoadClients();
+                
                 processBar.Close();
                 if (fileDescision?.IsOpen ?? false) fileDescision.Close();
 
                 //Загрузить данные из листа клиентов
-                List<Client> clients = Client.GetAllClients();
-                if (clients == null) return;
+                if (clients.Load() == 0) return;
 
                 //Получить разницу
-                List<Client> newClients = clientsFromDecision.Except(clients, new Client.ComparerCustomer()).ToList();
+
+                //List<ClientFromDescision> newClients = new List<ClientFromDescision>();
+
+                var newClients = (from c in clientsFromDecision
+                                  where !clients.Contains(c)
+                                  select c).ToList();
+
                 if(newClients.Count == 0)
                 {
                     MessageBox.Show("В файле Decision не обнаружено новых клиентов", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -339,17 +472,22 @@ namespace BPA
                 processBar.CancelClick += Cancel;
                 processBar.Show(new ExcelWindows(Globals.ThisWorkbook));
 
-                foreach (Client client in newClients)
+                foreach (var item in newClients)
                 {
                     if (isCancel) return;
-                    processBar.TaskStart($"Сохраняется клиент {client.Customer}");
-                    client.Save();
+                    processBar.TaskStart($"Сохраняется клиент {item.Customer}");
+
+                    NM.ClientItem client = clients.Add();
+                    client.Customer = item.Customer;
+                    client.GardenaChannel = item.GardenaChannel;
+
                     processBar.TaskDone(1);
                 }
 
-                Client ClientForSort = newClients.First();
-                ClientForSort.Sort("Id");
-                Excel.Worksheet ws = Globals.ThisWorkbook.Sheets[ClientForSort.SheetName];
+                clients.Save();
+
+                NM.ClientTable.SortExcelTable("№");
+                Excel.Worksheet ws = Globals.ThisWorkbook.Sheets[NM.ClientTable.SHEET];
                 ws.Activate();
             }
             catch (Exception ex)
@@ -386,36 +524,37 @@ namespace BPA
 
             bool isCancel = false;
             void Cancel() => isCancel = true;
-            List<Client> priceClients = new List<Client>();
-
+            List<NM.ClientItem> priceClients = new List<NM.ClientItem>();
+#if ENABLE_TRY
             try
             {
-                new FinalPriceList().ReadColNumbers();
-                new ExclusiveMag().ReadColNumbers();
-                new Client().ReadColNumbers();
-                new RRC().ReadColNumbers();
-                new Product().ReadColNumbers();
-                new Discount().ReadColNumbers();
+#endif
+                NM.FinalPriceTable finalPrices = new NM.FinalPriceTable();
+                NM.ExclusiveMagTable exclusives = new NM.ExclusiveMagTable();
+                NM.ClientTable clients = new NM.ClientTable();
+                NM.RRCTable rrcs = new NM.RRCTable();
+                NM.ProductTable products = new NM.ProductTable();
+                NM.DiscountTable discounts = new NM.DiscountTable();
 
                 FunctionsForExcel.SpeedOn();
-
+                clients.Load();
                 if (All)
                 {
                     //загрузить всех подопытных
-                    Client client = new Client();
-                    processBar = new ProcessBar($"Загрузка списка клиентов", client.Table.ListRows.Count);
+                    
+                    processBar = new ProcessBar($"Загрузка списка клиентов", clients.Count());
                     processBar.CancelClick += Cancel;
                     processBar.Show();
 
-                    foreach(Excel.ListRow row in client.Table.ListRows)
+                    foreach(NM.ClientItem client in clients)
                     {
                         if (isCancel)
                         {
                             processBar.Close();
                             return;
                         }
-                        processBar.TaskStart($"Загружаем {row.Index}");
-                        priceClients.Add(new Client(row));
+                        processBar.TaskStart($"Загружаем {client.Id}");
+                        priceClients.Add(client);
                         processBar.TaskDone(1);
                     }
 
@@ -425,14 +564,18 @@ namespace BPA
                 {
                     //выбрать того на кого указал перст божий
                     //получить активного клиента, если нет, то на нет и суда нет
-                    Client currentClient = Client.GetCurrentClient();
-                    if (currentClient == null)
+                    int currents_id = clients.GetCurrentClientID();
+                    if (currents_id == 0)
                     {
                         MessageBox.Show("Выберите клиента на листе \"Клиенты\"", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
-                    priceClients.Add(currentClient);
+                    NM.ClientItem clientItem = clients.GetById(currents_id);
+                    if (clientItem != null) priceClients.Add(clientItem); //need getByID
+                    else return;
                 }
+
+                clients = null;
 
                 //Запросить дату
                 MSCalendar calendar = new MSCalendar();
@@ -441,16 +584,27 @@ namespace BPA
                 else return;
                 calendar.Close();
 
-                //сюда вынести загрузку общих данных
-                List<RRC> actualRRC = RRC.GetActualPriceList(currentDate);
-                if (actualRRC == null) return;
+                exclusives.Load();
+                List<string> str_exclus = (from e in exclusives
+                                           select e.Name.ToLower()).ToList();
+                exclusives = null;
 
-                foreach (Client currentClient in priceClients)
+                //pb загрузки если будет лаг
+                rrcs.Load();
+                discounts.Load();
+                products.Load();
+                finalPrices.Load();
+
+                //сюда вынести загрузку общих данных
+                List<NM.RRCItem> actualRRC = rrcs.GetActualPriceList(currentDate);
+                if (actualRRC == null) return;
+                
+                foreach (NM.ClientItem currentClient in priceClients)
                 {
-                    Discount currentDiscount = Discount.GetCurrentDiscount(currentClient, currentDate);
+                    NM.DiscountItem currentDiscount = discounts.GetCurrentDiscount(currentClient, currentDate);
                     if (currentDiscount == null) return;
                     //if (currentDiscount == null) continue;
-
+                    
                     //подгрузить PriceMT если неужно, подключится к РРЦ                   
                     if (currentDiscount.NeedFilePriceMT() && (!filePriceMT?.IsOpen ?? true))
                     {
@@ -459,24 +613,29 @@ namespace BPA
                         filePriceMT = new FilePriceMT();
                         if (!filePriceMT.IsOpen)
                             return;
-                        filePriceMT.SetProcessBarForLoad(ref processBar);
+                        filePriceMT.SetProcessBarForLoad(ref processBar); //зачем тут ref?
                         filePriceMT.Load(currentDate, currentClient.Mag);
                         processBar.Close();
-                        if (filePriceMT?.IsOpen ?? false) filePriceMT.Close();
-
-                        if (!All) processBar.Close(); ///else not close???
+                        
+                        if (!All)
+                        {
+                            if (filePriceMT?.IsOpen ?? false) filePriceMT.Close();
+                            //processBar.Close(); ///else not close???
+                        }
                     }
-
+                    
                     //Загрузка списка артикулов, какие из них актуальные?
-                    List<Product> products = Product.GetProductForClient(currentClient);
-                    if (products == null) return;
-
-                    //в цикле менять метки на значения из цен, с заменой;
-                    List<FinalPriceList> priceList = new List<FinalPriceList>();
+                    List<NM.ProductItem> clients_products = products.GetProductForClient(currentClient, str_exclus);
+                    if (clients_products.Count == 0) return;
+                    /////Дописались до селе
+                    ////в цикле менять метки на значения из цен, с заменой;
+                    //List<FinalPriceList> priceList = new List<FinalPriceList>();
+                    ////вместо него добовлять в finalPrices
 
                     processBar = new ProcessBar($"Создание прайс-листа для {currentClient.Customer}", products.Count);
                     processBar.CancelClick += Cancel;
-                    foreach (Product product in products)
+                    processBar.Show();
+                    foreach (NM.ProductItem product in clients_products)
                     {
                         if (isCancel) return;
                         //получить формулу
@@ -487,52 +646,60 @@ namespace BPA
                             return;
                         }
                         string formula = currentDiscount.GetFormulaByName(product.Category);
+#if ENABLE_TRY
                         try
                         {
+#endif
                             //Найти метку или метки. [Pricelist MT]  [DIY Pricelist] [РРЦ] и заменить
                             while (formula.Contains("[pricelist mt]"))
                                 formula = formula.Replace("[pricelist mt]", filePriceMT.GetPrice(product.Article).ToString());
 
                             while (formula.Contains("[diy price list]"))
-                                formula = formula.Replace("[diy price list]", actualRRC.Find(x => x.Article == product.Article).DIY.ToString());
+                                formula = formula.Replace("[diy price list]", actualRRC.Find(x => x.Article == product.Article)?.DIY.ToString() ?? "0");
 
                             while (formula.Contains("[ррц]"))
-                                formula = formula.Replace("[ррц]", actualRRC.Find(x => x.Article == product.Article).RRCNDS.ToString());
+                                formula = formula.Replace("[ррц]", actualRRC.Find(x => x.Article == product.Article)?.RRCNDS.ToString() ?? "0");
+
                             if (Parsing.Calculation(formula) is double result)
-                                priceList.Add(new FinalPriceList(product)
-                                {
-                                    RRC = result
-                                });
+                            {
+                                NM.FinalPriceItem priceItem = finalPrices.Add();
+                                priceItem.Fill(product);
+                                priceItem.RRC = result;
+                            }
                             else
                             {
                                 MessageBox.Show($"В одной из формул для {currentClient.Customer} содержится ошибка", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 return;
                             }
-                        } catch
+#if ENABLE_TRY
+                        }
+                        catch
                         {
-                            MessageBox.Show($"{currentClient.Customer} не найден на листе { actualRRC[0].SheetName }", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show($"{currentClient.Customer} не найден на листе { RRCTable.SHEET }", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
                         }
+#endif
                         processBar.TaskDone(1);
                     }
                     processBar.Close();
 
-                    //Вывести
-                    processBar = new ProcessBar($"Создание прайс-листа для {currentClient.Customer}", products.Count);
-                    processBar.CancelClick += Cancel;
-                    foreach (FinalPriceList item in priceList)
-                    {
-                        if (isCancel) return;
-                        processBar.TaskStart($"Сохранение: {item.ArticleGardena}");
-                        item.Save();
-                        processBar.TaskDone(1);
-                    }
-                    processBar.TaskDone(1);
+                    ////Вывести
+                    //processBar = new ProcessBar($"Создание прайс-листа для {currentClient.Customer}", products.Count);
+                    //processBar.CancelClick += Cancel;
+                    //foreach (FinalPriceList item in priceList)
+                    //{
+                    //    if (isCancel) return;
+                    //    processBar.TaskStart($"Сохранение: {item.ArticleGardena}");
+                    //    item.Save();
+                    //    processBar.TaskDone(1);
+                    //}
+                    //processBar.TaskDone(1);
                 }
-
+                finalPrices.Save();
                 Excel.Worksheet ws = Globals.ThisWorkbook.Sheets[new FinalPriceList().SheetName];
                 ws.Activate();
                 MessageBox.Show("Создание прайс-листа завершено", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+#if ENABLE_TRY
             }
             catch (Exception ex)
             {
@@ -540,10 +707,13 @@ namespace BPA
             }
             finally
             {
+#endif
                 if (filePriceMT?.IsOpen ?? false) filePriceMT.Close();
                 processBar?.Close();
                 FunctionsForExcel.SpeedOff();
+#if ENABLE_TRY
             }
+#endif
         }
 
         /// <summary>
@@ -595,7 +765,8 @@ namespace BPA
 
                 new PlanningNewYear(worksheet.Name).ReadColNumbers();
                 new PlanningNewYearPrognosis(new PlanningNewYear(worksheet.Name)).ReadColNumbers();
-                new PlanningNewYearPromo(new PlanningNewYear(worksheet.Name)).ReadColNumbers();
+                //new PlanningNewYearPrognosis(new PlanningNewYear(worksheet.Name)).SetDelFormulaDict();
+                //new PlanningNewYearPromo(new PlanningNewYear(worksheet.Name)).ReadColNumbers();
 
                 //получаем заполненые данне
                 PlanningNewYear planningNewYearTmp = new PlanningNewYear().GetTmp(worksheet.Name);
@@ -610,6 +781,7 @@ namespace BPA
 
                 //получаем продукты на основании введенных данных
                 List<ProductForPlanningNewYear> products = new ProductForPlanningNewYear().GetProducts(planningNewYearTmp);
+                List<RRC> rrcs = new RRC().GetRRCList();
 
                 //получаем Desicion
                 //processBar = null;
@@ -633,10 +805,8 @@ namespace BPA
                 if (fileBuget?.IsOpen ?? false) fileBuget.Close();
                 //
 
-                //создание клиента для формирования PriceList-цены
-                Client client = new Client(planningNewYearTmp);
-                PriceListForPlaning priceListForPlaning = new PriceListForPlaning(client, planningNewYearTmp.CurrentDate);
-                priceListForPlaning.Load();
+                //PriceListForPlaning priceListForPlaning = new PriceListForPlaning(planningNewYearTmp);
+                //priceListForPlaning.Load();
                 //
 
                 processBar = new ProcessBar("Обновление клиентов", products.Count);
@@ -655,19 +825,20 @@ namespace BPA
 
                     PlanningNewYear planning = planningNewYearTmp.Clone();
                     planning.SetProduct(product);
+                    //planning.SetRRC();
                     planning.GetSTK();
 
                     PlanningNewYearPrognosis prognosis = new PlanningNewYearPrognosis(planning);
                     prognosis.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
-                    prognosis.PriceList = priceListForPlaning.GetPrice(product.Article);
+                    //prognosis.PriceList = priceListForPlaning.GetPrice(product.Article);
 
-                    PlanningNewYearPromo promo = new PlanningNewYearPromo(planning);
-                    promo.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
+                    //PlanningNewYearPromo promo = new PlanningNewYearPromo(planning);
+                    //promo.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
 
                     planning.Save(worksheet.Name);
                     planning.SetMaximumBonusValue();
                     prognosis.Save();
-                    promo.Save();
+                    //promo.Save();
 
                     processBar.TaskDone(1);
                 }
@@ -715,9 +886,10 @@ namespace BPA
 
                 new PlanningNewYear(worksheet.Name).ReadColNumbers();
                 new PlanningNewYearPrognosis(new PlanningNewYear(worksheet.Name)).ReadColNumbers();
-                new PlanningNewYearPromo(new PlanningNewYear(worksheet.Name)).ReadColNumbers();
+                //new PlanningNewYearPrognosis(new PlanningNewYear(worksheet.Name)).SetDelFormulaDict();
+                //new PlanningNewYearPromo(new PlanningNewYear(worksheet.Name)).ReadColNumbers();
 
-                
+
                 PlanningNewYear planningNewYearTmp = new PlanningNewYear().GetTmp(worksheet.Name);
                 if (!planningNewYearTmp.HasData())
                 {
@@ -726,12 +898,14 @@ namespace BPA
                 }
 
                 List<PlanningNewYearPrognosis> prognosises = new List<PlanningNewYearPrognosis>();
-                List<PlanningNewYearPromo> promos = new List<PlanningNewYearPromo>();
+                //List<PlanningNewYearPromo> promos = new List<PlanningNewYearPromo>();
                 
-                planningNewYearTmp.SetLists(prognosises, promos);
+                //planningNewYearTmp.SetLists(prognosises, promos);
+                //planningNewYearTmp.SetLists(prognosises);
 
                 //получаем Desicion, Buget
-                if (prognosises == null || promos == null || (prognosises.Count < 0 || prognosises.Count < 0))
+                //if (prognosises == null || promos == null || (prognosises.Count < 0 || promos.Count < 0))
+                if (prognosises == null || (prognosises.Count < 0))
                 {
                     MessageBox.Show($"Заполните { worksheet.Name } и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -759,13 +933,12 @@ namespace BPA
                 if (fileBuget?.IsOpen ?? false) fileBuget.Close();
                 //
 
-                //создание клиента для формирования PriceList-цены
-                Client client = new Client(planningNewYearTmp);
-                PriceListForPlaning priceListForPlaning = new PriceListForPlaning(client, planningNewYearTmp.CurrentDate);
-                priceListForPlaning.Load();
+                //PriceListForPlaning priceListForPlaning = new PriceListForPlaning(planningNewYearTmp);
+                //priceListForPlaning.Load();
                 //
 
-                int count = prognosises.Count > promos.Count ? prognosises.Count : promos.Count;
+                //int count = prognosises.Count > promos.Count ? prognosises.Count : promos.Count;
+                int count = prognosises.Count;
                 processBar = new ProcessBar("Обновление клиентов", count);
                 bool isCancel = false;
                 void CancelLocal() => isCancel = true;
@@ -779,24 +952,24 @@ namespace BPA
                         break;
 
                     PlanningNewYearPrognosis prognosis = prognosises[p];
-                    PlanningNewYearPromo promo = promos[p];
+                    //PlanningNewYearPromo promo = promos[p];
 
                     string article = prognosis.planningNewYear.Article;
                     processBar.TaskStart($"Обрабатывается артикул {article}");
 
                     //сопоставить каждый prognosis и promo ArticleQuantities из файлов
                     prognosis.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
-                    prognosis.PriceList = priceListForPlaning.GetPrice(prognosis.planningNewYear.Article);
-                    promo.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
+                    //prognosis.PriceList = priceListForPlaning.GetPrice(prognosis.planningNewYear.Article);
+                    //promo.SetValues(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
 
                     prognosis.Save();
-                    promo.Save();
+                    //promo.Save();
 
                     processBar.TaskDone(1);
                 }
 
                 prognosises.Clear();
-                promos.Clear();
+                //promos.Clear();
             }
             catch (Exception ex)
             {

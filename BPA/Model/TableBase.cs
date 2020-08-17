@@ -114,7 +114,9 @@ namespace BPA.Model
             else if (Table.ListRows[1].Range.Cells[1, 1].Text == "")
                 row = Table.ListRows[1];
             else
-                row = Table.ListRows.Add();
+                Table.Resize(Table.Range.Resize[Table.Range.Rows.Count + 1]);
+            row = Table.ListRows[Table.ListRows.Count];
+                //row = Table.ListRows.Add();
             FillRow(row);
 
             row.Range[1, Table.ListColumns[Filds["Id"]].Index].Value = id;
@@ -215,7 +217,7 @@ namespace BPA.Model
             }
         }
 
-        private ListRow GetRow(int id)
+        public ListRow GetRow(int id)
         {
             int index = FindIndexRow(id);
             if (index == 0) return null;
@@ -338,6 +340,8 @@ namespace BPA.Model
 
         public void ClearTable()
         {
+            if (Table.ListRows.Count < 1) return; 
+
             Table.DataBodyRange.Rows.Delete();
             //if (Table.ListRows.Count < 1)
             //    return;

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using SettingsBPA = BPA.Properties.Settings;
+using NM = BPA.NewModel;
 using BPA.Forms;
 
 namespace BPA.Modules
@@ -98,7 +99,7 @@ namespace BPA.Modules
 
             if (settings.GetDecisionPath(out string path))
             {
-                FileName = path;
+                FileAddress = path;
                 FileHeaderRow = 1;
                 FileSheetName = SettingsBPA.Default.SHEET_NAME_FILE_DECISION;
                 
@@ -117,19 +118,22 @@ namespace BPA.Modules
             {
                 throw new FileNotFoundException($"Файл {filename} не найден");
             }
-            FileName = filename;
+            FileAddress = filename;
         }
 
         public FileDescision(Excel.Workbook workbook)
         {
-            Workbook = workbook;
+            //Workbook = workbook;
+            FileAddress = Workbook.Path;
+            IsOpen = true;
+            SetFileData();
         }
 
         public List<ArticleQuantity> ArticleQuantities = new List<ArticleQuantity>();
         
-        public List<Client> LoadClients()
+        public List<NM.ClientItem.DataFromDescision> LoadClients()
         {
-            List<Client> buffer = new List<Client>();
+            List<NM.ClientItem.DataFromDescision> buffer = new List<NM.ClientItem.DataFromDescision>();
 
             if (CustomerColumn == 0 || GardenaChannelColumn == 0)
             {
@@ -148,11 +152,16 @@ namespace BPA.Modules
                 {
                     string gardenaChannel = GetValueFromColumnStr(rowIndex, GardenaChannelColumn);
 
-                    if (!buffer.Exists(x => x.Customer == customer)) buffer.Add(new Client()
+                    if (!buffer.Exists(x => x.Customer == customer)) buffer.Add(new NM.ClientItem.DataFromDescision() 
                     {
                         Customer = customer,
                         GardenaChannel = gardenaChannel
                     });
+                    //if (!buffer.Exists(x => x.Customer == customer)) buffer.Add(new Client()
+                    //{
+                    //    Customer = customer,
+                    //    GardenaChannel = gardenaChannel
+                    //});
                 }
                 ActionDone?.Invoke(1);
             }
@@ -166,7 +175,7 @@ namespace BPA.Modules
         public void LoadForPlanning(PlanningNewYear planning)
         {
             
-            if (DateColumn == 0 || ArticleColumn == 0 || CampaignColumn ==0)
+            if (DateColumn == 0 || ArticleColumn == 0 || CampaignColumn == 0 || CustomerColumn== 0)
             {
                 throw new ApplicationException("Файл имеет неверный формат");
             }            
@@ -178,8 +187,10 @@ namespace BPA.Modules
                 ActionStart?.Invoke($"Обрабатывается строка {rowIndex}");
 
                 DateTime date = GetDateFromCell(rowIndex, DateColumn);
+                string customer = GetValueFromColumnStr(rowIndex, CustomerColumn);
 
-                if (planning.Year != date.Year)
+                //проверка на соответствие года и customer
+                if (date.Year != planning.CurrentDate.Year || planning.Clients.Find(x => x.Customer == customer) == null)
                     continue;
 
                 string article = GetValueFromColumnStr(rowIndex, ArticleColumn);

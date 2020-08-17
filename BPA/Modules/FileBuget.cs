@@ -59,6 +59,16 @@ namespace BPA.Modules
             }
         }
         private int _PriceListColumn = 0;
+
+        public int CustomerBugetColumn
+        {
+            get
+            {
+                if (_CustomerBugetColumn == 0) _CustomerBugetColumn = FindColumn("Customer");
+                return _CustomerBugetColumn;
+            }
+        }
+        private int _CustomerBugetColumn = 0;
         #endregion
 
         public FileBuget()
@@ -67,7 +77,7 @@ namespace BPA.Modules
 
             if (settings.GetBudgetPath(out string path))
             {
-                FileName = path;
+                FileAddress = path;
                 FileHeaderRow = 2;
                 FileSheetName = SettingsBPA.Default.SHEET_NAME_FILE_BUGET;
                 
@@ -86,12 +96,16 @@ namespace BPA.Modules
             {
                 throw new FileNotFoundException($"Файл {filename} не найден");
             }
-            FileName = filename;
+            FileAddress = filename;
         }
 
         public FileBuget(Excel.Workbook workbook)
         {
-            Workbook = workbook;
+            //Workbook = workbook;
+            FileAddress = Workbook.Path;
+            IsOpen = true;
+            
+            SetFileData();
         }
 
         public List<ArticleQuantity> ArticleQuantities = new List<ArticleQuantity>();
@@ -112,7 +126,10 @@ namespace BPA.Modules
                 ActionStart?.Invoke($"Обрабатывается строка {rowIndex}");
 
                 DateTime date = GetDateFromCell(rowIndex, DateColumn);
-                if (planning.Year != date.Year)
+                string customerBuget = GetValueFromColumnStr(rowIndex, CustomerBugetColumn); ;
+
+                //проверка на соответствие года и customer
+                if (date.Year != planning.CurrentDate.Year || planning.Clients.Find(x => x.CustomerBudget == customerBuget) == null)
                     continue;
 
                 string article = GetValueFromColumnStr(rowIndex, ArticleColumn);

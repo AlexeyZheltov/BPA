@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="SHEET_NAME_PLANNING_TEMPLATE" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Планирование нового года шаблон</Value>
+      <Value Profile="(Default)">Планирование НГ шаблон</Value>
     </Setting>
     <Setting Name="ProductCalendarPath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -18,7 +18,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="PlannningNYIndicatorCellName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">PlanningNYCell</Value>
+      <Value Profile="(Default)">PlanningNYCellNew</Value>
     </Setting>
     <Setting Name="SHEET_NAME_FILE_BUGET" Type="System.String" Scope="User">
       <Value Profile="(Default)">DatabaseStat</Value>
