@@ -57,6 +57,7 @@ namespace BPA
                 fileCalendar = new FileCalendar();
                 if (!fileCalendar.IsOpen)
                     return;
+                fileCalendar.SetFileData();
                 fileCalendar.SetProcessBarForLoad(ref processBar);
                 fileCalendar.LoadProductsFromCalendar();
                 fileCalendar.Close();
@@ -114,6 +115,7 @@ namespace BPA
                 productCalendars.Save();
 
                 isCancel = true;
+                MessageBox.Show("Загрузка календаря завершена", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
 #if ENABLE_TRY
             }
             catch (Exception ex)
@@ -174,20 +176,24 @@ namespace BPA
 
                     if (isCancel) break;
                     //Если нет календаря, просто пропускаем?
-                    if (!File.Exists(productCalendar.Path)) continue;
+                    processBar.TaskStart($"Обрабатывается календарь {productCalendar.Name}");
+                    if (!File.Exists(productCalendar.Path))
+                    {
+                        processBar.TaskDone(1);
+                        continue;
+                    }
                     fileCalendar = new FileCalendar(productCalendar.Path);
                     if (!fileCalendar.IsOpen)
                         return;
 
                     ProcessBar pbForFileCalendar = null;
+                    fileCalendar.SetFileData();
                     fileCalendar.SetProcessBarForLoad(ref pbForFileCalendar);
                     fileCalendar.LoadProductsFromCalendar();
                     fileCalendar.Close();
                     pbForFileCalendar?.Close();
                     if (fileCalendar?.IsOpen ?? false) fileCalendar.Close();
 
-                    processBar.TaskStart($"Обрабатывается календарь {productCalendar.Name}");
-                    
                     try
                     {
                         List<FileCalendar.ProductFromCalendar> productsFromCalendar = fileCalendar.ProductsFromCalendar;
@@ -210,6 +216,9 @@ namespace BPA
                     }
                     processBar.TaskDone(1);
                 }
+
+                products.Save();
+                MessageBox.Show("Обновление календарей завершено", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -220,7 +229,6 @@ namespace BPA
                 FunctionsForExcel.SpeedOff();
                 if (processBar != null)
                 {
-                    processBar.SubBar?.Close();
                     processBar?.Close();
                 }
             }
@@ -292,8 +300,11 @@ namespace BPA
                     throw new ApplicationException($"Файл { product.Calendar } не найден") ;
                 }
                 fileCalendar = new FileCalendar(calendar.Path);
+                //fileCalendar.SetFileData();
+                //fileCalendar.LoadProductsFromCalendar();
+                fileCalendar.GetArticle(product.Article);
                 fileCalendar.SetProcessBarForLoad(ref processBar);
-                fileCalendar.LoadProductsFromCalendar();
+                fileCalendar.Close();
                 processBar?.Close();
 
                 if (fileCalendar != null)
@@ -310,6 +321,9 @@ namespace BPA
             finally
             {
                 if (fileCalendar?.IsOpen ?? false) fileCalendar.Close();
+                if (processBar != null)
+                    processBar?.Close();
+
                 FunctionsForExcel.SpeedOff();
             }
         }
@@ -438,8 +452,8 @@ namespace BPA
                 fileDescision = new FileDescision();
                 if (!fileDescision.IsOpen) 
                     return;
+                fileDescision.SetFileData();
                 fileDescision.SetProcessBarForLoad(ref processBar);
-
                 List<ClientFromDescision> clientsFromDecision = fileDescision.LoadClients();
                 
                 processBar.Close();
@@ -613,6 +627,7 @@ namespace BPA
                         filePriceMT = new FilePriceMT();
                         if (!filePriceMT.IsOpen)
                             return;
+                        filePriceMT.SetFileData();
                         filePriceMT.SetProcessBarForLoad(ref processBar); //зачем тут ref?
                         filePriceMT.Load(currentDate, currentClient.Mag);
                         processBar.Close();
@@ -788,6 +803,7 @@ namespace BPA
                 fileDescision = new FileDescision();
                 if (!fileDescision.IsOpen)
                     return;
+                fileDescision.SetFileData();
                 fileDescision.SetProcessBarForLoad(ref processBar);
                 fileDescision.LoadForPlanning(planningNewYearTmp);
                 processBar.Close();
@@ -799,6 +815,7 @@ namespace BPA
                 fileBuget = new FileBuget();
                 if (!fileBuget.IsOpen)
                     return;
+                fileBuget.SetFileData();
                 fileBuget.SetProcessBarForLoad(ref processBar);
                 fileBuget.LoadForPlanning(planningNewYearTmp);
                 processBar.Close();
@@ -914,6 +931,7 @@ namespace BPA
                 //получаем Desicion
                 processBar = null;
                 fileDescision = new FileDescision();
+                fileDescision.SetFileData();
                 fileDescision.SetProcessBarForLoad(ref processBar);
                 if (!fileDescision.IsOpen)
                     return;
@@ -925,6 +943,7 @@ namespace BPA
                 //получаем Buget
                 processBar = null;
                 fileBuget= new FileBuget();
+                fileBuget.SetFileData();
                 fileBuget.SetProcessBarForLoad(ref processBar);
                 if (!fileBuget.IsOpen)
                     return;
