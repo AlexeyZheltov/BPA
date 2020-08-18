@@ -108,6 +108,9 @@ namespace BPA.NewModel
             //_table.DataBodyRange?.Clear();
             Excel.Range _startCell = _table.HeaderRowRange.Cells[2, 1];
 
+            //Удаляем фильтры
+            _table.ShowAutoFilter = false;
+
             int firstColumn = 0;
             int lastRow = _data.Count - 1;
             var buffer = GetSolidRangeFromData(firstColumn, _data);
@@ -124,6 +127,9 @@ namespace BPA.NewModel
                 firstColumn = buffer.LastColumn + 1;
                 buffer = GetSolidRangeFromData(firstColumn, _data);
             }
+
+            //Устанавливаем фильтр
+            _table.ShowAutoFilter = true;
         }
 
         private (int LastColumn, object[,] Data) GetSolidRangeFromData(int firstColumn, List<Dynamic[]> data)
