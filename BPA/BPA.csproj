@@ -19,8 +19,8 @@
     <PublishUrl>C:\Users\wizar\YandexDisk\Разработка\Хускварна\Этап 1. Локальная версия\Версии на тестирование\Тестирование\</PublishUrl>
     <InstallUrl />
     <TargetCulture>ru</TargetCulture>
-    <ApplicationVersion>1.6.0.1</ApplicationVersion>
-    <AutoIncrementApplicationRevision>true</AutoIncrementApplicationRevision>
+    <ApplicationVersion>1.6.2.0</ApplicationVersion>
+    <AutoIncrementApplicationRevision>false</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>days</UpdateIntervalUnits>
@@ -296,8 +296,8 @@
       <FlavorProperties GUID="{BAA0C2D2-18E2-41B9-852F-F413020CAA33}">
         <ProjectProperties HostName="Business planning.xlsm" HostPackage="{3F2B7691-D1D1-402F-9370-2704A737CF60}" OfficeVersion="15.0" VstxVersion="4.0" ApplicationType="XLS" Language="CS" TemplatesPath="VSTOTemplates" DebugInfoExeName="C:\Program Files\Microsoft Office\root\Office16\excel.exe" DebugInfoCommandLine="/x &quot;[$OUTPUT]Business planning.xlsm&quot;" />
         <Host Name="Excel Document" Path=".\Business planning.xlsm" GeneratedCodeNamespace="BPA" PublishedHash="D0D69BFBCABE6028FD9A2CF8B5FCE32562CBE7BB">
-          <HostItem Name="ThisWorkbook" Code="ThisWorkbook.cs" CanonicalName="ThisWorkbook" Blueprint="ThisWorkbook.Designer.xml" GeneratedCode="ThisWorkbook.Designer.cs" PublishedHash="6DBF22E42E02004B61FD59B6B8A4F84654E49896" />
-          <HostItem Name="Лист1" Code="Лист1.cs" CanonicalName="Лист1" DisplayName="Лист1" Blueprint="Лист1.Designer.xml" GeneratedCode="Лист1.Designer.cs" PublishedHash="26E453A9ED9BE9019A2DC33BF9B1B99A0DD70E22" />
+          <HostItem Name="ThisWorkbook" Code="ThisWorkbook.cs" CanonicalName="ThisWorkbook" PublishedHash="6DBF22E42E02004B61FD59B6B8A4F84654E49896" Blueprint="ThisWorkbook.Designer.xml" GeneratedCode="ThisWorkbook.Designer.cs" />
+          <HostItem Name="Лист1" Code="Лист1.cs" CanonicalName="Лист1" PublishedHash="26E453A9ED9BE9019A2DC33BF9B1B99A0DD70E22" DisplayName="Лист1" Blueprint="Лист1.Designer.xml" GeneratedCode="Лист1.Designer.cs" />
         </Host>
       </FlavorProperties>
     </VisualStudio>
