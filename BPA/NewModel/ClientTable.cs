@@ -102,6 +102,19 @@ namespace BPA.NewModel
             return 0;
         }
 
+        public List<ClientItem> GetClientsForPlanning(string channelType, string customerStatus)
+        {
+            if (_db.RowCount() == 0) return null;
+
+            List<ClientItem> clients_list = (from cl in
+                                                from item in _db
+                                                select new ClientItem(item)
+                                            where cl.ChannelType == channelType
+                                                    && cl.CustomerStatus == customerStatus
+                                            select cl).ToList();
+            return clients_list;
+        }
+
         public void Save() => _db.Save();
 
         IEnumerator IEnumerable.GetEnumerator()
