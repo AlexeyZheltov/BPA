@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BPA.Modules;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -808,6 +809,61 @@ namespace BPA.NewModel
         }
         #endregion
 
+        /// <summary>
+        /// Установка значений таблицы элементу
+        /// </summary>
+        /// <param name=""></param>
+        public void SetParamsToItem(PlanningNewYearTable planningNewYears)
+        {
+            //planning._TableWorksheetName = this.SheetName;
+            //planning.Year = this.Year;
+            CustomerStatus = planningNewYears.CustomerStatus;
+            ChannelType = planningNewYears.ChannelType;
+            MaximumBonus = planningNewYears.MaximumBonus;
+            CurrentDate = planningNewYears.CurrentDate;
+            planningDate = planningNewYears.planningDate;
+        }
+
+        public void SetProduct(ProductItem product)
+        {
+            this.Article = product.Article;
+
+            this.SupercategoryEng = product.SupercategoryEng;
+            this.Supercategory = product.SuperCategory;
+            this.ProductGroup = product.ProductGroup;
+            this.ProductGroupEng = product.ProductGroupEng;
+            this.SubGroup = product.SubGroup;
+            this.GenericName = product.GenericName;
+            this.PNS = product.PNS;
+            this.Article = product.Article;
+            this.ArticleOld = product.ArticleOld;
+            this.ArticleRu = product.ArticleRu;
+            this.CalendarSalesStartDate = product.CalendarSalesStartDate;
+            this.CalendarPreliminaryEliminationDate = product.CalendarPreliminaryEliminationDate;
+            this.CalendarEliminationDate = product.CalendarEliminationDate;
+        }
+
+        public void SetRRC(RRCItem rrcPlan, RRCItem rrcCurrent)
+        {
+            if (rrcPlan != null)
+            {
+                this.RRCCUrent = rrcCurrent.RRCNDS;
+                this.DIYCurrent = rrcCurrent.DIY;
+                this.IRPCurrent = rrcCurrent.IRP;
+                this.IRPIndexCurrent = rrcCurrent.IRPIndex;
+                this.RRPCurrent = rrcCurrent.RRP;
+            }
+
+            if (rrcCurrent != null)
+            {
+                this.RRCPlan = rrcPlan.RRCNDS;
+                this.DIYPlan = rrcPlan.DIY;
+                this.IRPPlan = rrcPlan.IRP;
+                this.IRPIndexPlan = rrcPlan.IRPIndex;
+                this.RRPPlan = rrcPlan.RRP;
+            }
+        }
+
         public void SetSTK(STKItem stkPlan, STKItem stkCurrent)
         {
             if (stkPlan != null)
@@ -821,6 +877,113 @@ namespace BPA.NewModel
                 //this.STKEurCurrent = stkCurrent.STKEur;
                 //this.STKRubCurrent = 
             }
+        }
+
+        public void SetValuesPrognosis(List<ArticleQuantity> deicionQuantities, List<ArticleQuantity> bugetQuantities)
+        {
+            //Извлечение из списков Descision и Buget элементы с соответствующим артикулом и НЕ Promo
+            List<ArticleQuantity> articleDescisionQuantities = deicionQuantities.FindAll(x => x.Article == Article && !IsPromo(x)).ToList();
+            List<ArticleQuantity> articleBugetQuantities = bugetQuantities.FindAll(x => x.Article == Article && !IsPromo(x)).ToList();
+
+            ArticleQuantity[] articles = GetArticlesQuantities(articleDescisionQuantities, articleBugetQuantities);
+            #region setproperties
+            //как написать подобный перебор???
+            ///
+            QuantityPrognosis01 = articles[0].Quantity;
+            QuantityPrognosis02 = articles[1].Quantity;
+            QuantityPrognosis03 = articles[2].Quantity;
+            QuantityPrognosis04 = articles[3].Quantity;
+            QuantityPrognosis05 = articles[4].Quantity;
+            QuantityPrognosis06 = articles[5].Quantity;
+            QuantityPrognosis07 = articles[6].Quantity;
+            QuantityPrognosis08 = articles[7].Quantity;
+            QuantityPrognosis09 = articles[8].Quantity;
+            QuantityPrognosis10 = articles[9].Quantity;
+            QuantityPrognosis11 = articles[10].Quantity;
+            QuantityPrognosis12 = articles[11].Quantity;
+
+            GSPrognosis01 = articles[0].PriceList;
+            GSPrognosis02 = articles[1].PriceList;
+            GSPrognosis03 = articles[2].PriceList;
+            GSPrognosis04 = articles[3].PriceList;
+            GSPrognosis05 = articles[4].PriceList;
+            GSPrognosis06 = articles[5].PriceList;
+            GSPrognosis07 = articles[6].PriceList;
+            GSPrognosis08 = articles[7].PriceList;
+            GSPrognosis09 = articles[8].PriceList;
+            GSPrognosis10 = articles[9].PriceList;
+            GSPrognosis11 = articles[10].PriceList;
+            GSPrognosis12 = articles[11].PriceList;
+
+            NSPrognosis01 = GSPrognosis01 - articles[0].Bonus;
+            NSPrognosis02 = GSPrognosis02 - articles[1].Bonus;
+            NSPrognosis03 = GSPrognosis03 - articles[2].Bonus;
+            NSPrognosis04 = GSPrognosis04 - articles[3].Bonus;
+            NSPrognosis05 = GSPrognosis05 - articles[4].Bonus;
+            NSPrognosis06 = GSPrognosis06 - articles[5].Bonus;
+            NSPrognosis07 = GSPrognosis07 - articles[6].Bonus;
+            NSPrognosis08 = GSPrognosis08 - articles[7].Bonus;
+            NSPrognosis09 = GSPrognosis09 - articles[8].Bonus;
+            NSPrognosis10 = GSPrognosis10 - articles[9].Bonus;
+            NSPrognosis11 = GSPrognosis11 - articles[10].Bonus;
+            NSPrognosis12 = GSPrognosis12 - articles[11].Bonus;
+            //
+            #endregion
+        }
+
+        #region проверка promo/prognosis
+        /// <summary>
+        /// проверка promo/prognosis
+        /// </summary>
+        /// <param name="articleQuantity"></param>
+        /// <returns></returns>
+        private bool IsPromo(ArticleQuantity articleQuantity)
+        {
+            return articleQuantity.Campaign != "0" && articleQuantity.Campaign != null ? true : false;
+        }
+
+        #endregion
+
+        private ArticleQuantity[] GetArticlesQuantities(List<ArticleQuantity> articleDescisionQuantities, List<ArticleQuantity> articleBugetQuantities)
+        {
+            ArticleQuantity[] articles = new ArticleQuantity[12];
+            for (int m = 1; m <= 12; m++)
+            {
+                articles[m - 1] = SumMonth(m);
+            }
+            return articles;
+
+            ArticleQuantity SumMonth(double month)
+            {
+                ArticleQuantity newArticleQuantity = new ArticleQuantity();
+
+                List<ArticleQuantity> articleQuantities = month < CurrentDate.Month ?
+                    articleDescisionQuantities : articleBugetQuantities;
+
+                if (articleQuantities.Count < 1)
+                    return newArticleQuantity;
+
+                //на случай если будет несколько записей на один месяц по одному артикула
+                List<ArticleQuantity> monthQuantities = articleQuantities.FindAll(x => x.Month == month);
+
+                if (monthQuantities.Count < 1)
+                    return newArticleQuantity;
+
+                foreach (ArticleQuantity articleQuantity in monthQuantities)
+                {
+                    newArticleQuantity.Quantity += articleQuantity.Quantity;
+                    newArticleQuantity.PriceList += articleQuantity.PriceList;
+                    double bonus = month < CurrentDate.Month ? articleQuantity.Bonus : articleQuantity.PriceList * MaximumBonus;
+                    newArticleQuantity.Bonus += bonus;
+                }
+                //
+
+                newArticleQuantity.Article = monthQuantities[0].Article;
+                newArticleQuantity.Campaign = monthQuantities[0].Campaign;
+
+                return newArticleQuantity;
+            }
+            //
         }
     }
 }
