@@ -741,10 +741,18 @@ namespace BPA
             try
             {
                 FunctionsForExcel.SpeedOn();
-                new PlanningNewYear().ReadColNumbers();
 
-                PlanningNewYear planningNewYear = new PlanningNewYear(SettingsBPA.Default.SHEET_NAME_PLANNING_TEMPLATE);
-                planningNewYear.GetSheetCopy();
+                string planningTemplateSheetName = SettingsBPA.Default.SHEET_NAME_PLANNING_TEMPLATE;
+
+                ThisWorkbook workbook = Globals.ThisWorkbook;
+                FunctionsForExcel.ShowSheet(planningTemplateSheetName);
+
+                string newSheetName = planningTemplateSheetName.Replace("шаблон", "").Trim();
+                Excel.Worksheet newSheet = FunctionsForExcel.CreateSheetCopy(workbook.Sheets[planningTemplateSheetName], newSheetName);
+                newSheet.Activate();
+
+                FunctionsForExcel.HideSheet(planningTemplateSheetName);
+
             } catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
