@@ -284,5 +284,19 @@ namespace BPA.NewModel
         }
         #endregion
 
+        public void SetSTK(STKItem stkPlan, STKItem stkCurrent)
+        {
+            if (stkPlan != null)
+            {
+                //this.STKEurPlan = stkPlan.STKEur;
+                //this.STKRubPlan = 
+            }
+
+            if (stkCurrent != null)
+            {
+                //this.STKEurCurrent = stkCurrent.STKEur;
+                //this.STKRubCurrent = 
+            }
+        }
     }
 }
