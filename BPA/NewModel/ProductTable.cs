@@ -178,5 +178,54 @@ namespace BPA.NewModel
             if (actualProducts.Count == 0) MessageBox.Show("Данному клиенту не соотвествует ни один акртикул", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
             return actualProducts;
         }
+
+        public List<ProductItem> GetProductForPlanning(PlanningNewYearTable planning, List<string> exclusives)
+        {
+            if (_db.RowCount() == 0) return null;
+
+
+            List<ProductItem> prod_list = (from pl in
+                                               from item in _db
+                                               select new ProductItem(item)
+                                           where pl.Status.ToLower() != "выведено из ассортимента текущего года"
+                                                 && pl.Status.ToLower() != "выведено из глобального ассортимента"
+                                           select pl).ToList();
+
+            List<ProductItem> actualProducts = new List<ProductItem>();
+            foreach (ProductItem product in prod_list)
+            {
+                if (exclusives.Contains(product.Exclusive.ToLower()))
+                {
+                    if (product.Exclusive.ToLower() == planning.CustomerStatus.ToLower())
+                        actualProducts.Add(product);
+                }
+                else
+                {
+                    switch (product.Exclusive.ToLower())
+                    {
+                        //леру и оби???
+                        case "diy канал":
+                            if (planning.ChannelType.ToLower() == "diy")
+                                actualProducts.Add(product);
+                            break;
+                        case "online":
+                            if (planning.ChannelType.ToLower() == "online")
+                                actualProducts.Add(product);
+                            break;
+                        case "dealer":
+                        case "regional": //DEALERS&REGIONAL DISTR
+                            if (planning.ChannelType.ToLower() == "dealer&regional distr")
+                                actualProducts.Add(product);
+                            break;
+                        default:
+                            actualProducts.Add(product);
+                            break;
+                    }
+                }
+            }
+
+            if (actualProducts.Count == 0) MessageBox.Show("Данному клиенту не соотвествует ни один акртикул", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return actualProducts;
+        }
     }
 }
