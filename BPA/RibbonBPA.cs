@@ -788,7 +788,7 @@ namespace BPA
                 NM.ClientTable clients = new NM.ClientTable();
                 NM.RRCTable rrcs = new NM.RRCTable();
                 NM.STKTable stks = new NM.STKTable();
-                NM.ExclusiveMagTable exclusives = new NM.ExclusiveMagTable();
+                NM.ExclusiveProductTable exclusives = new NM.ExclusiveProductTable();
 
                 //получаем заполненые данне
                 NM.PlanningNewYearTable planningNewYears = new NM.PlanningNewYearTable(worksheet.Name);

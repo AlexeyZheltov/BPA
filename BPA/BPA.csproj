@@ -192,6 +192,8 @@
     <Compile Include="NewModel\Dynamic.cs" />
     <Compile Include="NewModel\ExclusiveMagItem.cs" />
     <Compile Include="NewModel\ExclusiveMagTable.cs" />
+    <Compile Include="NewModel\ExclusiveProductItem.cs" />
+    <Compile Include="NewModel\ExclusiveProductTable.cs" />
     <Compile Include="NewModel\FinalPriceItem.cs" />
     <Compile Include="NewModel\FinalPriceTable.cs" />
     <Compile Include="NewModel\PlanItem.cs" />
