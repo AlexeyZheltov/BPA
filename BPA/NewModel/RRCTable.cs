@@ -61,7 +61,7 @@ namespace BPA.NewModel
             return GetEnumerator();
         }
         #endregion
-        public List<RRCItem> GetActualPriceList(DateTime currentDate)
+        public List<RRCItem> GetActualPriceList(DateTime data)
         {
             PBWrapper pb = new PBWrapper($"Создание прайс-листа", $"Анализ артикулов с листа РРЦ [Index]");
 
@@ -73,7 +73,9 @@ namespace BPA.NewModel
                                            .Distinct(new RRCItem.RRCItemComparerForPrice())
                                            .ToList();
 
-            List<RRCItem> actualRRC = new List<RRCItem>();
+            List<RRCItem> all_rrc = (from row in _db
+                                     select new RRCItem(row)).ToList();
+            List < RRCItem > actualRRC = new List<RRCItem>();
             pb.Start(rrc_list.Count);
             //взять пачку строк соответсвующих артикулу и вязть тот что с последней датой
             foreach (RRCItem item in rrc_list)
@@ -85,10 +87,10 @@ namespace BPA.NewModel
                 }
                 pb.Action(item.Article);
 
-                List<RRCItem> buffer = (from rrc in rrc_list
-                                        where rrc.Article == item.Article && rrc.Date <= currentDate
-                                        orderby rrc.Date descending
-                                        select rrc).ToList();
+                List < RRCItem > buffer = (from rrc in all_rrc
+                                           where rrc.Article == item.Article && rrc.Date <= data
+                                           orderby rrc.Date descending
+                                           select rrc).ToList();
 
 
                 if (buffer.Count == 0) continue;

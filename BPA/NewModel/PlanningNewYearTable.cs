@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BPA.Modules;
+using System.Globalization;
 using Microsoft.Office.Interop.Excel;
 using Excel = Microsoft.Office.Interop.Excel;
 using SettingsBPA = BPA.Properties.Settings;
@@ -44,7 +45,10 @@ namespace BPA.NewModel
         WS_DB _db = new WS_DB();
         Excel.ListObject _table = null;
 
-        public PlanningNewYearTable () { }
+        public PlanningNewYearTable()
+        {
+            
+        }
 
         public PlanningNewYearTable(string worksheetName)
         {
@@ -171,6 +175,15 @@ namespace BPA.NewModel
         {
             DelFormulaDict.Clear();
             int month = CurrentDate.Month;
+
+            DateTime dt = new DateTime();
+            string m2 = $"{dt:MMMM}";
+
+            //string cn = $"ИТОГО GS {m}, шт."
+            //DateTime.
+            //for(int m = 1; m < 13; m++)
+            //    if(month >= m)
+            //        DelFormulaDict.Add($"ИТОГО GS {CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(m).ToLower()}, шт.");
 
             //уязвимое место
             setIsDel("ИТОГО GS январь, шт.", 1);

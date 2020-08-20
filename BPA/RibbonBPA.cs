@@ -885,8 +885,8 @@ namespace BPA
                     planning.SetProduct(product);
 
                     //уточнить отбор цены по дате
-                    NM.RRCItem RRCPlan = planRRC.Find(x => x.Article == product.Article && x.Date == planningNewYears.planningDate);
-                    NM.RRCItem RRCCurrent = actualRRC.Find(x => x.Article == product.Article && x.Date == planningNewYears.CurrentDate);
+                    NM.RRCItem RRCPlan = planRRC.Find(x => x.Article == product.Article);
+                    NM.RRCItem RRCCurrent = actualRRC.Find(x => x.Article == product.Article);
                     planning.SetRRC(RRCPlan, RRCCurrent);
 
                     //уточнить отбор цены по дате
