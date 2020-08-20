@@ -13,7 +13,7 @@ namespace BPA.NewModel
         public const string SHEET = "Клиенты";
         const string TABLE = "Клиенты";
 
-        WS_DB db = new WS_DB();
+        WS_DB _db = new WS_DB();
         Excel.ListObject _table = null;
 
         public static void SortExcelTable(string sortFildName)
@@ -49,12 +49,12 @@ namespace BPA.NewModel
             return false;
         }
 
-        public ClientItem this[int row] => new ClientItem(db[row]);
+        public ClientItem this[int row] => new ClientItem(_db[row]);
 
         public ClientItem GetById(int id)
         {
             var quere = (from item in
-                             from db_item in db
+                             from db_item in _db
                              select new ClientItem(db_item)
                          where item.Id == id
                          select item).ToList();
@@ -64,23 +64,23 @@ namespace BPA.NewModel
 
         public ClientItem Add()
         {
-            int row = db.AddRow();
-            ClientItem item = new ClientItem(db[row]);
-            item.Id = db.NextID("№");
+            int row = _db.AddRow();
+            ClientItem item = new ClientItem(_db[row]);
+            item.Id = _db.NextID("№");
             return item;
         }
 
-        public int Count() => db.RowCount();
+        public int Count() => _db.RowCount();
 
         public IEnumerator<ClientItem> GetEnumerator()
         {
-            foreach (TableRow item in db) yield return new ClientItem(item);
+            foreach (TableRow item in _db) yield return new ClientItem(item);
         }
 
         public int Load()
         {
-            db.Load(_table);
-            return db.RowCount();
+            _db.Load(_table);
+            return _db.RowCount();
         }
 
         public int GetCurrentClientID()
@@ -102,7 +102,7 @@ namespace BPA.NewModel
             return 0;
         }
 
-        public void Save() => db.Save();
+        public void Save() => _db.Save();
 
         IEnumerator IEnumerable.GetEnumerator()
         {
