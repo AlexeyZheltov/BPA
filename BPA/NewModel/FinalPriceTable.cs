@@ -12,6 +12,7 @@ namespace BPA.NewModel
     {
         const string SHEET = "Прайс лист";
         const string TABLE = "Прайс_лист";
+        public string SheetName => SHEET;
 
         WS_DB db = new WS_DB();
         Excel.ListObject _table = null;

@@ -711,7 +711,7 @@ namespace BPA
                     //processBar.TaskDone(1);
                 }
                 finalPrices.Save();
-                Excel.Worksheet ws = Globals.ThisWorkbook.Sheets[new FinalPriceList().SheetName];
+                Excel.Worksheet ws = Globals.ThisWorkbook.Sheets[finalPrices.SheetName];
                 ws.Activate();
                 MessageBox.Show("Создание прайс-листа завершено", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
 #if ENABLE_TRY
