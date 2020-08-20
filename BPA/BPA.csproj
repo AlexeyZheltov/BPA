@@ -194,8 +194,10 @@
     <Compile Include="NewModel\ExclusiveMagTable.cs" />
     <Compile Include="NewModel\FinalPriceItem.cs" />
     <Compile Include="NewModel\FinalPriceTable.cs" />
+    <Compile Include="NewModel\PlanItem.cs" />
     <Compile Include="NewModel\PlanningNewYearItem.cs" />
     <Compile Include="NewModel\PlanningNewYearTable.cs" />
+    <Compile Include="NewModel\PlanTable.cs" />
     <Compile Include="NewModel\ProductCalendarItem.cs" />
     <Compile Include="NewModel\ProductCalendarTable.cs" />
     <Compile Include="NewModel\ProductItem.cs" />
