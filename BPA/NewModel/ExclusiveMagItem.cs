@@ -19,8 +19,10 @@ namespace BPA.NewModel
         }
         public string Name
         {
-            get => _row["Name"];
-            set => _row["Name"] = value;
+            //get => _row["Name"];
+            //set => _row["Name"] = value;
+            get => _row["Эксклюзивность"];
+            set => _row["Эксклюзивность"] = value;
         }
         #endregion
     }

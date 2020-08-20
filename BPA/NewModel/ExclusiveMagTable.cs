@@ -10,8 +10,8 @@ namespace BPA.NewModel
 {
     class ExclusiveMagTable : IEnumerable<ExclusiveMagItem>
     {
-        const string SHEET = "Exclusives";
-        const string TABLE = "Exclusives";
+        const string SHEET = "Эксклюзивность";
+        const string TABLE = "Эксклюзивность";
 
         WS_DB db = new WS_DB();
         Excel.ListObject _table = null;
