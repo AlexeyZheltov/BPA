@@ -84,5 +84,34 @@ namespace BPA.NewModel
 
             return currentDiscount;
         }
+
+        public DiscountItem GetDiscountForPlanning(PlanningNewYearTable planning)
+        {
+            if (_db.RowCount() == 0) return null;
+
+            var quere = (from d in
+                            (from item in _db
+                             select new DiscountItem(item))
+                         where d.ChannelType == planning.ChannelType
+                                && d.CustomerStatus == planning.CustomerStatus
+                                && d.Period <= planning.planningDate
+                         orderby d.Period descending
+                         select d).ToList();
+            
+            if (quere.Count == 0)
+            {
+                //MessageBox.Show($"Клиенту {client.Customer} нет соответствий на листе \"Скидки\"", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //Debug.Print($"Клиенту {client.Customer} нет соответствий на листе \"Скидки\"", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return null;
+            }
+
+            DiscountItem currentDiscount = quere[0];
+
+            //проверить формулы
+            //Убрать пробелы и лишние знаки
+            currentDiscount.NormaliseAllFormulas();
+
+            return currentDiscount;
+        }
     }
 }
