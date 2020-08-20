@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using System.Linq;
 
 using BPA.Forms;
-using BPA.Model;
 using BPA.Modules;
 using Microsoft.Office.Interop.Excel;
 using Microsoft.Office.Tools.Ribbon;
@@ -1079,9 +1078,8 @@ namespace BPA
 
             Worksheet worksheet = Globals.ThisWorkbook.Application.ActiveSheet;
 
-            new PlanningNewYear(worksheet.Name).ReadColNumbers();
-            new PlanningNewYearSave(new PlanningNewYear(worksheet.Name)).ReadColNumbers();
-            new Plan().ReadColNumbers();
+            NM.PlanningNewYearTable planningNewYears = new PlanningNewYearTable();
+            NM.PlanTable plans = new PlanTable();
 
             if (!FunctionsForExcel.HasRange(worksheet, SettingsBPA.Default.PlannningNYIndicatorCellName) ||
                 worksheet.Name == SettingsBPA.Default.SHEET_NAME_PLANNING_TEMPLATE)
@@ -1091,44 +1089,47 @@ namespace BPA
             }
             try
             {
-                PlanningNewYear planningNewYearTmp = new PlanningNewYear().GetTmp(worksheet.Name);
-
-                if (!planningNewYearTmp.HasData())
+                if (!planningNewYears.HasData())
                 {
                     MessageBox.Show($"Заполните { worksheet.Name } и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                List <PlanningNewYearSave> saves = new List<PlanningNewYearSave>();
-                planningNewYearTmp.SetLists(saves);
+                planningNewYears.SetTmpParams();
+                planningNewYears.Load();
+                plans.Load();
 
-                if (saves == null || saves.Count < 1)
+                if (planningNewYears == null || planningNewYears.Count < 1)
                 {
                     MessageBox.Show($"Заполните { worksheet.Name } и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                processBar = new ProcessBar("Обновление клиентов", saves.Count);
+                processBar = new ProcessBar("Обновление клиентов", planningNewYears.Count);
                 bool isCancel = false;
                 void CancelLocal() => isCancel = true;
                 FunctionsForExcel.SpeedOn();
                 processBar.CancelClick += CancelLocal;
                 processBar.Show();
 
-                foreach (PlanningNewYearSave planningNewYearSave in saves)
+                foreach (NM.PlanningNewYearItem planningNewYear in planningNewYears)
                 {
                     if (isCancel)
                         break;
 
-                    processBar.TaskStart($"Обрабатывается артикул { planningNewYearSave.planningNewYear.Article}");
-                    Plan planning = new Plan().GetPlan(planningNewYearSave);
-                    planning.Save();
+                    processBar.TaskStart($"Обрабатывается артикул { planningNewYear.Article}");
+                    NM.PlanItem plan = plans.Find(x => x.Article == planningNewYear.Article && x.PrognosisDate == planningNewYear.planningDate);
+                    if (plan != null)
+                        continue;
+                    
+                    plan = plans.Add();
+                    plan.SetPlan(planningNewYear);
 
                     processBar.TaskDone(1);
-                    Globals.ThisWorkbook.Sheets[planning.SheetName].Activate();
                 }
+                Globals.ThisWorkbook.Sheets[plans.SheetName].Activate();
 
-                saves.Clear();
+                plans.Save();
             }
             catch (Exception ex)
             {
