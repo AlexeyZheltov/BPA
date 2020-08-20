@@ -6,6 +6,7 @@ using System.IO;
 using SettingsBPA = BPA.Properties.Settings;
 using NM = BPA.NewModel;
 using BPA.Forms;
+using BPA.NewModel;
 
 namespace BPA.Modules
 {
@@ -168,9 +169,11 @@ namespace BPA.Modules
             return buffer;
         }
 
-        //gjkextybt 
-        //получение списка артикулов и месяцов
-        public void LoadForPlanning(PlanningNewYear planning)
+        /// <summary>
+        /// Получение списка 
+        /// </summary>
+        /// <param name="planning"></param>
+        public void LoadForPlanning(PlanningNewYear planning) 
         {
             
             if (DateColumn == 0 || ArticleColumn == 0 || CampaignColumn == 0 || CustomerColumn== 0)
@@ -189,6 +192,54 @@ namespace BPA.Modules
 
                 //проверка на соответствие года и customer
                 if (date.Year != planning.CurrentDate.Year || planning.Clients.Find(x => x.Customer == customer) == null)
+                    continue;
+
+                string article = GetValueFromColumnStr(rowIndex, ArticleColumn);
+                string campaign = GetValueFromColumnStr(rowIndex, CampaignColumn);
+
+                if (article != "")
+                {
+                    double quantity = GetValueFromColumnDbl(rowIndex, QuantitynColumn);
+                    double priceList = GetValueFromColumnDbl(rowIndex, PriceListColumn);
+                    double bonus = GetValueFromColumnDbl(rowIndex, BonusColumn);
+
+                    ArticleQuantities.Add(new ArticleQuantity
+                    {
+                        Article = article,
+                        Quantity = quantity,
+                        Month = date.Month,
+                        Campaign = campaign == "" ? "0" : campaign,
+                        PriceList = priceList,
+                        Bonus = bonus
+                    });
+                }
+                ActionDone?.Invoke(1);
+            }
+        }
+
+        /// <summary>
+        /// Получение списка 
+        /// </summary>
+        /// <param name="planning"></param>
+        public void LoadForPlanning(DateTime currentDate, List<ClientItem> client_list)
+        {
+
+            if (DateColumn == 0 || ArticleColumn == 0 || CampaignColumn == 0 || CustomerColumn == 0)
+            {
+                throw new ApplicationException("Файл имеет неверный формат");
+            }
+
+            for (int rowIndex = 2; rowIndex < ArrRrows; rowIndex++)
+            {
+                if (IsCancel)
+                    return;
+                ActionStart?.Invoke($"Обрабатывается строка {rowIndex}");
+
+                DateTime date = GetDateFromCell(rowIndex, DateColumn);
+                string customer = GetValueFromColumnStr(rowIndex, CustomerColumn);
+
+                //проверка на соответствие года и customer
+                if (date.Year != currentDate.Year || client_list.Find(x => x.Customer == customer) == null)
                     continue;
 
                 string article = GetValueFromColumnStr(rowIndex, ArticleColumn);

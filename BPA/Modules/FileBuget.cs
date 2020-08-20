@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using SettingsBPA = BPA.Properties.Settings;
 using BPA.Forms;
+using BPA.NewModel;
 
 namespace BPA.Modules
 {
@@ -142,6 +143,47 @@ namespace BPA.Modules
                         Quantity = quantity,
                         Month = date.Month,
                         Campaign = campaign == "" ? "0": campaign,
+                        PriceList = priceList
+                    });
+                }
+                ActionDone?.Invoke(1);
+            }
+        }
+
+        public void LoadForPlanning(DateTime currentDate, List<ClientItem> client_list)
+        {
+            if (DateColumn == 0 || ArticleColumn == 0 || CampaignColumn == 0)
+            {
+                throw new ApplicationException("Файл имеет неверный формат");
+            }
+
+            for (int rowIndex = 2; rowIndex < ArrRrows; rowIndex++)
+            {
+                if (IsCancel)
+                    return;
+
+                ActionStart?.Invoke($"Обрабатывается строка {rowIndex}");
+
+                DateTime date = GetDateFromCell(rowIndex, DateColumn);
+                string customerBuget = GetValueFromColumnStr(rowIndex, CustomerBugetColumn); ;
+
+                //проверка на соответствие года и customer
+                if (date.Year != currentDate.Year || client_list.Find(x => x.CustomerBudget == customerBuget) == null)
+                    continue;
+
+                string article = GetValueFromColumnStr(rowIndex, ArticleColumn);
+                string campaign = GetValueFromColumnStr(rowIndex, CampaignColumn);
+                if (article != "")
+                {
+                    double quantity = GetValueFromColumnDbl(rowIndex, QuantitynColumn);
+                    double priceList = GetValueFromColumnDbl(rowIndex, PriceListColumn);
+
+                    ArticleQuantities.Add(new ArticleQuantity
+                    {
+                        Article = article,
+                        Quantity = quantity,
+                        Month = date.Month,
+                        Campaign = campaign == "" ? "0" : campaign,
                         PriceList = priceList
                     });
                 }
