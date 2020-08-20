@@ -83,6 +83,14 @@ namespace BPA.NewModel
             return _db.RowCount();
         }
 
+        public ClientItem Find(Predicate<ClientItem> predicate)
+        {
+            foreach (ClientItem client in this)
+                if (predicate(client)) return client;
+            return null;
+        }
+
+
         public int GetCurrentClientID()
         {
             Excel.Workbook wb = Globals.ThisWorkbook.InnerObject;
