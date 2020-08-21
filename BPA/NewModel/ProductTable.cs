@@ -203,7 +203,6 @@ namespace BPA.NewModel
                 {
                     switch (product.Exclusive.ToLower())
                     {
-                        //леру и оби???
                         case "diy канал":
                             if (planning.ChannelType.ToLower() == "diy")
                                 actualProducts.Add(product);

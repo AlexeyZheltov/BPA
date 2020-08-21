@@ -151,10 +151,6 @@ namespace BPA.NewModel
             if (_table.ListRows.Count < 1)
                 return false;
 
-            Range cell = _table.ListRows[1].Range[1, _table.ListColumns["№"].Index];
-            //if (cell.Value == 0 || cell.Value == null)
-            //    return false;
-
             return true;
         }
 
@@ -163,8 +159,6 @@ namespace BPA.NewModel
         /// </summary>
         public void ClearTable()
         {
-            //_TableWorksheetName = worksheetName;
-
             if (_table.ListRows.Count < 1) return;
 
             _table.DataBodyRange.Rows.Delete();
