@@ -793,7 +793,12 @@ namespace BPA
                 //получаем заполненые данне
                 NM.PlanningNewYearTable planningNewYears = new NM.PlanningNewYearTable(worksheet.Name);
 
+                //устанавливаем необходимые стобцы к удалению формул
+                planningNewYears.ClearTable();
+                planningNewYears.DelFormulas();
                 planningNewYears.Load();
+                planningNewYears.DelFirstRow();
+
                 planningNewYears.SetTmpParams();
                 if (!planningNewYears.TmpSeted)
                 {
@@ -870,10 +875,6 @@ namespace BPA
                 processBar.CancelClick += CancelLocal;
                 processBar.Show();
 
-
-                //устанавливаем необходимые стобцы к удалению формул
-                planningNewYears.DelFormulas();
-                planningNewYears.ClearTable();
 
                 // заполняем планнингньюер 
                 foreach (NM.ProductItem product in planning_products)
