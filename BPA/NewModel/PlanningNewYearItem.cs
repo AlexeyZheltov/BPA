@@ -59,36 +59,36 @@ namespace BPA.NewModel
             set => _row["DIY цена 2021, руб. с НДС"] = value;
         }
 
-        public double IRPCurrent
-        {
-            get => _row[""];
-            set => _row[""] = value;
-        }
-        public double IRPPlan
-        {
-            get => _row[""];
-            set => _row[""] = value;
-        }
-        public double IRPIndexCurrent
-        {
-            get => _row[""];
-            set => _row[""] = value;
-        }
-        public double IRPIndexPlan
-        {
-            get => _row[""];
-            set => _row[""] = value;
-        }
-        public double RRPCurrent
-        {
-            get => _row[""];
-            set => _row[""] = value;
-        }
-        public double RRPPlan
-        {
-            get => _row[""];
-            set => _row[""] = value;
-        }
+        //public double IRPCurrent
+        //{
+        //    get => _row[""];
+        //    set => _row[""] = value;
+        //}
+        //public double IRPPlan
+        //{
+        //    get => _row[""];
+        //    set => _row[""] = value;
+        //}
+        //public double IRPIndexCurrent
+        //{
+        //    get => _row[""];
+        //    set => _row[""] = value;
+        //}
+        //public double IRPIndexPlan
+        //{
+        //    get => _row[""];
+        //    set => _row[""] = value;
+        //}
+        //public double RRPCurrent
+        //{
+        //    get => _row[""];
+        //    set => _row[""] = value;
+        //}
+        //public double RRPPlan
+        //{
+        //    get => _row[""];
+        //    set => _row[""] = value;
+        //}
         public string SupercategoryEng
         {
             get => _row["Суперкатегория"];
@@ -380,255 +380,255 @@ namespace BPA.NewModel
         #endregion
 
         #region 12 столбцов PriceList
-        public double PriceList01
-        { 
-            get => _row["январь"];
-            set => _row["январь"] = value;
-        }
-        public double PriceList02
-        { 
-            get => _row["февраль"];
-            set => _row["февраль"] = value;
-        }
-        public double PriceList03
-        { 
-            get => _row["март"];
-            set => _row["март"] = value;
-        }
-        public double PriceList04
-        { 
-            get => _row["апрель"];
-            set => _row["апрель"] = value;
-        }
-        public double PriceList05
-        { 
-            get => _row["май"];
-            set => _row["май"] = value;
-        }
-        public double PriceList06
-        { 
-            get => _row["июнь"];
-            set => _row["июнь"] = value;
-        }
-        public double PriceList07
-        { 
-            get => _row["июль"];
-            set => _row["июль"] = value;
-        }
-        public double PriceList08
-        { 
-            get => _row["август"];
-            set => _row["август"] = value;
-        }
-        public double PriceList09
-        { 
-            get => _row["сентябрь"];
-            set => _row["сентябрь"] = value;
-        }
-        public double PriceList10
-        { 
-            get => _row["октябрь"];
-            set => _row["октябрь"] = value;
-        }
-        public double PriceList11
-        { 
-            get => _row["ноябрь"];
-            set => _row["ноябрь"] = value;
-        }
-        public double PriceList12
-        { 
-            get => _row["декабрь"];
-            set => _row["декабрь"] = value;
-        }
+        //public double PriceList01
+        //{ 
+        //    get => _row["январь"];
+        //    set => _row["январь"] = value;
+        //}
+        //public double PriceList02
+        //{ 
+        //    get => _row["февраль"];
+        //    set => _row["февраль"] = value;
+        //}
+        //public double PriceList03
+        //{ 
+        //    get => _row["март"];
+        //    set => _row["март"] = value;
+        //}
+        //public double PriceList04
+        //{ 
+        //    get => _row["апрель"];
+        //    set => _row["апрель"] = value;
+        //}
+        //public double PriceList05
+        //{ 
+        //    get => _row["май"];
+        //    set => _row["май"] = value;
+        //}
+        //public double PriceList06
+        //{ 
+        //    get => _row["июнь"];
+        //    set => _row["июнь"] = value;
+        //}
+        //public double PriceList07
+        //{ 
+        //    get => _row["июль"];
+        //    set => _row["июль"] = value;
+        //}
+        //public double PriceList08
+        //{ 
+        //    get => _row["август"];
+        //    set => _row["август"] = value;
+        //}
+        //public double PriceList09
+        //{ 
+        //    get => _row["сентябрь"];
+        //    set => _row["сентябрь"] = value;
+        //}
+        //public double PriceList10
+        //{ 
+        //    get => _row["октябрь"];
+        //    set => _row["октябрь"] = value;
+        //}
+        //public double PriceList11
+        //{ 
+        //    get => _row["ноябрь"];
+        //    set => _row["ноябрь"] = value;
+        //}
+        //public double PriceList12
+        //{ 
+        //    get => _row["декабрь"];
+        //    set => _row["декабрь"] = value;
+        //}
         #endregion
 
         #region 12 столбцов Объем продаж
-        public double SalesVolume01
-        { 
-            get => _row["январь"];
-            set => _row["январь"] = value;
-        }
-        public double SalesVolume02
-        { 
-            get => _row["февраль"];
-            set => _row["февраль"] = value;
-        }
-        public double SalesVolume03
-        { 
-            get => _row["март"];
-            set => _row["март"] = value;
-        }
-        public double SalesVolume04
-        { 
-            get => _row["апрель"];
-            set => _row["апрель"] = value;
-        }
-        public double SalesVolume05
-        { 
-            get => _row["май"];
-            set => _row["май"] = value;
-        }
-        public double SalesVolume06
-        { 
-            get => _row["июнь"];
-            set => _row["июнь"] = value;
-        }
-        public double SalesVolume07
-        { 
-            get => _row["июль"];
-            set => _row["июль"] = value;
-        }
-        public double SalesVolume08
-        { 
-            get => _row["август"];
-            set => _row["август"] = value;
-        }
-        public double SalesVolume09
-        { 
-            get => _row["сентябрь"];
-            set => _row["сентябрь"] = value;
-        }
-        public double SalesVolume10
-        { 
-            get => _row["октябрь"];
-            set => _row["октябрь"] = value;
-        }
-        public double SalesVolume11
-        { 
-            get => _row["ноябрь"];
-            set => _row["ноябрь"] = value;
-        }
-        public double SalesVolume12
-        { 
-            get => _row["декабрь"];
-            set => _row["декабрь"] = value;
-        }
+        //public double SalesVolume01
+        //{ 
+        //    get => _row["январь"];
+        //    set => _row["январь"] = value;
+        //}
+        //public double SalesVolume02
+        //{ 
+        //    get => _row["февраль"];
+        //    set => _row["февраль"] = value;
+        //}
+        //public double SalesVolume03
+        //{ 
+        //    get => _row["март"];
+        //    set => _row["март"] = value;
+        //}
+        //public double SalesVolume04
+        //{ 
+        //    get => _row["апрель"];
+        //    set => _row["апрель"] = value;
+        //}
+        //public double SalesVolume05
+        //{ 
+        //    get => _row["май"];
+        //    set => _row["май"] = value;
+        //}
+        //public double SalesVolume06
+        //{ 
+        //    get => _row["июнь"];
+        //    set => _row["июнь"] = value;
+        //}
+        //public double SalesVolume07
+        //{ 
+        //    get => _row["июль"];
+        //    set => _row["июль"] = value;
+        //}
+        //public double SalesVolume08
+        //{ 
+        //    get => _row["август"];
+        //    set => _row["август"] = value;
+        //}
+        //public double SalesVolume09
+        //{ 
+        //    get => _row["сентябрь"];
+        //    set => _row["сентябрь"] = value;
+        //}
+        //public double SalesVolume10
+        //{ 
+        //    get => _row["октябрь"];
+        //    set => _row["октябрь"] = value;
+        //}
+        //public double SalesVolume11
+        //{ 
+        //    get => _row["ноябрь"];
+        //    set => _row["ноябрь"] = value;
+        //}
+        //public double SalesVolume12
+        //{ 
+        //    get => _row["декабрь"];
+        //    set => _row["декабрь"] = value;
+        //}
         #endregion
 
         # region 12 столбцов Promo PriceList
-        public double PromoPriceList01
-        { 
-            get => _row["январь"];
-            set => _row["январь"] = value;
-        }
-        public double PromoPriceList02
-        { 
-            get => _row["февраль"];
-            set => _row["февраль"] = value;
-        }
-        public double PromoPriceList03
-        { 
-            get => _row["март"];
-            set => _row["март"] = value;
-        }
-        public double PromoPriceList04
-        { 
-            get => _row["апрель"];
-            set => _row["апрель"] = value;
-        }
-        public double PromoPriceList05
-        { 
-            get => _row["май"];
-            set => _row["май"] = value;
-        }
-        public double PromoPriceList06
-        { 
-            get => _row["июнь"];
-            set => _row["июнь"] = value;
-        }
-        public double PromoPriceList07
-        { 
-            get => _row["июль"];
-            set => _row["июль"] = value;
-        }
-        public double PromoPriceList08
-        { 
-            get => _row["август"];
-            set => _row["август"] = value;
-        }
-        public double PromoPriceList09
-        { 
-            get => _row["сентябрь"];
-            set => _row["сентябрь"] = value;
-        }
-        public double PromoPriceList10
-        { 
-            get => _row["октябрь"];
-            set => _row["октябрь"] = value;
-        }
-        public double PromoPriceList11
-        { 
-            get => _row["ноябрь"];
-            set => _row["ноябрь"] = value;
-        }
-        public double PromoPriceList12
-        { 
-            get => _row["декабрь"];
-            set => _row["декабрь"] = value;
-        }
+        //public double PromoPriceList01
+        //{ 
+        //    get => _row["январь"];
+        //    set => _row["январь"] = value;
+        //}
+        //public double PromoPriceList02
+        //{ 
+        //    get => _row["февраль"];
+        //    set => _row["февраль"] = value;
+        //}
+        //public double PromoPriceList03
+        //{ 
+        //    get => _row["март"];
+        //    set => _row["март"] = value;
+        //}
+        //public double PromoPriceList04
+        //{ 
+        //    get => _row["апрель"];
+        //    set => _row["апрель"] = value;
+        //}
+        //public double PromoPriceList05
+        //{ 
+        //    get => _row["май"];
+        //    set => _row["май"] = value;
+        //}
+        //public double PromoPriceList06
+        //{ 
+        //    get => _row["июнь"];
+        //    set => _row["июнь"] = value;
+        //}
+        //public double PromoPriceList07
+        //{ 
+        //    get => _row["июль"];
+        //    set => _row["июль"] = value;
+        //}
+        //public double PromoPriceList08
+        //{ 
+        //    get => _row["август"];
+        //    set => _row["август"] = value;
+        //}
+        //public double PromoPriceList09
+        //{ 
+        //    get => _row["сентябрь"];
+        //    set => _row["сентябрь"] = value;
+        //}
+        //public double PromoPriceList10
+        //{ 
+        //    get => _row["октябрь"];
+        //    set => _row["октябрь"] = value;
+        //}
+        //public double PromoPriceList11
+        //{ 
+        //    get => _row["ноябрь"];
+        //    set => _row["ноябрь"] = value;
+        //}
+        //public double PromoPriceList12
+        //{ 
+        //    get => _row["декабрь"];
+        //    set => _row["декабрь"] = value;
+        //}
         #endregion
 
         #region 12 столбцов Promo Объем продаж
-        public double PromoSalesVolume01
-        { 
-            get => _row["январь"];
-            set => _row["январь"] = value;
-        }
-        public double PromoSalesVolume02
-        { 
-            get => _row["февраль"];
-            set => _row["февраль"] = value;
-        }
-        public double PromoSalesVolume03
-        { 
-            get => _row["март"];
-            set => _row["март"] = value;
-        }
-        public double PromoSalesVolume04
-        { 
-            get => _row["апрель"];
-            set => _row["апрель"] = value;
-        }
-        public double PromoSalesVolume05
-        { 
-            get => _row["май"];
-            set => _row["май"] = value;
-        }
-        public double PromoSalesVolume06
-        { 
-            get => _row["июнь"];
-            set => _row["июнь"] = value;
-        }
-        public double PromoSalesVolume07
-        { 
-            get => _row["июль"];
-            set => _row["июль"] = value;
-        }
-        public double PromoSalesVolume08
-        { 
-            get => _row["август"];
-            set => _row["август"] = value;
-        }
-        public double PromoSalesVolume09
-        { 
-            get => _row["сентябрь"];
-            set => _row["сентябрь"] = value;
-        }
-        public double PromoSalesVolume10
-        { 
-            get => _row["октябрь"];
-            set => _row["октябрь"] = value;
-        }
-        public double PromoSalesVolume11
-        { 
-            get => _row["ноябрь"];
-            set => _row["ноябрь"] = value;
-        }
-        public double PromoSalesVolume12
-        { 
-            get => _row["декабрь"];
-            set => _row["декабрь"] = value;
-        }
+        //public double PromoSalesVolume01
+        //{ 
+        //    get => _row["январь"];
+        //    set => _row["январь"] = value;
+        //}
+        //public double PromoSalesVolume02
+        //{ 
+        //    get => _row["февраль"];
+        //    set => _row["февраль"] = value;
+        //}
+        //public double PromoSalesVolume03
+        //{ 
+        //    get => _row["март"];
+        //    set => _row["март"] = value;
+        //}
+        //public double PromoSalesVolume04
+        //{ 
+        //    get => _row["апрель"];
+        //    set => _row["апрель"] = value;
+        //}
+        //public double PromoSalesVolume05
+        //{ 
+        //    get => _row["май"];
+        //    set => _row["май"] = value;
+        //}
+        //public double PromoSalesVolume06
+        //{ 
+        //    get => _row["июнь"];
+        //    set => _row["июнь"] = value;
+        //}
+        //public double PromoSalesVolume07
+        //{ 
+        //    get => _row["июль"];
+        //    set => _row["июль"] = value;
+        //}
+        //public double PromoSalesVolume08
+        //{ 
+        //    get => _row["август"];
+        //    set => _row["август"] = value;
+        //}
+        //public double PromoSalesVolume09
+        //{ 
+        //    get => _row["сентябрь"];
+        //    set => _row["сентябрь"] = value;
+        //}
+        //public double PromoSalesVolume10
+        //{ 
+        //    get => _row["октябрь"];
+        //    set => _row["октябрь"] = value;
+        //}
+        //public double PromoSalesVolume11
+        //{ 
+        //    get => _row["ноябрь"];
+        //    set => _row["ноябрь"] = value;
+        //}
+        //public double PromoSalesVolume12
+        //{ 
+        //    get => _row["декабрь"];
+        //    set => _row["декабрь"] = value;
+        //}
         #endregion
 
         #region промо GS
@@ -860,18 +860,18 @@ namespace BPA.NewModel
             {
                 this.RRCCUrent = rrcCurrent.RRCNDS;
                 this.DIYCurrent = rrcCurrent.DIY;
-                this.IRPCurrent = rrcCurrent.IRP;
-                this.IRPIndexCurrent = rrcCurrent.IRPIndex;
-                this.RRPCurrent = rrcCurrent.RRP;
+                //this.IRPCurrent = rrcCurrent.IRP;
+                //this.IRPIndexCurrent = rrcCurrent.IRPIndex;
+                //this.RRPCurrent = rrcCurrent.RRP;
             }
 
             if (rrcCurrent != null)
             {
                 this.RRCPlan = rrcPlan.RRCNDS;
                 this.DIYPlan = rrcPlan.DIY;
-                this.IRPPlan = rrcPlan.IRP;
-                this.IRPIndexPlan = rrcPlan.IRPIndex;
-                this.RRPPlan = rrcPlan.RRP;
+                //this.IRPPlan = rrcPlan.IRP;
+                //this.IRPIndexPlan = rrcPlan.IRPIndex;
+                //this.RRPPlan = rrcPlan.RRP;
             }
         }
 
@@ -879,14 +879,12 @@ namespace BPA.NewModel
         {
             if (stkPlan != null)
             {
-                //this.STKEurPlan = stkPlan.STKEur;
-                //this.STKRubPlan = 
+                this.STKRubPlan = stkPlan.STKRub;
             }
 
             if (stkCurrent != null)
             {
-                //this.STKEurCurrent = stkCurrent.STKEur;
-                //this.STKRubCurrent = 
+                this.STKRubCurrent = stkCurrent.STKRub;
             }
         }
 

@@ -886,7 +886,6 @@ namespace BPA
                         break;
                     processBar.TaskStart($"Обрабатывается артикул {product.Article}");
 
-
                     NM.PlanningNewYearItem planning = planningNewYears.Add();
                     planning.SetParamsToItem(planningNewYears);
                     planning.SetProduct(product);
@@ -941,7 +940,7 @@ namespace BPA
             ProcessBar processBar = null;
             FileDescision fileDescision = null;
             FileBuget fileBuget = null;
-            FilePriceMT filePriceMT = null;
+            //FilePriceMT filePriceMT = null;
 
             Worksheet worksheet = Globals.ThisWorkbook.Application.ActiveSheet;
             if (!FunctionsForExcel.HasRange(worksheet, SettingsBPA.Default.PlannningNYIndicatorCellName) ||
@@ -953,10 +952,7 @@ namespace BPA
             try
             {
                 NM.ClientTable clients = new ClientTable();
-                //NM.ProductTable products = new ProductTable();
                 NM.DiscountTable discounts = new DiscountTable();
-                NM.RRCTable rrcs = new RRCTable();
-                NM.ExclusiveMagTable exclusives = new NM.ExclusiveMagTable();
 
                 NM.PlanningNewYearTable planningNewYears = new PlanningNewYearTable(worksheet.Name);
                 planningNewYears.Load();
@@ -978,18 +974,9 @@ namespace BPA
                 NM.DiscountItem discount = discounts.GetDiscountForPlanning(planningNewYears);
                 if (discount != null) planningNewYears.MaximumBonus = discount.MaximumBonus;
 
-                exclusives.Load();
-                List<string> str_exclus = (from exlus in exclusives
-                                           select exlus.Name.ToLower()).ToList();
-                exclusives = null;
-
-                //products.Load();
                 clients.Load();
-                rrcs.Load();
 
-                //List<NM.ProductItem> planning_products = products.GetProductForPlanning(planningNewYears, str_exclus);
                 List<NM.ClientItem> planning_clients = clients.GetClientsForPlanning(planningNewYears.ChannelType, planningNewYears.CustomerStatus);
-                List<NM.RRCItem> actualRRC = rrcs.GetActualPriceList(planningNewYears.CurrentDate);
 
                 //получаем Desicion
                 processBar = null;
@@ -1015,21 +1002,16 @@ namespace BPA
                 if (fileBuget?.IsOpen ?? false) fileBuget.Close();
                 //
 
-                //загружаем  FilePriceListMT
-                processBar = null;
-                filePriceMT = new FilePriceMT();
-                if (!filePriceMT.IsOpen)
-                    return;
-                filePriceMT.SetFileData();
-                filePriceMT.SetProcessBarForLoad(ref processBar);
-                filePriceMT.Load(planningNewYears.CurrentDate); //почему не передаем Mag??
-                processBar.Close();
-                if (filePriceMT?.IsOpen ?? false) filePriceMT.Close();
-                //
-
-                //PriceListForPlaning priceListForPlaning = new PriceListForPlaning(planningNewYearTmp);
-                //priceListForPlaning.Load();
-                //
+                ////загружаем  FilePriceListMT
+                //processBar = null;
+                //filePriceMT = new FilePriceMT();
+                //if (!filePriceMT.IsOpen)
+                //    return;
+                //filePriceMT.SetFileData();
+                //filePriceMT.SetProcessBarForLoad(ref processBar);
+                //filePriceMT.Load(planningNewYears.CurrentDate); //почему не передаем Mag??
+                //processBar.Close();
+                //if (filePriceMT?.IsOpen ?? false) filePriceMT.Close();
 
                 processBar = new ProcessBar("Обновление клиентов", planningNewYears.Count);
                 bool isCancel = false;
@@ -1092,7 +1074,7 @@ namespace BPA
 
             Worksheet worksheet = Globals.ThisWorkbook.Application.ActiveSheet;
 
-            NM.PlanningNewYearTable planningNewYears = new PlanningNewYearTable();
+            NM.PlanningNewYearTable planningNewYears = new PlanningNewYearTable(worksheet.Name);
             NM.PlanTable plans = new PlanTable();
 
             if (!FunctionsForExcel.HasRange(worksheet, SettingsBPA.Default.PlannningNYIndicatorCellName) ||
@@ -1101,8 +1083,12 @@ namespace BPA
                 MessageBox.Show("Перейдите на страницу планирования (или создайте её) и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
             try
             {
+                planningNewYears.Load();
+                plans.Load();
+
                 if (!planningNewYears.HasData())
                 {
                     MessageBox.Show($"Заполните { worksheet.Name } и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1110,8 +1096,6 @@ namespace BPA
                 }
 
                 planningNewYears.SetTmpParams();
-                planningNewYears.Load();
-                plans.Load();
 
                 if (planningNewYears == null || planningNewYears.Count < 1)
                 {
