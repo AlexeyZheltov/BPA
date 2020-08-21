@@ -170,6 +170,17 @@ namespace BPA.NewModel
             set => _row["Price list цена 2020, руб."] = value;
         }
 
+        public double STKRubCurrent {
+            get => _row["STK 2.5 2020, RUB"];
+            set => _row["STK 2.5 2020, RUB"] = value;
+        }
+        public double STKRubPlan
+        {
+            get => _row["STK 2.5 2021, RUB"];
+            set => _row["STK 2.5 2021, RUB"] = value;
+        }
+
+
         #region Prognosis
         //public double QuantityPrognosisYear {
         //    get => _row["ИТОГО Прогноз за год, шт."];

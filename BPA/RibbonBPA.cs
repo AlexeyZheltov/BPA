@@ -819,6 +819,8 @@ namespace BPA
                 List<NM.ClientItem> planning_clients = clients.GetClientsForPlanning(planningNewYears.ChannelType, planningNewYears.CustomerStatus);
                 List<NM.RRCItem> actualRRC = rrcs.GetActualPriceList(planningNewYears.CurrentDate);
                 List<NM.RRCItem> planRRC = rrcs.GetActualPriceList(planningNewYears.planningDate);
+                List<NM.STKItem> actualSTK = stks.GetActualPriceList(planningNewYears.CurrentDate);
+                List<NM.STKItem> planSTK = stks.GetActualPriceList(planningNewYears.planningDate);
 
                 //получаем Desicion
                 //processBar = null;
@@ -890,8 +892,8 @@ namespace BPA
                     planning.SetRRC(RRCPlan, RRCCurrent);
 
                     //уточнить отбор цены по дате
-                    NM.STKItem STKPlan = stks.Find(x => x.Article == product.Article && x.Date.Year == planningNewYears.planningDate.Year);
-                    NM.STKItem STKPCurrent = stks.Find(x => x.Article == product.Article && x.Date.Year == planningNewYears.CurrentDate.Year);
+                    NM.STKItem STKPlan = planSTK.Find(x => x.Article == product.Article);
+                    NM.STKItem STKPCurrent = actualSTK.Find(x => x.Article == product.Article);
                     planning.SetSTK(STKPlan, STKPCurrent);
 
                     planning.SetValuesPrognosis(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);

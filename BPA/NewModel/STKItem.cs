@@ -22,12 +22,12 @@ namespace BPA.NewModel
             get => _row["Артикул"];
             set => _row["Артикул"] = value;
         }
-        public string STKEur
+        public double STKEur
         {
             get => _row["STK 2.5, Eur"];
             set => _row["STK 2.5, Eur"] = value;
         }
-        public string STKRub
+        public double STKRub
         {
             get => _row["STK 2.5, руб."];
             set => _row["STK 2.5, руб."] = value;
@@ -39,5 +39,12 @@ namespace BPA.NewModel
         }
 
         #endregion
+        public class STKItemComparerForPrice : IEqualityComparer<STKItem>
+        {
+            public bool Equals(STKItem x, STKItem y) => x.Article == y.Article;
+
+            public int GetHashCode(STKItem obj) => obj.Article.GetHashCode();
+        }
+
     }
 }
