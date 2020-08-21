@@ -77,6 +77,7 @@ namespace BPA
                 //Обновление списка продуктов
                 foreach(FileCalendar.ProductFromCalendar productFromCalendar in fileCalendar.ProductsFromCalendar) 
                 {
+                    processBar.TaskStart($"Обрабатывается артикул {productFromCalendar.LocalIDGardena}");
                     if (isCancel) break;
 
                     ProductItem product = products.Find(x=>x.Article == productFromCalendar.LocalIDGardena);
@@ -85,6 +86,8 @@ namespace BPA
                         product = products.Add();
 
                     product.UpdateFromCalendar(productFromCalendar);
+
+                    processBar.TaskDone(1);
                 }
 
 
