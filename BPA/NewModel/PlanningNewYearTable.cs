@@ -81,6 +81,11 @@ namespace BPA.NewModel
 
         public int Count => _db.RowCount();
 
+        public void DelFirstRow()
+        {
+            _db.Delete(0);
+        }
+
         public PlanningNewYearItem Find(Predicate<PlanningNewYearItem> predicate)
         {
             foreach (PlanningNewYearItem item in this)
