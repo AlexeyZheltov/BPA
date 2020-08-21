@@ -861,6 +861,7 @@ namespace BPA
                 //PriceListForPlaning priceListForPlaning = new PriceListForPlaning(planningNewYearTmp);
                 //priceListForPlaning.Load();
                 //
+                PriceListForPlanningNM priceListModule = new PriceListForPlanningNM(filePriceMT, discount);
 
                 processBar = new ProcessBar("Обновление планирования", products.Count);
                 bool isCancel = false;
@@ -898,7 +899,14 @@ namespace BPA
 
                     planning.SetValuesPrognosis(fileDescision.ArticleQuantities, fileBuget.ArticleQuantities);
                     //planning.DIYPriceList = priceListForPlaning.GetPrice(product.Article);
-                    
+
+                    //priceList
+                    priceListModule.SetProduct(product);
+                    if (!priceListModule.FormulaChecked) return;
+
+                    planning.PriceListCurrentn= priceListModule.GetPrice(actualRRC);
+                    planning.PriceListPalan = priceListModule.GetPrice(planRRC);
+                    //
 
                     processBar.TaskDone(1);
                 }
