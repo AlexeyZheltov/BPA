@@ -169,7 +169,10 @@ namespace BPA.Modules
 
                 //проверка на соответствие года и customer
                 if (date.Year != currentDate.Year || client_list.Find(x => x.CustomerBudget == customerBuget) == null)
+                {
+                    ActionDone?.Invoke(1);
                     continue;
+                }
 
                 string article = GetValueFromColumnStr(rowIndex, ArticleColumn);
                 string campaign = GetValueFromColumnStr(rowIndex, CampaignColumn);

@@ -233,6 +233,7 @@ namespace BPA.Modules
             {
                 if (IsCancel)
                     return;
+
                 ActionStart?.Invoke($"Обрабатывается строка {rowIndex}");
 
                 DateTime date = GetDateFromCell(rowIndex, DateColumn);
@@ -240,7 +241,10 @@ namespace BPA.Modules
 
                 //проверка на соответствие года и customer
                 if (date.Year != currentDate.Year || client_list.Find(x => x.Customer == customer) == null)
+                {
+                    ActionDone?.Invoke(1);
                     continue;
+                }
 
                 string article = GetValueFromColumnStr(rowIndex, ArticleColumn);
                 string campaign = GetValueFromColumnStr(rowIndex, CampaignColumn);

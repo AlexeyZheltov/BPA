@@ -227,7 +227,10 @@ namespace BPA.Modules
                 {
                     magVal = GetValueFromColumnStr(rowIndex, MagColumn);
                     if (magVal != mag)
+                    {
+                        ActionDone?.Invoke(1);
                         continue;
+                    }
                 }
 
                 DateTime firstDate = GetDateFromCell(rowIndex, DateFromColumn);
