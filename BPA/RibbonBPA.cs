@@ -459,6 +459,8 @@ namespace BPA
                 fileDescision.SetFileData(ColumnsForLoadFromDescision);
                 fileDescision.SetProcessBarForLoad(ref processBar);
                 List<ClientFromDescision> clientsFromDecision = fileDescision.LoadClients();
+                fileDescision.ClearData();
+
                 
                 processBar.Close();
                 if (fileDescision?.IsOpen ?? false) fileDescision.Close();
@@ -841,6 +843,7 @@ namespace BPA
                 fileDescision.SetFileData(ColumnsForLoadFromDescision);
                 fileDescision.SetProcessBarForLoad(ref processBar);
                 fileDescision.LoadForPlanning(planningNewYears.CurrentDate, planning_clients);
+                fileDescision.ClearData();
                 processBar.Close();
                 if (fileDescision?.IsOpen ?? false) fileDescision.Close();
                 //
@@ -853,6 +856,7 @@ namespace BPA
                 fileBuget.SetFileData();
                 fileBuget.SetProcessBarForLoad(ref processBar);
                 fileBuget.LoadForPlanning(planningNewYears.CurrentDate, planning_clients);
+                fileBuget.ClearData();
                 processBar.Close();
                 if (fileBuget?.IsOpen ?? false) fileBuget.Close();
                 //
@@ -865,6 +869,7 @@ namespace BPA
                 filePriceMT.SetFileData();
                 filePriceMT.SetProcessBarForLoad(ref processBar);
                 filePriceMT.Load(planningNewYears.CurrentDate); //почему не передаем Mag??
+                filePriceMT.ClearData();
                 processBar.Close();
                 if (filePriceMT?.IsOpen ?? false) filePriceMT.Close();
                 //
@@ -991,6 +996,7 @@ namespace BPA
                 if (!fileDescision.IsOpen)
                     return;
                 fileDescision.LoadForPlanning(planningNewYears.CurrentDate, planning_clients);
+                fileDescision.ClearData();
                 processBar.Close();
                 if (fileDescision?.IsOpen ?? false) fileDescision.Close();
                 //

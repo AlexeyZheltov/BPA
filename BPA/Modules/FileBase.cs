@@ -178,6 +178,12 @@ namespace BPA.Modules
                     FileArray[r, newCol] = bufer[r, 1];
             }
         }
+
+        public void ClearData()
+        {
+            FileArray = null;
+        }
+
         /// <summary>
         /// Загрузка массивы данных с одной строки
         /// </summary>
