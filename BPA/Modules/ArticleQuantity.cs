@@ -31,5 +31,10 @@ namespace BPA.Modules
         {
             get; set;
         }
+
+        public int row_in_file
+        {
+            get; set;
+        } 
     }
 }

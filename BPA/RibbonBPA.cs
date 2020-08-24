@@ -443,6 +443,8 @@ namespace BPA
 
         private void ClientsUpdate_Click(object sender, RibbonControlEventArgs e)
         {
+            string[] ColumnsForLoadFromDescision = new string[] { "Code", "Date", "Campaign", "Customer", "Quantity", "PricelistPriceTotal", "Bonus" };
+
             FunctionsForExcel.SpeedOn();
             FileDescision fileDescision = null;
             ProcessBar processBar = null;
@@ -454,7 +456,7 @@ namespace BPA
                 fileDescision = new FileDescision();
                 if (!fileDescision.IsOpen) 
                     return;
-                fileDescision.SetFileData();
+                fileDescision.SetFileData(ColumnsForLoadFromDescision);
                 fileDescision.SetProcessBarForLoad(ref processBar);
                 List<ClientFromDescision> clientsFromDecision = fileDescision.LoadClients();
                 
@@ -772,6 +774,7 @@ namespace BPA
         /// <param name="e"></param>
         private void GetPlanningData_Click(object sender, RibbonControlEventArgs e)
         {
+            string[] ColumnsForLoadFromDescision = new string[] { "Code", "Date", "Campaign", "Customer", "Quantity", "PricelistPriceTotal", "Bonus" };
             ProcessBar processBar = null;
             FileDescision fileDescision = null;
             FileBuget fileBuget = null;
@@ -835,7 +838,7 @@ namespace BPA
                 fileDescision = new FileDescision();
                 if (!fileDescision.IsOpen)
                     return;
-                fileDescision.SetFileData();
+                fileDescision.SetFileData(ColumnsForLoadFromDescision);
                 fileDescision.SetProcessBarForLoad(ref processBar);
                 fileDescision.LoadForPlanning(planningNewYears.CurrentDate, planning_clients);
                 processBar.Close();
@@ -937,6 +940,8 @@ namespace BPA
         /// <param name="e"></param>
         private void FactUpdate_Click(object sender, RibbonControlEventArgs e)
         {
+            string[] ColumnsForLoadFromDescision = new string[] { "Code", "Date", "Campaign", "Customer", "Quantity", "PricelistPriceTotal", "Bonus" };
+
             ProcessBar processBar = null;
             FileDescision fileDescision = null;
             FileBuget fileBuget = null;
@@ -981,7 +986,7 @@ namespace BPA
                 //получаем Desicion
                 processBar = null;
                 fileDescision = new FileDescision();
-                fileDescision.SetFileData();
+                fileDescision.SetFileData(ColumnsForLoadFromDescision);
                 fileDescision.SetProcessBarForLoad(ref processBar);
                 if (!fileDescision.IsOpen)
                     return;
