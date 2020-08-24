@@ -458,12 +458,11 @@ namespace BPA
                     return;
                 fileDescision.SetFileData(ColumnsForLoadFromDescision);
                 fileDescision.SetProcessBarForLoad(ref processBar);
+                if (fileDescision?.IsOpen ?? false) fileDescision.Close();
                 List<ClientFromDescision> clientsFromDecision = fileDescision.LoadClients();
                 fileDescision.ClearData();
 
-                
                 processBar.Close();
-                if (fileDescision?.IsOpen ?? false) fileDescision.Close();
 
                 //Загрузить данные из листа клиентов
                 if (clients.Load() == 0) return;
@@ -777,6 +776,7 @@ namespace BPA
         private void GetPlanningData_Click(object sender, RibbonControlEventArgs e)
         {
             string[] ColumnsForLoadFromDescision = new string[] { "Code", "Date", "Campaign", "Customer", "Quantity", "PricelistPriceTotal", "Bonus" };
+
             ProcessBar processBar = null;
             FileDescision fileDescision = null;
             FileBuget fileBuget = null;
@@ -841,11 +841,11 @@ namespace BPA
                 if (!fileDescision.IsOpen)
                     return;
                 fileDescision.SetFileData(ColumnsForLoadFromDescision);
+                if (fileDescision?.IsOpen ?? false) fileDescision.Close();
                 fileDescision.SetProcessBarForLoad(ref processBar);
                 fileDescision.LoadForPlanning(planningNewYears.CurrentDate, planning_clients);
                 fileDescision.ClearData();
                 processBar.Close();
-                if (fileDescision?.IsOpen ?? false) fileDescision.Close();
                 //
 
                 //загружаем  Buget
@@ -854,11 +854,11 @@ namespace BPA
                 if (!fileBuget.IsOpen)
                     return;
                 fileBuget.SetFileData();
+                if (fileBuget?.IsOpen ?? false) fileBuget.Close();
                 fileBuget.SetProcessBarForLoad(ref processBar);
                 fileBuget.LoadForPlanning(planningNewYears.CurrentDate, planning_clients);
                 fileBuget.ClearData();
                 processBar.Close();
-                if (fileBuget?.IsOpen ?? false) fileBuget.Close();
                 //
 
                 //загружаем  FilePriceListMT
@@ -867,11 +867,11 @@ namespace BPA
                 if (!filePriceMT.IsOpen)
                     return;
                 filePriceMT.SetFileData();
+                if (filePriceMT?.IsOpen ?? false) filePriceMT.Close();
                 filePriceMT.SetProcessBarForLoad(ref processBar);
                 filePriceMT.Load(planningNewYears.CurrentDate); //почему не передаем Mag??
                 filePriceMT.ClearData();
                 processBar.Close();
-                if (filePriceMT?.IsOpen ?? false) filePriceMT.Close();
                 //
 
                 //PriceListForPlaning priceListForPlaning = new PriceListForPlaning(planningNewYearTmp);
@@ -995,10 +995,10 @@ namespace BPA
                 fileDescision.SetProcessBarForLoad(ref processBar);
                 if (!fileDescision.IsOpen)
                     return;
+                if (fileDescision?.IsOpen ?? false) fileDescision.Close();
                 fileDescision.LoadForPlanning(planningNewYears.CurrentDate, planning_clients);
                 fileDescision.ClearData();
                 processBar.Close();
-                if (fileDescision?.IsOpen ?? false) fileDescision.Close();
                 //
 
                 //получаем Buget

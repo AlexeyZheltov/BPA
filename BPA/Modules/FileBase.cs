@@ -119,7 +119,7 @@ namespace BPA.Modules
         }
         private int _LastRow = 0;
 
-        public int LastColumn
+        private int LastColumn
         {
             get
             {
@@ -130,9 +130,9 @@ namespace BPA.Modules
         }
         private int _LastColumn = 0;
 
-        public object[,] FileArray;
+        private object[,] FileArray;
         public int ArrRrows;
-        public int ArrColumns;
+        private int ArrColumns;
         /// <summary>
         /// Загрузка массива данных
         /// </summary>
