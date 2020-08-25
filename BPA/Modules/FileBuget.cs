@@ -146,7 +146,7 @@ namespace BPA.Modules
                         PriceList = priceList
                     });
                 }
-                ActionDone?.Invoke(1);
+                ActionD();
             }
         }
 
@@ -170,7 +170,7 @@ namespace BPA.Modules
                 //проверка на соответствие года и customer
                 if (date.Year != currentDate.Year || client_list.Find(x => x.CustomerBudget == customerBuget) == null)
                 {
-                    ActionDone?.Invoke(1);
+                    ActionD();
                     continue;
                 }
 
@@ -190,7 +190,7 @@ namespace BPA.Modules
                         PriceList = priceList
                     });
                 }
-                ActionDone?.Invoke(1);
+                ActionD();
             }
         }
     }

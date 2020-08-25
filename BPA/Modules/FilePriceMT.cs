@@ -228,7 +228,7 @@ namespace BPA.Modules
                     magVal = GetValueFromColumnStr(rowIndex, MagColumn);
                     if (magVal != mag)
                     {
-                        ActionDone?.Invoke(1);
+                        ActionD();
                         continue;
                     }
                 }
@@ -242,7 +242,7 @@ namespace BPA.Modules
                 else if (date <= lastDate && date >= firstDate) {
                     AddClient(rowIndex, PriceNewColumn);
                 }
-                ActionDone?.Invoke(1);
+                ActionD();
             }
             IsOpen = true;
 

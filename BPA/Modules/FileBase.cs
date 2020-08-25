@@ -11,6 +11,7 @@ namespace BPA.Modules
         public readonly Excel.Application Application = Globals.ThisWorkbook.Application;
         protected string FileSheetName = "";
         protected int FileHeaderRow = 1;
+        private int ActionCounter = 1;
 
         public void SetProcessBarForLoad(ref ProcessBar pB)
         {
@@ -28,10 +29,37 @@ namespace BPA.Modules
         /// <summary>
         /// Событие завершения задачи
         /// </summary>
-        public Action<int> ActionDone;
+        private Action<int> ActionDone;
+        public void ActionD()
+        {
+            if (ActionCounter++ >= coef)
+            {
+                ActionDone?.Invoke(1);
+                ActionCounter = 1;
+            }
+            //ActionCounter++;
+        }
 
-        //public int CountActions => LastRow - FileHeaderRow;
-        public int CountActions => ArrRrows;
+        public int coef = 1;
+        public int CountActions
+        {
+            get
+            {
+                double digit = Math.Log10(Convert.ToDouble(ArrRrows - 1));
+                int pow = 1;
+
+                if (digit >= 8)
+                    pow = 7;
+                else if (digit >= 5)
+                    pow = 4;
+
+                coef = Convert.ToInt32(Math.Pow(10, pow));
+
+                return ArrRrows / coef;
+            }
+            set => CountActions = value;
+        }
+        //public int CountActions => ArrRrows;
         public bool IsCancel = false;
 
         public bool IsOpen { get; set; } = false;

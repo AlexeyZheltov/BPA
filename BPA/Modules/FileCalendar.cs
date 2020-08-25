@@ -469,7 +469,7 @@ namespace BPA.Modules
 
                 if (GetValueFromColumnStr(rowIndex, 1) == "")
                 {
-                    ActionDone?.Invoke(1);
+                    ActionD();
                     continue;
                 }
 
@@ -482,7 +482,7 @@ namespace BPA.Modules
 
                 if (!CheckToBeSold())
                 {
-                    ActionDone?.Invoke(1);
+                    ActionD();
                     continue;
                 }
 
@@ -505,7 +505,7 @@ namespace BPA.Modules
 
                 AddToList(rowIndex);
 
-                ActionDone?.Invoke(1);
+                ActionD();
             }
             if (product == null) return;
             return;

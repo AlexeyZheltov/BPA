@@ -162,7 +162,7 @@ namespace BPA.Modules
                     //    GardenaChannel = gardenaChannel
                     //});
                 }
-                ActionDone?.Invoke(1);
+                ActionD();
             }
 
             if (buffer.Count == 0) throw new ApplicationException("Файл не содержит значемых данных");
@@ -213,7 +213,7 @@ namespace BPA.Modules
                         Bonus = bonus
                     });
                 }
-                ActionDone?.Invoke(1);
+                ActionD();
             }
         }
 
@@ -242,7 +242,7 @@ namespace BPA.Modules
                 //проверка на соответствие года и customer
                 if (date.Year != currentDate.Year || client_list.Find(x => x.Customer == customer) == null)
                 {
-                    ActionDone?.Invoke(1);
+                    ActionD();
                     continue;
                 }
 
@@ -265,7 +265,7 @@ namespace BPA.Modules
                         Bonus = bonus
                     });
                 }
-                ActionDone?.Invoke(1);
+                ActionD();
             }
         }
     }
