@@ -443,7 +443,7 @@ namespace BPA
 
         private void ClientsUpdate_Click(object sender, RibbonControlEventArgs e)
         {
-            string[] ColumnsForLoadFromDescision = new string[] { "Code", "Date", "Campaign", "Customer", "Quantity", "PricelistPriceTotal", "Bonus" };
+            string[] ColumnsForLoadFromDescision = new string[] { "Code", "Date", "Campaign", "Customer", "Quantity", "PricelistPriceTotal", "Bonus" , "GardenaChannel" };
 
             FunctionsForExcel.SpeedOn();
             FileDescision fileDescision = null;

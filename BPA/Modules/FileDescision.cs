@@ -136,7 +136,6 @@ namespace BPA.Modules
 
             if (CustomerColumn == 0 || GardenaChannelColumn == 0)
             {
-                Close();
                 throw new ApplicationException("Файл имеет неверный формат");
             }
 
