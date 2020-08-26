@@ -166,9 +166,23 @@ namespace BPA.Modules
         /// </summary>
         public void SetFileData()
         {
-            FileArray = worksheet.Range[worksheet.Cells[FileHeaderRow, 1], worksheet.Cells[LastRow, LastColumn]].Value;
-            ArrRrows = FileArray.GetUpperBound(0);
-            ArrColumns = FileArray.GetLength(1);
+            BPA.Forms.WaitForm waitForm = new Forms.WaitForm();
+            waitForm.Show();
+            System.Windows.Forms.Application.DoEvents();
+            try
+            {
+                FileArray = worksheet.Range[worksheet.Cells[FileHeaderRow, 1], worksheet.Cells[LastRow, LastColumn]].Value;
+                ArrRrows = FileArray.GetUpperBound(0);
+                ArrColumns = FileArray.GetLength(1);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
+            finally
+            {
+                waitForm.Close();
+            }
         }
 
         /// <summary>
@@ -176,34 +190,46 @@ namespace BPA.Modules
         /// </summary>
         public void SetFileData(params string[] colNames)
         {
-            //Application.Workbooks.Open(FileAddress);
-            object[,] headers = worksheet.Range[worksheet.Cells[FileHeaderRow, 1], worksheet.Cells[FileHeaderRow, LastColumn]].Value;
-            int newCol = 1;
-
-            foreach (string colName in colNames)
-                for (int c = 1; c <= headers.Length; c++)
-                    if (colName == headers[1, c].ToString())
-                    {
-                        SetDataDescision(c);
-                        newCol++;
-                        break;
-                    }
-            ArrRrows = FileArray.GetUpperBound(0);
-            ArrColumns = FileArray.GetLength(1);
-
-
-            void SetDataDescision(int colNum)
+            BPA.Forms.WaitForm waitForm = new Forms.WaitForm();
+            waitForm.Show();
+            System.Windows.Forms.Application.DoEvents();
+            try
             {
-                object[,] bufer = worksheet.Range[worksheet.Cells[FileHeaderRow, colNum], worksheet.Cells[LastRow, colNum]].Value;
-                if (FileArray == null)
+                object[,] headers = worksheet.Range[worksheet.Cells[FileHeaderRow, 1], worksheet.Cells[FileHeaderRow, LastColumn]].Value;
+                int newCol = 1;
+
+                foreach (string colName in colNames)
+                    for (int c = 1; c <= headers.Length; c++)
+                        if (colName == headers[1, c].ToString())
+                        {
+                            SetDataDescision(c);
+                            newCol++;
+                            break;
+                        }
+                ArrRrows = FileArray.GetUpperBound(0);
+                ArrColumns = FileArray.GetLength(1);
+
+                void SetDataDescision(int colNum)
                 {
-                    //Нужен массив от 1
-                    Array rv = Array.CreateInstance(typeof(object), new int[] { LastRow, colNames.Length }, new int[] { 1, 1 });
-                    FileArray = rv as object[,];
+                    object[,] bufer = worksheet.Range[worksheet.Cells[FileHeaderRow, colNum], worksheet.Cells[LastRow, colNum]].Value;
+                    if (FileArray == null)
+                    {
+                        //Нужен массив от 1
+                        Array rv = Array.CreateInstance(typeof(object), new int[] { LastRow, colNames.Length }, new int[] { 1, 1 });
+                        FileArray = rv as object[,];
+                    }
+
+                    for (int r = 1; r <= bufer.Length; r++)
+                        FileArray[r, newCol] = bufer[r, 1];
                 }
 
-                for (int r = 1; r <= bufer.Length; r++)
-                    FileArray[r, newCol] = bufer[r, 1];
+            } catch(Exception ex)
+            {
+                throw new ApplicationException(ex.Message);
+            }
+            finally
+            {
+                waitForm.Close();
             }
         }
 
