@@ -70,7 +70,7 @@ namespace BPA
                     return;
                 }
 
-                processBar = new ProcessBar("Обновление цен из справочника", products.Count);
+                processBar = new ProcessBar("Обновление цен из справочника", fileCalendar.ProductsFromCalendar.Count);
                 processBar.CancelClick += CancelLocal;
                 processBar.Show();
 
