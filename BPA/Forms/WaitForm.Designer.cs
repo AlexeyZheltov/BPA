@@ -56,7 +56,7 @@
             this.ClientSize = new System.Drawing.Size(385, 45);
             this.Controls.Add(this.textLabel);
             this.Cursor = System.Windows.Forms.Cursors.WaitCursor;
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "WaitForm";
