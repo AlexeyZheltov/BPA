@@ -85,6 +85,10 @@ namespace BPA.NewModel
 
         private List<Dynamic[]> Arr2List(object[,] data)
         {
+            BPA.Forms.WaitForm waitForm = new Forms.WaitForm();
+            waitForm.Show();
+            System.Windows.Forms.Application.DoEvents();
+
             List<Dynamic[]> ret_value = new List<Dynamic[]>();
             int arr_width = data.GetLength(1);
             for (int r = 0; r < data.GetLength(0); r++)
@@ -97,6 +101,7 @@ namespace BPA.NewModel
                 }
             }
 
+            waitForm.Close();
             return ret_value;
         }
 
@@ -105,6 +110,10 @@ namespace BPA.NewModel
         /// </summary>
         public void Save()
         {
+            BPA.Forms.WaitForm waitForm = new Forms.WaitForm();
+            waitForm.Show();
+            System.Windows.Forms.Application.DoEvents();
+
             //_table.DataBodyRange?.Clear();
             Excel.Range _startCell = _table.HeaderRowRange.Cells[2, 1];
 
@@ -130,6 +139,7 @@ namespace BPA.NewModel
 
             //Устанавливаем фильтр
             _table.ShowAutoFilter = true;
+            waitForm.Close();
         }
 
         private (int LastColumn, object[,] Data) GetSolidRangeFromData(int firstColumn, List<Dynamic[]> data)
