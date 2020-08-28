@@ -652,7 +652,7 @@ namespace BPA
                     finalPrices.DelFirstRow();
                     finalPrices.SetParams(currentClient.CustomerStatus,
                                             currentClient.ChannelType,
-                                            products.DateOfPromotion);
+                                            currentDate);
 
 
                     NM.DiscountItem currentDiscount = discounts.GetCurrentDiscount(currentClient.ChannelType, currentClient.CustomerStatus, currentDate);
