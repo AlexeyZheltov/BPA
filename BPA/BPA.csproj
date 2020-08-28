@@ -192,6 +192,7 @@
     <Compile Include="Modules\PriceListForPlanningNM.cs" />
     <Compile Include="Modules\StringCalculator.cs" />
     <Compile Include="Modules\WorksheetsSettings.cs" />
+    <Compile Include="NewModel\ClientCategory.cs" />
     <Compile Include="NewModel\ClientItem.cs" />
     <Compile Include="NewModel\ClientTable.cs" />
     <Compile Include="NewModel\DiscountItem.cs" />
