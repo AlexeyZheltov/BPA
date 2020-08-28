@@ -57,15 +57,15 @@ namespace BPA.NewModel
             return GetEnumerator();
         }
 
-        public DiscountItem GetCurrentDiscount(ClientItem client, DateTime date)
+        public DiscountItem GetCurrentDiscount(string channelType, string customerStatus, DateTime date)
         {
             if (_db.RowCount() == 0) return null;
 
             var quere = (from d in
                              (from item in _db
                              select new DiscountItem(item))
-                         where d.ChannelType == client.ChannelType
-                                 && d.CustomerStatus == client.CustomerStatus
+                         where d.ChannelType == channelType
+                                 && d.CustomerStatus == customerStatus
                                  && d.Period <= date
                          orderby d.Period descending
                          select d).ToList();

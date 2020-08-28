@@ -131,7 +131,7 @@ namespace BPA.NewModel
             return 0;
         }
 
-        public List<ProductItem> GetProductForClient(ClientItem client, List<string> exclusives)
+        public List<ProductItem> GetProductForClient(string customerStatus, string channelType, List<string> exclusives)
         {
             if (_db.RowCount() == 0) return null;
 
@@ -148,7 +148,7 @@ namespace BPA.NewModel
             {
                 if (exclusives.Contains(product.Exclusive.ToLower()))
                 {
-                    if (product.Exclusive.ToLower() == client.CustomerStatus.ToLower())
+                    if (product.Exclusive.ToLower() == customerStatus.ToLower())
                         actualProducts.Add(product);
                 }
                 else
@@ -156,16 +156,16 @@ namespace BPA.NewModel
                     switch (product.Exclusive.ToLower())
                     {
                         case "diy канал":
-                            if (client.ChannelType.ToLower() == "diy")
+                            if (channelType.ToLower() == "diy")
                                 actualProducts.Add(product);
                             break;
                         case "online":
-                            if (client.ChannelType.ToLower() == "online")
+                            if (channelType.ToLower() == "online")
                                 actualProducts.Add(product);
                             break;
                         case "dealer":
                         case "regional": //DEALERS&REGIONAL DISTR
-                            if (client.ChannelType.ToLower() == "dealer&regional distr")
+                            if (channelType.ToLower() == "dealer&regional distr")
                                 actualProducts.Add(product);
                             break;
                         default:
