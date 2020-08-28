@@ -244,7 +244,7 @@ namespace BPA.Modules
                 }
                 ActionD();
             }
-            IsOpen = true;
+            //IsOpen = true;
 
             void AddClient(int rowIndex, int priceColumn)
             {
