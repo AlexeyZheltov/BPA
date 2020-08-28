@@ -16,7 +16,7 @@ namespace BPA.Modules
                 return null;
         }
 
-        public struct Bracket
+        private struct Bracket
         {
             public int OpenPos
             {
@@ -45,11 +45,12 @@ namespace BPA.Modules
                 set { }
             }
         }
-        public static string CalculateStringFormula(string tmpFormula)
+        private static string CalculateStringFormula(string tmpFormula)
         {
             if (tmpFormula.Length == 0) 
                 return "";
             tmpFormula = tmpFormula.Replace(" ", "");
+            tmpFormula = tmpFormula.Replace(".", ",");
             if (tmpFormula.Substring(0, 1) == "=")
                 tmpFormula = tmpFormula.Substring(1, tmpFormula.Length - 1);
 
@@ -247,7 +248,7 @@ namespace BPA.Modules
 
             if (signPos - numString.Length - 1 > 0)
             {
-                if (numString.Substring(signPos - numString.Length - 1, 1) == "-")
+                if (formula.Substring(signPos - numString.Length - 1, 1) == "-")
                 {
                     numString = "-" + numString;
                 }
