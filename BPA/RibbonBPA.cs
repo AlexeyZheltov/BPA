@@ -20,6 +20,7 @@ using NM = BPA.NewModel;
 using System.Windows.Controls.Primitives;
 using ClientFromDescision = BPA.NewModel.ClientItem.DataFromDescision;
 using BPA.NewModel;
+using BPA.Model;
 
 namespace BPA
 {
@@ -352,7 +353,7 @@ namespace BPA
                 processBar.Show();
                 Globals.ThisWorkbook.Activate();
 
-                DateTime date = products.DateOfPromotion();
+                DateTime date = products.DateOfPromotion;
 
                 foreach(NM.ProductItem product in products)
                 {
@@ -407,7 +408,7 @@ namespace BPA
                 processBar.Show();
                 Globals.ThisWorkbook.Activate();
 
-                DateTime date = products.DateOfPromotion();
+                DateTime date = products.DateOfPromotion;
                 double budget_cource = products.BudgetCourse();
 
                 foreach(NM.ProductItem product in products)
@@ -538,42 +539,46 @@ namespace BPA
 
         private void CreatePrice(bool All = false)
         {
+            string MessageDoesentLoadDiscount = "";
+            string MessageDoesentLoadProduct = "";
             ProcessBar processBar = null;
             FilePriceMT filePriceMT = null;
 
             bool isCancel = false;
             void Cancel() => isCancel = true;
-            List<NM.ClientItem> priceClients = new List<NM.ClientItem>();
 #if ENABLE_TRY
             try
             {
 #endif
-                NM.FinalPriceTable finalPrices = new NM.FinalPriceTable();
                 NM.ExclusiveMagTable exclusives = new NM.ExclusiveMagTable();
                 NM.ClientTable clients = new NM.ClientTable();
                 NM.RRCTable rrcs = new NM.RRCTable();
                 NM.ProductTable products = new NM.ProductTable();
                 NM.DiscountTable discounts = new NM.DiscountTable();
+                List<ClientCategory> priceClients = new List<ClientCategory>();
 
                 FunctionsForExcel.SpeedOn();
                 clients.Load();
+
                 if (All)
                 {
-                    //загрузить всех подопытных
-                    
-                    processBar = new ProcessBar($"Загрузка списка клиентов", clients.Count());
+                    List <ClientCategory> clientCategories  = new ClientCategory().GetCategoryListFromClients(clients);
+                    //загрузить всех клиентов                    
+                    processBar = new ProcessBar($"Загрузка списка клиентов", clientCategories.Count());
                     processBar.CancelClick += Cancel;
                     processBar.Show();
 
-                    foreach(NM.ClientItem client in clients)
+                    foreach(ClientCategory clientCategory in clientCategories)
                     {
                         if (isCancel)
                         {
                             processBar.Close();
                             return;
                         }
-                        processBar.TaskStart($"Загружаем {client.Id}");
-                        priceClients.Add(client);
+                        string ClientsCategoryName = $"{clientCategory.CustomerStatus}_{clientCategory.ChannelType}";
+                        processBar.TaskStart($"Загружаем { ClientsCategoryName }");
+
+                        priceClients.Add(clientCategory);
                         processBar.TaskDone(1);
                     }
 
@@ -589,9 +594,12 @@ namespace BPA
                         MessageBox.Show("Выберите клиента на листе \"Клиенты\"", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
-                    NM.ClientItem clientItem = clients.GetById(currents_id);
-                    if (clientItem != null) priceClients.Add(clientItem); //need getByID
-                    else return;
+                    NM.ClientItem client = clients.GetById(currents_id);
+                    if (client == null) return;
+
+
+                    ClientCategory clientCategory = new ClientCategory().GetCategoryFromClient(client);
+                    priceClients.Add(clientCategory); //need getByID
                 }
 
                 clients = null;
@@ -612,47 +620,64 @@ namespace BPA
                 rrcs.Load();
                 discounts.Load();
                 products.Load();
-                finalPrices.Load();
 
                 //сюда вынести загрузку общих данных
                 List<NM.RRCItem> actualRRC = rrcs.GetActualPriceList(currentDate);
-                if (actualRRC == null) return;
+                if (actualRRC == null) 
+                    return;
+                    //continue;
                 
-                foreach (NM.ClientItem currentClient in priceClients)
-                {
-                    NM.DiscountItem currentDiscount = discounts.GetCurrentDiscount(currentClient, currentDate);
-                    if (currentDiscount == null) return;
-                    //if (currentDiscount == null) continue;
-                    
-                    //подгрузить PriceMT если неужно, подключится к РРЦ                   
-                    if (currentDiscount.NeedFilePriceMT() && (!filePriceMT?.IsOpen ?? true))
-                    {
-                        //Загурзить файл price list MT
-                        processBar = null;
-                        filePriceMT = new FilePriceMT();
-                        if (!filePriceMT.IsOpen)
-                            return;
-                        filePriceMT.SetFileData();
-                        filePriceMT.SetProcessBarForLoad(ref processBar); //зачем тут ref?
-                        filePriceMT.Load(currentDate, currentClient.Mag);
-                        processBar.Close();
-                        
-                        if (!All)
-                        {
-                            if (filePriceMT?.IsOpen ?? false) filePriceMT.Close();
-                            //processBar.Close(); ///else not close???
-                        }
-                    }
-                    
-                    //Загрузка списка артикулов, какие из них актуальные?
-                    List<NM.ProductItem> clients_products = products.GetProductForClient(currentClient, str_exclus);
-                    if (clients_products.Count == 0) return;
-                    /////Дописались до селе
-                    ////в цикле менять метки на значения из цен, с заменой;
-                    //List<FinalPriceList> priceList = new List<FinalPriceList>();
-                    ////вместо него добовлять в finalPrices
+                string priceTemplateSheetName = SettingsBPA.Default.SHEET_NAME_PRICELIST_TEMPLATE;
+                ThisWorkbook workbook = Globals.ThisWorkbook;
+                FunctionsForExcel.ShowSheet(priceTemplateSheetName);
 
-                    processBar = new ProcessBar($"Создание прайс-листа для {currentClient.Customer}", products.Count);
+                string newSheetName = priceTemplateSheetName.Replace("шаблон", "").Trim();
+
+                //Загружаем массив данных из PriceListMT
+                filePriceMT = new FilePriceMT();
+                if (!filePriceMT.IsOpen)
+                    return;
+                filePriceMT.SetFileData();
+                if (filePriceMT?.IsOpen ?? false) filePriceMT.Close();
+
+                foreach (ClientCategory currentClient in priceClients)
+                {
+                    //Подготовка новой книги
+                    string ClientsCategoryName = $"{currentClient.CustomerStatus}_{currentClient.ChannelType}";
+                    Excel.Worksheet newSheet = FunctionsForExcel.CreateSheetСopyNewWB(workbook.Sheets[priceTemplateSheetName],
+                                                                                        $"{ newSheetName }_{ ClientsCategoryName }");
+
+                    NM.FinalPriceTable finalPrices = new NM.FinalPriceTable(newSheet);
+                    finalPrices.Load();
+                    finalPrices.DelFirstRow();
+                    finalPrices.SetParams(currentClient.CustomerStatus,
+                                            currentClient.ChannelType,
+                                            products.DateOfPromotion);
+
+
+                    NM.DiscountItem currentDiscount = discounts.GetCurrentDiscount(currentClient.ChannelType, currentClient.CustomerStatus, currentDate);
+                    if (currentDiscount == null)
+                    {
+                        MessageDoesentLoadDiscount = $"{ MessageDoesentLoadDiscount }{ ClientsCategoryName },\n";
+                        continue;
+                    }
+
+                    processBar = null;
+                    filePriceMT.SetProcessBarForLoad(ref processBar); //зачем тут ref?
+                    filePriceMT.Load(currentDate, currentClient.Mag);
+                    processBar.Close();
+
+                    PriceListForPlanningNM priceListModule = new PriceListForPlanningNM(filePriceMT, currentDiscount);
+
+                    //Загрузка списка артикулов, какие из них актуальные?
+                    List<NM.ProductItem> clients_products = products.GetProductForClient(currentClient.CustomerStatus, currentClient.ChannelType, str_exclus);
+                    if (clients_products == null)
+                    {
+                        MessageDoesentLoadProduct = $"{ MessageDoesentLoadDiscount }{ ClientsCategoryName },\n";
+                        continue;
+                    }
+
+                    processBar = new ProcessBar($"Создание прайс-листа для { ClientsCategoryName }", clients_products.Count);
                     processBar.CancelClick += Cancel;
                     processBar.Show();
                     foreach (NM.ProductItem product in clients_products)
@@ -660,65 +685,40 @@ namespace BPA
                         if (isCancel) return;
                         //получить формулу
                         processBar.TaskStart($"Расчет цены для {product.Article}");
-                        if (product.Category == "")
-                        {
-                            MessageBox.Show($"Для {product.Article} не указана категория", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
-                        string formula = currentDiscount.GetFormulaByName(product.Category);
-#if ENABLE_TRY
-                        try
-                        {
-#endif
-                            //Найти метку или метки. [Pricelist MT]  [DIY Pricelist] [РРЦ] и заменить
-                            while (formula.Contains("[pricelist mt]"))
-                                formula = formula.Replace("[pricelist mt]", filePriceMT.GetPrice(product.Article).ToString());
 
-                            while (formula.Contains("[diy price list]"))
-                                formula = formula.Replace("[diy price list]", actualRRC.Find(x => x.Article == product.Article)?.DIY.ToString() ?? "0");
+                        //получение прайслистцены 
+                        priceListModule.SetProduct(product);
+                        if (!priceListModule.FormulaChecked) return;
+                        double priceListPrice = priceListModule.GetPrice(actualRRC);
 
-                            while (formula.Contains("[ррц]"))
-                                formula = formula.Replace("[ррц]", actualRRC.Find(x => x.Article == product.Article)?.RRCNDS.ToString() ?? "0");
+                        NM.FinalPriceItem priceItem = finalPrices.Add();
+                        priceItem.Fill(product);
+                        priceItem.RRC = priceListPrice;
 
-                            if (Parsing.Calculation(formula) is double result)
-                            {
-                                NM.FinalPriceItem priceItem = finalPrices.Add();
-                                priceItem.Fill(product);
-                                priceItem.RRC = result;
-                            }
-                            else
-                            {
-                                MessageBox.Show($"В одной из формул для {currentClient.Customer} содержится ошибка", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                return;
-                            }
-#if ENABLE_TRY
-                        }
-                        catch
-                        {
-                            MessageBox.Show($"{currentClient.Customer} не найден на листе { RRCTable.SHEET }", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
-#endif
-                        processBar.TaskDone(1);
+                       processBar.TaskDone(1);
                     }
-                    processBar.Close();
 
-                    ////Вывести
-                    //processBar = new ProcessBar($"Создание прайс-листа для {currentClient.Customer}", products.Count);
-                    //processBar.CancelClick += Cancel;
-                    //foreach (FinalPriceList item in priceList)
-                    //{
-                    //    if (isCancel) return;
-                    //    processBar.TaskStart($"Сохранение: {item.ArticleGardena}");
-                    //    item.Save();
-                    //    processBar.TaskDone(1);
-                    //}
-                    //processBar.TaskDone(1);
+                    finalPrices.Save();
+                    processBar.Close();
                 }
-                finalPrices.Save();
-                Excel.Worksheet ws = Globals.ThisWorkbook.Sheets[finalPrices.SheetName];
-                ws.Activate();
-                MessageBox.Show("Создание прайс-листа завершено", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                FunctionsForExcel.HideSheet(priceTemplateSheetName);
+
+                workbook.Activate();
+
+                if (MessageDoesentLoadDiscount.Length > 0)
+                {
+                    MessageDoesentLoadDiscount = $"{ MessageDoesentLoadDiscount.Substring(0, MessageDoesentLoadDiscount.Length - 2) }\nна листе скидок не найдены";
+                    MessageBox.Show(MessageDoesentLoadDiscount, "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                if (MessageDoesentLoadProduct.Length > 0)
+                {
+                    MessageDoesentLoadProduct = $"Для { MessageDoesentLoadProduct.Substring(0, MessageDoesentLoadProduct.Length - 2) }\nтовары не найдены";
+                    MessageBox.Show(MessageDoesentLoadProduct, "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                MessageBox.Show("Создание прайс-листов завершено", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
 #if ENABLE_TRY
             }
             catch (Exception ex)
