@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Text;
 using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
+using System.Data;
 
 namespace BPA.NewModel
 {
@@ -40,24 +41,36 @@ namespace BPA.NewModel
 
         public int Count => _db.RowCount();
 
-        public DateTime DateOfPromotion()
-        {
-            string Label = "Дата повышения";
+        private const string labelDate = "Дата повышения";
 
-            try
+        public DateTime DateOfPromotion
+        {
+            get
             {
-                Excel.Worksheet ws = _table.Parent;
-                int i_row = _table.HeaderRowRange.Row - 1;
-                Excel.Range rng = ws.Rows[i_row];
-                rng = rng.Find(Label, LookAt: Excel.XlLookAt.xlWhole);
-                rng = rng.Offset[0, 1];
-                return DateTime.Parse(rng.Text);
+                if (_DateOfPromotion.Year == 1)
+                {
+                    try
+                    {
+                        Excel.Worksheet ws = _table.Parent;
+                        int i_row = _table.HeaderRowRange.Row - 1;
+                        Excel.Range rng = ws.Rows[i_row];
+                        rng = rng.Find(labelDate, LookAt: Excel.XlLookAt.xlWhole);
+                        rng = rng.Offset[0, 1];
+                        return DateTime.Parse(rng.Text);
+                    }
+                    catch
+                    {
+                        _DateOfPromotion = new DateTime();
+                    }
+                }
+                return _DateOfPromotion;
             }
-            catch
+            set
             {
-                return new DateTime();
+                _DateOfPromotion = value;
             }
         }
+        private DateTime _DateOfPromotion;
 
         public double BudgetCourse()
         {
