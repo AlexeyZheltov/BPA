@@ -10,6 +10,7 @@ namespace BPA.Modules
     /// </summary>
     public static class FunctionsForExcel
     {
+        private const int SHEET_NAME_LENGTH = 30;
         public static Excel.Application Application = Globals.ThisWorkbook?.Application;
 
         /// <summary>
@@ -49,7 +50,7 @@ namespace BPA.Modules
         {
             return worksheet.UsedRange.Column + worksheet.UsedRange.Columns.Count - 1;
         }
-        
+
         /// <summary>
         /// Убирает лишние пробельные симовлы и если надо приводит к нижнему регистру
         /// </summary>
@@ -75,7 +76,7 @@ namespace BPA.Modules
             {
                 worksheet = Globals.ThisWorkbook.Sheets[sheetName];
                 return true;
-            } 
+            }
             catch { return false; }
         }
 
@@ -90,7 +91,7 @@ namespace BPA.Modules
 
             foreach (Worksheet worksheet in Globals.ThisWorkbook.Sheets)
             {
-                if (worksheet.Name == sheetName) 
+                if (worksheet.Name == sheetName)
                     return true;
             }
             return false;
@@ -105,14 +106,46 @@ namespace BPA.Modules
         public static Excel.Worksheet CreateSheetCopy(Excel.Worksheet worksheet, string copyWorksheetName = "", string afterSheetName = "")
         {
             Excel.Worksheet afterSheet = (afterSheetName != "" && IsSheetExists(afterSheetName)) ? worksheet.Parent.Sheets[afterSheetName] : worksheet;
-
             worksheet.Copy(After: afterSheet);
             Excel.Worksheet newWorksheet = Application.ActiveSheet;
 
-            newWorksheet.Name = nextNumSheet(copyWorksheetName);
+            if (copyWorksheetName != "")
+            {
+                copyWorksheetName =
+                    copyWorksheetName.Length > SHEET_NAME_LENGTH ?
+                    copyWorksheetName.Substring(0, 30) :
+                    copyWorksheetName;
+
+                newWorksheet.Name = nextNumSheet(copyWorksheetName);
+            }
 
             return newWorksheet;
         }
+
+        public static Excel.Worksheet CreateSheetСopyNewWB(Excel.Worksheet worksheet, string copyWorksheetName = "", string copyWBName = "")
+        {
+            worksheet.Copy();
+            Excel.Worksheet newWorksheet = Application.ActiveSheet;
+
+            if (copyWorksheetName != "")
+            {
+                copyWorksheetName = 
+                    copyWorksheetName.Length > SHEET_NAME_LENGTH ? 
+                    copyWorksheetName.Substring(0, 30) : 
+                    copyWorksheetName;
+
+                newWorksheet.Name = copyWorksheetName;
+            }
+
+            if (copyWBName != "")
+            {
+                Excel.Workbook wb = newWorksheet.Parent;
+                //wb.Name = copyWBName;
+            }
+
+            return newWorksheet;
+        }
+
 
         /// <summary>
         /// проверка наличия листа с текущим именем
@@ -168,7 +201,9 @@ namespace BPA.Modules
         public static void ShowSheet(string sheetName)
         {
             if (!IsSheetExists(sheetName))
-                return;
+            {
+                throw new ApplicationException($"В книге отсутствует лист { sheetName }");
+            }
 
             Worksheet worksheet = Globals.ThisWorkbook.Sheets[sheetName];
             if (worksheet.Visible == XlSheetVisibility.xlSheetHidden)
@@ -180,7 +215,9 @@ namespace BPA.Modules
         public static void HideSheet(string sheetName)
         {
             if (!IsSheetExists(sheetName))
-                return;
+            {
+                throw new ApplicationException($"В книге отсутствует лист { sheetName }");
+            }
 
             Worksheet worksheet = Globals.ThisWorkbook.Sheets[sheetName];
             if (worksheet.Visible == XlSheetVisibility.xlSheetVisible)
