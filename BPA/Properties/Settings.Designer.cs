@@ -130,5 +130,17 @@ namespace BPA.Properties {
                 this["SHEET_NAME_FILE_DECISION"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Прайс лист шаблон")]
+        public string SHEET_NAME_PRICELIST_TEMPLATE {
+            get {
+                return ((string)(this["SHEET_NAME_PRICELIST_TEMPLATE"]));
+            }
+            set {
+                this["SHEET_NAME_PRICELIST_TEMPLATE"] = value;
+            }
+        }
     }
 }

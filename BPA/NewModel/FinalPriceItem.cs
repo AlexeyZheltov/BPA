@@ -13,10 +13,10 @@ namespace BPA.NewModel
         public FinalPriceItem(TableRow row) => _row = row;
 
         #region Свойства таблицы
-        public int Id
+        public string PNS
         {
-            get => _row["Id"];
-            set => _row["Id"] = value;
+            get => _row["PNS"];
+            set => _row["PNS"] = value;
         }
         public string Category
         {
@@ -143,6 +143,7 @@ namespace BPA.NewModel
             PackagingVolume = product.CalendarPackagingVolume;
             UnitsPerPallet = product.CalendarUnitsPerPallet;
             Certificate = product.LocalCertificate;
+            PNS = product.PNS;
         }
     }
 }
