@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -184,26 +185,35 @@ namespace BPA.NewModel
 
         public void DelFormulas()
         {
+            StringBuilder stringBuilder = new StringBuilder();
             try
             {
                 SetDelFormulaDict();
 
+                stringBuilder.Append($"_table is null {_table == null}\n");
                 if (_table.ListRows.Count < 1)
                 {
                     _table.ListRows.Add();
                     _table.ListRows[2].Delete();
                 }
+                stringBuilder.Append($"_table rows count {_table.ListRows.Count}\n");
 
                 foreach (string colName in DelFormulColumnsList)
                 {
+                    stringBuilder.Append($"colName {colName}\n");
                     int colNum = _table.ListColumns[colName].Range.Column;
+                    stringBuilder.Append($"colNum {colNum}\n");
                     int rowNum = _table.DataBodyRange.Row;
+                    stringBuilder.Append($"rowNum {colNum}\n");
 
                     if (colNum == 0 || rowNum == 0) continue;
 
                     Excel.Workbook wb = Globals.ThisWorkbook.InnerObject;
+                    stringBuilder.Append($"wb is null {wb==null}\n");
                     Excel.Worksheet ws = wb.Sheets[SHEET];
+                    stringBuilder.Append($"ws is null {ws == null}\n");
                     Excel.Range cell = ws.Cells[rowNum, colNum];
+                    stringBuilder.Append($"cell is null {wb == null}\n");
 
                     cell.Value = "";
                 }
@@ -226,8 +236,13 @@ namespace BPA.NewModel
                             DelFormulColumnsList.Add($"ИТОГО NS { month_names[m] }, шт.");
                 }
             }
-            catch
+            catch(Exception ex)
             {
+                stringBuilder.Append($"\nException Message:\n{ex.Message}");
+                using (StreamWriter stream = new StreamWriter("errorlog.txt"))
+                {
+                    stream.WriteLine(stringBuilder.ToString());
+                }
                 throw new ApplicationException($"Ошибка в поиске столбцов { SHEET }");
             }
         }
