@@ -51,7 +51,6 @@
             this.btnPlanningAdd = this.Factory.CreateRibbonButton();
             this.btnGetPlanningData = this.Factory.CreateRibbonButton();
             this.btnFactUpdate = this.Factory.CreateRibbonButton();
-            this.btnAddNewIRP = this.Factory.CreateRibbonButton();
             this.btnPlanningSave = this.Factory.CreateRibbonButton();
             this.group1 = this.Factory.CreateRibbonGroup();
             this.btnSettings = this.Factory.CreateRibbonButton();
@@ -185,7 +184,6 @@
             this.group3.Items.Add(this.btnPlanningAdd);
             this.group3.Items.Add(this.btnGetPlanningData);
             this.group3.Items.Add(this.btnFactUpdate);
-            this.group3.Items.Add(this.btnAddNewIRP);
             this.group3.Items.Add(this.btnPlanningSave);
             this.group3.Label = "Планирование";
             this.group3.Name = "group3";
@@ -214,14 +212,6 @@
             this.btnFactUpdate.Name = "btnFactUpdate";
             this.btnFactUpdate.ShowImage = true;
             this.btnFactUpdate.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.FactUpdate_Click);
-            // 
-            // btnAddNewIRP
-            // 
-            this.btnAddNewIRP.Image = ((System.Drawing.Image)(resources.GetObject("btnAddNewIRP.Image")));
-            this.btnAddNewIRP.Label = "Добавить изменение РРЦ";
-            this.btnAddNewIRP.Name = "btnAddNewIRP";
-            this.btnAddNewIRP.ShowImage = true;
-            this.btnAddNewIRP.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.AddNewIRP_Click);
             // 
             // btnPlanningSave
             // 
@@ -299,7 +289,6 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnPlanningAdd;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnGetPlanningData;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnFactUpdate;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnAddNewIRP;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnPlanningSave;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnSettings;
     }
