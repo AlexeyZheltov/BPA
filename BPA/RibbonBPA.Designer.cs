@@ -217,7 +217,7 @@
             // 
             this.btnPlanningSave.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             this.btnPlanningSave.Image = ((System.Drawing.Image)(resources.GetObject("btnPlanningSave.Image")));
-            this.btnPlanningSave.Label = "Сохранить планирование";
+            this.btnPlanningSave.Label = "Собрать данные";
             this.btnPlanningSave.Name = "btnPlanningSave";
             this.btnPlanningSave.ShowImage = true;
             this.btnPlanningSave.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.PlanningSave_Click);

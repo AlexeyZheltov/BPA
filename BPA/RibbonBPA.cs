@@ -1081,74 +1081,216 @@ namespace BPA
         /// <param name="e"></param>
         private void PlanningSave_Click(object sender, RibbonControlEventArgs e)
         {
+            Excel.Workbook TWB = Globals.ThisWorkbook.InnerObject;
+            Excel.Workbook workbook = null;
             ProcessBar processBar = null;
-
-            Worksheet worksheet = Globals.ThisWorkbook.Application.ActiveSheet;
-
-            NM.PlanningNewYearTable planningNewYears = new PlanningNewYearTable(worksheet.Name);
-            NM.PlanTable plans = new PlanTable();
-
-            if (!FunctionsForExcel.HasRange(worksheet, SettingsBPA.Default.PlannningNYIndicatorCellName) ||
-                worksheet.Name == SettingsBPA.Default.SHEET_NAME_PLANNING_TEMPLATE)
-            {
-                MessageBox.Show("Перейдите на страницу планирования (или создайте её) и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+            WaitForm waitForm = null;
+            const string SHEET_NAME_PLAN = "Планирование";
 
             try
             {
-                planningNewYears.Load();
-                plans.Load();
+                FunctionsForExcel.SpeedOn();
 
-                if (!planningNewYears.HasData())
+                if (!FunctionsForExcel.IsSheetExists(SHEET_NAME_PLAN))
+                    throw new ApplicationException($"Лист \"{ SHEET_NAME_PLAN }\" отсутствует");
+                Excel.Worksheet planWS = TWB.Sheets[SHEET_NAME_PLAN];
+
+                if (planWS.ListObjects.Count < 1)
+                    throw new ApplicationException($"Таблица на листе \"{ SHEET_NAME_PLAN }\" отсутствует");
+                Excel.ListObject tableAllPlan = planWS.ListObjects[1];
+
+
+                //узнаем последний номер и не добавляем одну строку
+                double num = 0;
+                if (tableAllPlan.ListRows.Count > 0)
                 {
-                    MessageBox.Show($"Заполните { worksheet.Name } и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
+                    Excel.ListColumn firstColumn = tableAllPlan.ListColumns[1];
+
+                    object[,] firstColumnArray = firstColumn.Range.Value;
+
+                    int r = 0;
+                    for (r = firstColumnArray.GetLength(0); r >= 1; r--)
+                    {
+                        object val = firstColumnArray[r, 1];
+                        if (val != null)
+                            if (Double.TryParse(val.ToString(), out num))
+                                if (num != 0)
+                                    break;
+                    }
+
+                    if (num == 0)
+                        foreach (Excel.ListRow listRow in tableAllPlan.ListRows)
+                            listRow.Delete(); 
+                    else
+                        tableAllPlan.Resize(tableAllPlan.Range.Resize[r, tableAllPlan.ListColumns.Count]);
                 }
+                //
 
-                planningNewYears.SetTmpParams();
 
-                if (planningNewYears == null || planningNewYears.Count < 1)
-                {
-                    MessageBox.Show($"Заполните { worksheet.Name } и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
+                //перебор файлов
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Multiselect = true;
+                openFileDialog.Filter= "Excel files (*.xls*)|*.xls*";
+                if (openFileDialog.ShowDialog() == DialogResult.Cancel)
+                    throw new ApplicationException($"Файлы не выбраны");
+                string[] fileNames = openFileDialog.FileNames;
 
-                processBar = new ProcessBar("Обновление клиентов", planningNewYears.Count);
+                processBar = new ProcessBar("Обновление сводного планирования", fileNames.Length);
                 bool isCancel = false;
                 void CancelLocal() => isCancel = true;
-                FunctionsForExcel.SpeedOn();
                 processBar.CancelClick += CancelLocal;
-                processBar.Show();
+                processBar.Show(new ExcelWindows(Globals.ThisWorkbook));
 
-                foreach (NM.PlanningNewYearItem planningNewYear in planningNewYears)
+                foreach (string fileName in fileNames)
                 {
                     if (isCancel)
-                        break;
+                        return;
 
-                    processBar.TaskStart($"Обрабатывается артикул { planningNewYear.Article}");
-                    NM.PlanItem plan = plans.Find(x => x.Article == planningNewYear.Article && x.PrognosisDate == planningNewYear.planningDate);
-                    if (plan != null)
+                    string fn = Path.GetFileName(fileName);
+                    processBar.TaskStart($"Обрабатывается книга { fn }");
+
+                    workbook = Globals.ThisWorkbook.Application.Workbooks.Open(fileName);
+
+                    Excel.Worksheet worksheet = workbook.Sheets[1];
+                    if (!FunctionsForExcel.HasRange(worksheet, SettingsBPA.Default.PlannningNYIndicatorCellName)
+                    || worksheet.ListObjects.Count < 1
+                    || worksheet.ListObjects[1].ListRows.Count < 1)
+                    { 
+                        workbook.Close(false);
+                        workbook = null;
                         continue;
-                    
-                    plan = plans.Add();
-                    plan.SetPlan(planningNewYear);
+                    }
+
+                    //выгрузка
+                    PlanningNewYearTable tablePlanLoaded = new PlanningNewYearTable(workbook, worksheet.Name);
+                    tablePlanLoaded.SetTmpParams();
+                    object[,] planningData = tablePlanLoaded.GetDataForPlanning();
+                    int dataRows = planningData.GetLength(0);
+                    int dataColumns = planningData.GetLength(1);
+                    workbook.Close(false);
+                    workbook = null;
+                    //
+
+                    //вставка
+                    if (tableAllPlan.ListRows.Count == 0) 
+                    {
+                        tableAllPlan.ListRows.Add();
+                        tableAllPlan.ListRows[2].Delete(); //тупой ексель
+                    } else
+                        tableAllPlan.ListRows.Add();
+
+                    Excel.ListRow listRow = tableAllPlan.ListRows[tableAllPlan.ListRows.Count];
+
+                    int tmpArrColumns = 4;
+                    Array rv = Array.CreateInstance(typeof(object), new int[] { dataRows, tmpArrColumns }, new int[] { 1, 1 });
+                    object[,] buffer = rv as object[,];
+
+                    for (int r = 1; r <= dataRows; r++)
+                    {
+                        buffer[r, 1] = ++num;
+                        buffer[r, 2] = tablePlanLoaded.ChannelType;
+                        buffer[r, 3] = tablePlanLoaded.planningDate.Year;
+                        buffer[r, 4] = tablePlanLoaded.CustomerStatus;
+                    }
+
+                    //waitForm = new WaitForm();
+                    //waitForm.Show();
+                    //System.Windows.Forms.Application.DoEvents();
+
+                    Excel.Range tmpCell;
+                    tmpCell = listRow.Range[1];
+                    tmpCell.Resize[dataRows, tmpArrColumns].Value = buffer;
+
+                    tmpCell = listRow.Range[tmpArrColumns + 1];
+                    tmpCell.Resize[dataRows, dataColumns].Value = planningData;
+                    //waitForm.Close();
 
                     processBar.TaskDone(1);
                 }
-                Globals.ThisWorkbook.Sheets[plans.SheetName].Activate();
-
-                plans.Save();
+                planWS.Activate();
+                MessageBox.Show("Обработка книг завершена", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            } 
             finally
             {
-                FunctionsForExcel.SpeedOff();
+                workbook?.Close(false);
                 processBar?.Close();
+                //waitForm?.Close();
+                FunctionsForExcel.SpeedOff();
             }
+
+            //ProcessBar processBar = null;
+
+            //Worksheet worksheet = Globals.ThisWorkbook.Application.ActiveSheet;
+
+            //NM.PlanningNewYearTable planningNewYears = new PlanningNewYearTable(worksheet.Name);
+            //NM.tableAllPlan plans = new tableAllPlan();
+
+            //if (!FunctionsForExcel.HasRange(worksheet, SettingsBPA.Default.PlannningNYIndicatorCellName) ||
+            //    worksheet.Name == SettingsBPA.Default.SHEET_NAME_PLANNING_TEMPLATE)
+            //{
+            //    MessageBox.Show("Перейдите на страницу планирования (или создайте её) и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    return;
+            //}
+
+            //try
+            //{
+            //    planningNewYears.Load();
+            //    plans.Load();
+
+            //    if (!planningNewYears.HasData())
+            //    {
+            //        MessageBox.Show($"Заполните { worksheet.Name } и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //        return;
+            //    }
+
+            //    planningNewYears.SetTmpParams();
+
+            //    if (planningNewYears == null || planningNewYears.Count < 1)
+            //    {
+            //        MessageBox.Show($"Заполните { worksheet.Name } и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //        return;
+            //    }
+
+            //    processBar = new ProcessBar("Обновление клиентов", planningNewYears.Count);
+            //    bool isCancel = false;
+            //    void CancelLocal() => isCancel = true;
+            //    FunctionsForExcel.SpeedOn();
+            //    processBar.CancelClick += CancelLocal;
+            //    processBar.Show();
+
+            //    foreach (NM.PlanningNewYearItem planningNewYear in planningNewYears)
+            //    {
+            //        if (isCancel)
+            //            break;
+
+            //        processBar.TaskStart($"Обрабатывается артикул { planningNewYear.Article}");
+            //        NM.PlanItem plan = plans.Find(x => x.Article == planningNewYear.Article && x.PrognosisDate == planningNewYear.planningDate);
+            //        if (plan != null)
+            //            continue;
+                    
+            //        plan = plans.Add();
+            //        plan.SetPlan(planningNewYear);
+
+            //        processBar.TaskDone(1);
+            //    }
+            //    Globals.ThisWorkbook.Sheets[plans.SheetName].Activate();
+
+            //    plans.Save();
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //}
+            //finally
+            //{
+            //    FunctionsForExcel.SpeedOff();
+            //    processBar?.Close();
+            //}
         }
     }
 }
