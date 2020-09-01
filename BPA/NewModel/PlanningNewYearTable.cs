@@ -253,5 +253,13 @@ namespace BPA.NewModel
                 throw new ApplicationException($"Ошибка в поиске столбцов { SHEET }");
             }
         }
+
+        public object[,] GetDataForPlanning()
+        {
+            Excel.Worksheet ws = workbook.Sheets[SHEET];
+            Excel.Range rng = ws.Range[ws.Cells[_table.ListRows[1].Range.Row, _table.ListColumns[2].Range.Column], ws.Cells[_table.ListRows[_table.ListRows.Count].Range.Row, _table.ListColumns[_table.ListColumns.Count].Range.Column]];
+
+            return rng.Value;
+        }
     }
 }
