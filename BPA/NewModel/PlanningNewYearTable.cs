@@ -19,9 +19,9 @@ namespace BPA.NewModel
         private string _TableWorksheetName;
         public readonly string templateSheetName = SettingsBPA.Default.SHEET_NAME_PLANNING_TEMPLATE;
         private string TABLE => GetTableName();
+        private Excel.Workbook workbook;
         public string GetTableName()
         {
-            ThisWorkbook workbook = Globals.ThisWorkbook;
             Excel.ListObject table = workbook.Sheets[SHEET].ListObjects[1];
             return table.Name;
         }
@@ -58,8 +58,17 @@ namespace BPA.NewModel
             else
                 _TableWorksheetName = worksheetName;
 
-            Excel.Workbook wb = Globals.ThisWorkbook.InnerObject;
-            Excel.Worksheet ws = wb.Sheets[SHEET];
+            this.workbook = Globals.ThisWorkbook.InnerObject;
+            Excel.Worksheet ws = workbook.Sheets[SHEET];
+            _table = ws.ListObjects[TABLE];
+        }
+
+        public PlanningNewYearTable(Excel.Workbook workbook, string worksheetName)
+        {
+            this.workbook = workbook;
+           _TableWorksheetName = worksheetName;
+
+            Excel.Worksheet ws = workbook.Sheets[SHEET];
             _table = ws.ListObjects[TABLE];
         }
 
@@ -114,9 +123,7 @@ namespace BPA.NewModel
         {
             try
             {
-                ThisWorkbook workbook = Globals.ThisWorkbook;
                 Excel.Range rng = workbook.Sheets[SHEET].UsedRange;
-
                 
                 this.CustomerStatus = getVal(CustomerStatusLabel);
                 this.ChannelType = getVal(ChannelTypeLabel);
