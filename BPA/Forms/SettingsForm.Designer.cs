@@ -29,15 +29,12 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.ProductCalendarLabel = new System.Windows.Forms.Label();
-            this.ProductCalendar_Path_TextBox = new System.Windows.Forms.TextBox();
             this.Budget_Path_TextBox = new System.Windows.Forms.TextBox();
             this.BudgetLabel = new System.Windows.Forms.Label();
             this.Decision_Path_TextBox = new System.Windows.Forms.TextBox();
             this.DecisionLabel = new System.Windows.Forms.Label();
             this.PriceListMT_Path_TextBox = new System.Windows.Forms.TextBox();
             this.PriceListMTlabel = new System.Windows.Forms.Label();
-            this.ProductCalendar_SetPath_Button = new System.Windows.Forms.Button();
             this.Budget_SetPath_Button = new System.Windows.Forms.Button();
             this.Decision_SetPath_Button = new System.Windows.Forms.Button();
             this.PriceListMT_SetPath_Button = new System.Windows.Forms.Button();
@@ -48,26 +45,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             this.SuspendLayout();
             // 
-            // ProductCalendarLabel
-            // 
-            this.ProductCalendarLabel.AutoSize = true;
-            this.ProductCalendarLabel.Location = new System.Drawing.Point(6, 15);
-            this.ProductCalendarLabel.Name = "ProductCalendarLabel";
-            this.ProductCalendarLabel.Size = new System.Drawing.Size(89, 13);
-            this.ProductCalendarLabel.TabIndex = 0;
-            this.ProductCalendarLabel.Text = "Product Calendar";
-            // 
-            // ProductCalendar_Path_TextBox
-            // 
-            this.ProductCalendar_Path_TextBox.Location = new System.Drawing.Point(101, 12);
-            this.ProductCalendar_Path_TextBox.Name = "ProductCalendar_Path_TextBox";
-            this.ProductCalendar_Path_TextBox.ReadOnly = true;
-            this.ProductCalendar_Path_TextBox.Size = new System.Drawing.Size(486, 20);
-            this.ProductCalendar_Path_TextBox.TabIndex = 1;
-            // 
             // Budget_Path_TextBox
             // 
-            this.Budget_Path_TextBox.Location = new System.Drawing.Point(101, 38);
+            this.Budget_Path_TextBox.Location = new System.Drawing.Point(98, 6);
             this.Budget_Path_TextBox.Name = "Budget_Path_TextBox";
             this.Budget_Path_TextBox.ReadOnly = true;
             this.Budget_Path_TextBox.Size = new System.Drawing.Size(486, 20);
@@ -76,7 +56,7 @@
             // BudgetLabel
             // 
             this.BudgetLabel.AutoSize = true;
-            this.BudgetLabel.Location = new System.Drawing.Point(6, 41);
+            this.BudgetLabel.Location = new System.Drawing.Point(3, 9);
             this.BudgetLabel.Name = "BudgetLabel";
             this.BudgetLabel.Size = new System.Drawing.Size(41, 13);
             this.BudgetLabel.TabIndex = 2;
@@ -84,7 +64,7 @@
             // 
             // Decision_Path_TextBox
             // 
-            this.Decision_Path_TextBox.Location = new System.Drawing.Point(101, 64);
+            this.Decision_Path_TextBox.Location = new System.Drawing.Point(98, 32);
             this.Decision_Path_TextBox.Name = "Decision_Path_TextBox";
             this.Decision_Path_TextBox.ReadOnly = true;
             this.Decision_Path_TextBox.Size = new System.Drawing.Size(486, 20);
@@ -93,7 +73,7 @@
             // DecisionLabel
             // 
             this.DecisionLabel.AutoSize = true;
-            this.DecisionLabel.Location = new System.Drawing.Point(6, 67);
+            this.DecisionLabel.Location = new System.Drawing.Point(3, 35);
             this.DecisionLabel.Name = "DecisionLabel";
             this.DecisionLabel.Size = new System.Drawing.Size(48, 13);
             this.DecisionLabel.TabIndex = 4;
@@ -101,7 +81,7 @@
             // 
             // PriceListMT_Path_TextBox
             // 
-            this.PriceListMT_Path_TextBox.Location = new System.Drawing.Point(101, 90);
+            this.PriceListMT_Path_TextBox.Location = new System.Drawing.Point(98, 58);
             this.PriceListMT_Path_TextBox.Name = "PriceListMT_Path_TextBox";
             this.PriceListMT_Path_TextBox.ReadOnly = true;
             this.PriceListMT_Path_TextBox.Size = new System.Drawing.Size(486, 20);
@@ -110,25 +90,15 @@
             // PriceListMTlabel
             // 
             this.PriceListMTlabel.AutoSize = true;
-            this.PriceListMTlabel.Location = new System.Drawing.Point(6, 93);
+            this.PriceListMTlabel.Location = new System.Drawing.Point(3, 61);
             this.PriceListMTlabel.Name = "PriceListMTlabel";
             this.PriceListMTlabel.Size = new System.Drawing.Size(63, 13);
             this.PriceListMTlabel.TabIndex = 6;
             this.PriceListMTlabel.Text = "PriceListMT";
             // 
-            // ProductCalendar_SetPath_Button
-            // 
-            this.ProductCalendar_SetPath_Button.Location = new System.Drawing.Point(614, 12);
-            this.ProductCalendar_SetPath_Button.Name = "ProductCalendar_SetPath_Button";
-            this.ProductCalendar_SetPath_Button.Size = new System.Drawing.Size(34, 20);
-            this.ProductCalendar_SetPath_Button.TabIndex = 8;
-            this.ProductCalendar_SetPath_Button.Text = "...";
-            this.ProductCalendar_SetPath_Button.UseVisualStyleBackColor = true;
-            this.ProductCalendar_SetPath_Button.Click += new System.EventHandler(this.ProductCalendar_SetPath_Button_Click);
-            // 
             // Budget_SetPath_Button
             // 
-            this.Budget_SetPath_Button.Location = new System.Drawing.Point(614, 38);
+            this.Budget_SetPath_Button.Location = new System.Drawing.Point(611, 6);
             this.Budget_SetPath_Button.Name = "Budget_SetPath_Button";
             this.Budget_SetPath_Button.Size = new System.Drawing.Size(34, 20);
             this.Budget_SetPath_Button.TabIndex = 9;
@@ -138,7 +108,7 @@
             // 
             // Decision_SetPath_Button
             // 
-            this.Decision_SetPath_Button.Location = new System.Drawing.Point(614, 64);
+            this.Decision_SetPath_Button.Location = new System.Drawing.Point(611, 32);
             this.Decision_SetPath_Button.Name = "Decision_SetPath_Button";
             this.Decision_SetPath_Button.Size = new System.Drawing.Size(34, 20);
             this.Decision_SetPath_Button.TabIndex = 10;
@@ -148,7 +118,7 @@
             // 
             // PriceListMT_SetPath_Button
             // 
-            this.PriceListMT_SetPath_Button.Location = new System.Drawing.Point(614, 90);
+            this.PriceListMT_SetPath_Button.Location = new System.Drawing.Point(611, 58);
             this.PriceListMT_SetPath_Button.Name = "PriceListMT_SetPath_Button";
             this.PriceListMT_SetPath_Button.Size = new System.Drawing.Size(34, 20);
             this.PriceListMT_SetPath_Button.TabIndex = 11;
@@ -159,7 +129,7 @@
             // Cancel_Button
             // 
             this.Cancel_Button.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Cancel_Button.Location = new System.Drawing.Point(431, 116);
+            this.Cancel_Button.Location = new System.Drawing.Point(428, 84);
             this.Cancel_Button.Name = "Cancel_Button";
             this.Cancel_Button.Size = new System.Drawing.Size(75, 23);
             this.Cancel_Button.TabIndex = 12;
@@ -169,7 +139,7 @@
             // Ok_Button
             // 
             this.Ok_Button.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.Ok_Button.Location = new System.Drawing.Point(512, 116);
+            this.Ok_Button.Location = new System.Drawing.Point(509, 84);
             this.Ok_Button.Name = "Ok_Button";
             this.Ok_Button.Size = new System.Drawing.Size(75, 23);
             this.Ok_Button.TabIndex = 13;
@@ -190,21 +160,18 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(660, 146);
+            this.ClientSize = new System.Drawing.Size(659, 110);
             this.Controls.Add(this.Ok_Button);
             this.Controls.Add(this.Cancel_Button);
             this.Controls.Add(this.PriceListMT_SetPath_Button);
             this.Controls.Add(this.Decision_SetPath_Button);
             this.Controls.Add(this.Budget_SetPath_Button);
-            this.Controls.Add(this.ProductCalendar_SetPath_Button);
             this.Controls.Add(this.PriceListMT_Path_TextBox);
             this.Controls.Add(this.PriceListMTlabel);
             this.Controls.Add(this.Decision_Path_TextBox);
             this.Controls.Add(this.DecisionLabel);
             this.Controls.Add(this.Budget_Path_TextBox);
             this.Controls.Add(this.BudgetLabel);
-            this.Controls.Add(this.ProductCalendar_Path_TextBox);
-            this.Controls.Add(this.ProductCalendarLabel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -219,16 +186,12 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Label ProductCalendarLabel;
-        private System.Windows.Forms.TextBox ProductCalendar_Path_TextBox;
         private System.Windows.Forms.TextBox Budget_Path_TextBox;
         private System.Windows.Forms.Label BudgetLabel;
         private System.Windows.Forms.TextBox Decision_Path_TextBox;
         private System.Windows.Forms.Label DecisionLabel;
         private System.Windows.Forms.TextBox PriceListMT_Path_TextBox;
         private System.Windows.Forms.Label PriceListMTlabel;
-        private System.Windows.Forms.Button ProductCalendar_SetPath_Button;
         private System.Windows.Forms.Button Budget_SetPath_Button;
         private System.Windows.Forms.Button Decision_SetPath_Button;
         private System.Windows.Forms.Button PriceListMT_SetPath_Button;

@@ -8,6 +8,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Documents;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
+using settingsBPA = BPA.Properties.Settings;
 
 namespace BPA.Modules
 {
@@ -419,17 +420,30 @@ namespace BPA.Modules
         }
         public FileCalendar()
         {
-            BPASettings settings = new BPASettings();
             
-            if (settings.GetProductCalendarPath(out string path))
+            try
             {
-                FileAddress = path;
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Title = "Выберите файл календаря";
+                openFileDialog.Filter = "Excel files (*.xls*)|*.xls*";
+
+                string calendarDirectoryPath = settingsBPA.Default.ProductCalendarPath;
+                if (calendarDirectoryPath !="" && System.IO.Directory.Exists(calendarDirectoryPath))
+                    openFileDialog.InitialDirectory = settingsBPA.Default.ProductCalendarPath;
+
+                if (openFileDialog.ShowDialog() == DialogResult.Cancel)
+                    throw new ApplicationException("Загрузка отменена");
+
+                string fileName = openFileDialog.FileName;
+                settingsBPA.Default.ProductCalendarPath = System.IO.Path.GetDirectoryName(fileName);
+
+                FileAddress = fileName;
                 FileSheetName = "";
                 FileHeaderRow = fileHeaderRow;
 
                 IsOpen = true;
             }
-            else
+            catch
             {
                 throw new ApplicationException("Загрузка отменена");
             }

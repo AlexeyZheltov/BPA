@@ -15,12 +15,6 @@ namespace BPA.Modules
     class BPASettings
     {
         readonly Settings settings = Properties.Settings.Default;
-        public bool GetProductCalendarPath(out string path, bool requestFile = false)
-        {
-            var (_result, _path) = GetSetting("ProductCalendarPath", requestFile);
-            path = _path;
-            return _result;
-        }
 
         public bool GetBudgetPath(out string path, bool requestFile = false)
         {

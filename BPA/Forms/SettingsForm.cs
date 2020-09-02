@@ -22,13 +22,11 @@ namespace BPA.Forms
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
-            ProductCalendar_Path_TextBox.Text = settings.ProductCalendarPath;
             Decision_Path_TextBox.Text = settings.DecisionPath;
             Budget_Path_TextBox.Text = settings.BudgetPath;
             PriceListMT_Path_TextBox.Text = settings.PriceListMTPath;
 
             //Проверка на валидность путей
-            ValidatePath(ProductCalendar_Path_TextBox);
             ValidatePath(Decision_Path_TextBox);
             ValidatePath(Budget_Path_TextBox);
             ValidatePath(PriceListMT_Path_TextBox);
@@ -44,12 +42,6 @@ namespace BPA.Forms
         private void SettingsForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing) DialogResult = DialogResult.Cancel;
-        }
-
-        private void ProductCalendar_SetPath_Button_Click(object sender, EventArgs e)
-        {
-            if (openFileDialog.ShowDialog() == DialogResult.OK) ProductCalendar_Path_TextBox.Text = openFileDialog.FileName;
-            ValidatePath(ProductCalendar_Path_TextBox);
         }
 
         private void Budget_SetPath_Button_Click(object sender, EventArgs e)
@@ -72,7 +64,6 @@ namespace BPA.Forms
 
         private void Ok_Button_Click(object sender, EventArgs e)
         {
-            settings.ProductCalendarPath = ProductCalendar_Path_TextBox.Text;
             settings.BudgetPath = Budget_Path_TextBox.Text;
             settings.DecisionPath = Decision_Path_TextBox.Text;
             settings.PriceListMTPath = PriceListMT_Path_TextBox.Text;
