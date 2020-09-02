@@ -1043,21 +1043,6 @@ namespace BPA
             }
         }
 
-        private void AddNewIRP_Click(object sender, RibbonControlEventArgs e)
-        {
-            //MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            BPASettings settings = new BPASettings();
-            if(settings.GetProductCalendarPath(out string path, true))
-            {
-                MessageBox.Show(path);
-            }
-            else
-            {
-                MessageBox.Show("Kernel Panic");
-            }
-
-        }
-
         /// <summary>
         /// Планирование / сохранить планирование
         /// </summary>
