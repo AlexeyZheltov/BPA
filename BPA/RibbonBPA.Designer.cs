@@ -54,6 +54,7 @@
             this.btnPlanningSave = this.Factory.CreateRibbonButton();
             this.group1 = this.Factory.CreateRibbonGroup();
             this.btnSettings = this.Factory.CreateRibbonButton();
+            this.btnSheetsHide = this.Factory.CreateRibbonButton();
             this.btnInfo = this.Factory.CreateRibbonButton();
             this.tabBPA.SuspendLayout();
             this.grpProducts.SuspendLayout();
@@ -225,6 +226,7 @@
             // group1
             // 
             this.group1.Items.Add(this.btnSettings);
+            this.group1.Items.Add(this.btnSheetsHide);
             this.group1.Items.Add(this.btnInfo);
             this.group1.Label = "Настройки";
             this.group1.Name = "group1";
@@ -237,6 +239,15 @@
             this.btnSettings.Name = "btnSettings";
             this.btnSettings.ShowImage = true;
             this.btnSettings.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.Settings_Click);
+            // 
+            // btnSheetsHide
+            // 
+            this.btnSheetsHide.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnSheetsHide.Image = ((System.Drawing.Image)(resources.GetObject("btnSheetsHide.Image")));
+            this.btnSheetsHide.Label = "Скрыть листы";
+            this.btnSheetsHide.Name = "btnSheetsHide";
+            this.btnSheetsHide.ShowImage = true;
+            this.btnSheetsHide.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSheetsHide_Click);
             // 
             // btnInfo
             // 
@@ -291,6 +302,7 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnFactUpdate;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnPlanningSave;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnSettings;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnSheetsHide;
     }
 
     partial class ThisRibbonCollection

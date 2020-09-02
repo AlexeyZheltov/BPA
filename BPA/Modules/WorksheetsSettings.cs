@@ -5,6 +5,8 @@ namespace BPA.Modules
 {
     public class WorksheetsSettings
     {
+        Workbook workbook;
+
         /// <summary>
         /// Cписок листов для сокрытия
         /// </summary>
@@ -20,7 +22,10 @@ namespace BPA.Modules
             "Бюджетные курсы",
             "Эксклюзивность",
             "GardenChannel",
-            "Сертификация"
+            "Сертификация",
+            "Структура цен DIY",
+            "Планирование НГ шаблон",
+            "Прайс лист шаблон"
         };
 
         /// <summary>
@@ -59,24 +64,25 @@ namespace BPA.Modules
             Dictionary<string, bool> sheetStatusDict = new Dictionary<string, bool>();
             foreach (string sheetName in SheetNames)
             {
-                if (!FunctionsForExcel.IsSheetExists(sheetName))
+                if (!FunctionsForExcel.IsSheetExists(workbook, sheetName))
                     continue;
 
-                Worksheet ws = Globals.ThisWorkbook.Sheets[sheetName];
+                Worksheet ws = workbook.Sheets[sheetName];
                 sheetStatusDict.Add(sheetName, ws.Visible == XlSheetVisibility.xlSheetVisible);             
             }
             return sheetStatusDict;
         }
 
-        public WorksheetsSettings() { }
+        public WorksheetsSettings(Workbook workbook)
+        {
+            this.workbook = workbook;
+        }
 
         /// <summary>
         /// Показывает листы предназначенные для сокрытия, если они все скрыты, скрывает их в ином случае
         /// </summary>
         public void ShowUnshowSheets()
         {
-            //ThisWorkbook thisWorkbook = Globals.ThisWorkbook;
-
             foreach (string sheetName in SheetsVisibleStatus.Keys)
             {
                 if (SheetsVisibleStatus[sheetName])
@@ -95,8 +101,8 @@ namespace BPA.Modules
         {
             foreach (string sheetName in SheetsVisibleStatus.Keys)
             {
-                if (FunctionsForExcel.IsSheetExists(sheetName))
-                    Globals.ThisWorkbook.Sheets[sheetName].Visible = xlSheetVisibility;
+                if (FunctionsForExcel.IsSheetExists(workbook, sheetName))
+                    workbook.Sheets[sheetName].Visible = xlSheetVisibility;
             }
         }
     }

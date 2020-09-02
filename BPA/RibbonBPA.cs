@@ -253,22 +253,6 @@ namespace BPA
         {
             SettingsForm form = new SettingsForm();
             form.ShowDialog(new ExcelWindows(Globals.ThisWorkbook));
-            //try
-            //{
-            //    FunctionsForExcel.SpeedOn();
-
-            //    //FunctionsForExcel.HideShowSettingsSheets();
-            //    WorksheetsSettings WS = new WorksheetsSettings();
-            //    WS.ShowUnshowSheets();
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
-            //finally
-            //{
-            //    FunctionsForExcel.SpeedOff();
-            //}
         }
 
         /// <summary>
@@ -1291,6 +1275,31 @@ namespace BPA
             //    FunctionsForExcel.SpeedOff();
             //    processBar?.Close();
             //}
+        }
+
+        /// <summary>
+        /// Кнопка скрытия листов
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnSheetsHide_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                FunctionsForExcel.SpeedOn();
+
+                //FunctionsForExcel.HideShowSettingsSheets();
+                WorksheetsSettings wsSets = new WorksheetsSettings(Globals.ThisWorkbook.InnerObject);
+                wsSets.ShowUnshowSheets();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                FunctionsForExcel.SpeedOff();
+            }
         }
     }
 }
