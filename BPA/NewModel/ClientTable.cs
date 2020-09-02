@@ -103,7 +103,10 @@ namespace BPA.NewModel
                 int row = rng.Row;
                 int column = table.ListColumns["№"].DataBodyRange.Column;
 
-                if (int.TryParse(ws.Cells[row, column].Value, out int Id))
+                Excel.Range cell = ws.Cells[row, column];
+                string val = cell.Text;
+
+                if (int.TryParse(val, out int Id))
                     return Id;
             }
 

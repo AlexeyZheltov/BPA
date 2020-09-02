@@ -140,7 +140,7 @@ namespace BPA.NewModel
                     try
                     {
                         Excel.Range cell = rng.Find(label, LookAt: Excel.XlLookAt.xlWhole);
-                        return cell.Offset[0, 1].Text;
+                        return cell.Offset[0, 1].Text ?? "";
                     }
                     catch
                     {
