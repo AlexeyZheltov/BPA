@@ -79,7 +79,7 @@ namespace BPA.Modules
         }
 
         /// <summary>
-        /// Показывает листы предназначенные для сокрытия, если они все скрыты, скрывает их в ином случае
+        /// Проверят показан ли хоть один лист предназначенный для сокрытия. Если да, то скрывает все, иначе показывает все
         /// </summary>
         public void ShowUnshowSheets()
         {
@@ -87,22 +87,29 @@ namespace BPA.Modules
             {
                 if (SheetsVisibleStatus[sheetName])
                 {
-                    ShowSheets(XlSheetVisibility.xlSheetHidden);
+                    SetVisibleToSheets(XlSheetVisibility.xlSheetHidden);
                     return;
                 }
             }
-            ShowSheets(XlSheetVisibility.xlSheetVisible);
+            SetVisibleToSheets(XlSheetVisibility.xlSheetVisible);
         }
         /// <summary>
         /// Скрывает или показывает лист в зависимости от переданного значения
         /// </summary>
         /// <param name="xlSheetVisibility"></param>
-        private void ShowSheets(XlSheetVisibility xlSheetVisibility)
+        private void SetVisibleToSheets(XlSheetVisibility sheetVisibilityStatus)
         {
             foreach (string sheetName in SheetsVisibleStatus.Keys)
-            {
+            { 
                 if (FunctionsForExcel.IsSheetExists(workbook, sheetName))
-                    workbook.Sheets[sheetName].Visible = xlSheetVisibility;
+                {
+                    if (sheetName.Contains("шаблон"))
+                    {
+                        workbook.Sheets[sheetName].Visible = XlSheetVisibility.xlSheetHidden;
+                        continue;
+                    }
+                    workbook.Sheets[sheetName].Visible = sheetVisibilityStatus;
+                }
             }
         }
     }

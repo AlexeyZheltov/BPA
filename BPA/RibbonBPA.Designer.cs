@@ -244,7 +244,7 @@
             // 
             this.btnSheetsHide.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             this.btnSheetsHide.Image = ((System.Drawing.Image)(resources.GetObject("btnSheetsHide.Image")));
-            this.btnSheetsHide.Label = "Скрыть листы";
+            this.btnSheetsHide.Label = "Скрыть/ показать листы";
             this.btnSheetsHide.Name = "btnSheetsHide";
             this.btnSheetsHide.ShowImage = true;
             this.btnSheetsHide.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSheetsHide_Click);

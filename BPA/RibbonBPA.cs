@@ -1273,7 +1273,6 @@ namespace BPA
             {
                 FunctionsForExcel.SpeedOn();
 
-                //FunctionsForExcel.HideShowSettingsSheets();
                 WorksheetsSettings wsSets = new WorksheetsSettings(Globals.ThisWorkbook.InnerObject);
                 wsSets.ShowUnshowSheets();
             }
