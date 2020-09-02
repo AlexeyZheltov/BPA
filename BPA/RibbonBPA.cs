@@ -1084,7 +1084,7 @@ namespace BPA
             Excel.Workbook TWB = Globals.ThisWorkbook.InnerObject;
             Excel.Workbook workbook = null;
             ProcessBar processBar = null;
-            WaitForm waitForm = null;
+            //WaitForm waitForm = null;
             const string SHEET_NAME_PLAN = "Планирование";
 
             try
