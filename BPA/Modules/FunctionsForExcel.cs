@@ -81,7 +81,7 @@ namespace BPA.Modules
         }
 
         /// <summary>
-        /// ПРоверка наличия листа,работает через перебор листов
+        /// ПРоверка наличия листа,работает через перебор листов в текущей книге
         /// </summary>
         /// <param name="sheetName"></param>
         /// <returns></returns>
@@ -96,6 +96,25 @@ namespace BPA.Modules
             }
             return false;
         }
+
+        /// <summary>
+        /// ПРоверка наличия листа,работает через перебор листов в текущей книге
+        /// </summary>
+        /// <param name="sheetName"></param>
+        /// <returns></returns>
+        public static bool IsSheetExists(Excel.Workbook workbook, string sheetName)
+        {
+            //Excel.Worksheet worksheet;
+
+
+            foreach (Worksheet worksheet in workbook.Sheets)
+            {
+                if (worksheet.Name == sheetName)
+                    return true;
+            }
+            return false;
+        }
+
 
         /// <summary>
         /// Создает и возвращает копию листа в текщей книге с указанным именем или именем по умолчанию
