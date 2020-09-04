@@ -29,22 +29,24 @@ namespace BPA.Forms
         private void SettingsForm_Load(object sender, EventArgs e)
         {
             int h_index = 0;
+            Budget_Path_TextBox.Text = settings.BudgetPath;
             if (_budget_flag)
             {
                 BudgetLabel.Visible = true;
                 Budget_Path_TextBox.Visible = true;
                 Budget_SetPath_Button.Visible = true;
-                Budget_Path_TextBox.Text = settings.BudgetPath;
+                
                 h_index++;
                 ValidatePath(Budget_Path_TextBox);
             }
 
+            Decision_Path_TextBox.Text = settings.DecisionPath;
             if (_decision_flag)
             {
                 DecisionLabel.Visible = true;
                 Decision_Path_TextBox.Visible = true;
                 Decision_SetPath_Button.Visible = true;
-                Decision_Path_TextBox.Text = settings.DecisionPath;
+                
                 DecisionLabel.Top = 9 + 26 * h_index;
                 Decision_Path_TextBox.Top = 6 + 26 * h_index;
                 Decision_SetPath_Button.Top = 6 + 26 * h_index;
@@ -52,12 +54,13 @@ namespace BPA.Forms
                 ValidatePath(Decision_Path_TextBox);
             }
 
+            PriceListMT_Path_TextBox.Text = settings.PriceListMTPath;
             if (_price_flag)
             {
                 PriceListMTlabel.Visible = true;
                 PriceListMT_Path_TextBox.Visible = true;
                 PriceListMT_SetPath_Button.Visible = true;
-                PriceListMT_Path_TextBox.Text = settings.PriceListMTPath;
+                
                 PriceListMTlabel.Top = 9 + 26 * h_index;
                 PriceListMT_Path_TextBox.Top = 6 + 26 * h_index;
                 PriceListMT_SetPath_Button.Top = 6 + 26 * h_index;
@@ -103,6 +106,7 @@ namespace BPA.Forms
             settings.BudgetPath = Budget_Path_TextBox.Text;
             settings.DecisionPath = Decision_Path_TextBox.Text;
             settings.PriceListMTPath = PriceListMT_Path_TextBox.Text;
+            settings.Save();
         }
     }
 }
