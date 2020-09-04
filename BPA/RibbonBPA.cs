@@ -243,7 +243,19 @@ namespace BPA
         /// </summary>
         private void About_Click(object sender, RibbonControlEventArgs e)
         {
-            MessageBox.Show("Функционал в разработке", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            AboutForm form = null;
+            try
+            {
+                form = new AboutForm();
+                form.Show();
+            } catch
+            {
+                form.Close();
+            }
+            finally
+            {
+
+            }
         }
 
         /// <summary>

@@ -468,6 +468,9 @@
         QK/kwH+ybmPAtGn/B+Z1VL9ufv11AAAAAElFTkSuQmCC
 </value>
   </data>
+  <data name="btnGetClientPrice.SuperTip" xml:space="preserve">
+    <value>В прайс-лист попадают товары из справочника товаров актуальные для выбранного клиента исходя из его категории (Channel type и Customer status). Цена прайс-листа рассчитывается на основании формулы из справочника скидок для категории клиента. Путь к файлу PriceListMT указывается в разделе настроек.  Для формирования необходимо перейти в справочник клиентов и выбрать нужного клиента. Прайс-лист будет сохранен в отдельный файл. </value>
+  </data>
   <data name="btnGetAllPrices.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAYAAACOEfKtAAAABGdBTUEAALGPC/xhBQAADdpJREFUeF7t
@@ -533,6 +536,9 @@
         QEun0HhHEAAAAABJRU5ErkJggg==
 </value>
   </data>
+  <data name="btnGetAllPrices.SuperTip" xml:space="preserve">
+    <value>В прайс-лист попадают товары из справочника товаров актуальные для каждой категории клиента (Channel type и Customer status) из справочника клиентов. Цена прайс-листа рассчитывается на основании формулы из справочника скидок для категории клиента. Путь к файлу PriceListMT указывается в разделе настроек. Прайс-лист для каждой категории будет сохранен в отдельный файл.</value>
+  </data>
   <data name="btnPlanningAdd.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAYAAACOEfKtAAAABGdBTUEAALGPC/xhBQAAAaVJREFUeF7t
@@ -560,6 +566,9 @@
         oDgAxQEoDkBx/wRk683YFqUOYstnbERbbTB4Bsyod5PqHr9XAAAAAElFTkSuQmCC
 </value>
   </data>
+  <data name="btnGetPlanningData.SuperTip" xml:space="preserve">
+    <value>В планирование попадают все товары актуальные для указанной категории клиента (Channel type и Customer status). Цена прайс-листа каждого товара рассчитывается на основании формулы из справочника скидок для категории клиента. Значения ПРОГНОЗ ПРОДАЖ 2020 (РЕГУЛЯРНЫЕ ПРОДАЖИ+ПРОМО) по месяцам рассчитывается из файлов Decision (текущий месяц и ранее) и Budget (следующий месяц и далее). Из Decision также заполняются столбцы ИТОГО GS и ИТОГО NS. Для формирования необходимо перейти на созданный лист планирования с указанными годом, Channel type и Customer status. Пути к файлам Decision, Budget и PriceListMT указываются в разделе настроек.</value>
+  </data>
   <data name="btnFactUpdate.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAA1VJREFUSEut
@@ -579,6 +588,9 @@
         sg2sN6y5nasP65BSUhZL8iE7egsTeM+wZAoseix8jADMLtQ5SlFkcBp3JTQb4K8K/rII9H1lV2u6zqNB
         qSgNGOY3UziLmngrxpQAAAAASUVORK5CYII=
 </value>
+  </data>
+  <data name="btnFactUpdate.SuperTip" xml:space="preserve">
+    <value>Значения ПРОГНОЗ ПРОДАЖ 2020 (РЕГУЛЯРНЫЕ ПРОДАЖИ+ПРОМО) по месяцам каждого товара текущего активного листа планирования будет обновлен из файлов Decision (текущий месяц и ранее) и Budget (следующий месяц и далее). Из Decision также заполняются столбцы ИТОГО GS и ИТОГО NS. Пути к файлам Decision, Budget и PriceListMT указываются в разделе настроек.</value>
   </data>
   <data name="btnPlanningSave.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -698,6 +710,9 @@
         vIm/SAtfTTVA8GE/Z4BE+WqqAYIP24UH8NVUAwQftgsP4KupBgg+bBcewFdTreDDduEBXNVMC9uFB2Al
         1jQQfiKqqPwLPMqI5OEZ7NAAAAAASUVORK5CYII=
 </value>
+  </data>
+  <data name="btnSheetsHide.SuperTip" xml:space="preserve">
+    <value>Скрывает листы, предназначенные для скрытия (все кроме листов «Товары», «Клиенты», «Статистика цен», «Скидки», «Планирование», «РРЦ»). Если все листы, предназначенные для скрытия скрыты, листы показываются. Листы шаблонов остаются всегда скрытыми.</value>
   </data>
   <data name="btnInfo.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
