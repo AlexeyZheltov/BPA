@@ -1053,7 +1053,6 @@ namespace BPA
             Excel.Workbook TWB = Globals.ThisWorkbook.InnerObject;
             Excel.Workbook workbook = null;
             ProcessBar processBar = null;
-            WaitForm waitForm = null;
             const string SHEET_NAME_PLAN = "Планирование";
 
             try
@@ -1162,17 +1161,12 @@ namespace BPA
                         buffer[r, 4] = tablePlanLoaded.CustomerStatus;
                     }
 
-                    //waitForm = new WaitForm();
-                    //waitForm.Show();
-                    //System.Windows.Forms.Application.DoEvents();
-
                     Excel.Range tmpCell;
                     tmpCell = listRow.Range[1];
                     tmpCell.Resize[dataRows, tmpArrColumns].Value = buffer;
 
                     tmpCell = listRow.Range[tmpArrColumns + 1];
                     tmpCell.Resize[dataRows, dataColumns].Value = planningData;
-                    //waitForm.Close();
 
                     processBar.TaskDone(1);
                 }
@@ -1191,75 +1185,6 @@ namespace BPA
                 //waitForm?.Close();
                 FunctionsForExcel.SpeedOff();
             }
-
-            //ProcessBar processBar = null;
-
-            //Worksheet worksheet = Globals.ThisWorkbook.Application.ActiveSheet;
-
-            //NM.PlanningNewYearTable planningNewYears = new PlanningNewYearTable(worksheet.Name);
-            //NM.tableAllPlan plans = new tableAllPlan();
-
-            //if (!FunctionsForExcel.HasRange(worksheet, SettingsBPA.Default.PlannningNYIndicatorCellName) ||
-            //    worksheet.Name == SettingsBPA.Default.SHEET_NAME_PLANNING_TEMPLATE)
-            //{
-            //    MessageBox.Show("Перейдите на страницу планирования (или создайте её) и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    return;
-            //}
-
-            //try
-            //{
-            //    planningNewYears.Load();
-            //    plans.Load();
-
-            //    if (!planningNewYears.HasData())
-            //    {
-            //        MessageBox.Show($"Заполните { worksheet.Name } и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //        return;
-            //    }
-
-            //    planningNewYears.SetTmpParams();
-
-            //    if (planningNewYears == null || planningNewYears.Count < 1)
-            //    {
-            //        MessageBox.Show($"Заполните { worksheet.Name } и повторите попытку", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //        return;
-            //    }
-
-            //    processBar = new ProcessBar("Обновление клиентов", planningNewYears.Count);
-            //    bool isCancel = false;
-            //    void CancelLocal() => isCancel = true;
-            //    FunctionsForExcel.SpeedOn();
-            //    processBar.CancelClick += CancelLocal;
-            //    processBar.Show();
-
-            //    foreach (NM.PlanningNewYearItem planningNewYear in planningNewYears)
-            //    {
-            //        if (isCancel)
-            //            break;
-
-            //        processBar.TaskStart($"Обрабатывается артикул { planningNewYear.Article}");
-            //        NM.PlanItem plan = plans.Find(x => x.Article == planningNewYear.Article && x.PrognosisDate == planningNewYear.planningDate);
-            //        if (plan != null)
-            //            continue;
-                    
-            //        plan = plans.Add();
-            //        plan.SetPlan(planningNewYear);
-
-            //        processBar.TaskDone(1);
-            //    }
-            //    Globals.ThisWorkbook.Sheets[plans.SheetName].Activate();
-
-            //    plans.Save();
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
-            //finally
-            //{
-            //    FunctionsForExcel.SpeedOff();
-            //    processBar?.Close();
-            //}
         }
 
         /// <summary>
