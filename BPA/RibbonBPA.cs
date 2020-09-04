@@ -247,7 +247,7 @@ namespace BPA
             try
             {
                 form = new AboutForm();
-                form.Show();
+                form.ShowDialog();
             } catch
             {
                 form.Close();
@@ -582,8 +582,6 @@ namespace BPA
                 }
                 else
                 {
-                    //выбрать того на кого указал перст божий
-                    //получить активного клиента, если нет, то на нет и суда нет
                     int currents_id = clients.GetCurrentClientID();
                     if (currents_id == 0)
                     {
