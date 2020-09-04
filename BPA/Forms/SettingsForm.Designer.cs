@@ -52,6 +52,7 @@
             this.Budget_Path_TextBox.ReadOnly = true;
             this.Budget_Path_TextBox.Size = new System.Drawing.Size(486, 20);
             this.Budget_Path_TextBox.TabIndex = 3;
+            this.Budget_Path_TextBox.Visible = false;
             // 
             // BudgetLabel
             // 
@@ -61,6 +62,7 @@
             this.BudgetLabel.Size = new System.Drawing.Size(41, 13);
             this.BudgetLabel.TabIndex = 2;
             this.BudgetLabel.Text = "Budget";
+            this.BudgetLabel.Visible = false;
             // 
             // Decision_Path_TextBox
             // 
@@ -69,6 +71,7 @@
             this.Decision_Path_TextBox.ReadOnly = true;
             this.Decision_Path_TextBox.Size = new System.Drawing.Size(486, 20);
             this.Decision_Path_TextBox.TabIndex = 5;
+            this.Decision_Path_TextBox.Visible = false;
             // 
             // DecisionLabel
             // 
@@ -78,6 +81,7 @@
             this.DecisionLabel.Size = new System.Drawing.Size(48, 13);
             this.DecisionLabel.TabIndex = 4;
             this.DecisionLabel.Text = "Decision";
+            this.DecisionLabel.Visible = false;
             // 
             // PriceListMT_Path_TextBox
             // 
@@ -86,6 +90,7 @@
             this.PriceListMT_Path_TextBox.ReadOnly = true;
             this.PriceListMT_Path_TextBox.Size = new System.Drawing.Size(486, 20);
             this.PriceListMT_Path_TextBox.TabIndex = 7;
+            this.PriceListMT_Path_TextBox.Visible = false;
             // 
             // PriceListMTlabel
             // 
@@ -95,6 +100,7 @@
             this.PriceListMTlabel.Size = new System.Drawing.Size(63, 13);
             this.PriceListMTlabel.TabIndex = 6;
             this.PriceListMTlabel.Text = "PriceListMT";
+            this.PriceListMTlabel.Visible = false;
             // 
             // Budget_SetPath_Button
             // 
@@ -104,6 +110,7 @@
             this.Budget_SetPath_Button.TabIndex = 9;
             this.Budget_SetPath_Button.Text = "...";
             this.Budget_SetPath_Button.UseVisualStyleBackColor = true;
+            this.Budget_SetPath_Button.Visible = false;
             this.Budget_SetPath_Button.Click += new System.EventHandler(this.Budget_SetPath_Button_Click);
             // 
             // Decision_SetPath_Button
@@ -114,6 +121,7 @@
             this.Decision_SetPath_Button.TabIndex = 10;
             this.Decision_SetPath_Button.Text = "...";
             this.Decision_SetPath_Button.UseVisualStyleBackColor = true;
+            this.Decision_SetPath_Button.Visible = false;
             this.Decision_SetPath_Button.Click += new System.EventHandler(this.Decision_SetPath_Button_Click);
             // 
             // PriceListMT_SetPath_Button
@@ -124,12 +132,14 @@
             this.PriceListMT_SetPath_Button.TabIndex = 11;
             this.PriceListMT_SetPath_Button.Text = "...";
             this.PriceListMT_SetPath_Button.UseVisualStyleBackColor = true;
+            this.PriceListMT_SetPath_Button.Visible = false;
             this.PriceListMT_SetPath_Button.Click += new System.EventHandler(this.PriceListMT_SetPath_Button_Click);
             // 
             // Cancel_Button
             // 
+            this.Cancel_Button.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Cancel_Button.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Cancel_Button.Location = new System.Drawing.Point(428, 84);
+            this.Cancel_Button.Location = new System.Drawing.Point(428, 80);
             this.Cancel_Button.Name = "Cancel_Button";
             this.Cancel_Button.Size = new System.Drawing.Size(75, 23);
             this.Cancel_Button.TabIndex = 12;
@@ -138,8 +148,9 @@
             // 
             // Ok_Button
             // 
+            this.Ok_Button.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Ok_Button.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.Ok_Button.Location = new System.Drawing.Point(509, 84);
+            this.Ok_Button.Location = new System.Drawing.Point(509, 80);
             this.Ok_Button.Name = "Ok_Button";
             this.Ok_Button.Size = new System.Drawing.Size(75, 23);
             this.Ok_Button.TabIndex = 13;
@@ -160,7 +171,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(659, 110);
+            this.ClientSize = new System.Drawing.Size(659, 106);
             this.Controls.Add(this.Ok_Button);
             this.Controls.Add(this.Cancel_Button);
             this.Controls.Add(this.PriceListMT_SetPath_Button);

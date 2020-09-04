@@ -9,27 +9,63 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BPA.Modules;
 
 namespace BPA.Forms
 {
     public partial class SettingsForm : Form
     {
         readonly Settings settings = Properties.Settings.Default;
-        public SettingsForm()
+        bool _decision_flag, _budget_flag, _price_flag;
+        public SettingsForm(BPASettingEnum typeSetting)
         {
             InitializeComponent();
+
+            _budget_flag = ((int)typeSetting & 0b0001) > 0;
+            _decision_flag = ((int)typeSetting & 0b0010) > 0;
+            _price_flag = ((int)typeSetting & 0b0100) > 0;
         }
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
-            Decision_Path_TextBox.Text = settings.DecisionPath;
-            Budget_Path_TextBox.Text = settings.BudgetPath;
-            PriceListMT_Path_TextBox.Text = settings.PriceListMTPath;
+            int h_index = 0;
+            if (_budget_flag)
+            {
+                BudgetLabel.Visible = true;
+                Budget_Path_TextBox.Visible = true;
+                Budget_SetPath_Button.Visible = true;
+                Budget_Path_TextBox.Text = settings.BudgetPath;
+                h_index++;
+                ValidatePath(Budget_Path_TextBox);
+            }
 
-            //Проверка на валидность путей
-            ValidatePath(Decision_Path_TextBox);
-            ValidatePath(Budget_Path_TextBox);
-            ValidatePath(PriceListMT_Path_TextBox);
+            if (_decision_flag)
+            {
+                DecisionLabel.Visible = true;
+                Decision_Path_TextBox.Visible = true;
+                Decision_SetPath_Button.Visible = true;
+                Decision_Path_TextBox.Text = settings.DecisionPath;
+                DecisionLabel.Top = 9 + 26 * h_index;
+                Decision_Path_TextBox.Top = 6 + 26 * h_index;
+                Decision_SetPath_Button.Top = 6 + 26 * h_index;
+                h_index++;
+                ValidatePath(Decision_Path_TextBox);
+            }
+
+            if (_price_flag)
+            {
+                PriceListMTlabel.Visible = true;
+                PriceListMT_Path_TextBox.Visible = true;
+                PriceListMT_SetPath_Button.Visible = true;
+                PriceListMT_Path_TextBox.Text = settings.PriceListMTPath;
+                PriceListMTlabel.Top = 9 + 26 * h_index;
+                PriceListMT_Path_TextBox.Top = 6 + 26 * h_index;
+                PriceListMT_SetPath_Button.Top = 6 + 26 * h_index;
+                h_index++;
+                ValidatePath(PriceListMT_Path_TextBox);
+            }
+
+            this.Height = 93 + 26 * (h_index - 1);
         }
 
         private void ValidatePath(TextBox textBox)

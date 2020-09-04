@@ -37,22 +37,22 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RibbonBPA));
             this.tabBPA = this.Factory.CreateRibbonTab();
             this.grpProducts = this.Factory.CreateRibbonGroup();
-            this.grpPrice = this.Factory.CreateRibbonGroup();
-            this.group2 = this.Factory.CreateRibbonGroup();
-            this.group3 = this.Factory.CreateRibbonGroup();
-            this.group1 = this.Factory.CreateRibbonGroup();
             this.btnAddNewCalendar = this.Factory.CreateRibbonButton();
             this.btnUpdateProducts = this.Factory.CreateRibbonButton();
             this.btnUpdateProduct = this.Factory.CreateRibbonButton();
+            this.grpPrice = this.Factory.CreateRibbonGroup();
             this.btnUploadPrice = this.Factory.CreateRibbonButton();
             this.btnSavePrice = this.Factory.CreateRibbonButton();
+            this.group2 = this.Factory.CreateRibbonGroup();
             this.btnClientsUpdate = this.Factory.CreateRibbonButton();
             this.btnGetClientPrice = this.Factory.CreateRibbonButton();
             this.btnGetAllPrices = this.Factory.CreateRibbonButton();
+            this.group3 = this.Factory.CreateRibbonGroup();
             this.btnPlanningAdd = this.Factory.CreateRibbonButton();
             this.btnGetPlanningData = this.Factory.CreateRibbonButton();
             this.btnFactUpdate = this.Factory.CreateRibbonButton();
             this.btnPlanningSave = this.Factory.CreateRibbonButton();
+            this.group1 = this.Factory.CreateRibbonGroup();
             this.btnSettings = this.Factory.CreateRibbonButton();
             this.btnSheetsHide = this.Factory.CreateRibbonButton();
             this.btnInfo = this.Factory.CreateRibbonButton();
@@ -82,38 +82,6 @@
             this.grpProducts.Items.Add(this.btnUpdateProduct);
             this.grpProducts.Label = "Справочник товаров";
             this.grpProducts.Name = "grpProducts";
-            // 
-            // grpPrice
-            // 
-            this.grpPrice.Items.Add(this.btnUploadPrice);
-            this.grpPrice.Items.Add(this.btnSavePrice);
-            this.grpPrice.Label = "Работа с ценами";
-            this.grpPrice.Name = "grpPrice";
-            // 
-            // group2
-            // 
-            this.group2.Items.Add(this.btnClientsUpdate);
-            this.group2.Items.Add(this.btnGetClientPrice);
-            this.group2.Items.Add(this.btnGetAllPrices);
-            this.group2.Label = "Работа с клиентами";
-            this.group2.Name = "group2";
-            // 
-            // group3
-            // 
-            this.group3.Items.Add(this.btnPlanningAdd);
-            this.group3.Items.Add(this.btnGetPlanningData);
-            this.group3.Items.Add(this.btnFactUpdate);
-            this.group3.Items.Add(this.btnPlanningSave);
-            this.group3.Label = "Планирование";
-            this.group3.Name = "group3";
-            // 
-            // group1
-            // 
-            this.group1.Items.Add(this.btnSettings);
-            this.group1.Items.Add(this.btnSheetsHide);
-            this.group1.Items.Add(this.btnInfo);
-            this.group1.Label = "Настройки";
-            this.group1.Name = "group1";
             // 
             // btnAddNewCalendar
             // 
@@ -152,6 +120,13 @@
     "тствующего товару продуктового календаря.";
             this.btnUpdateProduct.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.UpdateProduct_Click);
             // 
+            // grpPrice
+            // 
+            this.grpPrice.Items.Add(this.btnUploadPrice);
+            this.grpPrice.Items.Add(this.btnSavePrice);
+            this.grpPrice.Label = "Работа с ценами";
+            this.grpPrice.Name = "grpPrice";
+            // 
             // btnUploadPrice
             // 
             this.btnUploadPrice.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
@@ -176,6 +151,14 @@
     " повышения. В случае если на выбранную дату уже имеются заполненные данные, пози" +
     "ция в справочнике РРЦ обновляется.";
             this.btnSavePrice.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.SavePrice_Click);
+            // 
+            // group2
+            // 
+            this.group2.Items.Add(this.btnClientsUpdate);
+            this.group2.Items.Add(this.btnGetClientPrice);
+            this.group2.Items.Add(this.btnGetAllPrices);
+            this.group2.Label = "Работа с клиентами";
+            this.group2.Name = "group2";
             // 
             // btnClientsUpdate
             // 
@@ -211,6 +194,15 @@
             this.btnGetAllPrices.ShowImage = true;
             this.btnGetAllPrices.SuperTip = resources.GetString("btnGetAllPrices.SuperTip");
             this.btnGetAllPrices.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.GetAllPrices_Click);
+            // 
+            // group3
+            // 
+            this.group3.Items.Add(this.btnPlanningAdd);
+            this.group3.Items.Add(this.btnGetPlanningData);
+            this.group3.Items.Add(this.btnFactUpdate);
+            this.group3.Items.Add(this.btnPlanningSave);
+            this.group3.Label = "Планирование";
+            this.group3.Name = "group3";
             // 
             // btnPlanningAdd
             // 
@@ -256,6 +248,14 @@
     "ые листы планирования, данные построчно добавляются на лист сводного планировани" +
     "я.";
             this.btnPlanningSave.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.PlanningSave_Click);
+            // 
+            // group1
+            // 
+            this.group1.Items.Add(this.btnSettings);
+            this.group1.Items.Add(this.btnSheetsHide);
+            this.group1.Items.Add(this.btnInfo);
+            this.group1.Label = "Настройки";
+            this.group1.Name = "group1";
             // 
             // btnSettings
             // 

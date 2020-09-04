@@ -248,7 +248,8 @@ namespace BPA
             {
                 form = new AboutForm();
                 form.Show();
-            } catch
+            }
+            catch
             {
                 form.Close();
             }
@@ -263,7 +264,7 @@ namespace BPA
         /// </summary>
         private void Settings_Click(object sender, RibbonControlEventArgs e)
         {
-            SettingsForm form = new SettingsForm();
+            SettingsForm form = new SettingsForm(BPASettingEnum.All);
             form.ShowDialog(new ExcelWindows(Globals.ThisWorkbook));
         }
 
