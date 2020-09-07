@@ -10,11 +10,15 @@ namespace BPA.Modules
 {
     class PriceListForPlanningNM
     {
+        /// <summary>
+        /// изменяется после SetProduct
+        /// </summary>
+        public bool FormulaChecked;
+
         private FilePriceMT filePriceMT;
         private NM.DiscountItem Discount;
         private NM.ProductItem Product;
         private string Formula;
-        public bool FormulaChecked;
 
         public PriceListForPlanningNM(FilePriceMT filePriceMT, NM.DiscountItem discount) 
         {
@@ -23,20 +27,27 @@ namespace BPA.Modules
         }
 
         private PriceListForPlanningNM() { }
-
+        /// <summary>
+        /// Устанвка формулы исходя из категории товара, предварительно необходимо установить Discount (в конструкторе)
+        /// </summary>
+        /// <param name="product"></param>
         public void SetProduct(NM.ProductItem product)
         {
             if (product.Category == "") throw new ApplicationException($"Для {product.Article} не указана категория");
 
             this.Product = product;
-            this.Formula =Discount.GetFormulaByName(product.Category);
+            this.Formula = Discount.GetFormulaByName(product.Category);
             this.FormulaChecked = true;
         }
         public void CheckFormula()
         {
 
         }
-
+        /// <summary>
+        /// Получение цены, предварительно необходимо установить фрмулу и Продукт (SetProduct), и filePriceMT (в конструкторе)
+        /// </summary>
+        /// <param name="rrcList"></param>
+        /// <returns></returns>
         public double GetPrice(List<NM.RRCItem> rrcList)
         {
             try
