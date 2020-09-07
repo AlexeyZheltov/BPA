@@ -12,7 +12,6 @@ namespace BPA.Modules
     internal class FilePriceMT : FileBase
     {
         #region --- Columns ---
-        //public int CustomerColumn => FindColumn("Покупатель");
         public int CustomerColumn {
             get {
                 if (_CustomerColumn == 0)
@@ -21,7 +20,6 @@ namespace BPA.Modules
             }
         }
         private int _CustomerColumn = 0;
-        //public int SearchColumn => FindColumn("Поиск");
         public int SearchColumn
         {
             get
@@ -31,7 +29,6 @@ namespace BPA.Modules
             }
         }
         private int _SearchColumn = 0;
-        //public int MainColumn => FindColumn("Главный");
         public int MainColumn {
             get
             {
@@ -40,7 +37,6 @@ namespace BPA.Modules
             }
         }
         private int _MainColumn = 0;
-        //public int ArticleColumn => FindColumn("Артикул");
         public int ArticleColumn {
             get
             {
@@ -49,7 +45,6 @@ namespace BPA.Modules
             }
         }
         private int _ArticleColumn = 0;
-        //public int NameColumn => FindColumn("Название");
         public int NameColumn {
             get
             {
@@ -58,7 +53,6 @@ namespace BPA.Modules
             }
         }
         private int _NameColumn = 0;
-        //public int PriceForClientColumn => FindColumn("Цена_для_клиента");
         public int PriceForClientColumn {
             get
             {
@@ -67,7 +61,6 @@ namespace BPA.Modules
             }
         }
         private int _PriceForClientColumn = 0;
-        //public int ValidFromDatColumn => FindColumn("ValidFromDat");
         public int ValidFromDatColumn {
             get
             {
@@ -76,7 +69,6 @@ namespace BPA.Modules
             }
         }
         private int _ValidFromDatColumn = 0;
-        //public int ValidToDatColumn => FindColumn("ValidToDat");
         public int ValidToDatColumn {
             get
             {
@@ -85,7 +77,6 @@ namespace BPA.Modules
             }
         }
         private int _ValidToDatColumn = 0;
-        //public int CustCodeColumn => FindColumn("CustCode");
         public int CustCodeColumn {
             get
             {
@@ -94,7 +85,6 @@ namespace BPA.Modules
             }
         }
         private int _CustCodeColumn = 0;
-        //public int PriceOfListingColumn => FindColumn("Цена_листинга");
         public int PriceOfListingColumn {
             get
             {
@@ -103,7 +93,6 @@ namespace BPA.Modules
             }
         }
         private int _PriceOfListingColumn = 0;
-        //public int PriceNewColumn => FindColumn("Цена_новая");
         public int PriceNewColumn {
             get
             {
@@ -112,7 +101,6 @@ namespace BPA.Modules
             }
         }
         private int _PriceNewColumn = 0;
-        //public int DateFromColumn => FindColumn("От");
         public int DateFromColumn {
             get
             {
@@ -121,7 +109,6 @@ namespace BPA.Modules
             }
         }
         private int _DateFromColumn = 0;
-        //public int DateToColumn => FindColumn("До");
         public int DateToColumn
         {
             get
@@ -131,7 +118,6 @@ namespace BPA.Modules
             }
         }
         private int _DateToColumn = 0;
-        //public int MagColumn => FindColumn("Маг");
         public int MagColumn {
             get
             {
