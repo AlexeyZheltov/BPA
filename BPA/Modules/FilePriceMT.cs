@@ -233,26 +233,24 @@ namespace BPA.Modules
                     }
                 }
 
-                DateTime firstDate = GetDateFromCell(rowIndex, DateFromColumn);
-                DateTime lastDate = GetDateFromCell(rowIndex, DateToColumn);
+                double priceNew = GetValueFromColumnDbl(rowIndex, PriceNewColumn);
+                double priceOfListing= GetValueFromColumnDbl(rowIndex, PriceOfListingColumn);
 
-                if (lastDate.Year >= 9999) {
-                    AddClient(rowIndex, PriceOfListingColumn);
-                }
-                else if (date <= lastDate && date >= firstDate) {
-                    AddClient(rowIndex, PriceNewColumn);
-                }
+                if (priceNew != 0)
+                    AddClient(rowIndex, priceNew);
+                else
+                    AddClient(rowIndex, priceOfListing);
+
                 ActionD();
             }
-            //IsOpen = true;
 
-            void AddClient(int rowIndex, int priceColumn)
+            void AddClient(int rowIndex, double price)
             {
                 clients.Add(new Client
                 {
                     Name = GetValueFromColumnStr(rowIndex, CustomerColumn),
                     Art = GetValueFromColumnStr(rowIndex, ArticleColumn),
-                    Price = GetValueFromColumnDbl(rowIndex, priceColumn)
+                    Price = price
                 });
             }
         }
