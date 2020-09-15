@@ -685,12 +685,12 @@ namespace BPA
                         if (!priceListModule.FormulaChecked) return;
                         double priceListPrice = priceListModule.GetPrice(actualRRC);
                         RRCItem rRC = actualRRC.Find(x => x.Article == product.Article);
-                        double shippingPrice = rRC != null ? rRC.RRCNDS : 0;
+                        double rRCPrice = rRC != null ? rRC.RRCNDS : 0;
 
                         NM.FinalPriceItem priceItem = finalPrices.Add();
                         priceItem.Fill(product);
-                        priceItem.RRC = priceListPrice;
-                        priceItem.ShippingPrice = shippingPrice;
+                        priceItem.RRC = rRCPrice;                            
+                        priceItem.ShippingPrice = priceListPrice;
 
                         processBar.TaskDone(1);
                     }
