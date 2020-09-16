@@ -193,9 +193,12 @@ namespace BPA.NewModel
         public void DelFormulas()
         {
             StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append($"stringBuilder setetd\n");
             try
             {
+                stringBuilder.Append($"SetListStared\n");
                 SetDelFormulaDict();
+                stringBuilder.Append($"SetListStared\n");
 
                 stringBuilder.Append($"_table is null {_table == null}\n");
                 if (_table.ListRows.Count < 1)
@@ -231,16 +234,40 @@ namespace BPA.NewModel
                 /// <param name=""></param>
                 void SetDelFormulaDict()
                 {
+                    stringBuilder.Append($"Start Clear\n");
                     DelFormulColumnsList.Clear();
+                    stringBuilder.Append($"List is Cleared");
                     int month = CurrentDate.Month;
+                    stringBuilder.Append($"month is 0 {month == 0} ({ month })\n");
 
                     for (int m = 0; m < 12; m++)
+                    {
+                        stringBuilder.Append($"m =  {m}\n");
                         if (month > m)
+                        {
+                            stringBuilder.Append($"month > m {month > m}\n");
                             DelFormulColumnsList.Add($"ИТОГО GS { month_names[m] }, шт.");
+                            stringBuilder.Append($"List.count is {DelFormulColumnsList.Count}\n");
+                        } else
+                        {
+                            stringBuilder.Append($"month > m {!(month > m)}\n");
+                        }
+
+                    }
 
                     for (int m = 0; m < 12; m++)
+                    {
+                        stringBuilder.Append($"m =  {m}\n");
                         if (month > m)
+                        {
+                            stringBuilder.Append($"month > m {month > m}\n");
                             DelFormulColumnsList.Add($"ИТОГО NS { month_names[m] }, шт.");
+                            stringBuilder.Append($"List.count is {DelFormulColumnsList.Count}\n");
+                        } else
+                        {
+                            stringBuilder.Append($"month > m {!(month > m)}\n");
+                        }
+                    }
                 }
             }
             catch(Exception ex)
