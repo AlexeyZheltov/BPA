@@ -16,10 +16,10 @@
     <SolutionID>e25371d0-be5b-4d3b-add4-59736dece8b6</SolutionID>
     <IsWebBootstrapper>False</IsWebBootstrapper>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <PublishUrl>C:\Users\wizar\YandexDisk\Разработка\Хускварна\Этап 1. Локальная версия\Версии на тестирование\Тестирование\</PublishUrl>
+    <PublishUrl>D:\YandexDisk\Разработка\Хускварна\Этап 1. Локальная версия\Версии на тестирование\Тестирование\</PublishUrl>
     <InstallUrl />
     <TargetCulture>ru</TargetCulture>
-    <ApplicationVersion>1.8.2.0</ApplicationVersion>
+    <ApplicationVersion>1.12.2.0</ApplicationVersion>
     <AutoIncrementApplicationRevision>false</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>7</UpdateInterval>
