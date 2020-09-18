@@ -27,7 +27,7 @@
       <Value Profile="(Default)">Цены клиентов</Value>
     </Setting>
     <Setting Name="SHEET_NAME_FILE_DECISION" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Database</Value>
+      <Value Profile="(Default)">Цены клиентов</Value>
     </Setting>
     <Setting Name="SHEET_NAME_PRICELIST_TEMPLATE" Type="System.String" Scope="User">
       <Value Profile="(Default)">Прайс лист шаблон</Value>
