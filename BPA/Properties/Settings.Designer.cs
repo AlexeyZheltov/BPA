@@ -121,7 +121,7 @@ namespace BPA.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Цены клиентов")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Database")]
         public string SHEET_NAME_FILE_DECISION {
             get {
                 return ((string)(this["SHEET_NAME_FILE_DECISION"]));
