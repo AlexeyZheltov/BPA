@@ -661,7 +661,7 @@ namespace BPA
                     filePriceMT.Load(currentDate, currentClient.Mag);
                     processBar.Close();
 
-                    PriceListForPlanningNM priceListModule = new PriceListForPlanningNM(filePriceMT, currentDiscount);
+                    PriceListForPriceNM priceListModule = new PriceListForPriceNM(filePriceMT, currentDiscount);
 
                     //Загрузка списка артикулов, какие из них актуальные?
                     List<NM.ProductItem> clients_products = products.GetProductForClient(currentClient.CustomerStatus, currentClient.ChannelType, str_exclus);
@@ -788,7 +788,7 @@ namespace BPA
             }
             try
             {
-                NM.DiscountTable discounts = new NM.DiscountTable();
+                NM.DiscountForPlanningTable discounts = new NM.DiscountForPlanningTable();
                 NM.ProductTable products = new NM.ProductTable();
                 NM.ClientTable clients = new NM.ClientTable();
                 NM.RRCTable rrcs = new NM.RRCTable();
@@ -812,7 +812,7 @@ namespace BPA
                 }
 
                 discounts.Load();
-                NM.DiscountItem discount = discounts.GetDiscountForPlanning(planningNewYears);                
+                NM.DiscountForPlanningItem discount = discounts.GetDiscountForPlanning(planningNewYears);                
                 if (discount != null) planningNewYears.MaximumBonus = discount.MaximumBonus;
 
                 exclusives.Load();
@@ -959,7 +959,7 @@ namespace BPA
             try
             {
                 NM.ClientTable clients = new ClientTable();
-                NM.DiscountTable discounts = new DiscountTable();
+                NM.DiscountForPlanningTable discounts = new DiscountForPlanningTable();
 
                 NM.PlanningNewYearTable planningNewYears = new PlanningNewYearTable(worksheet.Name);
                 planningNewYears.Load();
@@ -978,7 +978,7 @@ namespace BPA
                 }
 
                 discounts.Load();
-                NM.DiscountItem discount = discounts.GetDiscountForPlanning(planningNewYears);
+                NM.DiscountForPlanningItem discount = discounts.GetDiscountForPlanning(planningNewYears);
                 if (discount != null) planningNewYears.MaximumBonus = discount.MaximumBonus;
 
                 clients.Load();

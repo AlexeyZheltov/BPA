@@ -27,7 +27,7 @@ namespace BPA.NewModel
         }
 
         #region labels for tmpParams
-        private const string CustomerStatusLabel = "Customer status";
+        private const string CustomerStatusLabel = "Customer status for forecast";
         private const string ChannelTypeLabel = "Channel type";
         private const string YearLabel = "Период";
         private const string MaximumBonusLabel = "максмальный годовой бонус, %";

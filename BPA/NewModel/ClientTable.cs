@@ -121,7 +121,7 @@ namespace BPA.NewModel
                                                 from item in _db
                                                 select new ClientItem(item)
                                             where cl.ChannelType == channelType
-                                                    && cl.CustomerStatus == customerStatus
+                                                    && cl.CustomerStatusForecast == customerStatus
                                             select cl).ToList();
             return clients_list;
         }
