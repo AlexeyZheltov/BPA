@@ -37,6 +37,11 @@ namespace BPA.NewModel
             get => _row["Customer status"];
             set => _row["Customer status"] = value;
         }
+        public string CustomerStatusForecast
+        {
+            get => _row["Customer status for forecast"];
+            set => _row["Customer status for forecast"] = value;
+        }
         public string SalesManager
         {
             get => _row["Sales manager"];
