@@ -59,6 +59,11 @@ namespace BPA.NewModel
             set => _row["DIY цена 2021, руб. с НДС"] = value;
         }
 
+        public double ActualBonus
+        {
+            get => _row["Макс.бонус 2020, %"];
+            set => _row["Макс.бонус 2020, %"] = value;
+        }
         //public double IRPCurrent
         //{
         //    get => _row[""];

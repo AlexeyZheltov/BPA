@@ -895,6 +895,7 @@ namespace BPA
                     NM.PlanningNewYearItem planning = planningNewYears.Add();
                     planning.SetParamsToItem(planningNewYears);
                     planning.SetProduct(product);
+                    if (discount != null) planning.ActualBonus = discount.MaximumBonus;
 
                     //уточнить отбор цены по дате
                     NM.RRCItem RRCPlan = planRRC.Find(x => x.Article == product.Article);
