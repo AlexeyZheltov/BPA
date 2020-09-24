@@ -812,7 +812,8 @@ namespace BPA
                 }
 
                 discounts.Load();
-                NM.DiscountForPlanningItem discount = discounts.GetDiscountForPlanning(planningNewYears);                
+                NM.DiscountForPlanningItem discount = discounts.GetDiscountForPlanning(planningNewYears.ChannelType, planningNewYears.CustomerStatus, planningNewYears.planningDate);                
+                
                 if (discount != null) planningNewYears.MaximumBonus = discount.MaximumBonus;
 
                 exclusives.Load();
@@ -978,7 +979,7 @@ namespace BPA
                 }
 
                 discounts.Load();
-                NM.DiscountForPlanningItem discount = discounts.GetDiscountForPlanning(planningNewYears);
+                NM.DiscountForPlanningItem discount = discounts.GetDiscountForPlanning(planningNewYears.ChannelType, planningNewYears.CustomerStatus, planningNewYears.planningDate);
                 if (discount != null) planningNewYears.MaximumBonus = discount.MaximumBonus;
 
                 clients.Load();

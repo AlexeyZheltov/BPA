@@ -57,16 +57,16 @@ namespace BPA.NewModel
             return GetEnumerator();
         }
 
-        public DiscountForPlanningItem GetDiscountForPlanning(PlanningNewYearTable planning)
+        public DiscountForPlanningItem GetDiscountForPlanning(string channelType, string customerStatusForecast, DateTime planningDate)
         {
             if (_db.RowCount() == 0) return null;
 
             var quere = (from d in
                             (from item in _db
                              select new DiscountForPlanningItem(item))
-                         where d.ChannelType == planning.ChannelType
-                                && d.CustomerStatusForecast == planning.CustomerStatus
-                                && d.Period <= planning.planningDate
+                         where d.ChannelType == channelType
+                                && d.CustomerStatusForecast == customerStatusForecast
+                                && d.Period <= planningDate
                          orderby d.Period descending
                          select d).ToList();
             
