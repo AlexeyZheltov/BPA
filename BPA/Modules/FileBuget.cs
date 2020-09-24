@@ -79,9 +79,8 @@ namespace BPA.Modules
             if (settings.GetBudgetPath(out string path))
             {
                 FileAddress = path;
-                FileHeaderRow = 2;
                 FileSheetName = SettingsBPA.Default.SHEET_NAME_FILE_BUGET;
-                
+                FirstRowIndicator = "Code";
                 IsOpen = true;
             }
             else

@@ -10,7 +10,6 @@ namespace BPA.Modules
     {
         public readonly Excel.Application Application = Globals.ThisWorkbook.Application;
         protected string FileSheetName = "";
-        protected int FileHeaderRow = 1;
         private int ActionCounter = 1;
 
         public void SetProcessBarForLoad(ref ProcessBar pB)
@@ -136,6 +135,41 @@ namespace BPA.Modules
             }
         }
         private Excel.Worksheet _worksheet;
+
+        /// <summary>
+        /// Необходимо установить значение если необходимо определить строку заголовка по какому либо тексту в заголовке
+        /// </summary>
+        protected string FirstRowIndicator = "";
+        /// <summary>
+        /// Если FileHeaderRow не задно напрямую, то производится поиск по свойству FirstRowIndicator 
+        /// </summary>
+        public int FileHeaderRow
+        {
+            get
+            {
+                if (_FileHeaderRow == 0)
+                {
+                    if (FirstRowIndicator == "")
+                    {
+                        _FileHeaderRow = 1;
+                    }
+                    else
+                    {
+                        Excel.Range cell = worksheet.UsedRange.Find(FirstRowIndicator);
+                        if (cell == null)
+                            throw new ApplicationException("Файл имеет неверный формат");
+
+                        _FileHeaderRow = cell.Row;
+                    }
+                }
+                return _FileHeaderRow;
+            }
+            set
+            {
+                _FileHeaderRow = value;
+            }
+        }
+        private int _FileHeaderRow = 0;
 
         public int LastRow
         {

@@ -8,7 +8,7 @@ using NM = BPA.NewModel;
 
 namespace BPA.Modules
 {
-    class PriceListForPlanningNM
+    class PriceListForPriceNM
     {
         /// <summary>
         /// изменяется после SetProduct
@@ -16,18 +16,17 @@ namespace BPA.Modules
         public bool FormulaChecked;
 
         private FilePriceMT filePriceMT;
-        private NM.DiscountForPlanningItem Discount;
+        private NM.DiscountItem Discount;
         private NM.ProductItem Product;
         private string Formula;
 
-
-        public PriceListForPlanningNM(FilePriceMT filePriceMT, NM.DiscountForPlanningItem discount)
+        public PriceListForPriceNM(FilePriceMT filePriceMT, NM.DiscountItem discount) 
         {
             this.filePriceMT = filePriceMT;
             this.Discount = discount;
         }
 
-        private PriceListForPlanningNM() { }
+        private PriceListForPriceNM() { }
         /// <summary>
         /// Устанвка формулы исходя из категории товара, предварительно необходимо установить Discount (в конструкторе)
         /// </summary>
@@ -40,7 +39,10 @@ namespace BPA.Modules
             this.Formula = Discount.GetFormulaByName(product.Category);
             this.FormulaChecked = true;
         }
+        public void CheckFormula()
+        {
 
+        }
         /// <summary>
         /// Получение цены, предварительно необходимо установить фрмулу и Продукт (SetProduct), и filePriceMT (в конструкторе)
         /// </summary>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Deployment.Application;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
@@ -19,9 +20,16 @@ namespace BPA.Forms
             linkLabel1.LinkClicked += linkLabel1_LinkClicked;
             try
             {
-                string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-                string[] verArr = version.Split(new char[] { '.' });
-                version = String.Join(".", verArr);
+                Version ver;
+                try
+                {
+                    ver = ApplicationDeployment.CurrentDeployment.CurrentVersion;
+                } catch
+                {
+                    ver = Assembly.GetExecutingAssembly().GetName().Version;
+                }
+                string[] verArr = ver.ToString().Split(new char[] { '.' });
+                string version = String.Join(".", verArr);
                 if (verArr != null)
                     if(verArr.Length >= 2)
                         label2.Text = $"v.{ verArr[0] }.{ verArr[1] }";
@@ -29,7 +37,6 @@ namespace BPA.Forms
                         label2.Text = $"v.{ verArr[0] }";
             } catch
             {
-                
             }
         }
 

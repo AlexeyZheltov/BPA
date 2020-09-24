@@ -8,15 +8,15 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace BPA.NewModel
 {
-    class DiscountTable : IEnumerable<DiscountItem>
+    class DiscountForPlanningTable : IEnumerable<DiscountItem>
     {
-        const string SHEET = "Скидки";
-        const string TABLE = "Скидки";
+        const string SHEET = "Скидки для планирования";
+        const string TABLE = "СкидкиДляПланирования";
 
         WS_DB _db = new WS_DB();
         Excel.ListObject _table = null;
 
-        public DiscountTable()
+        public DiscountForPlanningTable()
         {
             Excel.Workbook wb = Globals.ThisWorkbook.InnerObject;
             Excel.Worksheet ws = wb.Sheets[SHEET];
@@ -57,26 +57,27 @@ namespace BPA.NewModel
             return GetEnumerator();
         }
 
-        public DiscountItem GetCurrentDiscount(string channelType, string customerStatus, DateTime date)
+        public DiscountForPlanningItem GetDiscountForPlanning(PlanningNewYearTable planning)
         {
             if (_db.RowCount() == 0) return null;
 
             var quere = (from d in
-                             (from item in _db
-                             select new DiscountItem(item))
-                         where d.ChannelType == channelType
-                                 && d.CustomerStatus == customerStatus
-                                 && d.Period <= date
+                            (from item in _db
+                             select new DiscountForPlanningItem(item))
+                         where d.ChannelType == planning.ChannelType
+                                && d.CustomerStatusForecast == planning.CustomerStatus
+                                && d.Period <= planning.planningDate
                          orderby d.Period descending
                          select d).ToList();
-
+            
             if (quere.Count == 0)
             {
                 //MessageBox.Show($"Клиенту {client.Customer} нет соответствий на листе \"Скидки\"", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 //Debug.Print($"Клиенту {client.Customer} нет соответствий на листе \"Скидки\"", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return null;
             }
-            DiscountItem currentDiscount = quere[0];
+
+            DiscountForPlanningItem currentDiscount = quere[0];
 
             //проверить формулы
             //Убрать пробелы и лишние знаки

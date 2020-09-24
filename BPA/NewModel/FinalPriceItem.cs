@@ -58,6 +58,11 @@ namespace BPA.NewModel
             get => _row["РРЦ 2020, руб. с НДС"];
             set => _row["РРЦ 2020, руб. с НДС"] = value;
         }
+        public double ShippingPrice
+        {
+            get => _row["Цена отгрузки, руб."];
+            set => _row["Цена отгрузки, руб."] = value;
+        }
         public string EAN
         {
             get => _row["EAN штуки"];

@@ -15,6 +15,7 @@ namespace BPA.Modules
             "Exclusives",
             "Channel type",
             "Customer status",
+            "Customer status for forecast",
             "Продуктовые календари",
             "Структура ассортимента",
             "Статусы товаров",
