@@ -19,7 +19,7 @@
     <PublishUrl>C:\Users\wizar\YandexDisk\Разработка\Хускварна\Этап 1. Локальная версия\Версии на тестирование\Тестирование\</PublishUrl>
     <InstallUrl />
     <TargetCulture>ru</TargetCulture>
-    <ApplicationVersion>1.8.2.0</ApplicationVersion>
+    <ApplicationVersion>1.11.0.0</ApplicationVersion>
     <AutoIncrementApplicationRevision>false</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>7</UpdateInterval>
