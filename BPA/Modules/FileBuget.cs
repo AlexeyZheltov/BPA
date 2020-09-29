@@ -164,6 +164,8 @@ namespace BPA.Modules
                 ActionStart?.Invoke($"Обрабатывается строка {rowIndex}");
 
                 DateTime date = GetDateFromCell(rowIndex, DateColumn);
+                date = date.AddYears(20);  //поправка на оссобенность файла бюджет (дата указана на 20лет больше)
+
                 string customerBuget = GetValueFromColumnStr(rowIndex, CustomerBugetColumn); ;
 
                 //проверка на соответствие года и customer
