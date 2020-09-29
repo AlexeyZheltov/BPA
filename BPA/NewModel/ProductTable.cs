@@ -202,6 +202,7 @@ namespace BPA.NewModel
                                                select new ProductItem(item)
                                            where pl.Status.ToLower() != "выведено из ассортимента текущего года"
                                                  && pl.Status.ToLower() != "выведено из глобального ассортимента"
+                                                 && pl.Status.ToLower() != "не активный"
                                            select pl).ToList();
 
             List<ProductItem> actualProducts = new List<ProductItem>();
