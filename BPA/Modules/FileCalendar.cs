@@ -475,7 +475,7 @@ namespace BPA.Modules
         {
             Product product = null;
 
-            for (int rowIndex = 2; rowIndex < ArrRrows; rowIndex++)
+            for (int rowIndex = 2; rowIndex <= ArrRrows; rowIndex++)
             {
 
                 if (IsCancel) return;

@@ -115,7 +115,7 @@ namespace BPA.Modules
                 throw new ApplicationException("Файл имеет неверный формат");
             }
 
-            for (int rowIndex = 2; rowIndex < ArrRrows; rowIndex++)
+            for (int rowIndex = 2; rowIndex <= ArrRrows; rowIndex++)
             {
                 if (IsCancel)
                     return;
@@ -156,7 +156,7 @@ namespace BPA.Modules
                 throw new ApplicationException("Файл имеет неверный формат");
             }
 
-            for (int rowIndex = 2; rowIndex < ArrRrows; rowIndex++)
+            for (int rowIndex = 2; rowIndex <= ArrRrows; rowIndex++)
             {
                 if (IsCancel)
                     return;
@@ -164,6 +164,8 @@ namespace BPA.Modules
                 ActionStart?.Invoke($"Обрабатывается строка {rowIndex}");
 
                 DateTime date = GetDateFromCell(rowIndex, DateColumn);
+                date = date.AddYears(20);  //поправка на оссобенность файла бюджет (дата указана на 20лет больше)
+
                 string customerBuget = GetValueFromColumnStr(rowIndex, CustomerBugetColumn); ;
 
                 //проверка на соответствие года и customer

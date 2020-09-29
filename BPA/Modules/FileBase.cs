@@ -220,7 +220,7 @@ namespace BPA.Modules
         }
 
         /// <summary>
-        /// Загрузка массива данных
+        /// Загрузка массива данных по столбцам
         /// </summary>
         public void SetFileData(params string[] colNames)
         {
@@ -309,7 +309,7 @@ namespace BPA.Modules
         /// <returns></returns>
         public int FindRow(string str, int col)
         {
-            for (int rowIndex = 2; rowIndex < ArrRrows; rowIndex++)
+            for (int rowIndex = 2; rowIndex <= ArrRrows; rowIndex++)
             {
                 object obj = FileArray[rowIndex, col];
                 if (obj is string && Convert.ToString(obj) == str) return rowIndex;
@@ -325,7 +325,7 @@ namespace BPA.Modules
         /// <returns></returns>
         public int FindRow(double dbl, int col)
         {
-            for (int rowIndex = 2; rowIndex < ArrRrows; rowIndex++)
+            for (int rowIndex = 2; rowIndex <= ArrRrows; rowIndex++)
             {
                 object obj = FileArray[rowIndex, col];
                 if (obj is double && Convert.ToDouble(obj) == dbl) return rowIndex;
@@ -341,7 +341,7 @@ namespace BPA.Modules
         /// <returns></returns>
         public int FindRow(DateTime dt, int col)
         {
-            for (int rowIndex = 2; rowIndex < ArrRrows; rowIndex++)
+            for (int rowIndex = 2; rowIndex <= ArrRrows; rowIndex++)
             {
                 object obj = FileArray[rowIndex, col];
                 if (obj is DateTime && Convert.ToDateTime(obj) == dt) return rowIndex;
