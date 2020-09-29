@@ -115,7 +115,7 @@ namespace BPA.Modules
                 throw new ApplicationException("Файл имеет неверный формат");
             }
 
-            for (int rowIndex = 2; rowIndex < ArrRrows; rowIndex++)
+            for (int rowIndex = 2; rowIndex <= ArrRrows; rowIndex++)
             {
                 if (IsCancel)
                     return;
@@ -156,7 +156,7 @@ namespace BPA.Modules
                 throw new ApplicationException("Файл имеет неверный формат");
             }
 
-            for (int rowIndex = 2; rowIndex < ArrRrows; rowIndex++)
+            for (int rowIndex = 2; rowIndex <= ArrRrows; rowIndex++)
             {
                 if (IsCancel)
                     return;

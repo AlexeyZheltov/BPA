@@ -200,7 +200,7 @@ namespace BPA.Modules
 
             IsCancel = false;
 
-            for (int rowIndex = 2; rowIndex < ArrRrows; rowIndex++) 
+            for (int rowIndex = 2; rowIndex <= ArrRrows; rowIndex++) 
             {
                 if (IsCancel)
                     return;
