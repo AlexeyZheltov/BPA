@@ -468,6 +468,8 @@ namespace BPA
 
                 //List<ClientFromDescision> newClients = new List<ClientFromDescision>();
 
+                clients.Unmark();
+
                 var newClients = (from c in clientsFromDecision
                                   where !clients.Contains(c)
                                   select c).ToList();
@@ -488,6 +490,8 @@ namespace BPA
                 processBar.CancelClick += Cancel;
                 processBar.Show(new ExcelWindows(Globals.ThisWorkbook));
 
+                List<NM.ClientItem> clientsForMark = new List<NM.ClientItem>();
+
                 foreach (var item in newClients)
                 {
                     if (isCancel) return;
@@ -497,10 +501,13 @@ namespace BPA
                     client.Customer = item.Customer;
                     client.GardenaChannel = item.GardenaChannel;
 
+                    clientsForMark.Add(client);
+
                     processBar.TaskDone(1);
                 }
 
                 clients.Save();
+                clients.Mark(clientsForMark);
 
                 NM.ClientTable.SortExcelTable("№");
                 Excel.Worksheet ws = Globals.ThisWorkbook.Sheets[NM.ClientTable.SHEET];

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace BPA.Modules
 {
@@ -10,7 +11,7 @@ namespace BPA.Modules
     {
         public static double? Calculation(string formula)
         {
-            if (double.TryParse(CalculateStringFormula(formula), out double result))
+            if (double.TryParse(CalculateStringFormula(formula), System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out double result))
                 return result;
             else
                 return null;
@@ -35,7 +36,7 @@ namespace BPA.Modules
                 get {
                     string result = ChangePercent(this.Formula);
 
-                    if (Double.TryParse(this.Formula, out _))
+                    if (Double.TryParse(this.Formula, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out _))
                         return Result = result;
 
                     result = DoMultiplication(result);
@@ -47,10 +48,12 @@ namespace BPA.Modules
         }
         private static string CalculateStringFormula(string tmpFormula)
         {
+            string separatorDecimal = System.Globalization.CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator.ToString();
+
             if (tmpFormula.Length == 0) 
                 return "";
             tmpFormula = tmpFormula.Replace(" ", "");
-            tmpFormula = tmpFormula.Replace(".", ",");
+            tmpFormula = tmpFormula.Replace(",", separatorDecimal);
             if (tmpFormula.Substring(0, 1) == "=")
                 tmpFormula = tmpFormula.Substring(1, tmpFormula.Length - 1);
 
@@ -110,11 +113,11 @@ namespace BPA.Modules
                 string numString = GetNumLeft(tmpFormula, percentPos);
                 int c = percentPos - numString.Length;
 
-                if (double.TryParse(numString, out double num))
+                if (double.TryParse(numString, System.Globalization.NumberStyles.Any, CultureInfo.InvariantCulture, out double num))
                 {
                     double numRatio = num / 100;
 
-                    tmpFormula = string.Concat(tmpFormula.Substring(0, c), numRatio.ToString(), tmpFormula.Substring(percentPos + 1));
+                    tmpFormula = string.Concat(tmpFormula.Substring(0, c), numRatio.ToString(CultureInfo.InvariantCulture), tmpFormula.Substring(percentPos + 1));
                 }
             } while (percentPos >= 0);
 
@@ -184,10 +187,10 @@ namespace BPA.Modules
             string numLeft = GetNumLeft(tmpFormula, singPos);
             string numRight = GetNumRight(tmpFormula, singPos);
 
-            double result = double.Parse(numRight) * double.Parse(numLeft);
+            double result = double.Parse(numRight, NumberStyles.Any, CultureInfo.InvariantCulture) * double.Parse(numLeft, NumberStyles.Any, CultureInfo.InvariantCulture);
 
             return tmpFormula.Substring(0, singPos - numLeft.Length) +
-                                result.ToString() +
+                                result.ToString(CultureInfo.InvariantCulture) +
                                 tmpFormula.Substring(singPos + numRight.Length+1);
         }
 
@@ -196,10 +199,10 @@ namespace BPA.Modules
             string numLeft = GetNumLeft(tmpFormula, singPos);
             string numRight = GetNumRight(tmpFormula, singPos);
 
-            double result = double.Parse(numLeft) / double.Parse(numRight);
+            double result = double.Parse(numLeft, NumberStyles.Any, CultureInfo.InvariantCulture) / double.Parse(numRight, NumberStyles.Any, CultureInfo.InvariantCulture);
 
             return tmpFormula.Substring(0, singPos - numLeft.Length) +
-                                result.ToString() +
+                                result.ToString(CultureInfo.InvariantCulture) +
                                 tmpFormula.Substring(singPos + numRight.Length+1);
 
         }
@@ -209,10 +212,10 @@ namespace BPA.Modules
             string numLeft = GetNumLeft(tmpFormula, singPos);
             string numRight = GetNumRight(tmpFormula, singPos);
 
-            double result = double.Parse(numRight) + double.Parse(numLeft);
+            double result = double.Parse(numRight, NumberStyles.Any, CultureInfo.InvariantCulture) + double.Parse(numLeft, NumberStyles.Any, CultureInfo.InvariantCulture);
 
             return tmpFormula.Substring(0, singPos - numLeft.Length) +
-                                result.ToString() +
+                                result.ToString(CultureInfo.InvariantCulture) +
                                 tmpFormula.Substring(singPos + numRight.Length+1);
 
         }
@@ -222,10 +225,10 @@ namespace BPA.Modules
             string numLeft = GetNumLeft(tmpFormula, singPos);
             string numRight = GetNumRight(tmpFormula, singPos);
 
-            double result = double.Parse(numLeft) - double.Parse(numRight);
+            double result = double.Parse(numLeft, NumberStyles.Any, CultureInfo.InvariantCulture) - double.Parse(numRight, NumberStyles.Any, CultureInfo.InvariantCulture);
 
             return tmpFormula.Substring(0, singPos - numLeft.Length) +
-                                result.ToString() +
+                                result.ToString(CultureInfo.InvariantCulture) +
                                 tmpFormula.Substring(singPos + numRight.Length+1);
 
         }

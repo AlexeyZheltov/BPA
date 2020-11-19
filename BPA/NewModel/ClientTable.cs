@@ -12,6 +12,7 @@ namespace BPA.NewModel
     {
         public const string SHEET = "Клиенты";
         const string TABLE = "Клиенты";
+        const Excel.XlRgbColor colorNewClient = Excel.XlRgbColor.rgbYellow;
 
         WS_DB _db = new WS_DB();
         Excel.ListObject _table = null;
@@ -131,6 +132,60 @@ namespace BPA.NewModel
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public void Mark(List<ClientItem> clientsForMark)
+        {
+
+            Excel.Workbook wb = Globals.ThisWorkbook.InnerObject;
+            Excel.Worksheet ws = wb.Sheets[SHEET];
+            Excel.ListObject table = ws.ListObjects[TABLE];
+
+            foreach (ClientItem client in clientsForMark)
+            {
+                int rowIndex = GetCurrentClientRow(client.Id);
+                if (rowIndex == 0) continue;
+
+                table.ListRows[rowIndex].Range.Interior.Color = colorNewClient;
+            }
+        }
+
+        public void Unmark()
+        {
+            Excel.Workbook wb = Globals.ThisWorkbook.InnerObject;
+            Excel.Worksheet ws = wb.Sheets[SHEET];
+            Excel.ListObject table = ws.ListObjects[TABLE];
+
+            table.DataBodyRange.ClearFormats();
+        }
+
+        private int GetCurrentClientRow(int id)
+        {
+            try
+            {
+                Excel.Workbook wb = Globals.ThisWorkbook.InnerObject;
+                Excel.Worksheet ws = wb.Sheets[SHEET];
+                Excel.ListObject table = ws.ListObjects[TABLE];
+
+                int colIndex = table.ListColumns["№"].Index;
+
+                for (int rowIndex = 1; rowIndex <= table.ListRows.Count; rowIndex++)
+                {
+                    Excel.Range rngTable = table.DataBodyRange;
+                    Excel.Range cell = rngTable.Cells[rowIndex, colIndex];
+
+                    if (cell == null) continue;
+                    if (cell.Value.ToString() != id.ToString()) continue;
+
+                    return rowIndex;
+                }
+
+                return 0;
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }
