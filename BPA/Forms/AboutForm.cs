@@ -24,7 +24,8 @@ namespace BPA.Forms
                 try
                 {
                     ver = ApplicationDeployment.CurrentDeployment.CurrentVersion;
-                } catch
+                } 
+                catch
                 {
                     ver = Assembly.GetExecutingAssembly().GetName().Version;
                 }
@@ -35,7 +36,8 @@ namespace BPA.Forms
                         label2.Text = $"v.{ verArr[0] }.{ verArr[1] }";
                     else if (verArr.Length == 1)
                         label2.Text = $"v.{ verArr[0] }";
-            } catch
+            } 
+            catch
             {
             }
         }

@@ -533,7 +533,7 @@ namespace BPA.Model
         public Product GetPoductActive()
         {
             if (Application.ActiveCell.Row < FirstRow || Application.ActiveCell.Row > LastRow)
-                throw new ApplicationException("Выберите товар");
+                throw new HasExpection("Выберите товар");
 
             ListRow listRow = Table.ListRows[Application.Selection[1].Row - Table.Range.Row];
             if (listRow != null)

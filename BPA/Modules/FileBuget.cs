@@ -85,7 +85,7 @@ namespace BPA.Modules
             }
             else
             {
-                throw new ApplicationException("Загрузка отменена");
+                throw new HasExpection("Загрузка отменена");
             }
         }
 
@@ -93,7 +93,7 @@ namespace BPA.Modules
         {
             if (!File.Exists(filename))
             {
-                throw new FileNotFoundException($"Файл {filename} не найден");
+                throw new HasExpection($"Файл {filename} не найден");
             }
             FileAddress = filename;
         }
@@ -112,7 +112,7 @@ namespace BPA.Modules
         {
             if (DateColumn == 0 || ArticleColumn == 0 || CampaignColumn == 0)
             {
-                throw new ApplicationException("Файл имеет неверный формат");
+                throw new HasExpection("Файл имеет неверный формат");
             }
 
             for (int rowIndex = 2; rowIndex <= ArrRrows; rowIndex++)
@@ -153,7 +153,7 @@ namespace BPA.Modules
         {
             if (DateColumn == 0 || ArticleColumn == 0 || CampaignColumn == 0)
             {
-                throw new ApplicationException("Файл имеет неверный формат");
+                throw new HasExpection("Файл имеет неверный формат");
             }
 
             for (int rowIndex = 2; rowIndex <= ArrRrows; rowIndex++)

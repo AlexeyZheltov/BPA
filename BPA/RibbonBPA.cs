@@ -121,9 +121,13 @@ namespace BPA
                 MessageBox.Show("Загрузка календаря завершена", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
 #if ENABLE_TRY
             }
-            catch (Exception ex)
+            catch (Modules.HasExpection ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ErrorMessageClass.GetExceptionInfo(ex), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -223,9 +227,13 @@ namespace BPA
                 products.Save();
                 MessageBox.Show("Обновление календарей завершено", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            catch (Exception ex)
+            catch (Modules.HasExpection ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ErrorMessageClass.GetExceptionInfo(ex), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -248,13 +256,18 @@ namespace BPA
             {
                 form = new AboutForm();
                 form.ShowDialog();
-            } catch
+            }
+            catch (Modules.HasExpection ex)
             {
-                form.Close();
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ErrorMessageClass.GetExceptionInfo(ex), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
-
+                form.Close();
             }
         }
 
@@ -263,8 +276,19 @@ namespace BPA
         /// </summary>
         private void Settings_Click(object sender, RibbonControlEventArgs e)
         {
-            SettingsForm form = new SettingsForm(BPASettingEnum.All);
-            form.ShowDialog(new ExcelWindows(Globals.ThisWorkbook));
+            try
+            {
+                SettingsForm form = new SettingsForm(BPASettingEnum.All);
+                form.ShowDialog(new ExcelWindows(Globals.ThisWorkbook));
+            }
+            catch (Modules.HasExpection ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ErrorMessageClass.GetExceptionInfo(ex), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>
@@ -288,7 +312,7 @@ namespace BPA
                 int activeId = products.GetId(activeCell.Row);
                 if (activeId == 0)
                 {
-                    throw new ApplicationException("Выберите товар");
+                    throw new HasExpection("Выберите товар");
                 }
 
                 ProductItem product = products.Find(x => x.Id == activeId);
@@ -296,7 +320,7 @@ namespace BPA
                 
                 if (calendar == null)
                 {
-                    throw new ApplicationException($"Файл { product.Calendar } не найден") ;
+                    throw new HasExpection($"Файл { product.Calendar } не найден") ;
                 }
                 fileCalendar = new FileCalendar(calendar.Path);
                 fileCalendar.SetFileData();
@@ -313,9 +337,13 @@ namespace BPA
                 }
                 products.Save();
             }
-            catch (Exception ex)
+            catch (Modules.HasExpection ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ErrorMessageClass.GetExceptionInfo(ex), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -368,9 +396,13 @@ namespace BPA
                 products.Save();
 #if ENABLE_TRY
             }
-            catch(Exception ex)
+            catch (Modules.HasExpection ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ErrorMessageClass.GetExceptionInfo(ex), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -424,9 +456,13 @@ namespace BPA
                 rrcs.Save();
 #if ENABLE_TRY
             }
-            catch (Exception ex)
+            catch (Modules.HasExpection ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ErrorMessageClass.GetExceptionInfo(ex), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -513,9 +549,13 @@ namespace BPA
                 Excel.Worksheet ws = Globals.ThisWorkbook.Sheets[NM.ClientTable.SHEET];
                 ws.Activate();
             }
-            catch (Exception ex)
+            catch (Modules.HasExpection ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ErrorMessageClass.GetExceptionInfo(ex), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -725,9 +765,13 @@ namespace BPA
                 MessageBox.Show("Создание прайс-листов завершено", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
 #if ENABLE_TRY
             }
+            catch (Modules.HasExpection ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ErrorMessageClass.GetExceptionInfo(ex), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -762,9 +806,14 @@ namespace BPA
 
                 FunctionsForExcel.HideSheet(planningTemplateSheetName);
 
-            } catch (Exception ex)
+            }
+            catch (Modules.HasExpection ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ErrorMessageClass.GetExceptionInfo(ex), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -929,9 +978,13 @@ namespace BPA
                 }
                 planningNewYears.Save();
             }
-            catch (Exception ex)
+            catch (Modules.HasExpection ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ErrorMessageClass.GetExceptionInfo(ex), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -1052,9 +1105,13 @@ namespace BPA
                 }
                 planningNewYears.Save();
             }
-            catch (Exception ex)
+            catch (Modules.HasExpection ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ErrorMessageClass.GetExceptionInfo(ex), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -1082,11 +1139,11 @@ namespace BPA
                 FunctionsForExcel.SpeedOn();
 
                 if (!FunctionsForExcel.IsSheetExists(SHEET_NAME_PLAN))
-                    throw new ApplicationException($"Лист \"{ SHEET_NAME_PLAN }\" отсутствует");
+                    throw new HasExpection($"Лист \"{ SHEET_NAME_PLAN }\" отсутствует");
                 Excel.Worksheet planWS = TWB.Sheets[SHEET_NAME_PLAN];
 
                 if (planWS.ListObjects.Count < 1)
-                    throw new ApplicationException($"Таблица на листе \"{ SHEET_NAME_PLAN }\" отсутствует");
+                    throw new HasExpection($"Таблица на листе \"{ SHEET_NAME_PLAN }\" отсутствует");
                 Excel.ListObject tableAllPlan = planWS.ListObjects[1];
 
 
@@ -1122,7 +1179,7 @@ namespace BPA
                 openFileDialog.Multiselect = true;
                 openFileDialog.Filter= "Excel files (*.xls*)|*.xls*";
                 if (openFileDialog.ShowDialog() == DialogResult.Cancel)
-                    throw new ApplicationException($"Файлы не выбраны");
+                    throw new HasExpection($"Файлы не выбраны");
                 string[] fileNames = openFileDialog.FileNames;
 
                 processBar = new ProcessBar("Обновление сводного планирования", fileNames.Length);
@@ -1196,10 +1253,14 @@ namespace BPA
                 MessageBox.Show("Обработка книг завершена", "BPA", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
-            catch (Exception ex)
+            catch (Modules.HasExpection ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            } 
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ErrorMessageClass.GetExceptionInfo(ex), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             finally
             {
                 workbook?.Close(false);
@@ -1223,9 +1284,13 @@ namespace BPA
                 WorksheetsSettings wsSets = new WorksheetsSettings(Globals.ThisWorkbook.InnerObject);
                 wsSets.ShowUnshowSheets();
             }
-            catch (Exception ex)
+            catch (Modules.HasExpection ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ErrorMessageClass.GetExceptionInfo(ex), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {

@@ -33,7 +33,7 @@ namespace BPA.Modules
         /// <param name="product"></param>
         public void SetProduct(NM.ProductItem product)
         {
-            if (product.Category == "") throw new ApplicationException($"Для {product.Article} не указана категория");
+            if (product.Category == "") throw new HasExpection($"Для {product.Article} не указана категория");
 
             this.Product = product;
             this.Formula = Discount.GetFormulaByName(product.Category);
@@ -71,12 +71,12 @@ namespace BPA.Modules
                 }
                 else
                 {
-                    throw new ApplicationException($"В одной из формул содержится ошибка");
+                    throw new HasExpection($"В одной из формул содержится ошибка");
                 }
             }
             catch
             {
-                throw new ApplicationException($"В одной из формул содержится ошибка");
+                throw new HasExpection($"В одной из формул содержится ошибка");
             }
         }
     }

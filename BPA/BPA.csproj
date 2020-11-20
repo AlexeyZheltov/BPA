@@ -186,6 +186,7 @@
     <Compile Include="Model\TableBase.cs" />
     <Compile Include="Modules\ArticleQuantity.cs" />
     <Compile Include="Modules\BPASettings.cs" />
+    <Compile Include="Modules\ErrorMessageClass.cs" />
     <Compile Include="Modules\ExcelWindows.cs" />
     <Compile Include="Modules\FileBase.cs" />
     <Compile Include="Modules\FileBuget.cs" />
@@ -193,6 +194,7 @@
     <Compile Include="Modules\FileDescision.cs" />
     <Compile Include="Modules\FilePriceMT.cs" />
     <Compile Include="Modules\FunctionsForExcel.cs" />
+    <Compile Include="Modules\HasException.cs" />
     <Compile Include="Modules\Parsing.cs" />
     <Compile Include="Modules\PBWrapper.cs" />
     <Compile Include="Modules\PriceListForPlaning.cs" />
