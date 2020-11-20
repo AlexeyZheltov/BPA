@@ -181,7 +181,7 @@ namespace BPA.Model
             }
             catch
             {
-                throw new ApplicationException($"Ошибка в поиске столбцов { SheetName }");
+                throw new HasExpection($"Ошибка в поиске столбцов { SheetName }");
             }
         }
 

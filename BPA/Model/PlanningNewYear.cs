@@ -540,7 +540,8 @@ namespace BPA.Model
                 }
 
                 return planningNewYear;
-            } catch
+            } 
+            catch
             {
                 return null;
             }

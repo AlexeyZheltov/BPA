@@ -108,7 +108,7 @@ namespace BPA.Modules
             }
             else
             {
-                throw new ApplicationException("Загрузка отменена");
+                throw new HasExpection("Загрузка отменена");
             }
         }
 
@@ -116,7 +116,7 @@ namespace BPA.Modules
         {
             if (!File.Exists(filename))
             {
-                throw new FileNotFoundException($"Файл {filename} не найден");
+                throw new HasExpection($"Файл {filename} не найден");
             }
             FileAddress = filename;
         }
@@ -136,7 +136,7 @@ namespace BPA.Modules
 
             if (CustomerColumn == 0 || GardenaChannelColumn == 0)
             {
-                throw new ApplicationException("Файл имеет неверный формат");
+                throw new HasExpection("Файл имеет неверный формат");
             }
 
 
@@ -164,7 +164,7 @@ namespace BPA.Modules
                 ActionD();
             }
 
-            if (buffer.Count == 0) throw new ApplicationException("Файл не содержит значемых данных");
+            if (buffer.Count == 0) throw new HasExpection("Файл не содержит значемых данных");
             return buffer;
         }
 
@@ -177,7 +177,7 @@ namespace BPA.Modules
             
             if (DateColumn == 0 || ArticleColumn == 0 || CampaignColumn == 0 || CustomerColumn== 0)
             {
-                throw new ApplicationException("Файл имеет неверный формат");
+                throw new HasExpection("Файл имеет неверный формат");
             }            
 
             for (int rowIndex = 2; rowIndex <= ArrRrows; rowIndex++)
@@ -225,7 +225,7 @@ namespace BPA.Modules
 
             if (DateColumn == 0 || ArticleColumn == 0 || CampaignColumn == 0 || CustomerColumn == 0)
             {
-                throw new ApplicationException("Файл имеет неверный формат");
+                throw new HasExpection("Файл имеет неверный формат");
             }
 
             for (int rowIndex = 2; rowIndex <= ArrRrows; rowIndex++)

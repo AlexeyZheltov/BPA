@@ -221,7 +221,7 @@ namespace BPA.Modules
         {
             if (!IsSheetExists(sheetName))
             {
-                throw new ApplicationException($"В книге отсутствует лист { sheetName }");
+                throw new HasExpection($"В книге отсутствует лист { sheetName }");
             }
 
             Worksheet worksheet = Globals.ThisWorkbook.Sheets[sheetName];
@@ -235,7 +235,7 @@ namespace BPA.Modules
         {
             if (!IsSheetExists(sheetName))
             {
-                throw new ApplicationException($"В книге отсутствует лист { sheetName }");
+                throw new HasExpection($"В книге отсутствует лист { sheetName }");
             }
 
             Worksheet worksheet = Globals.ThisWorkbook.Sheets[sheetName];

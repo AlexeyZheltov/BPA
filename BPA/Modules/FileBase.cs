@@ -124,7 +124,7 @@ namespace BPA.Modules
                     }
                     catch
                     {
-                        throw new ApplicationException($"Лист \"{ FileSheetName }\" в книге { FileName } не найден!");
+                        throw new HasExpection($"Лист \"{ FileSheetName }\" в книге { FileName } не найден!");
                     }
                 }
                 return _worksheet;
@@ -157,7 +157,7 @@ namespace BPA.Modules
                     {
                         Excel.Range cell = worksheet.UsedRange.Find(FirstRowIndicator);
                         if (cell == null)
-                            throw new ApplicationException("Файл имеет неверный формат");
+                            throw new HasExpection("Файл имеет неверный формат");
 
                         _FileHeaderRow = cell.Row;
                     }
@@ -211,7 +211,7 @@ namespace BPA.Modules
             }
             catch (Exception ex)
             {
-                throw new ApplicationException(ex.Message);
+                throw new HasExpection(ex.Message);
             }
             finally
             {
@@ -259,7 +259,7 @@ namespace BPA.Modules
 
             } catch(Exception ex)
             {
-                throw new ApplicationException(ex.Message);
+                throw new HasExpection(ex.Message);
             }
             finally
             {

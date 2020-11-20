@@ -432,7 +432,7 @@ namespace BPA.Modules
                     openFileDialog.InitialDirectory = settingsBPA.Default.ProductCalendarPath;
 
                 if (openFileDialog.ShowDialog() == DialogResult.Cancel)
-                    throw new ApplicationException("Загрузка отменена");
+                    throw new HasExpection("Загрузка отменена");
 
                 string fileName = openFileDialog.FileName;
                 settingsBPA.Default.ProductCalendarPath = System.IO.Path.GetDirectoryName(fileName);
@@ -445,7 +445,7 @@ namespace BPA.Modules
             }
             catch
             {
-                throw new ApplicationException("Загрузка отменена");
+                throw new HasExpection("Загрузка отменена");
             }
         }
 
@@ -453,7 +453,7 @@ namespace BPA.Modules
         {
             if (!File.Exists(filename))
             {
-                throw new FileNotFoundException($"Файл {filename} не найден");
+                throw new HasExpection($"Файл {filename} не найден");
             }
             FileAddress = filename;
             IsOpen = true;
@@ -490,7 +490,7 @@ namespace BPA.Modules
                 if (ToBeSoldInColumn == 0)
                 {
                     Close();
-                    throw new ApplicationException("Файл имеет неверный формат");
+                    throw new HasExpection("Файл имеет неверный формат");
                 }
                 string tobesold = GetValueFromColumnStr(rowIndex, ToBeSoldInColumn);
 

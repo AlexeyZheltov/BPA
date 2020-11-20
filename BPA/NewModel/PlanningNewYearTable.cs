@@ -150,7 +150,7 @@ namespace BPA.NewModel
             }
             catch (Exception ex)
             {
-                throw new ApplicationException(ex.Message);
+                throw new HasExpection(ex.Message);
             }
         }
 
@@ -277,7 +277,7 @@ namespace BPA.NewModel
                 {
                     stream.WriteLine(stringBuilder.ToString());
                 }
-                throw new ApplicationException($"Ошибка в поиске столбцов { SHEET }");
+                throw new HasExpection($"Ошибка в поиске столбцов { SHEET }");
             }
         }
 

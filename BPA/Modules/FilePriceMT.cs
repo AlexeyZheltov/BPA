@@ -143,7 +143,7 @@ namespace BPA.Modules
             }
             else
             {
-                throw new ApplicationException("Загрузка отменена");
+                throw new HasExpection("Загрузка отменена");
             }
         }
 
@@ -151,7 +151,7 @@ namespace BPA.Modules
         {
             if (!File.Exists(filename))
             {
-                throw new FileNotFoundException($"Файл {filename} не найден");
+                throw new HasExpection($"Файл {filename} не найден");
             }
             FileName = filename;
         }
@@ -195,7 +195,7 @@ namespace BPA.Modules
             if (DateFromColumn == 0 || DateToColumn == 0 || MagColumn == 0)
             {
                 Workbook.Close();
-                throw new ApplicationException($"Файл {Path.GetFileName(FileName)} имеет ошибочный формат");
+                throw new HasExpection($"Файл {Path.GetFileName(FileName)} имеет ошибочный формат");
             }
 
             IsCancel = false;

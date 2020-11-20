@@ -36,10 +36,10 @@ namespace BPA.Modules
         public void Load()
         {
             List<RRC> actualRRC = RRC.GetActualPriceList(currentDate);
-            if (actualRRC == null) throw new ApplicationException("Не удалось загрузить данные с листа RRC");
+            if (actualRRC == null) throw new HasExpection("Не удалось загрузить данные с листа RRC");
 
             Discount currentDiscount = Discount.GetCurrentDiscount(currentClient, currentDate);
-            if (currentDiscount == null) throw new ApplicationException("Не удалось загрузить данные с с листа скидок");
+            if (currentDiscount == null) throw new HasExpection("Не удалось загрузить данные с с листа скидок");
 
             //подгрузить PriceMT если неужно, подключится к РРЦ                   
             if (currentDiscount.NeedFilePriceMT())
@@ -53,7 +53,7 @@ namespace BPA.Modules
                 filePriceMT.SetFileData();
                 filePriceMT.Load(currentDate);
                 processBar.Close();
-                if (!filePriceMT.IsOpen) throw new ApplicationException("Не удалось загрузить File PriceListMT");
+                if (!filePriceMT.IsOpen) throw new HasExpection("Не удалось загрузить File PriceListMT");
             }
 
             //Загрузка списка артикулов, какие из них актуальные?
@@ -68,7 +68,7 @@ namespace BPA.Modules
                 if (product.Category == "")
                 {
                     if (filePriceMT?.IsOpen ?? false) filePriceMT.Close();
-                    throw new ApplicationException($"Для {product.Article} не указана категория");
+                    throw new HasExpection($"Для {product.Article} не указана категория");
                 }
                 //получить формулу
                 string formula = currentDiscount.GetFormulaByName(product.Category);
@@ -93,7 +93,7 @@ namespace BPA.Modules
                 catch
                 {
                     if (filePriceMT?.IsOpen ?? false) filePriceMT.Close();
-                    throw new ApplicationException($"В одной из формул для {currentClient.Customer} содержится ошибка");
+                    throw new HasExpection($"В одной из формул для {currentClient.Customer} содержится ошибка");
                     //Debug.Print($"В одной из формул для {currentClient.Customer} содержится ошибка");
                     //continue;
                 }
@@ -110,7 +110,7 @@ namespace BPA.Modules
         /// <returns></returns>
         public double GetPrice(string article)
         {
-            if (!isLoaded) throw new ApplicationException("Не выполнена загрузка Price List Planing");
+            if (!isLoaded) throw new HasExpection("Не выполнена загрузка Price List Planing");
 
             if (priceList.Exists(x => x.ArticleGardena == article))
                 return priceList.Find(x => x.ArticleGardena == article).RRC;
