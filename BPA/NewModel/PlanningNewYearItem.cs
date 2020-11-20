@@ -861,7 +861,7 @@ namespace BPA.NewModel
 
         public void SetRRC(RRCItem rrcPlan, RRCItem rrcCurrent)
         {
-            if (rrcPlan != null)
+            if (rrcCurrent != null)
             {
                 this.RRCCUrent = rrcCurrent.RRCNDS;
                 this.DIYCurrent = rrcCurrent.DIY;
@@ -870,7 +870,7 @@ namespace BPA.NewModel
                 //this.RRPCurrent = rrcCurrent.RRP;
             }
 
-            if (rrcCurrent != null)
+            if (rrcPlan != null)
             {
                 this.RRCPlan = rrcPlan.RRCNDS;
                 this.DIYPlan = rrcPlan.DIY;
